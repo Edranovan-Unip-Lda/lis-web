@@ -1,93 +1,129 @@
-import {Component} from '@angular/core';
-import {Select} from 'primeng/select';
-import {InputText} from 'primeng/inputtext';
-import {TextareaModule} from 'primeng/textarea';
-import {FileUploadModule} from 'primeng/fileupload';
-import {InputGroupAddon} from 'primeng/inputgroupaddon';
-import {ButtonModule} from 'primeng/button';
-import {InputGroupModule} from 'primeng/inputgroup';
-import {RippleModule} from 'primeng/ripple';
+import { User } from '@/core/models/entities.model';
+import { UserService } from '@/core/services';
+import { mapToIdAndName, roleOptions, statusOptions } from '@/core/utils/global-function';
+import { mustMatch } from '@/core/validators/must-match';
+import { CommonModule } from '@angular/common';
+import { Component, signal } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { FileUploadModule } from 'primeng/fileupload';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputText, InputTextModule } from 'primeng/inputtext';
+import { MessageModule } from 'primeng/message';
+import { PasswordModule } from 'primeng/password';
+import { RippleModule } from 'primeng/ripple';
+import { Select } from 'primeng/select';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { TextareaModule } from 'primeng/textarea';
 
 @Component({
     selector: 'user-create',
     standalone: true,
-    imports: [Select, InputText, TextareaModule, FileUploadModule, InputGroupAddon, ButtonModule, InputGroupModule, RippleModule],
-    template: `<div class="card">
-        <span class="text-surface-900 dark:text-surface-0 text-xl font-bold mb-6 block">Create User</span>
-        <div class="grid grid-cols-12 gap-4">
-            <div class="col-span-12 lg:col-span-2">
-                <div class="text-surface-900 dark:text-surface-0 font-medium text-xl mb-4">Profile</div>
-                <p class="m-0 p-0 text-surface-600 dark:text-surface-200 leading-normal mr-4">Odio euismod lacinia at quis risus sed vulputate odio.</p>
-            </div>
-            <div class="col-span-12 lg:col-span-10">
-                <div class="grid grid-cols-12 gap-4">
-                    <div class="mb-6 col-span-12">
-                        <label for="nickname" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block"> Nickname </label>
-                        <input id="nickname" type="text" pInputText fluid />
-                    </div>
-                    <div class="mb-6 col-span-12 flex flex-col items-start">
-                        <label for="avatar" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">Avatar</label>
-                        <p-fileupload mode="basic" name="avatar" url="./upload.php" accept="image/*" [maxFileSize]="1000000" styleClass="p-button-outlined p-button-plain" chooseLabel="Upload Image"></p-fileupload>
-                    </div>
-                    <div class="mb-6 col-span-12">
-                        <label for="bio" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block"> Bio </label>
-                        <input pTextarea id="bio" type="text" rows="5" [autoResize]="true" fluid />
-                    </div>
-                    <div class="mb-6 col-span-12 md:col-span-6">
-                        <label for="email" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block"> Email </label>
-                        <input id="email" type="text" pInputText fluid />
-                    </div>
-                    <div class="mb-6 col-span-12 md:col-span-6">
-                        <label for="country" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block"> Country </label>
-                        <p-select inputId="country" [options]="countries" optionLabel="name" fluid [filter]="true" filterBy="name" [showClear]="true" placeholder="Select a Country">
-                            <ng-template let-country #item>
-                                <div class="flex items-center">
-                                    <img src="/images/flag/flag_placeholder.png" [class]="'mr-2 flag flag-' + country.code.toLowerCase()" style="width:18px" />
-                                    <div>{{ country.name }}</div>
-                                </div>
-                            </ng-template>
-                        </p-select>
-                    </div>
-                    <div class="mb-6 col-span-12 md:col-span-6">
-                        <label for="city" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block"> City </label>
-                        <input id="city" type="text" pInputText fluid />
-                    </div>
-                    <div class="mb-6 col-span-12 md:col-span-6">
-                        <label for="state" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block"> State </label>
-                        <input id="state" type="text" pInputText fluid />
-                    </div>
-                    <div class="mb-6 col-span-12">
-                        <label for="website" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block"> Website </label>
-                        <p-inputgroup>
-                            <p-inputgroup-addon>
-                                <span>www</span>
-                            </p-inputgroup-addon>
-                            <input id="website" type="text" pInputText fluid />
-                        </p-inputgroup>
-                    </div>
-                    <div class="col-span-12">
-                        <button pButton pRipple label="Create User" class="w-auto mt-3"></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> `
+    imports: [Select, InputText, TextareaModule, CommonModule, FileUploadModule, ButtonModule, InputGroupModule, RippleModule, ReactiveFormsModule, PasswordModule, MessageModule, SelectButtonModule, InputTextModule],
+    templateUrl: './user-form.html',
+    providers: [MessageService]
 })
 export class UserCreate {
-    countries: any[] = [];
+    userForm: FormGroup;
+    roleList: any[];
+    loading = false;
+    userData: User;
+    isNew = false;
+    statusOptions = statusOptions;
+    roleOptions = roleOptions;
+    messages = signal<any[]>([]);
+    username!: string;
+
+    constructor(
+        private _fb: FormBuilder,
+        private userService: UserService,
+        private route: ActivatedRoute,
+    ) {
+        this.userForm = this._fb.group({
+            id: [''],
+            firstName: new FormControl(null, [Validators.required]),
+            lastName: new FormControl(null, [Validators.required]),
+            email: new FormControl(null, [Validators.required, Validators.email]),
+            username: new FormControl(null, [Validators.required]),
+            password: new FormControl(null),
+            confirmPassword: new FormControl(null),
+            role: new FormControl(null, [Validators.required]),
+            status: new FormControl('pending', [Validators.required]),
+        }, {
+            validators: mustMatch('password', 'confirmPassword')
+        });
+        this.roleList = mapToIdAndName(this.route.snapshot.data['roleList']._embedded.roles || []);
+
+        this.userData = this.route.snapshot.data['userData'];
+        this.isNew = !this.userData;
+
+        if (!this.isNew) {
+            this.userData.password = ''; // Do not show password in edit form
+            this.userData.role = {
+                id: this.userData.role.id,
+                name: this.userData.role.name
+            };
+            this.userForm.patchValue(this.userData);
+            this.username = this.userData.username;
+            this.userForm.get('username')?.disable()
+        }
+
+    }
 
     ngOnInit() {
-        this.countries = [
-            { name: 'Australia', code: 'AU' },
-            { name: 'Brazil', code: 'BR' },
-            { name: 'China', code: 'CN' },
-            { name: 'Egypt', code: 'EG' },
-            { name: 'France', code: 'FR' },
-            { name: 'Germany', code: 'DE' },
-            { name: 'India', code: 'IN' },
-            { name: 'Japan', code: 'JP' },
-            { name: 'Spain', code: 'ES' },
-            { name: 'United States', code: 'US' }
-        ];
+    }
+
+    createUser(form: FormGroup) {
+        if (form.valid) {
+            this.loading = true;
+
+            this.userService.save(form.value).subscribe({
+                next: (response) => {
+                    this.loading = false;
+                    console.log(response);
+                    this.addMessage(true, `User created successfully and verification link sent to ${response.email}`);
+                    this.userForm.reset();
+                },
+                error: (error) => {
+                    this.loading = false;
+                    console.log(error);
+                    this.addMessage(false, error);
+                }
+            });
+        }
+    }
+
+    updateUser(form: FormGroup) {
+        if (form.valid) {
+            this.loading = true;
+            console.log(form.value);
+            form.value.username = this.username;
+            this.userService.update(this.username, form.value).subscribe({
+                next: (response) => {
+                    this.loading = false;
+                    console.log(response);
+                    this.addMessage(true, 'User updated successfully');
+                },
+                error: (error) => {
+                    this.loading = false;
+                    console.log(error);
+                    this.addMessage(false, error);
+                }
+            });
+        }
+    }
+
+    addMessage(isSuccess: boolean, detail: string) {
+        if (isSuccess) {
+            this.messages.set([
+                { severity: 'success', content: detail, icon: 'pi pi-check-circle' },
+            ]);
+        } else {
+            this.messages.set([
+                { severity: 'error', content: detail, icon: 'pi pi-times-circle' },
+            ]);
+        }
     }
 }

@@ -1,17 +1,18 @@
-import {Component, computed, ElementRef, inject, ViewChild} from '@angular/core';
-import {MenuItem} from 'primeng/api';
-import {RouterModule} from '@angular/router';
-import {CommonModule} from '@angular/common';
-import {StyleClassModule} from 'primeng/styleclass';
-import {LayoutService} from '@/layout/service/layout.service';
-import {Ripple} from 'primeng/ripple';
-import {InputText} from 'primeng/inputtext';
-import {ButtonModule} from 'primeng/button';
-import {IconField} from 'primeng/iconfield';
-import {InputIcon} from 'primeng/inputicon';
-import {FormsModule} from '@angular/forms';
-import {AppSidebar} from '@/layout/components/app.sidebar';
-import {AppBreadcrumb} from '@/layout/components/app.breadcrumb';
+import { Component, computed, ElementRef, inject, ViewChild } from '@angular/core';
+import { MenuItem } from 'primeng/api';
+import { Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { StyleClassModule } from 'primeng/styleclass';
+import { LayoutService } from '@/layout/service/layout.service';
+import { Ripple } from 'primeng/ripple';
+import { InputText } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { IconField } from 'primeng/iconfield';
+import { InputIcon } from 'primeng/inputicon';
+import { FormsModule } from '@angular/forms';
+import { AppSidebar } from '@/layout/components/app.sidebar';
+import { AppBreadcrumb } from '@/layout/components/app.breadcrumb';
+import { AuthenticationService } from '@/core/services';
 
 @Component({
     selector: '[app-topbar]',
@@ -98,9 +99,10 @@ import {AppBreadcrumb} from '@/layout/components/app.breadcrumb';
                                 <span>Settings</span>
                             </a>
                         </li>
-                        <li role="menuitem" class="!m-0">
+                        <li (click)="signOut()" role="menuitem" class="!m-0">
                             <a
                                 href="#"
+                                (click)="$event.preventDefault()"
                                 class="flex items-center hover:text-primary-500 duration-200"
                                 pStyleClass="@grandparent"
                                 enterFromClass="!hidden"
@@ -138,9 +140,18 @@ export class AppTopbar {
 
     el = inject(ElementRef);
 
-    constructor(public layoutService: LayoutService) {}
+    constructor(
+        public layoutService: LayoutService,
+        private authenticationService: AuthenticationService,
+        private router: Router,
+    ) { }
 
     searchBarActive = computed(() => this.layoutService.layoutState().searchBarActive);
+
+
+    signOut() {
+        this.authenticationService.logout();
+    }
 
     onMenuButtonClick() {
         this.layoutService.onMenuToggle();
@@ -175,7 +186,7 @@ export class AppTopbar {
         }));
     }
 
-    onProfileMenuButtonClick(){
+    onProfileMenuButtonClick() {
         this.layoutService.layoutState.update((val) => ({
             ...val,
             rightMenuActive: true

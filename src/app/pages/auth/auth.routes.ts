@@ -1,12 +1,14 @@
-import {Routes} from '@angular/router';
-import {AccessDenied} from './accessdenied';
-import {Error} from './error';
-import {Login} from './login';
-import {ForgotPassword} from './forgotpassword';
-import {Register} from './register';
-import {NewPassword} from './newpassword';
-import {Verification} from './verification';
-import {LockScreen} from './lockscreen';
+import { validateGuard } from '@/core/security/route.guard';
+import { Routes } from '@angular/router';
+import { AccessDenied } from './accessdenied';
+import { Error } from './error';
+import { ForgotPassword } from './forgotpassword';
+import { LockScreen } from './lockscreen';
+import { Login } from './login/login';
+import { Register } from './register';
+import { Verification } from './verification/verification';
+import { ActivationComponent } from './activation/activation.component';
+import { getTokenActivationResolver } from '@/core/resolvers/user.resolver';
 
 export default [
     { path: 'error', component: Error },
@@ -14,8 +16,18 @@ export default [
     { path: 'login', component: Login },
     { path: 'forgotpassword', component: ForgotPassword },
     { path: 'register', component: Register },
-    { path: 'newpassword', component: NewPassword },
-    { path: 'verification', component: Verification },
+    {
+        path: 'activation',
+        component: ActivationComponent,
+        resolve: {
+            tokenResolve: getTokenActivationResolver
+        }
+    },
+    {
+        path: 'verification',
+        component: Verification,
+        canActivate: [validateGuard],
+    },
     { path: 'lockscreen', component: LockScreen },
     { path: '**', redirectTo: '/notfound' }
 ] as Routes;

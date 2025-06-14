@@ -1,0 +1,117 @@
+<div class="card">
+    <span class="text-surface-900 dark:text-surface-0 text-xl font-bold mb-6 block">Create User</span>
+
+    <!-- Success/Error Message -->
+    @for (message of messages(); track message; let first = $first) {
+    <p-message [severity]="message.severity" [text]="message.content" [icon]="message.icon" [life]="3000" closable />
+    }
+
+    <div class="grid grid-cols-12 gap-4">
+        <div class="col-span-12 lg:col-span-2">
+            <!-- <div class="text-surface-900 dark:text-surface-0 font-medium text-xl mb-4">Profile</div> -->
+            <p class="m-0 p-0 text-surface-600 dark:text-surface-200 leading-normal mr-4">Provide the necessary
+                information below to set up a new user account.</p>
+        </div>
+        <div class="col-span-12 lg:col-span-10">
+            <form [formGroup]="userForm">
+                <div class="grid grid-cols-12 gap-4">
+                    <div class="mb-6 col-span-12 md:col-span-6">
+                        <label for="firstName" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                            Firstname
+                        </label>
+                        <input formControlName="firstName" id="firstName" type="text" pInputText fluid />
+                    </div>
+                    <div class="mb-6 col-span-12 md:col-span-6">
+                        <label for="lastName" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                            Lastname
+                        </label>
+                        <input formControlName="lastName" id="lastName" type="text" pInputText fluid />
+                    </div>
+                    <div class="mb-6 col-span-12 md:col-span-6">
+                        <label for="email" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block"> Email
+                        </label>
+                        <input formControlName="email" id="email" type="text" pInputText fluid />
+                    </div>
+                    <div class="mb-6 col-span-12 md:col-span-6">
+                        <label for="username" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                            Username
+                        </label>
+                        <input formControlName="username" id="username" pInputText fluid />
+                    </div>
+
+                    @if (!isNew) {
+                    <!-- Password -->
+                    <div class="mb-6 col-span-12 md:col-span-6">
+                        <label for="password" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                            Password
+                        </label>
+                        <p-password formControlName="password" id="password" [feedback]="true" [fluid]="true"
+                            [toggleMask]="true" />
+                    </div>
+                    <div class="mb-6 col-span-12 md:col-span-6">
+                        <label for="confirmPassword"
+                            class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                            Confirm Password
+                        </label>
+                        <p-password formControlName="confirmPassword" id="confirmPassword" [feedback]="false"
+                            [fluid]="true" [toggleMask]="true" />
+                    </div>
+                    }
+
+                    <!-- Role -->
+                    <div class="mb-6 col-span-12 md:col-span-6">
+                        <label for="role" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                            Role
+                        </label>
+                        <p-select formControlName="role" inputId="role" [options]="roleList" optionLabel="name" fluid
+                            filterBy="name" [showClear]="true" placeholder="Select a Role">
+                            <ng-template #selectedItem let-selectedOption>
+                                @if (selectedOption) {
+                                <div class="flex items-center gap-2">
+                                    <div>{{ selectedOption.name.replace('ROLE_', '') }}</div>
+                                </div>
+                                }
+                            </ng-template>
+                            <ng-template let-role #item>
+                                <div class="flex items-center gap-2">
+                                    <div>{{ role.name.replace('ROLE_', '') }}</div>
+                                </div>
+                            </ng-template>
+                        </p-select>
+                    </div>
+
+                    @if (!isNew) {
+                    <!-- Status -->
+                    <div class="mb-6 col-span-12 md:col-span-6">
+                        <label for="status" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                            Status
+                        </label>
+                        <p-selectButton inputId="status" formControlName="status" [options]="statusOptions"
+                            optionLabel="name" optionValue="value" class="pt-3">
+                            <ng-template #item let-item>
+                                <div [class]="item.color">
+                                    <i [class]="item.icon"></i> {{ item.name | titlecase }}
+                                </div>
+                            </ng-template>
+                        </p-selectButton>
+                    </div>
+                    }
+
+                    <div class="col-span-12">
+                        @if (isNew) {
+                        <button (click)="createUser(userForm)" icon="pi pi-save" [loading]="loading"
+                            [disabled]="!userForm.valid" pButton pRipple label="Create User"
+                            class="w-auto mt-3"></button>
+                        } @else {
+                        <button (click)="updateUser(userForm)" icon="pi pi-sync" [loading]="loading"
+                            [disabled]="!userForm.valid" pButton pRipple label="Update User"
+                            class="w-auto mt-3"></button>
+                        }
+
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

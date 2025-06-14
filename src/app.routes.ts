@@ -1,20 +1,22 @@
-import { Routes } from '@angular/router';
+import { authenticationCanActivate } from '@/core/security/route.guard';
 import { AppLayout } from '@/layout/components/app.layout';
+import { Routes } from '@angular/router';
 
 export const appRoutes: Routes = [
     {
         path: '',
-        loadComponent: () => import('@/pages/auth/login').then((c) => c.Login),
+        loadComponent: () => import('@/pages/auth/login/login').then((c) => c.Login),
         data: { breadcrumb: 'Login' }
     },
     {
         path: '',
         component: AppLayout,
+        canActivateChild: [authenticationCanActivate],
         children: [
             {
                 path: 'dashboard',
                 data: { breadcrumb: 'E-Commerce Dashboard' },
-                loadComponent: () => import('@/pages/dashboard/ecommercedashboard').then((c) => c.EcommerceDashboard)
+                loadComponent: () => import('@/pages/dashboard/ecommercedashboard').then((c) => c.EcommerceDashboard),
             },
             {
                 path: 'uikit',

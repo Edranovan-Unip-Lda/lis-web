@@ -13,33 +13,40 @@
                 <div class="flex items-center justify-center">
                     <img src="/images/logo.png" style="width: 100px" alt="logo" />
                 </div>
-                <div class="mt-2 mb-12">
+                <div class="mt-2 mb-8">
                     <p class="text-xl">
                         Trade License Management System
                     </p>
                 </div>
-               
-                <div class="form-container">
+
+                @if (erroMessage) {
+                <div class="mb-8">
+                    <p-message severity="error" [text]="erroMessage" icon="pi pi-times-circle" [life]="3000"></p-message>
+                </div>
+                }
+
+                <form class="form-container" [formGroup]="loginForm">
                     <p-iconfield>
                         <p-inputicon class="pi pi-envelope" />
-                        <input pInputText type="text" placeholder="Email" class="block mb-4"
+                        <input formControlName="username" pInputText type="text" placeholder="Email" class="block mb-4"
                             style="max-width: 320px; min-width: 270px" />
                     </p-iconfield>
 
                     <p-iconfield>
                         <p-inputicon class="pi pi-key" />
-                        <input pInputText type="password" placeholder="Password" class="block mb-4"
-                            style="max-width: 320px; min-width: 270px" />
+                        <input pInputText type="password" formControlName="password" placeholder="Password"
+                            class="block mb-4" style="max-width: 320px; min-width: 270px" />
                     </p-iconfield>
                     <a href="#" class="flex text-surface-500 dark:text-surface-400 mb-6 text-sm">Forgot your
                         password?</a>
-                </div>
-                <div class="mt-6">
-                    <button pButton pRipple type="button" [routerLink]="['/dashboard']" class="block"
-                        style="max-width: 320px; margin-bottom: 32px">Login</button>
-                    <span class="flex text-sm text-surface-500 dark:text-surface-400">Don’t have an account?<a
-                            class="cursor-pointer ml-1">Sign-up here</a></span>
-                </div>
+                    <div class="mt-6">
+                        <button [loading]="loading" (click)="login(loginForm)" pButton pRipple
+                            [disabled]="!loginForm.valid" style="max-width: 320px; margin-bottom: 32px">Login</button>
+                        <span class="flex text-sm text-surface-500 dark:text-surface-400">Don’t have an account?<a
+                                class="cursor-pointer ml-1">Sign-up here</a></span>
+                    </div>
+                </form>
+
             </div>
 
             <div class="flex items-center absolute" style="bottom: 75px">
