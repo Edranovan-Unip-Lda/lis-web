@@ -13,11 +13,13 @@ import {LayoutService} from '@/layout/service/layout.service';
         <div class="sidebar-header">
             <a [routerLink]="['/']" class="app-logo" style="cursor: pointer">
                 <div class="app-logo-small">
-                    <img class="!inline-block" src="/images/logo-{{ logo() }}.png" />
+                    <!-- <img class="!inline-block" src="/images/logo-{{ logo() }}.png" /> -->
+                   <!--  <img class="ml-4 !inline-block" src="/images/mci-logo.png" />-->
                 </div>
                 <div class="app-logo-normal">
-                    <img class="!inline-block" src="/images/logo-{{ logo() }}.png" />
-                    <img class="ml-4 !inline-block" src="/images/appname-{{ logo() }}.png" />
+                   <!-- <img class="!inline-block" src="/images/logo-{{ logo() }}.png" />-->
+                    <img class="ml-4 !inline-block" src="/images/mci-{{ logo() }}.png" /> 
+                   <!-- <img class="" src="/images/mci-dark.png" />-->
                 </div>
             </a>
             <button class="layout-sidebar-anchor z-20" type="button" (click)="onAnchorToggle()"></button>

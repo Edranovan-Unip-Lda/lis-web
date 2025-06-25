@@ -11,7 +11,7 @@ import {debounceTime, Subscription} from 'rxjs';
     imports: [SelectModule, FormsModule, ChartModule],
     template: `<div class="card">
         <div class="card-header leading-loose">
-            <span>Monthly Revenue</span>
+            <span>Licencas (Ativos/Expirados)</span>
             <p-select [options]="revenueMonth" [(ngModel)]="selectedRevenueMonth" optionLabel="name" (onChange)="changeRevenueChart($event); chart.refresh()"></p-select>
         </div>
 
@@ -53,17 +53,17 @@ export class MonthlyRevenueWidget implements OnInit, OnDestroy {
         this.revenueChart = {
             labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
             datasets: [
+                // {
+                //     label: 'Sales',
+                //     data: [37, 34, 21, 27, 10, 18, 15],
+                //     borderColor: '#EEE500',
+                //     pointBackgroundColor: '#EEE500',
+                //     backgroundColor: 'rgba(238, 229, 0, 0.05)',
+                //     fill: true,
+                //     tension: 0.4
+                // },
                 {
-                    label: 'Sales',
-                    data: [37, 34, 21, 27, 10, 18, 15],
-                    borderColor: '#EEE500',
-                    pointBackgroundColor: '#EEE500',
-                    backgroundColor: 'rgba(238, 229, 0, 0.05)',
-                    fill: true,
-                    tension: 0.4
-                },
-                {
-                    label: 'Revenue',
+                    label: 'Ativos',
                     data: [31, 27, 30, 37, 23, 29, 20],
                     borderColor: '#00D0DE',
                     pointBackgroundColor: '#00D0DE',
@@ -72,7 +72,7 @@ export class MonthlyRevenueWidget implements OnInit, OnDestroy {
                     tension: 0.4
                 },
                 {
-                    label: 'Expenses',
+                    label: 'Expirados',
                     data: [21, 7, 13, 3, 19, 11, 6],
                     borderColor: '#FC6161',
                     pointBackgroundColor: '#FC6161',
@@ -80,15 +80,15 @@ export class MonthlyRevenueWidget implements OnInit, OnDestroy {
                     fill: true,
                     tension: 0.4
                 },
-                {
-                    label: 'Customer',
-                    data: [47, 31, 35, 20, 46, 39, 25],
-                    borderColor: '#0F8BFD',
-                    pointBackgroundColor: '#0F8BFD',
-                    backgroundColor: 'rgba(15, 139, 253, 0.05)',
-                    fill: true,
-                    tension: 0.4
-                }
+                // {
+                //     label: 'Customer',
+                //     data: [47, 31, 35, 20, 46, 39, 25],
+                //     borderColor: '#0F8BFD',
+                //     pointBackgroundColor: '#0F8BFD',
+                //     backgroundColor: 'rgba(15, 139, 253, 0.05)',
+                //     fill: true,
+                //     tension: 0.4
+                // }
             ]
         };
 

@@ -15,8 +15,23 @@ export const appRoutes: Routes = [
         children: [
             {
                 path: 'dashboard',
-                data: { breadcrumb: 'E-Commerce Dashboard' },
+                data: { breadcrumb: 'Painél' },
                 loadComponent: () => import('@/pages/dashboard/ecommercedashboard').then((c) => c.EcommerceDashboard),
+            },
+            {
+                path: 'application',
+                data: { breadcrumb: 'Application' },
+                loadChildren: () => import('@/pages/application-management/application.routes')
+            },
+            {
+                path: 'empresa',
+                data: { breadcrumb: 'Empresa' },
+                loadChildren: () => import('@/pages/empresa/empresa.routes')
+            },
+            {
+                path: 'licencas-certificados',
+                data: { breadcrumb: 'Licenças e Certificados' },
+                loadChildren: () => import('@/pages/licencas-certificados/licencas-certificados.routes')
             },
             {
                 path: 'uikit',
@@ -49,8 +64,8 @@ export const appRoutes: Routes = [
                 loadChildren: () => import('@/pages/blocks/blocks.routes')
             },
             {
-                path: 'profile',
-                data: { breadcrumb: 'User Management' },
+                path: 'utilizador',
+                data: { breadcrumb: 'Utilizadór' },
                 loadChildren: () => import('@/pages/usermanagement/usermanagement.routes')
             }
         ]

@@ -6,6 +6,11 @@ export class StatusIconPipe implements PipeTransform {
         active: 'bi bi-fw bi-shield-check',
         disabled: 'bi bi-fw bi-ban',
         pending: 'bi bi-fw bi-pause-circle',
+        sucesso: 'bi bi-fw bi-shield-check',
+        rejeitado: 'bi bi-fw bi-ban',
+        esboco: 'bi bi-fw bi-pause-circle',
+        ativo: 'bi bi-fw bi-shield-check',
+        expirado: 'bi bi-fw bi-ban',
     };
 
     transform(status: string): string {
@@ -26,6 +31,11 @@ export class StatusSeverityPipe implements PipeTransform {
         active: 'success',
         disabled: 'danger',
         pending: 'warn',
+        sucesso: 'success',
+        rejeitado: 'danger',
+        esboco: 'warn',
+        ativo: 'success',
+        expirado: 'danger',
     };
 
     transform(status: string): Severity {

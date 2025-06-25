@@ -1,7 +1,7 @@
-import {Component, ElementRef, inject, ViewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {RouterModule} from '@angular/router';
-import {AppMenuitem} from './app.menuitem';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { AppMenuitem } from './app.menuitem';
 
 interface MenuItem {
     label?: string;
@@ -43,31 +43,146 @@ export class AppMenu {
 
     model: MenuItem[] = [
         {
-            label: 'Home',
+            label: 'Varanda',
             icon: 'pi pi-home',
             items: [
                 {
-                    label: 'Dashboards',
+                    label: 'Painél',
                     icon: 'pi pi-fw pi-gauge',
                     routerLink: ['/dashboard']
                 }
             ]
         },
         {
-            label: 'User Management',
-            icon: 'pi pi-fw pi-user',
+            label: 'Empresa',
+            icon: 'bi bi-fw bi-building-fill',
             items: [
                 {
-                    label: 'List',
+                    label: 'Lista',
                     icon: 'pi pi-fw pi-list',
-                    routerLink: ['profile/list']
+                    routerLink: ['empresa/list']
+
                 },
                 {
-                    label: 'Create',
+                    label: 'Criar',
                     icon: 'pi pi-fw pi-plus',
-                    routerLink: ['profile/create']
+                    routerLink: ['empresa/create']
                 }
             ]
         },
+        {
+            label: 'Candidatura',
+            icon: 'pi pi-fw pi-briefcase',
+            items: [
+                {
+                    label: 'Lista',
+                    icon: 'pi pi-fw pi-list',
+                    routerLink: ['application/list']
+                },
+                {
+                    label: 'Criar',
+                    icon: 'pi pi-fw pi-plus',
+                    routerLink: ['application/create']
+                }
+            ]
+        },
+        {
+            label: 'Licenças e Certificados',
+            items: [
+                {
+                    label: 'Certificados de Inscricao no Cadastro',
+                    icon: 'bi bi-fw bi-journal-text',
+                    items: [
+                        {
+                            label: 'Comercio',
+                            icon: 'bi bi-fw bi-bag',
+                            routerLink: ['licencas-certificados/certificados/comercio']
+                        },
+                        {
+                            label: 'Industria',
+                            icon: 'bi bi-fw bi-buildings',
+                            routerLink: ['licencas-certificados/certificados/industria']
+
+                        }
+                    ]
+                },
+                {
+                    label: 'Alvara de Licenca para Exercicio da Atividade',
+                    icon: 'bi bi-fw bi-journal-medical',
+                    items: [
+                        {
+                            label: 'Comercio',
+                            icon: 'bi bi-fw bi-bag',
+                            routerLink: ['licencas-certificados/licencas/comercio']
+                        },
+                        {
+                            label: 'Industria',
+                            icon: 'bi bi-fw bi-buildings',
+                            routerLink: ['licencas-certificados/licencas/industria']
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            label: 'Utilizador',
+            icon: 'pi pi-fw pi-user',
+            items: [
+                {
+                    label: 'Lista',
+                    icon: 'pi pi-fw pi-list',
+                    routerLink: ['utilizador/list']
+                },
+                {
+                    label: 'Criar',
+                    icon: 'pi pi-fw pi-plus',
+                    routerLink: ['utilizador/create']
+                }
+            ]
+        },
+        {
+            label: 'Dados Mestre',
+            items: [
+                {
+                    label: 'Tipo Candidatura',
+                    icon: 'bi bi-fw bi-ui-checks',
+                },
+                {
+                    label: 'Categoria',
+                    icon: 'bi bi-fw bi-bookmark',
+                },
+                {
+                    label: 'Localizacao',
+                    icon: 'bi bi-fw bi-pin-map',
+                    items: [
+                        {
+                            label: 'Municipio'
+                        },
+                        {
+                            label: 'Posto Administrativo'
+                        },
+                        {
+                            label: 'Suco'
+                        },
+                        {
+                            label: 'Aldeia'
+                        },
+                    ]
+                },
+            ]
+        },
+        {
+            label: 'Historicos',
+            items: [
+                {
+                    label: 'Atividades',
+                    icon: 'bi bi-fw bi-activity'
+                },
+                {
+                    label: 'Autenticacao',
+                    icon: 'bi bi-fw bi-unlock'
+                }
+            ]
+        }
     ];
 }

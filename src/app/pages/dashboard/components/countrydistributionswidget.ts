@@ -8,7 +8,7 @@ import {debounceTime, Subscription} from 'rxjs';
     standalone: true,
     imports: [ChartModule],
     template: `<div class="card">
-        <div class="font-medium leading-loose">Country Distributions</div>
+        <div class="font-medium leading-loose">Distribuicao dos Municipios</div>
         <div class="flex justify-center mb-8">
             <p-chart type="doughnut" height="225" [data]="countryChart" [options]="countryChartOptions" class="w-9/12" id="country-chart"></p-chart>
         </div>
@@ -16,35 +16,35 @@ import {debounceTime, Subscription} from 'rxjs';
             <li class="flex justify-between items-center py-2 border-b border-surface-200 dark:border-surface-700">
                 <div class="flex justify-between items-center">
                     <div class="w-8 h-8 rounded mr-2" style="background-color: var(--p-cyan-400); box-shadow: 0px 0px 10px rgba(0, 208, 222, 0.3)"></div>
-                    <span>United States of America</span>
+                    <span>Dili</span>
                 </div>
                 <span>25%</span>
             </li>
             <li class="flex justify-between items-center py-2 border-b border-surface-200 dark:border-surface-700">
                 <div class="flex justify-between items-center">
                     <div class="w-8 h-8 rounded mr-2" style="background-color: var(--p-red-400); box-shadow: 0px 0px 10px rgba(252, 97, 97, 0.3)"></div>
-                    <span>Japan</span>
+                    <span>Baucau</span>
                 </div>
                 <span>17%</span>
             </li>
             <li class="flex justify-between items-center py-2 border-b border-surface-200 dark:border-surface-700">
                 <div class="flex justify-between items-center">
                     <div class="w-8 h-8 rounded mr-2" style="background-color: var(--p-yellow-400); box-shadow: 0px 0px 10px rgba(238, 229, 0, 0.3)"></div>
-                    <span>Australia</span>
+                    <span>Maliana</span>
                 </div>
                 <span>15%</span>
             </li>
             <li class="flex justify-between items-center py-2 border-b border-surface-200 dark:border-surface-700">
                 <div class="flex justify-between items-center">
                     <div class="w-8 h-8 rounded mr-2" style="background-color: var(--p-blue-400); box-shadow: 0px 0px 10px rgba(15, 139, 253, 0.3)"></div>
-                    <span>China</span>
+                    <span>Liquica</span>
                 </div>
                 <span>8%</span>
             </li>
             <li class="flex justify-between items-center py-2 border-b border-surface-200 dark:border-surface-700">
                 <div class="flex justify-between items-center">
                     <div class="w-8 h-8 rounded mr-2" style="background-color: var(--p-gray-400)"></div>
-                    <span>Others</span>
+                    <span>Aileu</span>
                 </div>
                 <span>5%</span>
             </li>

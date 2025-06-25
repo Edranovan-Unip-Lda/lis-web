@@ -1,0 +1,77 @@
+<div class="card">
+    <p-table #dt [value]="applications" [paginator]="true" paginatorDropdownAppendTo="body" [rows]="10"
+        [showCurrentPageReport]="true" responsiveLayout="scroll"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rowsPerPageOptions]="[10, 25, 50]" [globalFilterFields]="['firstName', 'role.name', 'email', 'status']">
+        <ng-template #caption>
+            <div class="flex flex-wrap gap-2 items-center justify-between">
+                <p-icon-field class="w-full sm:w-80 order-1 sm:order-none">
+                    <p-inputicon class="pi pi-search" />
+                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Global Search"
+                        class="w-full" />
+                </p-icon-field>
+                <button pButton outlined routerLink="/empresa/create"
+                    class="w-full sm:w-auto flex-order-0 sm:flex-order-1" icon="bi bi-building-add"
+                    label="Add New"></button>
+            </div>
+        </ng-template>
+        <ng-template #header>
+            <tr>
+                <th pSortableColumn="firstName" class="white-space-nowrap">Nome
+                    <p-sortIcon field="firstName">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="email" class="white-space-nowrap">Email<p-sortIcon field="email">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="email" class="white-space-nowrap">Local<p-sortIcon field="email">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="firstName" class="white-space-nowrap">Representante
+                    <p-sortIcon field="firstName">
+                    </p-sortIcon>
+                </th>
+                 <th pSortableColumn="firstName" class="white-space-nowrap">Telefone
+                    <p-sortIcon field="firstName">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="role.name" class="white-space-nowrap">Criado em<p-sortIcon field="role.name">
+                    </p-sortIcon>
+                </th>
+                <!-- <th class="white-space-nowrap" style="width:10%">
+                    Acoes
+                </th> -->
+            </tr>
+        </ng-template>
+        <ng-template #body let-empresa>
+            <tr>
+                <td>
+                    {{ empresa.nome }}
+                </td>
+                <td>
+                    {{empresa.email}}
+                </td>
+                <td>
+                    {{empresa.sede}}
+                </td>
+                <td>
+                    {{empresa.gerente}}
+                </td>
+                 <td>
+                    {{empresa.telefone}}
+                </td>
+                <td>
+                    {{ empresa.createdAt | date: 'MM/dd/yyyy, HH:mm:ss' }}
+                </td>
+                <!-- <td>
+                    <p-tag value="{{empresa.status | titlecase}}" [severity]="empresa.status | statusSeverity"
+                        icon="{{empresa.status | statusIcon}}" />
+                </td> -->
+                <td>
+                    <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" severity="warn" [raised]="true"
+                        variant="outlined" [routerLink]="['/empresa', empresa.empresaname]" />
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

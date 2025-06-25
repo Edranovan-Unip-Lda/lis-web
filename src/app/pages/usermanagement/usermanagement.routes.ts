@@ -8,7 +8,7 @@ export default [
     { path: '', redirectTo: 'list', pathMatch: 'full' },
     {
         path: 'list',
-        data: { breadcrumb: 'List' },
+        data: { breadcrumb: 'Lista' },
         component: UserList,
         resolve: {
             userPage: getPageUserResolver
@@ -16,7 +16,7 @@ export default [
     },
     {
         path: 'create',
-        data: { breadcrumb: 'Create' },
+        data: { breadcrumb: 'Criar' },
         component: UserCreate,
         resolve: {
             roleList: getRolesResolver,
@@ -24,7 +24,7 @@ export default [
     },
     {
         path: ':username',
-        data: { breadcrumb: 'Edit' },
+        data: { breadcrumb: 'Editar' },
         component: UserCreate,
         resolve: {
             roleList: getRolesResolver,

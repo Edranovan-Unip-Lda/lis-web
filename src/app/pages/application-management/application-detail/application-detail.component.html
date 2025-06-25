@@ -1,0 +1,360 @@
+ <div class="card">
+     <span class="text-surface-900 dark:text-surface-0 text-2xl font-bold mb-6 block">
+         Candidatura para o Pedido Inscricacao no Cadastro (Comercial / Industrial)
+     </span>
+
+     <p-stepper [value]="1" class="basis-[50rem]">
+         <p-step-list>
+             <p-step [value]="1">Detalho da Aplicação</p-step>
+             <p-step [value]="2">Pedido</p-step>
+             <p-step [value]="3">Fatura-Recibo</p-step>
+         </p-step-list>
+         <p-step-panels>
+             <p-step-panel [value]="1">
+                 <ng-template #content let-activateCallback="activateCallback">
+                     <div class="max-w-lg mx-auto px-8 font-sans">
+                         <div class="flex justify-between items-center border-b border-gray-200 pb-4 mb-6">
+                             <div>
+                                 <div class="text-gray-500 text-md">Nº da Candidatura:</div>
+                                 <div class="text-xl font-semibold tracking-wider text-gray-300">00323893</div>
+                             </div>
+                             <div>
+                                 <div class="text-gray-500 text-md">Certificado:</div>
+                                 <p-tag value="Pendente" [severity]="'warn'" />
+                             </div>
+                         </div>
+
+                         <div class="flex justify-between text-sm text-gray-400 mb-8">
+                             <div>
+                                 <span class="font-medium text-gray-500">Criado em:</span> 03 Oct 2025, 20:10
+                             </div>
+                             <div>
+                                 <span class="font-medium text-gray-500">Atualizado em:</span> 04 Oct 2025, 20:10
+                             </div>
+                         </div>
+
+                         <div class="mb-8">
+                             <div class="text-gray-500 font-semibold mb-2 tracking-wide text-base">Pedido de Inscricao
+                                 no Cadastro
+                             </div>
+                             <div class="flex justify-between mb-1 text-gray-600">
+                                 <span>Formulário</span>
+                                 <p-tag value="Esboco" [severity]="'info'" />
+                             </div>
+                             <div class="flex justify-between text-gray-600">
+                                 <span>Fatura</span>
+                                 <p-tag value="Nao Pago" [severity]="'secondary'" />
+                             </div>
+                         </div>
+
+                     </div>
+                     <div class="flex pt-6 justify-end">
+                         <p-button label="Continuar" icon="pi pi-arrow-right" iconPos="right"
+                             (onClick)="activateCallback(2)" />
+                     </div>
+                 </ng-template>
+             </p-step-panel>
+
+             <p-step-panel [value]="2">
+                 <ng-template #content let-activateCallback="activateCallback">
+                     <form [formGroup]="requestForm">
+                         <span class="text-xl font-bold mt-6 mb-3 block">
+                             PEDIDO
+                         </span>
+                         <div class="grid grid-cols-12 gap-4">
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="application"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Tipo
+                                 </label>
+                                 <p-select inputId="application" [options]="requestTypes" optionLabel="name" fluid
+                                     filterBy="name" [showClear]="true" placeholder="Select a Pedido">
+                                 </p-select>
+                             </div>
+                         </div>
+                         <span class="text-xl font-bold mt-6 mb-3 block">
+                             IDENTIFICACAO DA EMPRESA
+                         </span>
+                         <div formGroupName="empresa" class="grid grid-cols-12 gap-4">
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="nome" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Nome da Empresa
+                                 </label>
+                                 <input formControlName="nome" id="nome" type="text" pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="sede" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Sede
+                                 </label>
+                                 <input formControlName="sede" id="sede" type="text" pInputText fluid />
+                             </div>
+
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="nif" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     NIF
+                                 </label>
+                                 <input formControlName="nif" id="nif" type="text" pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="numeruRegisto"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Nº Registo Comercial/Industrial
+                                 </label>
+                                 <input formControlName="numeruRegisto" id="numeruRegisto" type="text" pInputText
+                                     fluid />
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="telemovel"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Telemovel
+                                 </label>
+                                 <input formControlName="telemovel" id="telemovel" type="text" pInputText fluid />
+                             </div>
+
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="telefone"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Telefone
+                                 </label>
+                                 <input formControlName="telefone" id="telefone" type="text" pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12">
+                                 <label for="gerente"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Gerente
+                                 </label>
+                                 <input formControlName="gerente" id="gerente" type="text" pInputText fluid />
+                             </div>
+                         </div>
+                         <span class="text-xl font-bold mt-6 mb-3 block">
+                             IDENTIFICACAO DO ESTABELECIMENTO
+                         </span>
+                         <div class="grid grid-cols-12 gap-4">
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="nomeEstabelecimento"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Nome do Estabelecimento
+                                 </label>
+                                 <input formControlName="nomeEstabelecimento" id="nomeEstabelecimento" type="text"
+                                     pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="localEstabelecimento"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Local do Estabelecimento
+                                 </label>
+                                 <input formControlName="localEstabelecimento" id="localEstabelecimento" type="text"
+                                     pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="tipoEstabelecimento"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Tipo do Estabelecimento
+                                 </label>
+                                 <p-select inputId="tipoEstabelecimento" [options]="estabelecimentoTypes"
+                                     optionLabel="name" fluid filterBy="name" [showClear]="true"
+                                     placeholder="Select a Tipo">
+                                 </p-select>
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="caraterizacaoEstabelecimento"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Caraterizacao do Estabelecimento
+                                 </label>
+                                 <p-select inputId="caraterizacaoEstabelecimento"
+                                     [options]="caraterizacaoEstabelecimentoTypes" optionLabel="name" fluid
+                                     filterBy="name" [showClear]="true" placeholder="Select a Tipo">
+                                 </p-select>
+                             </div>
+                         </div>
+
+                         <span class="text-xl font-bold mt-6 mb-3 block">
+                             CARATERIZACAO DA ATIVIDADE
+                         </span>
+                         <div class="grid grid-cols-12 gap-4">
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="risco" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Quanto ao Risco
+                                 </label>
+                                 <p-select inputId="risco" [options]="riscoTypes" optionLabel="name" fluid
+                                     filterBy="name" [showClear]="true" placeholder="Select a Tipo">
+                                 </p-select>
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="ato" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Quanto ao tipo de Ato
+                                 </label>
+                                 <p-select inputId="ato" [options]="atoTypes" optionLabel="name" fluid filterBy="name"
+                                     [showClear]="true" placeholder="Select a Tipo">
+                                 </p-select>
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="tipoAtividade"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Tipo de Atividade no Estabelecimento
+                                 </label>
+                                 <input formControlName="tipoAtividade" id="tipoAtividade" type="text" pInputText
+                                     fluid />
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="tipoAtividadeCodigo"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Codigo
+                                 </label>
+                                 <input formControlName="tipoAtividadeCodigo" id="tipoAtividadeCodigo" type="text"
+                                     pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="atividadePrincipal"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Atividade Principal exercida no Estabelecimento
+                                 </label>
+                                 <input formControlName="atividadePrincipal" id="atividadePrincipal" type="text"
+                                     pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="atividadePrincipalCodigo"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Codigo
+                                 </label>
+                                 <input formControlName="atividadePrincipalCodigo" id="atividadePrincipalCodigo"
+                                     type="text" pInputText fluid />
+                             </div>
+
+                             <div class="mb-6 col-span-12">
+                                 <label for="alteracoes"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Alteracoes a Averbar
+                                 </label>
+                                 <input formControlName="alteracoes" id="alteracoes" type="text" pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="dataEmissao"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Data da Emissao do Certificado anterior (Se Aplicavel)
+                                 </label>
+                                 <input formControlName="dataEmissao" id="dataEmissao" type="date" pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12">
+                                 <label for="observacao"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Observacao
+                                 </label>
+                                 <input formControlName="observacao" id="observacao" type="text" pInputText fluid />
+                             </div>
+                         </div>
+                     </form>
+                     <div class="flex pt-6 justify-between">
+                         <p-button label="Back" severity="secondary" icon="pi pi-arrow-left"
+                             (onClick)="activateCallback(1)" />
+                         <p-button label="Guardar e Continuar" icon="pi pi-arrow-right" iconPos="right"
+                             (onClick)="activateCallback(3)" />
+                     </div>
+                 </ng-template>
+             </p-step-panel>
+
+             <p-step-panel [value]="3">
+                 <ng-template #content let-activateCallback="activateCallback">
+                     <form [formGroup]="faturaForm">
+                         <div class="flex flex-col h-48">
+                             <span class="text-xl font-bold mt-6 mb-3 block">
+                                 Emitir uma Fatura
+                             </span>
+                             <div class="grid grid-cols-12 gap-4">
+                                 <div class="mb-6 col-span-12">
+                                     <label for="ato"
+                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         Selecionar o Ato
+                                     </label>
+                                     <p-select inputId="ato" [options]="pedidoAto" optionLabel="name" fluid
+                                         filterBy="name" [checkmark]="true" [showClear]="true" placeholder="Selecionar">
+                                         <ng-template let-item #selectedItem>
+                                             <div class="flex items-center gap-2">
+
+                                                 <div>{{ item.name }}</div>
+                                                 -
+                                                 <div> {{item.montante |currency }} </div>
+                                             </div>
+                                         </ng-template>
+                                         <ng-template let-item #item>
+                                             <div class="flex items-center gap-2">
+
+                                                 <div>{{ item.name }}</div>
+                                                 -
+                                                 <div> {{item.montante |currency }} </div>
+                                             </div>
+                                         </ng-template>
+                                     </p-select>
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="nomeRequerente"
+                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         Nome Requerente
+                                     </label>
+                                     <input formControlName="nomeRequerente" id="nomeRequerente" type="text" pInputText
+                                         fluid />
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="sociedadeComercial"
+                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         Sociedade Comercial
+                                     </label>
+                                     <input formControlName="sociedadeComercial" id="sociedadeComercial" type="text"
+                                         pInputText fluid />
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-7">
+                                     <label for="atividadeDeclarada"
+                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         Atividade Industrial declarada
+                                     </label>
+                                     <input formControlName="atividadeDeclarada" id="atividadeDeclarada" type="text"
+                                         pInputText fluid />
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-5">
+                                     <label for="codigo"
+                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         Codigo
+                                     </label>
+                                     <input formControlName="codigo" id="codigo" type="text" pInputText fluid />
+                                 </div>
+                             </div>
+                             <div class="grid grid-cols-12 gap-4">
+                                 <div class="mb-6 col-span-12 md:col-span-4 flex justify-between">
+                                     <p-button label="Emitir Fatura" icon="pi pi-file" iconPos="left"
+                                         class="w-auto mt-3" />
+                                     <p-button label="Baixar Fatura" [outlined]="true" icon="pi pi-download"
+                                         iconPos="left" class="w-auto mt-3" />
+                                 </div>
+                             </div>
+
+                             <span class="text-xl font-bold mt-6 mb-3 block">
+                                 Carregar Recibo
+                             </span>
+                             <div class="card">
+                                 <p-fileupload name="demo1[]" (onUpload)="onUpload($event, 'advanced')"
+                                     [multiple]="false" accept="image/*" maxFileSize="1000000" mode="advanced"
+                                     url="https://www.primefaces.org/cdn/api/upload.php">
+                                     <ng-template #empty>
+                                         Arraste e largue os ficheiros aqui para carregar.
+                                     </ng-template>
+                                     <ng-template #content>
+                                         <ul *ngIf="uploadedFiles.length">
+                                             <li *ngFor="let file of uploadedFiles">{{ file.name }} - {{ file.size }}
+                                                 bytes
+                                             </li>
+                                         </ul>
+                                     </ng-template>
+                                 </p-fileupload>
+                             </div>
+                         </div>
+                     </form>
+                     <div class="flex pt-6 justify-between">
+                         <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="right"
+                             (onClick)="activateCallback(2)" />
+                         <p-button label="Guardar" icon="pi pi-save" iconPos="left" (onClick)="activateCallback(1)" />
+                     </div>
+                 </ng-template>
+             </p-step-panel>
+         </p-step-panels>
+     </p-stepper>
+ </div>

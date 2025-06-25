@@ -7,7 +7,7 @@ import { TimelineModule } from 'primeng/timeline';
     imports: [TimelineModule],
     template: `<div class="card !p-0">
         <div class="timeline-header p-4 flex justify-between items-center">
-            <p class="m-0">Transaction History</p>
+            <p class="m-0">Atividades Historicas</p>
             <div class="header-icons">
                 <i class="pi pi-refresh ml-2"></i>
                 <i class="pi pi-filter ml-2"></i>
@@ -32,7 +32,7 @@ import { TimelineModule } from 'primeng/timeline';
             </p-timeline>
         </div>
         <div class="timeline-footer border-t border-surface-200 dark:border-surface-700 p-4 flex items-center justify-center">
-            <a href="#" class="text-primary hover:text-primary-400 duration-200">View all transactions</a>
+            <a href="#" class="text-primary hover:text-primary-400 duration-200">Ver todos os historicos</a>
         </div>
     </div>`,
     styles: `
@@ -59,64 +59,64 @@ import { TimelineModule } from 'primeng/timeline';
 export class TransactionHistoryWidget {
     timelineEvents = [
         {
-            transaction: 'Payment from #28492',
-            amount: '+$250.00',
+            transaction: 'Recibo carregado #6373',
+            // amount: '+$250.00',
             date: 'June 13, 2025 11:09 AM',
             icon: 'pi pi-check',
             iconColor: '#0F8BFD',
             amountColor: '#00D0DE'
         },
         {
-            transaction: 'Process refund to #94830',
-            amount: '-$570.00',
+            transaction: 'Documento invalido #7328',
+            // amount: '-$570.00',
             date: 'June 13, 2025 08:22 AM',
             icon: 'pi pi-refresh',
             iconColor: '#FC6161',
             amountColor: '#FC6161'
         },
         {
-            transaction: 'New 8 user to #5849',
-            amount: '+$50.00',
+            transaction: 'Licenca emitido #1122',
+            // amount: '+$50.00',
             date: 'June 12, 2025 02:56 PM',
             icon: 'pi pi-plus',
             iconColor: '#0BD18A',
             amountColor: '#0BD18A'
         },
         {
-            transaction: 'Payment from #3382',
-            amount: '+$3830.00',
+            transaction: 'Pagamento de #3382',
+            // amount: '+$3830.00',
             date: 'June 11, 2025 06:11 AM',
             icon: 'pi pi-check',
             iconColor: '#0F8BFD',
             amountColor: '#00D0DE'
         },
         {
-            transaction: 'Payment from #4738',
-            amount: '+$845.00',
+            transaction: 'Nova Candidatura #84948',
+            // amount: '+$845.00',
             date: 'June 11, 2025 03:50 AM',
             icon: 'pi pi-check',
             iconColor: '#0F8BFD',
             amountColor: '#00D0DE'
         },
         {
-            transaction: 'Payment failed form #60958',
-            amount: '$1450.00',
+            transaction: 'Recibo invalido #44930',
+            // amount: '$1450.00',
             date: 'June 10, 2025 07:54 PM',
             icon: 'pi pi-exclamation-triangle',
             iconColor: '#EC4DBC',
             amountColor: '#EC4DBC'
         },
         {
-            transaction: 'Payment from #5748',
-            amount: '+$50.00',
+            transaction: 'Auto-Vitoria ajendado',
+            // amount: '+$50.00',
             date: 'June 09, 2025 11:37 PM',
             icon: 'pi pi-check',
             iconColor: '#0F8BFD',
             amountColor: '#00D0DE'
         },
         {
-            transaction: 'Removed 32 users from #5849',
-            amount: '-$240.00',
+            transaction: 'Licenca expirado #74948',
+            // amount: '-$240.00',
             date: 'June 09, 2025 08:40 PM',
             icon: 'pi pi-minus',
             iconColor: '#FC6161',

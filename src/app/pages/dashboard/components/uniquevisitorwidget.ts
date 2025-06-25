@@ -1,9 +1,9 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {FormsModule} from '@angular/forms';
-import {SelectModule} from 'primeng/select';
-import {ChartModule} from 'primeng/chart';
-import {LayoutService} from '@/layout/service/layout.service';
-import {debounceTime, Subscription} from 'rxjs';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { SelectModule } from 'primeng/select';
+import { ChartModule } from 'primeng/chart';
+import { LayoutService } from '@/layout/service/layout.service';
+import { debounceTime, Subscription } from 'rxjs';
 
 @Component({
     selector: 'unique-visitor-widget',
@@ -11,22 +11,22 @@ import {debounceTime, Subscription} from 'rxjs';
     imports: [FormsModule, SelectModule, ChartModule],
     template: `<div class="card widget-visitor-graph">
         <div class="card-header leading-loose">
-            <span>Unique Visitor Graph</span>
+            <span>Licenças emitidos por mês</span>
             <p-select [options]="visitorYear" [(ngModel)]="selectedVisitorYear" optionLabel="name" (onChange)="changeVisitorChart($event); visitor.refresh()"></p-select>
         </div>
 
         <div class="graph-content grid grid-cols-12 gap-4 mt-6">
             <div class="col-span-12 md:col-span-6">
-                <div class="text-3xl font-semibold">{{ growth }}</div>
-                <div class="font-semibold my-4">MRR GROWTH</div>
+                <!--<div class="text-3xl font-semibold">{{ growth }}</div>-->
+                <div class="font-semibold my-4">COMERCIAL</div>
                 <p class="text-surface-500 dark:text-surface-400">
                     Measure how fast you’re growing mothly recurring revenue.
                     <a href="#" class="text-primary hover:text-primary-400 duration-200">Learn more</a>
                 </p>
             </div>
             <div class="col-span-12 md:col-span-6">
-                <div class="text-3xl font-semibold">{{ avgCustomer }}</div>
-                <div class="font-semibold my-4">AVG. MRR/CUSTOMER</div>
+                <!--<div class="text-3xl font-semibold">{{ avgCustomer }}</div></div>-->
+                <div class="font-semibold my-4">INDUSTRIAL</div>
                 <p class="text-surface-500 dark:text-surface-400">
                     The revenue generated per account on a monthly or yearly basis.
                     <a href="#" class="text-primary hover:text-primary-400 duration-200">Learn more</a>
@@ -35,13 +35,13 @@ import {debounceTime, Subscription} from 'rxjs';
         </div>
 
         <div class="graph">
-            <div class="text-xl font-semibold mt-6">Revenue</div>
+            
 
             <p-chart #visitor type="bar" height="380" [data]="visitorChart" [options]="visitorChartOptions" id="visitor-chart"></p-chart>
         </div>
     </div>`
 })
-export class UniqueVisitorWidget implements OnInit, OnDestroy{
+export class UniqueVisitorWidget implements OnInit, OnDestroy {
     layoutService = inject(LayoutService);
 
     growth = '$620,076';
@@ -57,7 +57,7 @@ export class UniqueVisitorWidget implements OnInit, OnDestroy{
 
     visitorChartOptions: any;
 
-    selectedVisitorYear: any =  { name: '2025', code: '0' };
+    selectedVisitorYear: any = { name: '2025', code: '0' };
 
     subscription!: Subscription;
 
@@ -79,7 +79,7 @@ export class UniqueVisitorWidget implements OnInit, OnDestroy{
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
             datasets: [
                 {
-                    label: 'Plan',
+                    label: 'Comercial',
                     data: [630, 630, 695, 695, 695, 760, 760, 760, 840, 840, 840, 840],
                     borderColor: ['#FC6161'],
                     pointBorderColor: 'transparent',
@@ -90,7 +90,7 @@ export class UniqueVisitorWidget implements OnInit, OnDestroy{
                     stepped: true
                 },
                 {
-                    label: 'Growth actual',
+                    label: 'Industrial',
                     data: [600, 671, 660, 665, 700, 610, 810, 790, 710, 860, 810, 780],
                     backgroundColor: documentStyle.getPropertyValue('--primary-color'),
                     fill: true,

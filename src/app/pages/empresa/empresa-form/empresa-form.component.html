@@ -1,0 +1,70 @@
+<div class="card">
+    <form [formGroup]="empresaForm">
+        <div class="grid grid-cols-12 gap-4">
+            <div class="mb-6 col-span-12 md:col-span-6">
+                <label for="nome" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Nome da Empresa
+                </label>
+                <input formControlName="nome" id="nome" type="text" pInputText fluid />
+            </div>
+            <div class="mb-6 col-span-12 md:col-span-6">
+                <label for="sede" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Sede
+                </label>
+                <input formControlName="sede" id="sede" type="text" pInputText fluid />
+            </div>
+
+            <div class="mb-6 col-span-12 md:col-span-6">
+                <label for="nif" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    NIF
+                </label>
+                <input formControlName="nif" id="nif" type="text" pInputText fluid />
+            </div>
+            <div class="mb-6 col-span-12 md:col-span-6">
+                <label for="numeruRegisto" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Nº Registo Comercial/Industrial
+                </label>
+                <input formControlName="numeruRegisto" id="numeruRegisto" type="text" pInputText fluid />
+            </div>
+            <div class="mb-6 col-span-12 md:col-span-6">
+                <label for="telemovel" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Telemovel
+                </label>
+                <input formControlName="telemovel" id="telemovel" type="text" pInputText fluid />
+            </div>
+
+            <div class="mb-6 col-span-12 md:col-span-6">
+                <label for="telefone" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Telefone
+                </label>
+                <input formControlName="telefone" id="telefone" type="text" pInputText fluid />
+            </div>
+            <div class="mb-6 col-span-12 md:col-span-6">
+                <label for="gerente" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Gerente
+                </label>
+                <input formControlName="gerente" id="gerente" type="text" pInputText fluid />
+            </div>
+            <div class="mb-6 col-span-12 md:col-span-6">
+                <label for="email" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Email
+                </label>
+                <input formControlName="email" id="email" type="email" pInputText fluid />
+            </div>
+            <div class="mb-6 col-span-12 md:col-span-6">
+                <label for="password" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Senha
+                </label>
+                <p-password formControlName="password" fluid [feedback]="true" [toggleMask]="true" />
+            </div>
+            <div class="mb-6 col-span-12 md:col-span-6">
+                <label for="confirmPassword" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Confirmar a senha
+                </label>
+                <p-password formControlName="confirmPassword" fluid [feedback]="false" [toggleMask]="true" />
+            </div>
+        </div>
+        <button icon="pi pi-save" [loading]="loading" [disabled]="!empresaForm.valid" pButton pRipple label="Guardar"
+            class="w-auto mt-3"></button>
+    </form>
+</div>

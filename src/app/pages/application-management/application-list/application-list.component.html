@@ -1,0 +1,66 @@
+<div class="card">
+    <p-table #dt [value]="applications" [paginator]="true" paginatorDropdownAppendTo="body" [rows]="10"
+        [showCurrentPageReport]="true" responsiveLayout="scroll"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rowsPerPageOptions]="[10, 25, 50]" [globalFilterFields]="['firstName', 'role.name', 'email', 'status']">
+        <ng-template #caption>
+            <div class="flex flex-wrap gap-2 items-center justify-between">
+                <p-icon-field class="w-full sm:w-80 order-1 sm:order-none">
+                    <p-inputicon class="pi pi-search" />
+                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Global Search"
+                        class="w-full" />
+                </p-icon-field>
+                <button pButton outlined routerLink="/application/create"
+                    class="w-full sm:w-auto flex-order-0 sm:flex-order-1" icon="pi pi-plus"
+                    label="Adicionar novo"></button>
+            </div>
+        </ng-template>
+        <ng-template #header>
+            <tr>
+                <th pSortableColumn="firstName" class="white-space-nowrap">Nº da Candidatura
+                    <p-sortIcon field="firstName">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="categoria" class="white-space-nowrap">Categoria <p-sortIcon field="categoria">
+                    </p-sortIcon>
+                <th pSortableColumn="nomeEmpresa" class="white-space-nowrap">Empresa <p-sortIcon field="nomeEmpresa">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="role.name" class="white-space-nowrap">Criado em<p-sortIcon field="role.name">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="status" class="white-space-nowrap">Estado <p-sortIcon field="activity">
+                    </p-sortIcon>
+                </th>
+                <th class="white-space-nowrap" style="width:10%">
+                    Acoes
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-candidatura>
+            <tr>
+                <td>
+                    {{ candidatura.numero }}
+                </td>
+                  <td>
+                    {{ candidatura.categoria }}
+                </td>
+                <td>
+                    {{candidatura.nomeEmpresa}}
+                </td>
+                <td>
+                    {{ candidatura.criadoEm | date: 'MM/dd/yyyy, HH:mm:ss' }}
+                </td>
+                <td>
+                    <p-tag value="{{candidatura.estado | titlecase}}" [severity]="candidatura.estado | statusSeverity"
+                        icon="{{candidatura.estado | statusIcon}}" />
+                </td>
+
+                <td>
+                    <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" severity="warn" [raised]="true"
+                        variant="outlined" [routerLink]="['/profile', candidatura.candidaturaname]" />
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

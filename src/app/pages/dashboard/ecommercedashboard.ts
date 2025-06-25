@@ -1,19 +1,19 @@
-import {Component} from '@angular/core';
-import {StatsWidget} from '@/pages/dashboard/components/statswidget';
-import {UniqueVisitorWidget} from '@/pages/dashboard/components/uniquevisitorwidget';
-import {TransactionHistoryWidget} from '@/pages/dashboard/components/transactionhistorywidget';
-import {CountryDistributionsWidget} from '@/pages/dashboard/components/countrydistributionswidget';
-import {MonthlyRevenueWidget} from '@/pages/dashboard/components/monthlyrevenuewidget';
-import {YearlyWinWidget} from '@/pages/dashboard/components/yearlywinwidget';
-import {WeeklyNewCustomersWidget} from '@/pages/dashboard/components/weeklynewcustomerswidget';
-import {WeeklyTargetWidget} from '@/pages/dashboard/components/weeklytargetwidget';
-import {TopCustomersWidget} from '@/pages/dashboard/components/topcustomerswidget';
-import {CustomerService} from '@/pages/service/customer.service';
+import { Component } from '@angular/core';
+import { StatsWidget } from '@/pages/dashboard/components/statswidget';
+import { UniqueVisitorWidget } from '@/pages/dashboard/components/uniquevisitorwidget';
+import { TransactionHistoryWidget } from '@/pages/dashboard/components/transactionhistorywidget';
+import { CountryDistributionsWidget } from '@/pages/dashboard/components/countrydistributionswidget';
+import { MonthlyRevenueWidget } from '@/pages/dashboard/components/monthlyrevenuewidget';
+import { YearlyWinWidget } from '@/pages/dashboard/components/yearlywinwidget';
+import { WeeklyNewCustomersWidget } from '@/pages/dashboard/components/weeklynewcustomerswidget';
+import { WeeklyTargetWidget } from '@/pages/dashboard/components/weeklytargetwidget';
+import { TopCustomersWidget } from '@/pages/dashboard/components/topcustomerswidget';
+import { CustomerService } from '@/pages/service/customer.service';
 
 @Component({
     selector: 'app-ecommerce-dashboard',
     standalone: true,
-    imports: [StatsWidget, UniqueVisitorWidget, TransactionHistoryWidget, CountryDistributionsWidget, MonthlyRevenueWidget, YearlyWinWidget, WeeklyNewCustomersWidget, WeeklyTargetWidget, TopCustomersWidget],
+    imports: [StatsWidget, UniqueVisitorWidget, TransactionHistoryWidget, CountryDistributionsWidget, MonthlyRevenueWidget],
     providers: [CustomerService],
     template: `<div class="grid grid-cols-12 gap-8">
         <stats-widget />
@@ -34,7 +34,7 @@ import {CustomerService} from '@/pages/service/customer.service';
             <monthly-revenue-widget />
         </div>
 
-        <div class="col-span-12">
+        <!--<div class="col-span-12">
             <yearly-win-widget />
         </div>
 
@@ -48,7 +48,7 @@ import {CustomerService} from '@/pages/service/customer.service';
 
         <div class="col-span-12 widget-customer-carousel">
             <top-customers-widget />
-        </div>
+        </div>-->
     </div>`
 })
-export class EcommerceDashboard {}
+export class EcommerceDashboard { }

@@ -1,0 +1,88 @@
+<div class="card">
+    <p-table #dt [value]="dataList" [paginator]="true" paginatorDropdownAppendTo="body" [rows]="10"
+        [showCurrentPageReport]="true" responsiveLayout="scroll"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rowsPerPageOptions]="[10, 25, 50]" [globalFilterFields]="['firstName', 'role.name', 'email', 'status']">
+        <ng-template #caption>
+            <div class="flex flex-wrap gap-2 items-center justify-between">
+                <p-icon-field class="w-full sm:w-80 order-1 sm:order-none">
+                    <p-inputicon class="pi pi-search" />
+                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Global Search"
+                        class="w-full" />
+                </p-icon-field>
+                <button pButton outlined routerLink="/empresa/create"
+                    class="w-full sm:w-auto flex-order-0 sm:flex-order-1" icon="bi bi-building-add"
+                    label="Add New"></button>
+            </div>
+        </ng-template>
+        <ng-template #header>
+            <tr>
+                <th pSortableColumn="firstName" class="white-space-nowrap">Nº Certificado
+                    <p-sortIcon field="firstName">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="email" class="white-space-nowrap">
+                    Sociedade Comercial
+                    <p-sortIcon field="email">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="email" class="white-space-nowrap">
+                    Nº Registo Comercial
+                    <p-sortIcon field="email">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="firstName" class="white-space-nowrap">
+                    Sede
+                    <p-sortIcon field="firstName">
+                    </p-sortIcon>
+                </th>
+                 <th pSortableColumn="firstName" class="white-space-nowrap">
+                    NIF
+                    <p-sortIcon field="firstName">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="role.name" class="white-space-nowrap">Validade<p-sortIcon field="role.name">
+                    </p-sortIcon>
+                </th>
+                  <th pSortableColumn="firstName" class="white-space-nowrap">
+                    Estado
+                    <p-sortIcon field="firstName">
+                    </p-sortIcon>
+                </th>
+                <!-- <th class="white-space-nowrap" style="width:10%">
+                    Acoes
+                </th> -->
+            </tr>
+        </ng-template>
+        <ng-template #body let-empresa>
+            <tr>
+                <td>
+                    {{ empresa.numero }}
+                </td>
+                <td>
+                    {{empresa.sociedade}}
+                </td>
+                <td>
+                    {{empresa.numeroRegistoComercial}}
+                </td>
+                <td>
+                    {{empresa.sede}}
+                </td>
+                 <td>
+                    {{empresa.nif}}
+                </td>
+                <td>
+                    {{ empresa.validade | date: 'MM/dd/yyyy' }}
+                </td>
+                <td>
+                    <p-tag value="{{empresa.estado | titlecase}}" [severity]="empresa.estado | statusSeverity"
+                        icon="{{empresa.estado | statusIcon}}" />
+                </td>
+                <td>
+                    <p-button icon="pi pi-eye" class="mr-2" [rounded]="true" severity="info" [raised]="true"
+                        variant="outlined" [routerLink]="['/empresa', empresa.empresaname]" />
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

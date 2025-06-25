@@ -7,17 +7,17 @@
             <div class="flex flex-wrap gap-2 items-center justify-between">
                 <p-icon-field class="w-full sm:w-80 order-1 sm:order-none">
                     <p-inputicon class="pi pi-search" />
-                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Global Search"
+                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Pesquisa"
                         class="w-full" />
                 </p-icon-field>
                 <button (click)="navigateToCreateUser()" pButton outlined
                     class="w-full sm:w-auto flex-order-0 sm:flex-order-1" icon="pi pi-user-plus"
-                    label="Add New"></button>
+                    label="Adicionar novo"></button>
             </div>
         </ng-template>
         <ng-template #header>
             <tr>
-                <th pSortableColumn="firstName" class="white-space-nowrap" style="width:23%">Name <p-sortIcon
+                <th pSortableColumn="firstName" class="white-space-nowrap" style="width:23%">Nome<p-sortIcon
                         field="firstName">
                     </p-sortIcon>
                 </th>
@@ -25,13 +25,13 @@
                         field="email">
                     </p-sortIcon>
                 </th>
-                <th pSortableColumn="role.name" class="white-space-nowrap" style="width:10%">Role <p-sortIcon
+                <th pSortableColumn="role.name" class="white-space-nowrap" style="width:10%">Papel <p-sortIcon
                         field="role.name"></p-sortIcon>
                 </th>
-                <th pSortableColumn="createdAt" class="white-space-nowrap" style="width:23%">Join Date <p-sortIcon
+                <th pSortableColumn="createdAt" class="white-space-nowrap" style="width:23%">Criado em <p-sortIcon
                         field="createdAt"></p-sortIcon>
                 </th>
-                <th pSortableColumn="status" class="white-space-nowrap">Status <p-sortIcon field="activity"
+                <th pSortableColumn="status" class="white-space-nowrap">Estado <p-sortIcon field="activity"
                         style="width:10%">
                     </p-sortIcon>
                 </th>
