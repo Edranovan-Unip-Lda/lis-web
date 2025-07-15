@@ -14,6 +14,10 @@ import { SelectModule } from 'primeng/select';
 export class EmpresaFormComponent {
   empresaForm: FormGroup;
   loading = false;
+  municipios = [];
+  postos = [];
+  sucos = [];
+  aldeias = [];
 
   constructor(
     private _fb: FormBuilder,
@@ -21,6 +25,10 @@ export class EmpresaFormComponent {
     this.empresaForm = this._fb.group({
       nome: [null],
       sede: [null],
+      municipio: [null],
+      posto: [null],
+      suco: [null],
+      aldeia: [null],
       nif: [null],
       numeruRegisto: [null],
       telemovel: [null],

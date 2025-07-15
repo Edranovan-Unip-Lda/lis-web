@@ -1,0 +1,206 @@
+<div [class]="'flex min-h-screen  ' + (layoutService.isDarkTheme() ? 'layout-dark' : 'layout-light')">
+    <div *ngIf="layoutService.isDarkTheme()" class="w-6/12 h-screen hidden md:block flex-shrink-0"
+        style="max-width: 490px; background-image: url('/images/pages/login1.jpg'); background-repeat: no-repeat; background-size: cover ;height: auto">
+    </div>
+    <div *ngIf="!layoutService.isDarkTheme()" class="w-6/12 h-screen hidden md:block flex-shrink-0"
+        style="max-width: 490px; background-image: url('/images/pages/login1.jpg'); background-repeat: no-repeat; background-size: cover;height: auto">
+    </div>
+    @if (!isSuccess) {
+    <div class="w-full" style="background: var(--surface-ground)">
+        <p-fluid
+            class="text-center w-full flex items-center md:items-center flex-col bg-auto md:bg-contain !bg-no-repeat"
+            style="padding: 2% 10% 2% 10%; background: var(--exception-pages-image); background-size: contain;">
+            <div class="flex flex-col">
+                <div class="flex items-center justify-center">
+                    <img src="/images/logo.png" style="width: 100px" alt="logo" />
+                </div>
+                <div class="mt-2 mb-8">
+                    <p class="text-xl">
+                        Trade License Management System
+                    </p>
+                </div>
+            </div>
+        </p-fluid>
+
+
+        <div class="w-full" style="background: var(--surface-ground)">
+            <div class="px-12">
+                <p class="text-2xl pb-4">
+                    Registo da Empresa
+                </p>
+                @if (isError) {
+                <div class="mb-4">
+                    <p-message severity="error">
+                        <ng-template #icon>
+                            <i class="bi bi-x-circle" style="font-size: 1.5rem"></i> &nbsp;
+                        </ng-template>
+                        <span class="ml-2 text-lg">
+                            Ocorreu um erro. Por favor, tente novamente ou contacte o administrador do sistema.
+                        </span>
+                    </p-message>
+                </div>
+                }
+                <form [formGroup]="empresaForm">
+                    <div class="grid grid-cols-12 gap-4">
+                        <div class="mb-6 col-span-12 md:col-span-6">
+                            <label for="nome" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                Nome da Empresa
+                            </label>
+                            <input formControlName="nome" id="nome" type="text" pInputText fluid />
+                        </div>
+                        <div class="mb-6 col-span-12 md:col-span-6">
+                            <label for="sede" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                Sede
+                            </label>
+                            <input formControlName="sede" id="sede" type="text" pInputText fluid />
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-6 w-full sm:w-auto mb-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+                            <div class="flex-auto">
+                                <label for="municipio"
+                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                    Municipio
+                                </label>
+                                <p-select formControlName="municipio" inputId="municipio" [options]="municipios"
+                                    optionLabel="nome" fluid [showClear]="true" placeholder="Selecione o Municipio">
+                                </p-select>
+                            </div>
+                            <div class="flex-auto">
+                                <label for="posto" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                    Posto Administrativo
+                                </label>
+                                <p-select formControlName="postoAdministrativo" inputId="posto" [options]="postos"
+                                    optionLabel="nome" fluid [showClear]="true" placeholder="Selecione o Posto">
+                                </p-select>
+                            </div>
+                            <div class="flex-auto">
+                                <label for="suco" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                    Suco
+                                </label>
+                                <p-select formControlName="suco" inputId="suco" [options]="sucos" optionLabel="nome"
+                                    fluid [showClear]="true" placeholder="Selecione o Suco">
+                                </p-select>
+                            </div>
+                            <div class="flex-auto">
+                                <label for="aldeia" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                    Aldeia
+                                </label>
+                                <p-select formControlName="aldeia" inputId="aldeia" [options]="aldeias"
+                                    optionLabel="nome" fluid [showClear]="true" placeholder="Selecione o Suco">
+                                </p-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-12 gap-4">
+                        <div class="mb-6 col-span-12 md:col-span-6">
+                            <label for="nif" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                NIF
+                            </label>
+                            <input formControlName="nif" id="nif" type="text" pInputText fluid />
+                        </div>
+                        <div class="mb-6 col-span-12 md:col-span-6">
+                            <label for="numeruRegisto"
+                                class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                Nº Registo Comercial
+                            </label>
+                            <input formControlName="numeruRegisto" id="numeruRegisto" type="text" pInputText fluid />
+                        </div>
+                        <div class="mb-6 col-span-12 md:col-span-6">
+                            <label for="gerente" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                Gerente
+                            </label>
+                            <input formControlName="gerente" id="gerente" type="text" pInputText fluid
+                                placeholder="Ex: Joao da Silva" />
+                        </div>
+                        <div class="mb-6 col-span-12 md:col-span-6">
+                            <label for="telefone" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                Telefone
+                            </label>
+                            <input formControlName="telefone" id="telefone" type="text" pInputText fluid
+                                placeholder="Ex: +670 76543210" />
+                            <!-- <p-inputmask mask="(999) 9999-9999" formControlName="telefone" placeholder="(670) 7999-9999"
+                                fluid /> -->
+                        </div>
+
+                        <div class="mb-6 col-span-12 md:col-span-6">
+                            <label for="email" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                Email
+                            </label>
+                            <input formControlName="email" id="email" type="email" pInputText fluid />
+                        </div>
+                        <div class="mb-6 col-span-12 md:col-span-6">
+                            <label for="password" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                Palavra-passe
+                            </label>
+                            <p-password formControlName="password" fluid [feedback]="true" [toggleMask]="true" />
+                        </div>
+                    </div>
+                </form>
+                <div class="mt-6 text-left" style="max-width: 320px; min-width: 270px">
+                    <div class="flex items-start gap-4">
+                        <button icon="pi pi-times" pButton pRipple type="button" [routerLink]="['/auth/login']"
+                            class="block" severity="danger" outlined
+                            style="max-width: 320px; margin-bottom: 32px">Cancelar</button>
+                        <button icon="pi pi-save" (click)="submit(empresaForm)" [loading]="loading"
+                            [disabled]="!empresaForm.valid" pButton pRipple label="Guardar" class="w-auto"></button>
+                    </div>
+                    <span class="font-medium text-surface-600 dark:text-surface-200">Já tem conta? <a
+                            [routerLink]="['/auth/login']"
+                            class="font-semibold cursor-pointer text-surface-900 dark:text-surface-0 hover:text-primary transition-colors duration-300">Entrar</a></span>
+                </div>
+                <div class="flex items-center my-6">
+                    <div class="flex items-center pr-6 mr-6 border-r border-surface-200 dark:border-surface-700">
+                        <h4>
+                            Ministério de Comércio e Indústria
+                        </h4>
+                    </div>
+                    <span class="text-sm text-surface-500 dark:text-surface-400 mr-4">Copyright 2025</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    } @else {
+    <div class="w-full" style="background: var(--surface-ground)">
+        <p-fluid
+            class="min-h-screen text-center w-full flex items-center md:items-start justify-start flex-col bg-auto md:bg-contain !bg-no-repeat"
+            style="padding: 10% 10% 20% 10%; background: var(--exception-pages-image); background-size: contain;">
+            <div class="flex flex-col">
+                <div class="flex items-center justify-center">
+                    <img src="/images/logo.png" style="width: 100px" alt="logo" />
+                </div>
+                <div class="mt-2 mb-8">
+                    <p class="text-xl">
+                        Trade License Management System
+                    </p>
+                </div>
+                @if (notification) {
+                <p-message [severity]="notification.state">
+                    <ng-template #icon>
+                        <i [class]="notification.icon" style="font-size: 1.5rem"></i> &nbsp;
+                    </ng-template>
+                    <span class="ml-2 text-lg">
+                        {{ notification.message }}
+                    </span>
+                </p-message>
+                }
+                <div class="mt-6 text-center flex items-center justify-center">
+                    <button icon="pi pi-send" (click)="submit(empresaForm)" [loading]="loading"
+                        [disabled]="empresaForm.valid" pButton label="Reenviar email" style="max-width: 200px"></button>
+                </div>
+
+            </div>
+
+            <div class="flex items-center absolute" style="bottom: 75px">
+                <div class="flex items-center pr-6 mr-6 border-r border-surface-200 dark:border-surface-700">
+                    <h4>
+                        Ministério de Comércio e Indústria
+                    </h4>
+                </div>
+                <span class="text-sm text-surface-500 dark:text-surface-400 mr-4">Copyright 2025</span>
+            </div>
+        </p-fluid>
+    </div>
+    }
+
+</div>

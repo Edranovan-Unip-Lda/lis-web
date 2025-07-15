@@ -19,7 +19,7 @@ import { RippleModule } from 'primeng/ripple';
 @Component({
     selector: 'app-new-password',
     standalone: true,
-    imports: [CommonModule, IconField, InputIcon, InputTextModule, ButtonModule, RouterModule, ReactiveFormsModule, Fluid, RippleModule, AppConfigurator, MessageModule],
+    imports: [CommonModule, InputTextModule, ButtonModule, RouterModule, ReactiveFormsModule, Fluid, RippleModule, MessageModule],
     templateUrl: './activation.component.html',
     providers: [MessageService]
 })
@@ -30,6 +30,7 @@ export class ActivationComponent {
     token: string;
     doLogin = false;
     messages = signal<any[]>([]);
+    notification: any;
 
     constructor(
         private _fb: FormBuilder,
@@ -48,6 +49,7 @@ export class ActivationComponent {
         );
 
         this.token = this.route.snapshot.data['tokenResolve'];
+        this.activateUser(this.activationForm);
     }
 
     activateUser(form: FormGroup): void {
@@ -57,26 +59,30 @@ export class ActivationComponent {
         this.userService.activate(this.token, data).subscribe({
             next: response => {
                 this.loading = false;
-                this.addMessage(true, response.message);
+                this.setNotification();
             },
             error: error => {
+                console.log(error);
                 this.loading = false;
-                this.addMessage(false, error);
+                this.setNotification(true, error);
                 this.activationForm.reset();
             },
             complete: () => this.activationForm.reset()
         });
     }
 
-    addMessage(isSuccess: boolean, detail: string) {
-        if (isSuccess) {
-            this.messages.set([
-                { severity: 'success', content: detail, icon: 'pi pi-check-circle' },
-            ]);
+
+    setNotification(error?: boolean, errorMessage?: string): void {
+        if (error) {
+            this.notification = {} as Notification;
+            this.notification.icon = 'bi bi-exclamation-triangle';
+            this.notification.state = 'error';
+            this.notification.message = errorMessage || `Ocorreu um erro ao ativar a sua conta. Por favor, tente novamente mais tarde ou contacte o suporte técnico.`;
         } else {
-            this.messages.set([
-                { severity: 'error', content: detail, icon: 'pi pi-times-circle' },
-            ]);
+            this.notification = {} as Notification;
+            this.notification.icon = 'bi bi-check2-circle'
+            this.notification.state = 'success';
+            this.notification.message = `O seu email foi verificado e a sua conta está agora ativa. Já pode iniciar sessão e começar a utilizar o sistema.`;
         }
     }
 }

@@ -21,7 +21,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (
             let errorMessage = '';
 
             if (error.status === 401 || error.status === 403) {
-                router.navigate(['/']).then(() => authService.logout());
+                authService.logout()
             }
 
             if (!(error.error instanceof ProgressEvent)) {

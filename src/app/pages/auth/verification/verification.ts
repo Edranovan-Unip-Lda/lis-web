@@ -73,7 +73,7 @@ export class Verification {
                         }, 1000);
                         break;
                     case Role.client:
-                        this.router.navigate(['/search']).then(() => {
+                        this.router.navigate(['/dashboard']).then(() => {
                             this.otpLoading = false;
                         });
                         break;

@@ -11,6 +11,7 @@ export class StatusIconPipe implements PipeTransform {
         esboco: 'bi bi-fw bi-pause-circle',
         ativo: 'bi bi-fw bi-shield-check',
         expirado: 'bi bi-fw bi-ban',
+        EM_CURSO: 'bi bi-fw bi-hourglass-split',
     };
 
     transform(status: string): string {

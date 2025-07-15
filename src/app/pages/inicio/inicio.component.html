@@ -1,0 +1,58 @@
+<div class="text-center mb-8">
+    <h2 class="text-2xl font-semibold ">
+        Selecione o tipo de serviço de que necessita para continuar
+    </h2>
+    <p class="text-gray-400  mt-2">
+        Escolha entre as nossas soluções Comercial ou Industrial, adaptadas às necessidades do seu negócio.
+    </p>
+</div>
+<div class="grid grid-cols-12 gap-8">
+    <div class="col-span-6">
+        <div class="card rounded-xl !p-4 cursor-pointer hover-scale" (click)="showDialog(comercial)">
+            <div class="flex flex-col items-center justify-center h-full p-4">
+                <i class="bi bi-cart3 mb-2" style="font-size: 3.5rem"></i>
+                <span class="text-xl font-semibol">Comercial</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-span-6">
+        <div class="card rounded-xl !p-4 cursor-pointer hover-scale" (click)="showDialog(industrial)">
+            <div class="flex flex-col items-center justify-center h-full p-4">
+                <i class="bi bi-building-gear mb-2" style="font-size: 3.5rem"></i>
+                <span class="text-xl font-semibol">Industrial</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<p-dialog header="Criar Aplicante" [modal]="true" [position]="'top'" [(visible)]="visible" [style]="{ width: '45rem' }">
+    <div class="card">
+        <div class="grid grid-cols-12 gap-8 md:gap-4">
+            <div class="col-span-12 lg:col-span-2">
+                <p class="m-0 p-0 text-surface-600 dark:text-surface-200 leading-normal mr-4">Forneça as informações
+                    necessárias abaixo para configurar uma nova inscrição.</p>
+            </div>
+
+            <div class="col-span-12 lg:col-span-10">
+                <form [formGroup]="applicationForm">
+                    <div class="grid grid-cols-12 gap-4">
+                        <div class="mb-6 col-span-12">
+                            <label for="tipo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                Tipo Aplicante
+                            </label>
+                            <p-select formControlName="tipo" inputId="tipo" [options]="applicationTypes"
+                                optionLabel="name" fluid [showClear]="true" placeholder="Selecione um tipo">
+                            </p-select>
+                        </div>
+                    </div>
+                    <button (click)="create(applicationForm)" icon="pi pi-save" [loading]="loading"
+                        [disabled]="!applicationForm.valid" pButton pRipple label="Create Application"
+                        class="w-auto mt-3 mr-4"></button>
+                    <p-button label="Cancelar" severity="secondary" icon="pi pi-times" iconPos="left"
+                        (click)="visible = false" />
+                </form>
+            </div>
+        </div>
+    </div>
+</p-dialog>

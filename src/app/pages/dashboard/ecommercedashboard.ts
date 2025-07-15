@@ -1,14 +1,10 @@
-import { Component } from '@angular/core';
-import { StatsWidget } from '@/pages/dashboard/components/statswidget';
-import { UniqueVisitorWidget } from '@/pages/dashboard/components/uniquevisitorwidget';
-import { TransactionHistoryWidget } from '@/pages/dashboard/components/transactionhistorywidget';
 import { CountryDistributionsWidget } from '@/pages/dashboard/components/countrydistributionswidget';
 import { MonthlyRevenueWidget } from '@/pages/dashboard/components/monthlyrevenuewidget';
-import { YearlyWinWidget } from '@/pages/dashboard/components/yearlywinwidget';
-import { WeeklyNewCustomersWidget } from '@/pages/dashboard/components/weeklynewcustomerswidget';
-import { WeeklyTargetWidget } from '@/pages/dashboard/components/weeklytargetwidget';
-import { TopCustomersWidget } from '@/pages/dashboard/components/topcustomerswidget';
+import { StatsWidget } from '@/pages/dashboard/components/statswidget';
+import { TransactionHistoryWidget } from '@/pages/dashboard/components/transactionhistorywidget';
+import { UniqueVisitorWidget } from '@/pages/dashboard/components/uniquevisitorwidget';
 import { CustomerService } from '@/pages/service/customer.service';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-ecommerce-dashboard',

@@ -19,6 +19,11 @@ export const appRoutes: Routes = [
                 loadComponent: () => import('@/pages/dashboard/ecommercedashboard').then((c) => c.EcommerceDashboard),
             },
             {
+                path: 'home',
+                data: { breadcrumb: 'Início' },
+                loadComponent: () => import('@/pages/inicio/inicio.component').then((c) => c.InicioComponent)
+            },
+            {
                 path: 'application',
                 data: { breadcrumb: 'Application' },
                 loadChildren: () => import('@/pages/application-management/application.routes')

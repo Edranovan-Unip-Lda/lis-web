@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { EmpresaListComponent } from './empresa-list/empresa-list.component';
 import { EmpresaFormComponent } from './empresa-form/empresa-form.component';
+import { getPageEmpresaResolver } from '@/core/resolvers/empresa.resolver';
 
 export default [
     { path: '', redirectTo: 'list', pathMatch: 'full' },
@@ -8,9 +9,9 @@ export default [
         path: 'list',
         data: { breadcrumb: 'Lista' },
         component: EmpresaListComponent,
-        // resolve: {
-        //     userPage: getPageUserResolver
-        // }
+        resolve: {
+            empresaPage: getPageEmpresaResolver
+        }
     },
     {
         path: 'create',

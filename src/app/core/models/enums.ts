@@ -9,3 +9,15 @@ export enum Status {
     pending = 'pending',
     disabled = 'disabled'
 }
+
+export enum AplicanteType {
+    cadastro = 'CADASTRO',
+    licenca = 'ATIVIDADE',
+}
+
+export enum Categoria {
+    com = 'COM',
+    ind = 'IND',
+    comercial = 'COMERCIAL',
+    industrial = 'INDUSTRIAL',
+}

@@ -13,7 +13,42 @@
                 </label>
                 <input formControlName="sede" id="sede" type="text" pInputText fluid />
             </div>
-
+            <div class="flex flex-col gap-6 w-full sm:w-auto mb-6">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+                    <div class="flex-auto">
+                        <label for="municipio" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                            Municipio
+                        </label>
+                        <p-select formControlName="municipio" inputId="municipio" [options]="municipios"
+                            optionLabel="name" fluid [showClear]="true" placeholder="Selecione o Municipio">
+                        </p-select>
+                    </div>
+                    <div class="flex-auto">
+                        <label for="posto" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                            Posto Administrativo
+                        </label>
+                        <p-select formControlName="postoAdministrativo" inputId="posto" [options]="postos"
+                            optionLabel="name" fluid [showClear]="true" placeholder="Selecione o Posto">
+                        </p-select>
+                    </div>
+                    <div class="flex-auto">
+                        <label for="suco" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                            Suco
+                        </label>
+                        <p-select formControlName="suco" inputId="suco" [options]="sucos" optionLabel="name" fluid
+                            [showClear]="true" placeholder="Selecione o Suco">
+                        </p-select>
+                    </div>
+                    <div class="flex-auto">
+                        <label for="aldeia" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                            Aldeia
+                        </label>
+                        <p-select formControlName="aldeia" inputId="aldeia" [options]="aldeias" optionLabel="name" fluid
+                            [showClear]="true" placeholder="Selecione o Suco">
+                        </p-select>
+                    </div>
+                </div>
+            </div>
             <div class="mb-6 col-span-12 md:col-span-6">
                 <label for="nif" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
                     NIF

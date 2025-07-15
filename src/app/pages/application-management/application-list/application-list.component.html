@@ -17,13 +17,13 @@
         </ng-template>
         <ng-template #header>
             <tr>
-                <th pSortableColumn="firstName" class="white-space-nowrap">Nº da Candidatura
+                <th pSortableColumn="firstName" class="white-space-nowrap">Nº da Aplicante
                     <p-sortIcon field="firstName">
                     </p-sortIcon>
                 </th>
                 <th pSortableColumn="categoria" class="white-space-nowrap">Categoria <p-sortIcon field="categoria">
                     </p-sortIcon>
-                <th pSortableColumn="nomeEmpresa" class="white-space-nowrap">Empresa <p-sortIcon field="nomeEmpresa">
+                <th pSortableColumn="nomeEmpresa" class="white-space-nowrap">Tipo<p-sortIcon field="nomeEmpresa">
                     </p-sortIcon>
                 </th>
                 <th pSortableColumn="role.name" class="white-space-nowrap">Criado em<p-sortIcon field="role.name">
@@ -42,23 +42,41 @@
                 <td>
                     {{ candidatura.numero }}
                 </td>
-                  <td>
+                <td>
                     {{ candidatura.categoria }}
                 </td>
                 <td>
-                    {{candidatura.nomeEmpresa}}
+                    {{candidatura.tipo}}
                 </td>
                 <td>
-                    {{ candidatura.criadoEm | date: 'MM/dd/yyyy, HH:mm:ss' }}
+                    {{ candidatura.createdAt | date: 'MM/dd/yyyy, HH:mm:ss' }}
                 </td>
                 <td>
-                    <p-tag value="{{candidatura.estado | titlecase}}" [severity]="candidatura.estado | statusSeverity"
-                        icon="{{candidatura.estado | statusIcon}}" />
+                    <p-tag value="{{candidatura.estado.replace('_', ' ') | titlecase}}"
+                        [severity]="candidatura.estado | statusSeverity" icon="{{candidatura.estado | statusIcon}}" />
                 </td>
 
                 <td>
-                    <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" severity="warn" [raised]="true"
-                        variant="outlined" [routerLink]="['/profile', candidatura.candidaturaname]" />
+                    <p-button (click)="op.toggle($event)" icon="pi pi-ellipsis-v" [rounded]="true" [text]="true"
+                        severity="info" />
+                    <p-popover #op>
+                        <div class="flex flex-col gap-1 w-[25rem]">
+                            <ul class="topbar-menu active-topbar-menu z-50 rounded">
+                                <li role="menuitem" class="!m-0 !mb-4">
+                                    <a href="#">
+                                        <i class="pi pi-fw pi-eye mr-2"></i>
+                                        <span>Detalho</span>
+                                    </a>
+                                </li>
+                                <li role="menuitem" class="!m-0">
+                                    <a [routerLink]="['/empresa', candidatura.id]">
+                                        <i class="pi pi-fw pi-trash mr-2"></i>
+                                        <span>Eliminar</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </p-popover>
                 </td>
             </tr>
         </ng-template>

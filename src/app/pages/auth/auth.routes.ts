@@ -5,17 +5,24 @@ import { Error } from './error';
 import { ForgotPassword } from './forgotpassword';
 import { LockScreen } from './lockscreen';
 import { Login } from './login/login';
-import { Register } from './register';
+import { Register } from './register/register.component';
 import { Verification } from './verification/verification';
 import { ActivationComponent } from './activation/activation.component';
 import { getTokenActivationResolver } from '@/core/resolvers/user.resolver';
+import { getMunicipiosResolver } from '@/core/resolvers/data-master.resolver';
 
 export default [
     { path: 'error', component: Error },
     { path: 'access', component: AccessDenied },
     { path: 'login', component: Login },
     { path: 'forgotpassword', component: ForgotPassword },
-    { path: 'register', component: Register },
+    {
+        path: 'register',
+        component: Register,
+        resolve: {
+            municipiosResolver: getMunicipiosResolver
+        }
+    },
     {
         path: 'activation',
         component: ActivationComponent,

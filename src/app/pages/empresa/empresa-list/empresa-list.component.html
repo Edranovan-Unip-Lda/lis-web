@@ -1,5 +1,5 @@
 <div class="card">
-    <p-table #dt [value]="applications" [paginator]="true" paginatorDropdownAppendTo="body" [rows]="10"
+    <p-table #dt [value]="data" [paginator]="true" paginatorDropdownAppendTo="body" [rows]="10"
         [showCurrentPageReport]="true" responsiveLayout="scroll"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         [rowsPerPageOptions]="[10, 25, 50]" [globalFilterFields]="['firstName', 'role.name', 'email', 'status']">
@@ -17,30 +17,25 @@
         </ng-template>
         <ng-template #header>
             <tr>
-                <th pSortableColumn="firstName" class="white-space-nowrap">Nome
-                    <p-sortIcon field="firstName">
+                <th pSortableColumn="nome" class="white-space-nowrap">Nome
+                    <p-sortIcon field="nome">
                     </p-sortIcon>
                 </th>
                 <th pSortableColumn="email" class="white-space-nowrap">Email<p-sortIcon field="email">
                     </p-sortIcon>
                 </th>
-                <th pSortableColumn="email" class="white-space-nowrap">Local<p-sortIcon field="email">
+                <th class="white-space-nowrap">
+                    Local
+                </th>
+                <th pSortableColumn="gerente" class="white-space-nowrap">Gerente
+                    <p-sortIcon field="gerente">
                     </p-sortIcon>
                 </th>
-                <th pSortableColumn="firstName" class="white-space-nowrap">Representante
-                    <p-sortIcon field="firstName">
-                    </p-sortIcon>
+                <th class="white-space-nowrap">Telefone
                 </th>
-                 <th pSortableColumn="firstName" class="white-space-nowrap">Telefone
-                    <p-sortIcon field="firstName">
-                    </p-sortIcon>
+                <th class="white-space-nowrap">
+                    Criado em
                 </th>
-                <th pSortableColumn="role.name" class="white-space-nowrap">Criado em<p-sortIcon field="role.name">
-                    </p-sortIcon>
-                </th>
-                <!-- <th class="white-space-nowrap" style="width:10%">
-                    Acoes
-                </th> -->
             </tr>
         </ng-template>
         <ng-template #body let-empresa>
@@ -49,27 +44,42 @@
                     {{ empresa.nome }}
                 </td>
                 <td>
-                    {{empresa.email}}
+                    {{empresa.utilizador.email}}
                 </td>
                 <td>
-                    {{empresa.sede}}
+                    {{empresa.sede.local}} - {{empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
                 </td>
                 <td>
                     {{empresa.gerente}}
                 </td>
-                 <td>
+                <td>
                     {{empresa.telefone}}
                 </td>
                 <td>
                     {{ empresa.createdAt | date: 'MM/dd/yyyy, HH:mm:ss' }}
                 </td>
-                <!-- <td>
-                    <p-tag value="{{empresa.status | titlecase}}" [severity]="empresa.status | statusSeverity"
-                        icon="{{empresa.status | statusIcon}}" />
-                </td> -->
                 <td>
-                    <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" severity="warn" [raised]="true"
-                        variant="outlined" [routerLink]="['/empresa', empresa.empresaname]" />
+                    <p-button (click)="op.toggle($event)" icon="pi pi-ellipsis-v" [rounded]="true" [text]="true"
+                        severity="info" />
+                    <p-popover #op>
+                        <div class="flex flex-col gap-1 w-[25rem]">
+                            <ul class="topbar-menu active-topbar-menu z-50 rounded">
+                                <li role="menuitem" class="!m-0 !mb-4">
+                                    <a [routerLink]="['/empresa', empresa.id]">
+                                        <i class="pi pi-fw pi-pencil mr-2"></i>
+                                        <span>Atualizar</span>
+                                    </a>
+                                </li>
+                                <li role="menuitem" class="!m-0">
+                                    <a href="#">
+                                        <i class="pi pi-fw pi-eye mr-2"></i>
+                                        <span>Detalho</span>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </p-popover>
                 </td>
             </tr>
         </ng-template>

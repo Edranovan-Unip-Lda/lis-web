@@ -21,7 +21,8 @@
 
                 @if (erroMessage) {
                 <div class="mb-8">
-                    <p-message severity="error" [text]="erroMessage" icon="pi pi-times-circle" [life]="3000"></p-message>
+                    <p-message severity="error" [text]="erroMessage" icon="pi pi-times-circle" closable>
+                    </p-message>
                 </div>
                 }
 
@@ -34,16 +35,17 @@
 
                     <p-iconfield>
                         <p-inputicon class="pi pi-key" />
-                        <input pInputText type="password" formControlName="password" placeholder="Password"
+                        <input pInputText type="password" formControlName="password" placeholder="Palavra-passe"
                             class="block mb-4" style="max-width: 320px; min-width: 270px" />
                     </p-iconfield>
-                    <a href="#" class="flex text-surface-500 dark:text-surface-400 mb-6 text-sm">Forgot your
-                        password?</a>
+                    <a href="#" class="flex text-surface-500 dark:text-surface-400 mb-6 text-sm">
+                        Esqueceu-se da sua palavra-passe?
+                    </a>
                     <div class="mt-6">
                         <button [loading]="loading" (click)="login(loginForm)" pButton pRipple
                             [disabled]="!loginForm.valid" style="max-width: 320px; margin-bottom: 32px">Login</button>
-                        <span class="flex text-sm text-surface-500 dark:text-surface-400">Don’t have an account?<a
-                                class="cursor-pointer ml-1">Sign-up here</a></span>
+                        <span class="flex text-sm text-surface-500 dark:text-surface-400">Não tem uma conta?
+                            <a routerLink="/auth/register" class="cursor-pointer ml-1">Registe-se aqui</a></span>
                     </div>
                 </form>
 
@@ -54,12 +56,10 @@
                     <h4>
                         Ministério de Comércio e Indústria
                     </h4>
-                    <!-- <img src="/images/logo-gray.png" style="width: 22px" />
-                    <img src="/images/appname-gray.png" class="ml-2" style="width: 45px" /> -->
                 </div>
                 <span class="text-sm text-surface-500 dark:text-surface-400 mr-4">Copyright 2025</span>
             </div>
         </p-fluid>
     </div>
 </div>
-<app-configurator [simple]="true" />
+<!-- <app-configurator [simple]="true" /> -->

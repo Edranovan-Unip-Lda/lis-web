@@ -21,7 +21,7 @@ import { RippleModule } from 'primeng/ripple';
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [CommonModule, ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule, InputIcon, IconField, Fluid, AppConfigurator, ReactiveFormsModule, MessageModule],
+    imports: [CommonModule, ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule, InputIcon, IconField, Fluid, ReactiveFormsModule, MessageModule],
     templateUrl: './login.html',
     providers: [MessageService]
 })

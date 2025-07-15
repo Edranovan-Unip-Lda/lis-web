@@ -1,4 +1,4 @@
-import { Role, Status } from "../models/enums";
+import { AplicanteType, Categoria, Role, Status } from "../models/enums";
 
 /**
   * Maps an array of objects to an array of objects with only id and name properties.
@@ -25,4 +25,25 @@ export const roleOptions: any[] = [
     { name: 'Admin', value: Role.admin },
     { name: 'User', value: Role.staff },
     { name: 'Guest', value: Role.client }
+];
+
+export const applicationTypesOptions: any[] = [
+    {
+        name: 'Inscrição no Cadastro',
+        value: AplicanteType.cadastro
+    },
+    {
+        name: 'Licenca para Exercicio de Atividade',
+        value: AplicanteType.licenca
+    }
+];
+export const categoryTpesOptions: any[] = [
+    {
+        name: 'Comercial',
+        value: Categoria.comercial
+    },
+    {
+        name: 'Industrial',
+        value: Categoria.industrial
+    }
 ];
