@@ -1,4 +1,6 @@
+import { Role } from '@/core/models/enums';
 import { StatusIconPipe, StatusSeverityPipe } from '@/core/pipes/custom.pipe';
+import { AuthenticationService } from '@/core/services';
 import { EmpresaService } from '@/core/services/empresa.service';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
@@ -24,13 +26,17 @@ export class ApplicationListComponent {
   size = 50;
   totalData = 0;
   dataIsFetching = false;
+  currentRole: any;
+  roleAdmin = Role.admin;
+  roleClient = Role.client;
 
   constructor(
     private route: ActivatedRoute,
     private service: EmpresaService,
+    private authService: AuthenticationService,
   ) {
-    console.log(this.route.snapshot.data['applicationPage']);
-
+    this.currentRole = this.authService.currentRole.name;
+    
     this.applications = this.route.snapshot.data['applicationPage'].content;
     this.totalData = this.route.snapshot.data['applicationPage'].totalElements;
   }

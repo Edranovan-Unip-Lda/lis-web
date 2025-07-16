@@ -39,11 +39,11 @@ export const model_admin: MenuItem[] = [
                 routerLink: ['empresa/list']
 
             },
-            {
-                label: 'Criar',
-                icon: 'pi pi-fw pi-plus',
-                routerLink: ['empresa/create']
-            }
+            // {
+            //     label: 'Criar',
+            //     icon: 'pi pi-fw pi-plus',
+            //     routerLink: ['empresa/create']
+            // }
         ]
     },
     {
@@ -55,11 +55,11 @@ export const model_admin: MenuItem[] = [
                 icon: 'pi pi-fw pi-list',
                 routerLink: ['application/list']
             },
-            {
-                label: 'Criar',
-                icon: 'pi pi-fw pi-plus',
-                routerLink: ['application/create']
-            }
+            // {
+            //     label: 'Criar',
+            //     icon: 'pi pi-fw pi-plus',
+            //     routerLink: ['application/create']
+            // }
         ]
     },
     {
@@ -119,29 +119,33 @@ export const model_admin: MenuItem[] = [
     {
         label: 'Dados Mestre',
         items: [
+            // {
+            //     label: 'Tipo Candidatura',
+            //     icon: 'bi bi-fw bi-ui-checks',
+            // },
+            // {
+            //     label: 'Categoria',
+            //     icon: 'bi bi-fw bi-bookmark',
+            // },
             {
-                label: 'Tipo Candidatura',
-                icon: 'bi bi-fw bi-ui-checks',
-            },
-            {
-                label: 'Categoria',
-                icon: 'bi bi-fw bi-bookmark',
-            },
-            {
-                label: 'Localizacao',
+                label: 'Localização',
                 icon: 'bi bi-fw bi-pin-map',
                 items: [
                     {
-                        label: 'Municipio'
+                        label: 'Municipio',
+                        routerLink: ['dados-mestre/endereco/municipio']
                     },
                     {
-                        label: 'Posto Administrativo'
+                        label: 'Posto Administrativo',
+                        routerLink: ['dados-mestre/endereco/posto-administrativo']
                     },
                     {
-                        label: 'Suco'
+                        label: 'Suco',
+                        routerLink: ['dados-mestre/endereco/suco']
                     },
                     {
-                        label: 'Aldeia'
+                        label: 'Aldeia',
+                        routerLink: ['dados-mestre/endereco/aldeia']
                     },
                 ]
             },

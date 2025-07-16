@@ -9,7 +9,7 @@ import { Component } from '@angular/core';
 @Component({
     selector: 'app-ecommerce-dashboard',
     standalone: true,
-    imports: [StatsWidget, UniqueVisitorWidget, TransactionHistoryWidget, CountryDistributionsWidget, MonthlyRevenueWidget],
+    imports: [StatsWidget, UniqueVisitorWidget, CountryDistributionsWidget, MonthlyRevenueWidget],
     providers: [CustomerService],
     template: `<div class="grid grid-cols-12 gap-8">
         <stats-widget />
@@ -19,14 +19,14 @@ import { Component } from '@angular/core';
         </div>
 
         <div class="col-span-12 xl:col-span-4">
-            <transaction-history-widget />
+             <country-distributions-widget />
         </div>
 
-        <div class="col-span-12 xl:col-span-4">
+        <!--<div class="col-span-12 xl:col-span-4">
             <country-distributions-widget />
-        </div>
+        </div>-->
 
-        <div class="col-span-12 xl:col-span-8">
+        <div class="col-span-12">
             <monthly-revenue-widget />
         </div>
 

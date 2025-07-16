@@ -21,6 +21,12 @@
                     <p-sortIcon field="firstName">
                     </p-sortIcon>
                 </th>
+                @if (currentRole === roleAdmin) {
+                <th pSortableColumn="firstName" class="white-space-nowrap">Empresa
+                    <p-sortIcon field="firstName">
+                    </p-sortIcon>
+                </th>
+                }
                 <th pSortableColumn="categoria" class="white-space-nowrap">Categoria <p-sortIcon field="categoria">
                     </p-sortIcon>
                 <th pSortableColumn="nomeEmpresa" class="white-space-nowrap">Tipo<p-sortIcon field="nomeEmpresa">
@@ -32,8 +38,8 @@
                 <th pSortableColumn="status" class="white-space-nowrap">Estado <p-sortIcon field="activity">
                     </p-sortIcon>
                 </th>
-                <th class="white-space-nowrap" style="width:10%">
-                    Acoes
+                <th class="white-space-nowrap">
+                    Ações
                 </th>
             </tr>
         </ng-template>
@@ -42,6 +48,11 @@
                 <td>
                     {{ candidatura.numero }}
                 </td>
+                @if (currentRole === roleAdmin) {
+                    <td>
+                        {{candidatura.empresa.nome}}
+                    </td>
+                }
                 <td>
                     {{ candidatura.categoria }}
                 </td>

@@ -1,5 +1,5 @@
 <div class="card">
-    <p-table #dt [value]="data" [paginator]="true" paginatorDropdownAppendTo="body" [rows]="10"
+    <p-table #dt [value]="data" [paginator]="true" paginatorDropdownAppendTo="body" [rows]="50"
         [showCurrentPageReport]="true" responsiveLayout="scroll"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         [rowsPerPageOptions]="[10, 25, 50]" [globalFilterFields]="['firstName', 'role.name', 'email', 'status']">
@@ -21,22 +21,10 @@
                     <p-sortIcon field="nome">
                     </p-sortIcon>
                 </th>
-                <th pSortableColumn="email" class="white-space-nowrap">Email<p-sortIcon field="email">
-                    </p-sortIcon>
+                <th class="white-space-nowrap">
+                    Suco
                 </th>
                 <th class="white-space-nowrap">
-                    Local
-                </th>
-                <th pSortableColumn="gerente" class="white-space-nowrap">Gerente
-                    <p-sortIcon field="gerente">
-                    </p-sortIcon>
-                </th>
-                <th class="white-space-nowrap">Telefone
-                </th>
-                <th class="white-space-nowrap">
-                    Criado em
-                </th>
-                 <th class="white-space-nowrap">
                     Ações
                 </th>
             </tr>
@@ -47,19 +35,7 @@
                     {{ empresa.nome }}
                 </td>
                 <td>
-                    {{empresa.utilizador.email}}
-                </td>
-                <td>
-                    {{empresa.sede.local}} - {{empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
-                </td>
-                <td>
-                    {{empresa.gerente}}
-                </td>
-                <td>
-                    {{empresa.telefone}}
-                </td>
-                <td>
-                    {{ empresa.createdAt | date: 'MM/dd/yyyy, HH:mm:ss' }}
+                    {{empresa.suco.nome}}
                 </td>
                 <td>
                     <p-button (click)="op.toggle($event)" icon="pi pi-ellipsis-v" [rounded]="true" [text]="true"
@@ -68,15 +44,15 @@
                         <div class="flex flex-col gap-1 w-[25rem]">
                             <ul class="topbar-menu active-topbar-menu z-50 rounded">
                                 <li role="menuitem" class="!m-0 !mb-4">
-                                    <a [routerLink]="['/empresa', empresa.id]">
+                                    <a>
                                         <i class="pi pi-fw pi-pencil mr-2"></i>
                                         <span>Atualizar</span>
                                     </a>
                                 </li>
                                 <li role="menuitem" class="!m-0">
                                     <a href="#">
-                                        <i class="pi pi-fw pi-eye mr-2"></i>
-                                        <span>Detalho</span>
+                                        <i class="pi pi-fw pi-trash mr-2"></i>
+                                        <span>Eliminar</span>
                                     </a>
                                 </li>
 

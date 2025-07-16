@@ -74,12 +74,18 @@ export const appRoutes: Routes = [
                 path: 'utilizador',
                 data: { breadcrumb: 'Utilizadór' },
                 loadChildren: () => import('@/pages/usermanagement/usermanagement.routes')
+            },
+            {
+                path: 'dados-mestre',
+                data: { breadcrumb: 'Dados Mestre' },
+                loadChildren: () => import('@/pages/dados-mestre/dados-mestre.route')
             }
         ]
     },
-    { 
-        path: 'auth', 
-        loadChildren: () => import('@/pages/auth/auth.routes') },
+    {
+        path: 'auth',
+        loadChildren: () => import('@/pages/auth/auth.routes')
+    },
     {
         path: 'landing',
         loadComponent: () => import('@/pages/landing/landing').then((c) => c.Landing)

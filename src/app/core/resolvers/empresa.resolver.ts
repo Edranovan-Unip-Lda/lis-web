@@ -3,6 +3,8 @@ import { EmpresaService } from "../services/empresa.service";
 import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 import { of } from "rxjs";
 import { AuthenticationService } from "../services";
+import { Role } from "../models/enums";
+import { AplicanteService } from "../services/aplicante.service";
 
 
 export const getPageEmpresaResolver: ResolveFn<any> = () => {
@@ -20,9 +22,15 @@ export const getByIdResolver: ResolveFn<any> = (route: ActivatedRouteSnapshot) =
     }
 }
 
-export const getPageAplicanteByEmpresaIdResolver: ResolveFn<any> = () => {
+export const getPageAplicanteOrByEmpresaIdResolver: ResolveFn<any> = () => {
     const service = inject(EmpresaService);
+    const aplicanteService = inject(AplicanteService);
     const authServiec = inject(AuthenticationService);
-    const empresaId = authServiec.currentUserValue?.empresa?.id;
-    return service.getAplicantesPage(empresaId);
+
+    if (authServiec.currentUserValue.role === Role.client) {
+        const empresaId = authServiec.currentUserValue?.empresa?.id;
+        return service.getAplicantesPage(empresaId);
+    } else {
+        return aplicanteService.getPage();
+    }
 }

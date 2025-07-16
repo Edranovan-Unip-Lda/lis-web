@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
     standalone: true,
     template: ` <div class="col-span-12 md:col-span-4">
             <div class="card relative h-28 rounded-xl !p-4">
-                <span class="text-sm font-medium leading-none">Candidatura em progresso</span>
+                <span class="text-sm font-medium leading-none">Aplicante em progresso</span>
                 <div class="flex justify-between">
                     <div class="flex justify-between items-center pt-4">
                         <div class="flex justify-center items-center h-8 min-w-20 rounded p-2 mr-4 text-black" style="background-color: #fc6161; box-shadow: 0px 6px 20px rgba(252, 97, 97, 0.3)">
