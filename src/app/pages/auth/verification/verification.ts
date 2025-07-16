@@ -1,23 +1,21 @@
 import { Role } from '@/core/models/enums';
 import { AuthenticationService } from '@/core/services';
-import { AppConfigurator } from "@/layout/components/app.configurator";
 import { LayoutService } from '@/layout/service/layout.service';
-import { CommonModule } from "@angular/common";
 import { Component, computed, inject, signal } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
+import { Button } from 'primeng/button';
 import { Fluid } from 'primeng/fluid';
 import { InputNumber } from 'primeng/inputnumber';
-import { InputOtpModule } from 'primeng/inputotp';
+import { InputOtp } from 'primeng/inputotp';
 import { MessagesModule } from 'primeng/messages';
 import { Ripple } from 'primeng/ripple';
 
 @Component({
     selector: 'app-verification',
     standalone: true,
-    imports: [CommonModule, ButtonModule, Ripple, RouterModule, FormsModule, Fluid, AppConfigurator, ReactiveFormsModule, InputOtpModule, MessagesModule],
+    imports: [Ripple, RouterModule, Fluid, InputOtp, MessagesModule, Button, ReactiveFormsModule],
     templateUrl: './verification.component.html',
     providers: [MessageService]
 })

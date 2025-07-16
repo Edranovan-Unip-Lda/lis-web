@@ -1,23 +1,20 @@
-import { Component, computed, ElementRef, inject, ViewChild } from '@angular/core';
-import { MenuItem } from 'primeng/api';
-import { Router, RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { StyleClassModule } from 'primeng/styleclass';
-import { LayoutService } from '@/layout/service/layout.service';
-import { Ripple } from 'primeng/ripple';
-import { InputText } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { IconField } from 'primeng/iconfield';
-import { InputIcon } from 'primeng/inputicon';
-import { FormsModule } from '@angular/forms';
-import { AppSidebar } from '@/layout/components/app.sidebar';
-import { AppBreadcrumb } from '@/layout/components/app.breadcrumb';
 import { AuthenticationService } from '@/core/services';
+import { AppBreadcrumb } from '@/layout/components/app.breadcrumb';
+import { AppSidebar } from '@/layout/components/app.sidebar';
+import { LayoutService } from '@/layout/service/layout.service';
+import { CommonModule } from '@angular/common';
+import { Component, computed, ElementRef, inject, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { MenuItem } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { Ripple } from 'primeng/ripple';
+import { StyleClassModule } from 'primeng/styleclass';
 
 @Component({
     selector: '[app-topbar]',
     standalone: true,
-    imports: [RouterModule, CommonModule, StyleClassModule, FormsModule, Ripple, InputText, ButtonModule, IconField, InputIcon, AppBreadcrumb, AppSidebar],
+    imports: [RouterModule, CommonModule, StyleClassModule, FormsModule, Ripple, ButtonModule, AppBreadcrumb, AppSidebar],
     template: `
         <div class="topbar-start">
             <button pButton pRipple #menubutton type="button" class="topbar-menubutton p-trigger" text rounded severity="secondary" (click)="onMenuButtonClick()">
@@ -63,9 +60,18 @@ import { AuthenticationService } from '@/core/services';
                 </li>-->
 
                 <li class="profile-item topbar-item">
-                    <a pStyleClass="@next" enterFromClass="!hidden" enterActiveClass="animate-scalein" leaveToClass="!hidden" leaveActiveClass="animate-fadeout" [hideOnOutsideClick]="true" class="cursor-pointer">
+                   
+                </li>
+
+                <li class="profile-item topbar-item">
+                   <div pStyleClass="@next" enterFromClass="!hidden" enterActiveClass="animate-scalein" leaveToClass="!hidden" leaveActiveClass="animate-fadeout" [hideOnOutsideClick]="true" class="flex justify-around cursor-pointer hover:text-emerald-500">
+                    <span class="mr-4">
+                        {{user.firstname}} {{user.lastName}}
+                    </span>
+                    <a>
                         <img class="rounded-full" src="/images/avatar-m-1.jpg" />
                     </a>
+                   </div>
 
                     <ul class="topbar-menu active-topbar-menu !p-6 w-60 z-50 !hidden rounded">
                         <li role="menuitem" class="!m-0 !mb-4">
@@ -139,12 +145,15 @@ export class AppTopbar {
     @ViewChild(AppSidebar) appSidebar!: AppSidebar;
 
     el = inject(ElementRef);
+    user: any;
 
     constructor(
         public layoutService: LayoutService,
         private authenticationService: AuthenticationService,
-        private router: Router,
-    ) { }
+        private authService: AuthenticationService,
+    ) {
+        this.user = this.authService.currentUserValue;
+    }
 
     searchBarActive = computed(() => this.layoutService.layoutState().searchBarActive);
 

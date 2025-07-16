@@ -8,12 +8,34 @@ export default [
     {
         path: 'licencas',
         data: { breadcrumb: 'Licenças' },
-        component: LicencasListaComponent
+        children: [
+            {
+                path: 'comercio',
+                data: { breadcrumb: 'Comércio' },
+                component: LicencasListaComponent
+            },
+            {
+                path: 'industria',
+                data: { breadcrumb: 'Indústria' },
+                component: LicencasListaComponent
+            }
+        ]
     },
-     {
+    {
         path: 'certificados',
         data: { breadcrumb: 'Certificados' },
-        component: CertificadosListaComponent
+        children: [
+            {
+                path: 'comercio',
+                data: { breadcrumb: 'Comércio' },
+                component: CertificadosListaComponent,
+            },
+            {
+                path: 'industria',
+                data: { breadcrumb: 'Indústria' },
+                component: CertificadosListaComponent,
+            }
+        ]
     }
     // {
     //     path: 'certificados',

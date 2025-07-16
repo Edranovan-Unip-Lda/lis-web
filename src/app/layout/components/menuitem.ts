@@ -189,15 +189,38 @@ export const model_client: MenuItem[] = [
         label: 'Licenças e Certificados',
         items: [
             {
-                label: 'Licenças',
-                icon: 'pi pi-fw pi-list',
-                routerLink: ['licencas-certificados/licencas']
+                label: 'Certificados de Inscricao no Cadastro',
+                icon: 'bi bi-fw bi-journal-text',
+                items: [
+                    {
+                        label: 'Comercio',
+                        icon: 'bi bi-fw bi-bag',
+                        routerLink: ['licencas-certificados/certificados/comercio']
+                    },
+                    {
+                        label: 'Industria',
+                        icon: 'bi bi-fw bi-buildings',
+                        routerLink: ['licencas-certificados/certificados/industria']
+
+                    }
+                ]
             },
-             {
-                label: 'Certificados',
-                icon: 'pi pi-fw pi-list',
-                routerLink: ['licencas-certificados/certificados']
-            },
+            {
+                label: 'Alvara de Licenca para Exercicio da Atividade',
+                icon: 'bi bi-fw bi-journal-medical',
+                items: [
+                    {
+                        label: 'Comercio',
+                        icon: 'bi bi-fw bi-bag',
+                        routerLink: ['licencas-certificados/licencas/comercio']
+                    },
+                    {
+                        label: 'Industria',
+                        icon: 'bi bi-fw bi-buildings',
+                        routerLink: ['licencas-certificados/licencas/industria']
+                    }
+                ]
+            }
         ]
     },
     {

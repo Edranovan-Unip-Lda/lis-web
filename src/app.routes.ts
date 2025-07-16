@@ -1,11 +1,13 @@
 import { authenticationCanActivate } from '@/core/security/route.guard';
 import { AppLayout } from '@/layout/components/app.layout';
+import { AuthLayoutComponent } from '@/pages/auth/auth-layout/auth-layout.component';
 import { Routes } from '@angular/router';
 
 export const appRoutes: Routes = [
     {
         path: '',
-        loadComponent: () => import('@/pages/auth/login/login').then((c) => c.Login),
+        redirectTo: 'auth/login',
+        pathMatch: 'full',
         data: { breadcrumb: 'Login' }
     },
     {
@@ -75,7 +77,9 @@ export const appRoutes: Routes = [
             }
         ]
     },
-    { path: 'auth', loadChildren: () => import('@/pages/auth/auth.routes') },
+    { 
+        path: 'auth', 
+        loadChildren: () => import('@/pages/auth/auth.routes') },
     {
         path: 'landing',
         loadComponent: () => import('@/pages/landing/landing').then((c) => c.Landing)
