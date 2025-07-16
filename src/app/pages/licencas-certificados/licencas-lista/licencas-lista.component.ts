@@ -1,17 +1,18 @@
 import { StatusIconPipe, StatusSeverityPipe } from '@/core/pipes/custom.pipe';
-import { CommonModule } from '@angular/common';
+import { DatePipe, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
+import { RouterLink } from '@angular/router';
+import { Button } from 'primeng/button';
 import { IconField } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
-import { InputTextModule } from 'primeng/inputtext';
+import { InputIcon } from 'primeng/inputicon';
+import { InputText } from 'primeng/inputtext';
+import { Popover } from 'primeng/popover';
 import { Table, TableModule } from 'primeng/table';
-import { TagModule } from 'primeng/tag';
+import { Tag } from 'primeng/tag';
 
 @Component({
   selector: 'app-licencas-lista',
-  imports: [CommonModule, TableModule, ButtonModule, TagModule, RouterModule, InputIconModule, IconField, InputTextModule, StatusSeverityPipe, StatusIconPipe],
+  imports: [Popover, RouterLink, DatePipe, TitleCasePipe, TableModule, Button, Tag, InputIcon, IconField, InputText, StatusSeverityPipe, StatusIconPipe],
   templateUrl: './licencas-lista.component.html',
   styleUrl: './licencas-lista.component.scss'
 })

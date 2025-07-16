@@ -7,12 +7,9 @@
             <div class="flex flex-wrap gap-2 items-center justify-between">
                 <p-icon-field class="w-full sm:w-80 order-1 sm:order-none">
                     <p-inputicon class="pi pi-search" />
-                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Global Search"
+                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Busca"
                         class="w-full" />
                 </p-icon-field>
-                <button pButton outlined routerLink="/empresa/create"
-                    class="w-full sm:w-auto flex-order-0 sm:flex-order-1" icon="bi bi-building-add"
-                    label="Add New"></button>
             </div>
         </ng-template>
         <ng-template #header>
@@ -36,7 +33,7 @@
                     <p-sortIcon field="firstName">
                     </p-sortIcon>
                 </th>
-                 <th pSortableColumn="firstName" class="white-space-nowrap">
+                <th pSortableColumn="firstName" class="white-space-nowrap">
                     NIF
                     <p-sortIcon field="firstName">
                     </p-sortIcon>
@@ -44,7 +41,7 @@
                 <th pSortableColumn="role.name" class="white-space-nowrap">Validade<p-sortIcon field="role.name">
                     </p-sortIcon>
                 </th>
-                  <th pSortableColumn="firstName" class="white-space-nowrap">
+                <th pSortableColumn="firstName" class="white-space-nowrap">
                     Estado
                     <p-sortIcon field="firstName">
                     </p-sortIcon>
@@ -68,7 +65,7 @@
                 <td>
                     {{empresa.sede}}
                 </td>
-                 <td>
+                <td>
                     {{empresa.nif}}
                 </td>
                 <td>
@@ -79,8 +76,26 @@
                         icon="{{empresa.estado | statusIcon}}" />
                 </td>
                 <td>
-                    <p-button icon="pi pi-eye" class="mr-2" [rounded]="true" severity="info" [raised]="true"
-                        variant="outlined" [routerLink]="['/empresa', empresa.empresaname]" />
+                    <p-button (click)="op.toggle($event)" icon="pi pi-ellipsis-v" [rounded]="true" [text]="true"
+                        severity="info" />
+                    <p-popover #op>
+                        <div class="flex flex-col gap-1 w-[25rem]">
+                            <ul class="topbar-menu active-topbar-menu z-50 rounded">
+                                <li role="menuitem" class="!m-0 !mb-4">
+                                    <a href="#">
+                                        <i class="pi pi-fw pi-eye mr-2"></i>
+                                        <span>Ver</span>
+                                    </a>
+                                </li>
+                                <li role="menuitem" class="!m-0">
+                                    <a [routerLink]="['/empresa', empresa.id]">
+                                        <i class="pi pi-fw pi-print mr-2"></i>
+                                        <span>Imprimir</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </p-popover>
                 </td>
             </tr>
         </ng-template>

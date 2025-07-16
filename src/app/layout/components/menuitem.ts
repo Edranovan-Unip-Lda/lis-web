@@ -189,9 +189,14 @@ export const model_client: MenuItem[] = [
         label: 'Licenças e Certificados',
         items: [
             {
-                label: 'Lista',
+                label: 'Licenças',
                 icon: 'pi pi-fw pi-list',
-                routerLink: ['licencas-certificados/list']
+                routerLink: ['licencas-certificados/licencas']
+            },
+             {
+                label: 'Certificados',
+                icon: 'pi pi-fw pi-list',
+                routerLink: ['licencas-certificados/certificados']
             },
         ]
     },
