@@ -102,7 +102,7 @@ export class Register {
                     firstName: firstName,
                     lastName: rest.join(' '),
                     email: form.value.email,
-                    username: form.value.email.split('@')[0],
+                    username: new Date().getUTCMilliseconds().toString(),
                     password: form.value.password,
                 },
                 gerente: form.value.gerente,

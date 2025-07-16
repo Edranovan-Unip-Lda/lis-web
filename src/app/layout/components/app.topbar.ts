@@ -33,7 +33,7 @@ import { AuthenticationService } from '@/core/services';
         </div>
         <div class="topbar-end">
             <ul class="topbar-menu">
-                <li class="!hidden lg:!block">
+              <!--  <li class="!hidden lg:!block">
                     <div
                         class="topbar-search"
                         [ngClass]="{
@@ -60,7 +60,7 @@ import { AuthenticationService } from '@/core/services';
 
                 <li class="ml-4">
                     <button pButton pRipple type="button" icon="pi pi-palette" class="flex-shrink-0 config-button" text rounded (click)="onConfigButtonClick()"></button>
-                </li>
+                </li>-->
 
                 <li class="profile-item topbar-item">
                     <a pStyleClass="@next" enterFromClass="!hidden" enterActiveClass="animate-scalein" leaveToClass="!hidden" leaveActiveClass="animate-fadeout" [hideOnOutsideClick]="true" class="cursor-pointer">
@@ -116,7 +116,7 @@ import { AuthenticationService } from '@/core/services';
                             </a>
                         </li>
                     </ul>
-                </li>
+                </li> 
 
                 <li class="right-panel-button relative !hidden lg:!block">
                    <!-- <button pButton pRipple type="button" label="Today" style="width: 5.7rem" icon="pi pi-bookmark" class="layout-rightmenu-button !hidden md:!inline-flex font-normal" (click)="onProfileMenuButtonClick()"></button>
