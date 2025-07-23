@@ -1,4 +1,5 @@
-import { Role } from "./data-master.model";
+import { AtividadeEconomica, Endereco, Role } from "./data-master.model";
+import { AplicanteType, CaraterizacaoEstabelecimento, NivelRisco, TipoAto, TipoEstabelecimento, TipoPedidoCadastro } from "./enums";
 
 export interface User {
     id: number;
@@ -12,6 +13,17 @@ export interface User {
     status: string;
     oneTimePassword: string;
     updatedAt: Date;
+}
+
+export interface Empresa {
+    nome: string;
+    nif: string;
+    utilizador: User;
+    gerente: string;
+    numeroRegistoComercial: string;
+    telefone: string;
+    telemovel: string;
+    sede: Endereco;
 }
 
 export interface Requerente {
@@ -46,6 +58,15 @@ export interface Participantes {
     cargoTrabalho: string | null;
     representanteBombeiros: string | null;
     cargoBombeiros: string | null;
+}
+
+export interface Aplicante {
+    tipo: AplicanteType;
+    categoria: string;
+    numero: string;
+    estado: string;
+    empresa: Empresa;
+    pedido: PedidoInscricaoCadastro;
 }
 
 export interface VistoriaComercialRequestForm {
@@ -89,4 +110,37 @@ export interface VistoriaComercialRequestForm {
     prazo: string | null;
     documental: boolean | null;
     membrosEquipaVistoria: Participantes;
+}
+
+
+export interface PedidoInscricaoCadastro {
+    id: number;
+    createdAt: Date;
+    updatedAt: Date;
+    createdBy: string;
+    updatedBy: string;
+    status: string;
+    tipoPedidoCadastro: TipoPedidoCadastro;
+    nomeEmpresa: string;
+    nif: string;
+    gerente: string;
+    numeroRegistoComercial: string;
+    email: string;
+    telefone: string;
+    telemovel: string;
+    sede: Endereco;
+    categoria: string;
+    tipoEmpresa: string;
+    nomeEstabelecimento: string;
+    localEstabelecimento: string;
+    tipoEstabelecimento: TipoEstabelecimento;
+    caraterizacaoEstabelecimento: CaraterizacaoEstabelecimento;
+    risco: NivelRisco;
+    ato: TipoAto;
+    tipoAtividade: AtividadeEconomica;
+    atividadePrincipal: AtividadeEconomica;
+    alteracoes: string;
+    dataEmissaoCertAnterior: string;
+    observacao: string;
+    fatura: any;
 }

@@ -1,6 +1,6 @@
 import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Button } from 'primeng/button';
@@ -9,15 +9,22 @@ import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { StepperModule } from 'primeng/stepper';
 import { Tag } from 'primeng/tag';
+import { PedidoCadastroComponent } from '../pedido-cadastro/pedido-cadastro.component';
+import { Aplicante } from '@/core/models/entities.model';
 
 @Component({
   selector: 'app-application-detail',
-  imports: [CommonModule, ReactiveFormsModule, Button, StepperModule, Select, InputText, FileUpload, Tag, StatusSeverityPipe],
+  imports: [CommonModule, ReactiveFormsModule, Button, StepperModule, Select, InputText, FileUpload, Tag, StatusSeverityPipe, PedidoCadastroComponent],
   templateUrl: './application-detail.component.html',
   styleUrl: './application-detail.component.scss'
 })
 export class ApplicationDetailComponent {
-  aplicanteData: any;
+  private route = inject(ActivatedRoute);
+  aplicanteData = signal<Aplicante>(this.route.snapshot.data['aplicanteResolver']);
+
+  pedidoData = computed(() => this.aplicanteData().pedido);
+  empresaData = computed(() => this.aplicanteData().empresa);
+
   requestForm: FormGroup;
   faturaForm: FormGroup;
   requestTypes: any[] = [
@@ -127,7 +134,6 @@ export class ApplicationDetailComponent {
 
   constructor(
     private _fb: FormBuilder,
-    private router: ActivatedRoute,
   ) {
     this.requestForm = this._fb.group({
       requestType: [null],
@@ -164,7 +170,7 @@ export class ApplicationDetailComponent {
       codigo: [null]
     });
 
-    this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
+    // this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
     console.log(this.aplicanteData);
 
 

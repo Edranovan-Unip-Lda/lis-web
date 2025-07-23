@@ -1,4 +1,4 @@
-import { AplicanteType, Categoria, NivelRisco, Role, Status } from "../models/enums";
+import { AplicanteType, CaraterizacaoEstabelecimento, Categoria, NivelRisco, Role, Status, TipoAto, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro } from "../models/enums";
 
 /**
   * Maps an array of objects to an array of objects with only id and name properties.
@@ -61,4 +61,73 @@ export const categoryTpesOptions: any[] = [
         name: 'Industrial',
         value: Categoria.industrial
     }
+];
+
+export const tipoPedidoCadastroOptions: any[] = [
+    {
+        name: 'Inscrição Inicial',
+        value: TipoPedidoCadastro.inicial
+    },
+    {
+        name: 'Alteração',
+        value: TipoPedidoCadastro.alteracao
+    },
+    {
+        name: 'Atualização Anual',
+        value: TipoPedidoCadastro.anual
+    },
+];
+
+export const tipoEstabelecimentoOptions: any[] = [
+    {
+        name: 'Estabelecimento Principal',
+        value: TipoEstabelecimento.principal
+    },
+    {
+        name: 'Delegação',
+        value: TipoEstabelecimento.delegacao
+    },
+    {
+        name: 'Sucursal',
+        value: TipoEstabelecimento.sucursal
+    },
+]
+
+export const tipoEmpresaOptions: any[] = [
+    {
+        name: 'Microempresa',
+        value: TipoEmpresa.micro
+    },
+    {
+        name: 'Pequena Empresa',
+        value: TipoEmpresa.pequena
+    },
+    {
+        name: 'Média Empresa',
+        value: TipoEmpresa.media
+    },
+    {
+        name: 'Grande Empresa',
+        value: TipoEmpresa.grande
+    },
+];
+
+export const caraterizacaEstabelecimentoOptions: any[] = [
+    {
+        name: 'Kiosk',
+        value: CaraterizacaoEstabelecimento.kiosk
+    },
+    {
+        name: 'Loja',
+        value: CaraterizacaoEstabelecimento.loja
+    },
+    {
+        name: 'Armazém',
+        value: CaraterizacaoEstabelecimento.armazem
+    },
+];
+
+export const tipoAtoOptions: any[] = [
+    { name: 'Venda a retalho', value: TipoAto.retalho },
+    { name: 'Venda a grosso', value: TipoAto.grosso },
 ];

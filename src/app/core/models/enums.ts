@@ -28,7 +28,7 @@ export enum NivelRisco {
     alto = 'ALTO'
 }
 
-export enum TipoPedido {
+export enum TipoPedidoCadastro {
     inicial = 'INICIAL',
     alteracao = 'ALTERACAO',
     anual = 'ANUAL'
@@ -48,5 +48,12 @@ export enum CaraterizacaoEstabelecimento {
 
 export enum TipoAto {
     retalho = 'RETALHO',
-    gross = 'GROSSO'
+    grosso = 'GROSSO'
+}
+
+export enum TipoEmpresa {
+    micro = 'MICROEMPRESA',
+    pequena = 'PEQUENA_EMPRESA',
+    media = 'MEDIA_EMPRESA',
+    grande = 'GRANDE_EMPRESA'
 }
