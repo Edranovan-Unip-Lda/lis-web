@@ -8,7 +8,7 @@ import { getAldeiasResolver, getMunicipiosResolver, getPostosResolver, getSucosR
 export default [
     {
         path: 'municipio',
-        data: { breadcrumb: 'Lista Municipio' },
+        data: { breadcrumb: 'Lista Municipio', type: 'municipios' },
         component: MunicipioListComponent,
         resolve: {
             municipioResolve: getMunicipiosResolver
@@ -16,26 +16,30 @@ export default [
     },
     {
         path: 'posto-administrativo',
-        data: { breadcrumb: 'Lista Posto Administrativo' },
+        data: { breadcrumb: 'Lista Posto Administrativo', type: 'postos' },
         component: PostoListComponent,
         resolve: {
+            municipioResolve: getMunicipiosResolver,
             postoResolve: getPostosResolver
         }
     },
     {
         path: 'suco',
-        data: { breadcrumb: 'Lista Suco' },
+        data: { breadcrumb: 'Lista Suco', type: 'sucos' },
         component: SucoListComponent,
         resolve: {
-            sucoResolve: getSucosResolver
+            sucoResolve: getSucosResolver,
+            municipioResolve: getMunicipiosResolver,
+            postoResolve: getPostosResolver
         }
     },
     {
         path: 'aldeia',
-        data: { breadcrumb: 'Lista aldeia' },
+        data: { breadcrumb: 'Lista aldeia', type: 'aldeias' },
         component: AldeiaListComponent,
         resolve: {
-            aldeiaResolve: getAldeiasResolver
+            aldeiaResolve: getAldeiasResolver,
+            municipioResolve: getMunicipiosResolver,
         }
     },
     { path: '**', redirectTo: '/notfound' }

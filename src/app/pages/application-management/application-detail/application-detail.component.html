@@ -16,7 +16,9 @@
                          <div class="flex justify-between items-center border-b border-gray-200 pb-4 mb-6">
                              <div>
                                  <div class="text-gray-500 text-md">Nº da Candidatura:</div>
-                                 <div class="text-xl font-semibold tracking-wider text-gray-300">00323893</div>
+                                 <div class="text-xl font-semibold tracking-wider text-gray-300">
+                                     {{aplicanteData.numero}}
+                                 </div>
                              </div>
                              <div>
                                  <div class="text-gray-500 text-md">Certificado:</div>
@@ -26,10 +28,12 @@
 
                          <div class="flex justify-between text-sm text-gray-400 mb-8">
                              <div>
-                                 <span class="font-medium text-gray-500">Criado em:</span> 03 Oct 2025, 20:10
+                                 <span class="font-medium text-gray-500">Criado em:</span>
+                                 {{aplicanteData.createdAt | date:'dd MMM yyyy, HH:mm:ss'}}
                              </div>
                              <div>
-                                 <span class="font-medium text-gray-500">Atualizado em:</span> 04 Oct 2025, 20:10
+                                 <span class="font-medium text-gray-500">Atualizado em:</span>
+                                 {{aplicanteData.updatedAt | date:'dd MMM yyyy, HH:mm:ss'}}
                              </div>
                          </div>
 
@@ -39,11 +43,21 @@
                              </div>
                              <div class="flex justify-between mb-1 text-gray-600">
                                  <span>Formulário</span>
+                                 @if (aplicanteData.pedidoStatus) {
+                                 <p-tag value="Esboco" [severity]="aplicanteData.pedidoStatus | statusSeverity" />
+                                 }@else {
                                  <p-tag value="Esboco" [severity]="'info'" />
+                                 }
+
                              </div>
                              <div class="flex justify-between text-gray-600">
                                  <span>Fatura</span>
-                                 <p-tag value="Nao Pago" [severity]="'secondary'" />
+                                 @if (aplicanteData.faturaStatus) {
+                                 <p-tag [value]="aplicanteData.faturaStatus"
+                                     [severity]="aplicanteData.faturaStatus | statusSeverity" />
+                                 }@else {
+                                 <p-tag value="Nao Paga" [severity]="'secondary'" />
+                                 }
                              </div>
                          </div>
 

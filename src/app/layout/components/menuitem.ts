@@ -120,13 +120,15 @@ export const model_admin: MenuItem[] = [
         label: 'Dados Mestre',
         items: [
             // {
-            //     label: 'Tipo Candidatura',
+            //     label: 'Tipo Risco',
             //     icon: 'bi bi-fw bi-ui-checks',
+            //     routerLink: ['dados-mestre/tipo-risco']
             // },
-            // {
-            //     label: 'Categoria',
-            //     icon: 'bi bi-fw bi-bookmark',
-            // },
+            {
+                label: 'Atividade Economica',
+                icon: 'bi bi-fw bi-bookmark',
+                routerLink: ['dados-mestre/atividade-economica']
+            },
             {
                 label: 'Localização',
                 icon: 'bi bi-fw bi-pin-map',

@@ -1,20 +1,23 @@
+import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { FileUploadModule } from 'primeng/fileupload';
-import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
+import { ActivatedRoute } from '@angular/router';
+import { Button } from 'primeng/button';
+import { FileUpload } from 'primeng/fileupload';
+import { InputText } from 'primeng/inputtext';
+import { Select } from 'primeng/select';
 import { StepperModule } from 'primeng/stepper';
-import { TagModule } from 'primeng/tag';
+import { Tag } from 'primeng/tag';
 
 @Component({
   selector: 'app-application-detail',
-  imports: [CommonModule, ReactiveFormsModule, ButtonModule, StepperModule, SelectModule, InputTextModule, FileUploadModule, TagModule],
+  imports: [CommonModule, ReactiveFormsModule, Button, StepperModule, Select, InputText, FileUpload, Tag, StatusSeverityPipe],
   templateUrl: './application-detail.component.html',
   styleUrl: './application-detail.component.scss'
 })
 export class ApplicationDetailComponent {
+  aplicanteData: any;
   requestForm: FormGroup;
   faturaForm: FormGroup;
   requestTypes: any[] = [
@@ -124,6 +127,7 @@ export class ApplicationDetailComponent {
 
   constructor(
     private _fb: FormBuilder,
+    private router: ActivatedRoute,
   ) {
     this.requestForm = this._fb.group({
       requestType: [null],
@@ -158,7 +162,12 @@ export class ApplicationDetailComponent {
       sociedadeComercial: [null],
       atividadeDeclarada: [null],
       codigo: [null]
-    })
+    });
+
+    this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
+    console.log(this.aplicanteData);
+
+
   }
 
   onUpload(event: any, arg: string) {

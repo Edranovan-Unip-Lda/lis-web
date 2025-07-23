@@ -1,0 +1,114 @@
+<div class="card">
+    <p-table #dt [value]="dataList" [paginator]="true" paginatorDropdownAppendTo="body" [rows]="50" [columns]="cols"
+        [rowHover]="true" [showCurrentPageReport]="true" responsiveLayout="scroll" dataKey="id"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rowsPerPageOptions]="[10, 25, 50]" [globalFilterFields]="['codigo', 'descricao', 'tipo', 'tipoRisco']">
+        <ng-template #caption>
+            <div class="flex flex-wrap gap-2 items-center justify-between">
+                <p-icon-field class="order-1 sm:order-none">
+                    <p-inputicon class="pi pi-search" />
+                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Busca global"
+                        class="w-full" />
+                </p-icon-field>
+                <p-button pButton outlined (click)="openDialogNewData(type)" class="flex-order-0 sm:flex-order-1"
+                    icon="bi bi-plus-lg" label="Adicionar novo">
+                </p-button>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th>No.</th>
+                @for (col of columns; track $index) {
+                <th>{{ col.header }}</th>
+                }
+                <th>
+                    Açoẽs
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-item let-columns="columns" let-rowIndex="rowIndex">
+            <tr>
+                <td>
+                    {{ rowIndex + 1 }}
+                </td>
+                @for(col of columns; track col){
+                <td>
+                    {{item[col.field]}}
+                </td>
+                }
+                <td>
+                    <p-button icon="pi pi-pencil" class="mr-2" severity="info" [rounded]="true" [outlined]="true"
+                        (click)="openDialogEditData(item, rowIndex)" />
+                    <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
+                        (click)="deleteData(item.id)" />
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-toast position="bottom-right" />
+<p-confirmdialog />
+
+@if (showDialog) {
+<p-dialog #dg header="{{isNew?'New':'Edit'}} {{type|titlecase}}" [modal]="true" [position]="'top'"
+    [(visible)]="showDialog" [style]="{ 'min-width': '30rem' }">
+    <form [formGroup]="dataForm">
+        <div class="grid grid-cols-12 gap-4">
+            @if (type === 'tipo-risco') {
+            <div class="mb-6 col-span-12">
+                <label for="tipo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Risco
+                </label>
+                <p-select [appendTo]="'body'" formControlName="tipo" inputId="tipo" [options]="nivelRiscoOpts"
+                    optionLabel="name" fluid [showClear]="true" placeholder="Selecione o Nivel Risco">
+                </p-select>
+            </div>
+            }
+            @else {
+            <div class="mb-6 col-span-12">
+                <label for="codigo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Código
+                </label>
+                <input formControlName="codigo" id="codigo" type="text" pInputText fluid />
+            </div>
+            <div class="mb-6 col-span-12">
+                <label for="descricao" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Descrição
+                </label>
+                <input formControlName="descricao" id="descricao" type="text" pInputText fluid />
+            </div>
+            <div class="mb-2 col-span-12">
+                <label for="tipo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Tipo
+                </label>
+                <p-select [appendTo]="'body'" formControlName="tipo" inputId="tipo" [options]="categoryOpts"
+                    optionLabel="name" fluid [showClear]="true" placeholder="Selecione o Tipo Economico">
+                </p-select>
+            </div>
+            <div class="col-span-12">
+                <label for="tipoRisco" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Risco
+                </label>
+                <p-select [appendTo]="'body'" formControlName="tipoRisco" inputId="tipoRisco" [options]="nivelRiscoOpts"
+                    optionLabel="name" fluid [showClear]="true" placeholder="Selecione o Nivel Risco">
+                </p-select>
+            </div>
+            }
+
+            <div class="mb-6 col-span-12">
+                <p-button class="mr-4" icon="pi pi-times" label="Cancelar" variant="outlined" severity="danger"
+                    (click)="closeDialog()" />
+                @if (isNew) {
+                <p-button icon="pi pi-save" [loading]="loading" [disabled]="!dataForm.valid" pButton pRipple
+                    (click)="saveData(dataForm)" label="Guardar" class="w-auto mt-3"></p-button>
+                }@else {
+                <p-button icon="pi pi-sync" [loading]="loading" [disabled]="!dataForm.valid" pButton pRipple
+                    (click)="updateData(dataForm)" label="Atualizar" class="w-auto mt-3"></p-button>
+                }
+            </div>
+
+        </div>
+    </form>
+</p-dialog>
+}

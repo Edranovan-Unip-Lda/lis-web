@@ -21,3 +21,32 @@ export enum Categoria {
     comercial = 'COMERCIAL',
     industrial = 'INDUSTRIAL',
 }
+
+export enum NivelRisco {
+    baixo = 'BAIXO',
+    medio = 'MEDIO',
+    alto = 'ALTO'
+}
+
+export enum TipoPedido {
+    inicial = 'INICIAL',
+    alteracao = 'ALTERACAO',
+    anual = 'ANUAL'
+}
+
+export enum TipoEstabelecimento {
+    principal = 'PRINCIPAL',
+    delegacao = 'DELEGACAO',
+    sucursal = 'SUCURSAL'
+}
+
+export enum CaraterizacaoEstabelecimento {
+    kiosk = 'KIOSK',
+    loja = 'LOJA',
+    armazem = 'ARMAZEM'
+}
+
+export enum TipoAto {
+    retalho = 'RETALHO',
+    gross = 'GROSSO'
+}

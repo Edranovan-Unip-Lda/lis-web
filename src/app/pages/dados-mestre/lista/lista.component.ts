@@ -1,6 +1,7 @@
 import { DataMasterService } from '@/core/services/data-master.service';
-import { DatePipe, TitleCasePipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { categoryTpesOptions, nivelRiscoOptions } from '@/core/utils/global-function';
+import { TitleCasePipe } from '@angular/common';
+import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -8,72 +9,81 @@ import { Button } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { Dialog } from 'primeng/dialog';
 import { IconField } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
-import { InputTextModule } from 'primeng/inputtext';
-import { PopoverModule } from 'primeng/popover';
+import { InputIcon } from 'primeng/inputicon';
+import { InputText } from 'primeng/inputtext';
+import { Select } from 'primeng/select';
 import { Table, TableModule } from 'primeng/table';
 import { Toast } from 'primeng/toast';
 
 @Component({
-  selector: 'app-municipio-list',
-  imports: [ReactiveFormsModule, Dialog, TitleCasePipe,TableModule, Button, InputIconModule, IconField, InputTextModule, PopoverModule, ConfirmDialog, Toast],
-  templateUrl: './municipio-list.component.html',
-  styleUrl: './municipio-list.component.scss',
+  selector: 'app-lista',
+  imports: [TableModule, InputText, Button, Dialog, TitleCasePipe, Select, ReactiveFormsModule, ConfirmDialog, Toast, IconField, InputIcon],
+  templateUrl: './lista.component.html',
+  styleUrl: './lista.component.scss',
   providers: [ConfirmationService, MessageService]
 })
-export class MunicipioListComponent {
+export class ListaComponent {
+  dataForm!: FormGroup;
   dataList: any[] = [];
-  page = 0;
-  size = 50;
-  totalData = 60;
-  dataIsFetching = false;
-  form: FormGroup;
+  cols: { field: string; header: string }[] = [];
   showDialog = false;
   type = '';
   isNew = false;
   selectedData: any;
+  nivelRiscoOpts = nivelRiscoOptions;
+  categoryOpts = categoryTpesOptions;
   loading = false;
+   page = 0;
+  size = 50;
+  totalData = 0;
+  dataIsFetching = false;
 
   constructor(
     private route: ActivatedRoute,
-    private _fb: FormBuilder,
     private service: DataMasterService,
+    private _fb: FormBuilder,
     private confirmationService: ConfirmationService,
     private messageService: MessageService
   ) {
-    this.dataList = this.route.snapshot.data['municipioResolve']._embedded.municipios;
-    this.type = this.route.snapshot.data['type'];
-
-    this.form = this._fb.group({
-      id: [null],
-      nome: [null, [Validators.required, Validators.minLength(3)]]
-    });
+    this.setDataMaster(this.route.snapshot.data['type']);
   }
 
-
+  private setDataMaster(type: string): void {
+    this.type = type;
+    switch (type) {
+      case 'atividade-economica':
+        this.dataList = this.route.snapshot.data['listaAtividade']._embedded.atividadeEconomica;
+        this.cols = [
+          { field: 'codigo', header: 'Codigo' },
+          { field: 'descricao', header: 'Descricao' },
+          { field: 'tipo', header: 'Categoria' },
+          { field: 'tipoRisco', header: 'Risco' },
+        ];
+        this.dataForm = this._fb.group({
+          id: [''],
+          codigo: ['', [Validators.required, Validators.minLength(1)]],
+          descricao: ['', [Validators.required, Validators.minLength(1)]],
+          tipo: ['', [Validators.required, Validators.minLength(1)]],
+          tipoRisco: ['', [Validators.required, Validators.minLength(1)]],
+        });
+        break;
+    }
+  }
 
   onGlobalFilter(table: Table, event: Event) {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
-  }
-
-  openDialogNewData(type: string): void {
-    this.isNew = true;
-    this.showDialog = true;
-  }
-
-  openDialogEditData(data: any, index?: any,): void {
-    this.showDialog = true;
-    this.isNew = false;
-    this.form.patchValue(data);
-    this.selectedData = data;
-    this.selectedData.index = index;
   }
 
 
   saveData(form: FormGroup): void {
     this.loading = true;
 
-    this.service.save(this.type, form.value).subscribe({
+    const formData = { ...form.value };
+    formData.tipo = formData.tipo.value;
+    formData.tipoRisco = formData.tipoRisco.value;
+
+
+    this.service.save(this.type, formData).subscribe({
       next: response => {
         this.dataList.push(response);
         this.addMessages(true, true);
@@ -93,7 +103,11 @@ export class MunicipioListComponent {
   updateData(form: FormGroup): void {
     this.loading = true;
 
-    this.service.update(this.type, this.selectedData.id, form.value).subscribe({
+    const formData = { ...form.value };
+    formData.tipo = formData.tipo.value;
+    formData.tipoRisco = formData.tipoRisco.value;
+
+    this.service.update(this.type, this.selectedData.id, formData).subscribe({
       next: response => {
         this.dataList[this.selectedData.index] = response
         this.addMessages(true, false);
@@ -105,10 +119,15 @@ export class MunicipioListComponent {
       },
       complete: () => {
         this.loading = false;
-        this.form.reset();
+        this.dataForm.reset();
         this.closeDialog();
       }
     });
+  }
+
+  openDialogNewData(type: string): void {
+    this.isNew = true;
+    this.showDialog = true;
   }
 
   deleteData(id: number) {
@@ -147,9 +166,25 @@ export class MunicipioListComponent {
     });
   }
 
+  openDialogEditData(data: any, index?: any,): void {
+    const formEditData = {
+      id: data.id,
+      codigo: data.codigo,
+      descricao: data.descricao,
+      tipo: categoryTpesOptions.find(item => item.value === data.tipo),
+      tipoRisco: nivelRiscoOptions.find(item => item.value === data.tipoRisco),
+    };
+
+    this.showDialog = true;
+    this.isNew = false;
+    this.dataForm.patchValue(formEditData);
+    this.selectedData = data;
+    this.selectedData.index = index;
+  }
+
   closeDialog(): void {
     this.showDialog = false;
-    this.form.reset();
+    this.dataForm.reset();
   }
 
   private addMessages(isSuccess: boolean, isNew: boolean, error?: any) {

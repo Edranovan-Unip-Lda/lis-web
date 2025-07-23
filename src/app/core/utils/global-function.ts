@@ -1,4 +1,4 @@
-import { AplicanteType, Categoria, Role, Status } from "../models/enums";
+import { AplicanteType, Categoria, NivelRisco, Role, Status } from "../models/enums";
 
 /**
   * Maps an array of objects to an array of objects with only id and name properties.
@@ -15,6 +15,15 @@ export function mapToIdAndName(array: any[]): { id: number, name: string }[] {
     });
 }
 
+export function mapToIdAndNome(array: any[]): { id: number, nome: string }[] {
+    return array.map(item => {
+        return {
+            id: item.id,
+            nome: item.nome
+        };
+    });
+}
+
 export const statusOptions: any[] = [
     { name: Status.active, value: Status.active, icon: 'bi bi-fw bi-shield-check', color: 'text-green-500' },
     { name: Status.pending, value: Status.pending, icon: 'bi bi-fw bi-pause-circle', color: 'text-yellow-500' },
@@ -25,6 +34,12 @@ export const roleOptions: any[] = [
     { name: 'Admin', value: Role.admin },
     { name: 'User', value: Role.staff },
     { name: 'Guest', value: Role.client }
+];
+
+export const nivelRiscoOptions: any[] = [
+    { name: 'Baixo', value: NivelRisco.baixo },
+    { name: 'Medio', value: NivelRisco.medio },
+    { name: 'Alto', value: NivelRisco.alto }
 ];
 
 export const applicationTypesOptions: any[] = [

@@ -51,7 +51,13 @@ export class EmpresaService {
     }
   }
 
-  getAplicanteById(empresaId: number, aplicanteId: number): Observable<any> {
+  /**
+   * Retorna um aplicante especifico por empresaId e aplicanteId.
+   * @param empresaId O id da empresa a qual o aplicante pertence.
+   * @param aplicanteId O id do aplicante a ser retornado.
+   * @returns Um observable com o aplicante especifico.
+   */
+  getAplicanteByEmpresaIdAndAplicanteId(empresaId: number, aplicanteId: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${empresaId}/aplicantes/${aplicanteId}`);
   }
 

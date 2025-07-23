@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { ApplicationListComponent } from './application-list/application-list.component';
 import { ApplicationDetailComponent } from './application-detail/application-detail.component';
 import { ApplicationAtividadeDetailComponent } from './application-atividade-detail/application-atividade-detail.component';
-import { getPageAplicanteOrByEmpresaIdResolver } from '@/core/resolvers/empresa.resolver';
+import { getAplicante, getPageAplicanteOrByEmpresaIdResolver } from '@/core/resolvers/empresa.resolver';
 
 export default [
     {
@@ -25,8 +25,11 @@ export default [
             {
                 path: ':id',
                 data: { breadcrumb: 'Detail' },
-                component: ApplicationDetailComponent
-            }
+                component: ApplicationDetailComponent,
+                resolve: {
+                    aplicanteResolver: getAplicante
+                }
+            },
         ]
 
     },
@@ -37,7 +40,10 @@ export default [
             {
                 path: ':id',
                 data: { breadcrumb: 'Detail' },
-                component: ApplicationAtividadeDetailComponent
+                component: ApplicationAtividadeDetailComponent,
+                resolve: {
+                    aplicanteResolver: getAplicante
+                }
             }
         ]
     }

@@ -13,6 +13,18 @@ export class DataMasterService {
         private http: HttpClient,
     ) { }
 
+    save(type: string, form: any): Observable<any> {
+        return this.http.post<any>(`${this.apiUrl}/${type}`, form).pipe(take(1));
+    }
+
+
+    update(type: string, id: number, form: any): Observable<any> {
+        return this.http.patch<any>(`${this.apiUrl}/${type}/${id}`, form).pipe(take(1));
+    }
+
+    delete(type: string, id: number): Observable<any> {
+        return this.http.delete<any>(`${this.apiUrl}/${type}/${id}`).pipe(take(1));
+    }
 
     getRoles(): Observable<any> {
         return this.http.get<any>(`${this.apiUrl}/roles`).pipe(take(1));
@@ -26,6 +38,10 @@ export class DataMasterService {
         return this.http.get<any>(`${this.apiUrl}/municipios/${municipioId}/listaPostoAdministrativo`).pipe(take(1));
     }
 
+    getPostoById(id: number): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/postos/${id}?projection=withMunicipio`).pipe(take(1));
+    }
+
     getPostos(page = 0, size = 50): Observable<any> {
         let params = new HttpParams()
             .set('page', page.toString())
@@ -37,6 +53,10 @@ export class DataMasterService {
 
     getSucosByPosto(postoId: number): Observable<any> {
         return this.http.get<any>(`${this.apiUrl}/postos/${postoId}/listaSuco`).pipe(take(1));
+    }
+
+    getSucoById(id: number): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/sucos/${id}?projection=withPostoAdministrativo`).pipe(take(1));
     }
 
     getSucos(page = 0, size = 50): Observable<any> {
@@ -61,5 +81,20 @@ export class DataMasterService {
         return this.http.get<any>(`${this.apiUrl}/aldeias`, { params }).pipe(take(1));
     }
 
+    getAtividadeEconomica(page = 0, size = 50): Observable<any> {
+        let params = new HttpParams()
+            .set('page', page.toString())
+            .set('size', size.toString())
+            .set('sort', 'codigo,asc')
+        return this.http.get<any>(`${this.apiUrl}/atividade-economica`, { params }).pipe(take(1));
+    }
+
+    getTipoRisco(page = 0, size = 50): Observable<any> {
+        let params = new HttpParams()
+            .set('page', page.toString())
+            .set('size', size.toString())
+            .set('sort', 'id,asc')
+        return this.http.get<any>(`${this.apiUrl}/tipo-risco`, { params }).pipe(take(1));
+    }
 
 }
