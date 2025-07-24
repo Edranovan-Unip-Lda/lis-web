@@ -49,6 +49,7 @@ export const getAplicante: ResolveFn<any> = (route: ActivatedRouteSnapshot) => {
     const authService = inject(AuthenticationService);
     const service = inject(EmpresaService);
     const empresaId = authService.currentUserValue.empresa.id
+    console.log(empresaId,id);
     if (id) {
         return service.getAplicanteByEmpresaIdAndAplicanteId(empresaId, +id);
     } else {

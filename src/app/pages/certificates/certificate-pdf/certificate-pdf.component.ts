@@ -1,10 +1,11 @@
 import { Aplicante } from '@/core/models/entities.model';
+import { TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-certificate-pdf',
-  imports: [],
+  imports: [TitleCasePipe],
   templateUrl: './certificate-pdf.component.html',
   styleUrl: './certificate-pdf.component.scss'
 })
