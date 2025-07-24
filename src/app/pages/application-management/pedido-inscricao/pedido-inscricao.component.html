@@ -1,0 +1,129 @@
+<div class="max-w-2xl mx-auto bg-white text-black p-8 rounded-2xl shadow-md border mt-10">
+    <!-- Logo -->
+    <div class="flex justify-center mb-4">
+        <img src="" alt="Logo" class="h-20 w-20 object-contain" />
+    </div>
+    <!-- Header -->
+    <div class="text-center mb-6">
+        <h1 class="font-semibold text-lg uppercase">Ministério do Comércio e Indústria</h1>
+        <h2 class="font-medium text-base">Direção-Geral da Indústria</h2>
+        <h3 class="font-bold text-base mt-2">Inscrição no Cadastro Industrial</h3>
+        <div class="text-xs text-gray-500 mt-1">(Decreto-Lei n.º 90/2023, de 27 de dezembro)</div>
+    </div>
+    <!-- PEDIDO -->
+    <div class="mb-6">
+        <label class="block font-semibold mb-1">PEDIDO</label>
+        <div class="flex gap-6 flex-wrap">
+            <label class="flex items-center gap-2">
+                <input type="checkbox" class="form-checkbox" /> Inscrição inicial
+            </label>
+            <label class="flex items-center gap-2">
+                <input type="checkbox" class="form-checkbox" /> Alteração
+            </label>
+            <label class="flex items-center gap-2">
+                <input type="checkbox" class="form-checkbox" /> Atualização anual
+            </label>
+        </div>
+    </div>
+    <!-- Identificação da Empresa -->
+    <div class="mb-4">
+        <h4 class="font-semibold mb-2 border-b border-gray-200 pb-1">Identificação da Empresa</h4>
+        <div class="mb-2 flex gap-2">
+            <label class="w-1/4 text-sm font-medium">Nome da Empresa:</label>
+            <input type="text" class="flex-1 border rounded px-2 py-1" />
+        </div>
+        <div class="mb-2 flex gap-2">
+            <label class="w-1/4 text-sm font-medium">Sede:</label>
+            <input type="text" class="flex-1 border rounded px-2 py-1" />
+        </div>
+        <div class="mb-2 flex gap-2">
+            <label class="w-1/4 text-sm font-medium">NIF:</label>
+            <input type="text" class="w-1/3 border rounded px-2 py-1" />
+            <label class="w-1/4 text-sm font-medium">N.º de Registo Comercial</label>
+            <input type="text" class="w-1/3 border rounded px-2 py-1" />
+        </div>
+        <div class="mb-2 flex gap-2">
+            <label class="w-1/4 text-sm font-medium">Telemóvel:</label>
+            <input type="text" class="w-1/3 border rounded px-2 py-1" />
+            <label class="w-1/4 text-sm font-medium">Telefone:</label>
+            <input type="text" class="w-1/3 border rounded px-2 py-1" />
+        </div>
+        <div class="mb-2 flex gap-2">
+            <label class="w-1/4 text-sm font-medium">Email:</label>
+            <input type="email" class="flex-1 border rounded px-2 py-1" />
+        </div>
+        <div class="mb-2 flex gap-2">
+            <label class="w-1/4 text-sm font-medium">Identificação do administrador/gerente:</label>
+            <input type="text" class="flex-1 border rounded px-2 py-1" />
+        </div>
+    </div>
+    <!-- Identificação do Estabelecimento -->
+    <div class="mb-4">
+        <h4 class="font-semibold mb-2 border-b border-gray-200 pb-1">Identificação do Estabelecimento</h4>
+        <div class="mb-2 flex gap-2">
+            <label class="w-1/4 text-sm font-medium">Nome do estabelecimento:</label>
+            <input type="text" class="flex-1 border rounded px-2 py-1" />
+        </div>
+        <div class="mb-2 flex gap-2">
+            <label class="w-1/4 text-sm font-medium">Local do estabelecimento:</label>
+            <input type="text" class="flex-1 border rounded px-2 py-1" />
+        </div>
+        <div class="mb-2 flex items-center gap-2">
+            <span class="w-1/4 text-sm font-medium">Tipo de Empresa:</span>
+            <label class="flex items-center gap-1"><input type="checkbox" /> Microempresa</label>
+            <label class="flex items-center gap-1"><input type="checkbox" /> Pequena empresa</label>
+            <label class="flex items-center gap-1"><input type="checkbox" /> Média empresa</label>
+            <label class="flex items-center gap-1"><input type="checkbox" /> Grande empresa</label>
+        </div>
+    </div>
+    <!-- Caracterização da Atividade -->
+    <div class="mb-4">
+        <h4 class="font-semibold mb-2 border-b border-gray-200 pb-1">Caracterização da Atividade</h4>
+        <div class="mb-2 flex items-center gap-2">
+            <span class="w-1/4 text-sm font-medium">Quanto ao Risco:</span>
+            <label class="flex items-center gap-1"><input type="checkbox" /> Baixo risco</label>
+            <label class="flex items-center gap-1"><input type="checkbox" /> Médio risco</label>
+            <label class="flex items-center gap-1"><input type="checkbox" /> Alto risco</label>
+        </div>
+        <div class="mb-2 flex items-center gap-2">
+            <span class="w-1/4 text-sm font-medium">Quanto à atividade:</span>
+            <label class="flex items-center gap-1"><input type="checkbox" /> Produção</label>
+            <label class="flex items-center gap-1"><input type="checkbox" /> Exploração</label>
+        </div>
+        <div class="mb-2 flex gap-2 items-center">
+            <label class="w-1/4 text-sm font-medium">Tipo de atividade no estabelecimento:</label>
+            <input type="text" class="flex-1 border rounded px-2 py-1" />
+            <span class="text-sm font-medium ml-2">Código</span>
+            <input type="text" class="w-32 border rounded px-2 py-1" />
+        </div>
+        <div class="mb-2 flex gap-2 items-center">
+            <label class="w-1/4 text-sm font-medium">Atividade principal exercida no estabelecimento:</label>
+            <input type="text" class="flex-1 border rounded px-2 py-1" />
+            <span class="text-sm font-medium ml-2">Código</span>
+            <input type="text" class="w-32 border rounded px-2 py-1" />
+        </div>
+        <div class="mb-2 flex gap-2">
+            <label class="w-1/4 text-sm font-medium">Alterações a averbar:</label>
+            <input type="text" class="flex-1 border rounded px-2 py-1" />
+        </div>
+        <div class="mb-2 flex gap-2">
+            <label class="w-1/4 text-sm font-medium">Data de emissão do certificado anterior, se aplicável:</label>
+            <input type="date" class="flex-1 border rounded px-2 py-1" />
+        </div>
+        <div class="mb-2">
+            <label class="block text-sm font-medium">OBS:</label>
+            <textarea class="w-full border rounded px-2 py-1"></textarea>
+        </div>
+    </div>
+    <!-- Footer -->
+    <div class="mt-8 flex items-center gap-4">
+        <span class="text-sm font-medium">Data:</span>
+        <input type="text" class="w-12 border rounded px-2 py-1" placeholder="dia" />
+        <span>de</span>
+        <input type="text" class="w-24 border rounded px-2 py-1" placeholder="mês" />
+        <span>de</span>
+        <input type="text" class="w-20 border rounded px-2 py-1" placeholder="ano" />
+        <div class="flex-1"></div>
+        <span class="text-sm font-medium">Assinatura</span>
+    </div>
+</div>

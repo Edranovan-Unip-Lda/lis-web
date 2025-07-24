@@ -1,4 +1,4 @@
-import { AplicanteType, CaraterizacaoEstabelecimento, Categoria, NivelRisco, Role, Status, TipoAto, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro } from "../models/enums";
+import { AplicanteType, CaraterizacaoEstabelecimento, Categoria, NivelRisco, QuantoAtividade, Role, Status, TipoAto, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro } from "../models/enums";
 
 /**
   * Maps an array of objects to an array of objects with only id and name properties.
@@ -30,6 +30,16 @@ export function mapToAtividadeEconomica(array: any[]): { id: number, codigo: str
             id: item.id,
             codigo: item.codigo,
             descricao: item.descricao
+        };
+    });
+}
+
+export function mapToTaxa(array: any[]): { id: number, ato: string, montante: number }[] {
+    return array.map(item => {
+        return {
+            id: item.id,
+            ato: item.ato,
+            montante: item.montante
         };
     });
 }
@@ -121,6 +131,17 @@ export const tipoEmpresaOptions: any[] = [
         value: TipoEmpresa.grande
     },
 ];
+
+export const quantoAtividadeoptions: any[] = [
+    {
+        name: 'Produção',
+        value: QuantoAtividade.producao
+    },
+    {
+        name: 'Exploração',
+        value: QuantoAtividade.exploracao
+    },
+]
 
 export const caraterizacaEstabelecimentoOptions: any[] = [
     {

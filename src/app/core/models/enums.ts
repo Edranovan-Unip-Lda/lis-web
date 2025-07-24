@@ -58,6 +58,11 @@ export enum TipoEmpresa {
     grande = 'GRANDE_EMPRESA'
 }
 
+export enum QuantoAtividade {
+    producao = 'PRODUCAO',
+    exploracao = 'EXPLORACAO'
+}
+
 export enum FaturaStatus {
     emitida = 'EMITIDA',
     paga = 'PAGA',

@@ -1,13 +1,14 @@
-import { Aplicante, Empresa, PedidoInscricaoCadastro } from '@/core/models/entities.model';
+import { Aplicante, Empresa, Fatura, PedidoInscricaoCadastro } from '@/core/models/entities.model';
 import { AplicanteType, Categoria } from '@/core/models/enums';
 import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
 import { AplicanteService } from '@/core/services/aplicante.service';
 import { DataMasterService } from '@/core/services/data-master.service';
-import { caraterizacaEstabelecimentoOptions, mapToAtividadeEconomica, mapToIdAndNome, nivelRiscoOptions, tipoAtoOptions, tipoEmpresaOptions, tipoEstabelecimentoOptions, tipoPedidoCadastroOptions } from '@/core/utils/global-function';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { PedidoService } from '@/core/services/pedido.service';
+import { caraterizacaEstabelecimentoOptions, mapToAtividadeEconomica, mapToIdAndNome, mapToTaxa, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEmpresaOptions, tipoEstabelecimentoOptions, tipoPedidoCadastroOptions } from '@/core/utils/global-function';
+import { CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { FileUpload } from 'primeng/fileupload';
@@ -20,7 +21,7 @@ import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-application-detail',
-  imports: [ReactiveFormsModule, Button, StepperModule, Select, InputText, FileUpload, Tag, StatusSeverityPipe, CurrencyPipe, DatePipe, Toast],
+  imports: [ReactiveFormsModule, Button, StepperModule, Select, InputText, FileUpload, Tag, StatusSeverityPipe, CurrencyPipe, DatePipe, Toast, TitleCasePipe, RouterLink],
   templateUrl: './application-detail.component.html',
   styleUrl: './application-detail.component.scss',
   providers: [MessageService]
@@ -29,6 +30,9 @@ export class ApplicationDetailComponent {
   aplicanteData!: Aplicante;
   faturaForm!: FormGroup;
   pedidoLoading = false;
+  faturaLoading = false;
+  pedidoId!: number;
+  faturaId!: number;
   isNew = false;
 
   requestForm!: FormGroup;
@@ -38,65 +42,14 @@ export class ApplicationDetailComponent {
   caraterizacaEstabelecimentoOpts = caraterizacaEstabelecimentoOptions;
   nivelRiscoOpts = nivelRiscoOptions;
   tipoAtoOpts = tipoAtoOptions;
+  quantoAtividadeOpts = quantoAtividadeoptions;
   categoria!: Categoria;
   listaMunicipio: any[] = [];
   listaPosto: any[] = [];
   listaSuco: any[] = [];
   listaAldeia: any[] = [];
   listaAtividadeEconomica: any[] = [];
-
-  pedidoAto: any[] = [
-    {
-      name: 'Licenca para exercicio da atividade comercial',
-      value: 'Licenca para exercicio da atividade comercial',
-      montante: 500
-    },
-    {
-      name: 'Renovacao da licenca de exercicio da atividade comercial',
-      value: 'Renovacao da licenca de exercicio da atividade comercial',
-      montante: 250
-    },
-    {
-      name: 'Licenca para abertura de sucursal ou delegacao',
-      value: 'Licenca para abertura de sucursal ou delegacao',
-      montante: 500
-    },
-    {
-      name: 'Vistoria previa para licenca de estabelecimento comercial',
-      value: 'Vistoria previa para licenca de estabelecimento comercial',
-      montante: 200
-    },
-    {
-      name: 'Licenca para mudanca ou alteracoes de estabelecimento comercial',
-      value: 'Licenca para mudanca ou alteracoes de estabelecimento comercial',
-      montante: 100
-    },
-    {
-      name: 'Vistoria subsequente',
-      value: 'Vistoria subsequente',
-      montante: 100
-    },
-    {
-      name: 'Inscricao no cadastro comercial',
-      value: 'Inscricao no cadastro comercial',
-      montante: 50
-    },
-    {
-      name: 'Atualizacao pontual de dados de inscricao no cadastro comercial',
-      value: 'Atualizacao pontual de dados de inscricao no cadastro comercial',
-      montante: 25
-    },
-    {
-      name: 'Alvara de Licenca da atividade comercial',
-      value: 'Alvara de Licenca da atividade comercial',
-      montante: 25
-    },
-    {
-      name: 'Certificado de inscricao no cadastro comercial',
-      value: 'Certificado de inscricao no cadastro comercial',
-      montante: 25
-    },
-  ]
+  listaPedidoAto: any[] = [];
 
   uploadedFiles: any[] = [];
 
@@ -106,6 +59,7 @@ export class ApplicationDetailComponent {
     private dataMasterService: DataMasterService,
     private aplicanteService: AplicanteService,
     private messageService: MessageService,
+    private pedidoService: PedidoService,
   ) {
   }
 
@@ -113,14 +67,24 @@ export class ApplicationDetailComponent {
     this.initForm();
 
     this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
+    this.categoria = this.aplicanteData.categoria;
+    this.listaPedidoAto = mapToTaxa(this.router.snapshot.data['listaTaxaResolver']._embedded.taxas);
+
     console.log(this.aplicanteData);
-    
+
 
     if (!this.aplicanteData.pedidoInscricaoCadastroDto) {
       this.isNew = true;
       this.mapNewPedido(this.aplicanteData.empresaDto);
     } else {
       this.isNew = false;
+      this.pedidoId = this.aplicanteData.pedidoInscricaoCadastroDto.id;
+
+      if (this.aplicanteData.pedidoInscricaoCadastroDto.fatura) {
+        this.faturaId = this.aplicanteData.pedidoInscricaoCadastroDto.fatura.id;
+        this.mapEditFatura(this.aplicanteData.pedidoInscricaoCadastroDto.fatura);
+      }
+
       this.mapEditPedido(this.aplicanteData.pedidoInscricaoCadastroDto);
     }
   }
@@ -210,7 +174,8 @@ export class ApplicationDetailComponent {
     this.requestForm.patchValue({
       tipoPedidoCadastro: this.tipoPedidoOpts.find(item => item.value === pedido.tipoPedidoCadastro),
       tipoEstabelecimento: this.tipoEstabelecimentoOpts.find(item => item.value === pedido.tipoEstabelecimento),
-      tipoEmpresa: pedido.categoria === Categoria.industrial ? pedido.tipoEmpresa : null,
+      tipoEmpresa: this.categoria === Categoria.industrial ? pedido.tipoEmpresa : null,
+      quantoAtividade: this.categoria === Categoria.industrial ? pedido.quantoAtividade : null,
       caraterizacaoEstabelecimento: this.caraterizacaEstabelecimentoOpts.find(item => item.value === pedido.caraterizacaoEstabelecimento),
       risco: this.nivelRiscoOpts.find(item => item.value === pedido.risco),
       ato: this.tipoAtoOpts.find(item => item.value === pedido.ato),
@@ -247,7 +212,22 @@ export class ApplicationDetailComponent {
         });
       }
     });
-    console.log(this.requestForm.value);
+  }
+
+  private mapEditFatura(fatura: Fatura) {
+    let taxa = {
+      id: fatura.taxa.id,
+      ato: fatura.taxa.ato,
+      montante: fatura.taxa.montante
+    }
+
+    this.faturaForm.patchValue(fatura);
+    this.faturaForm.patchValue({
+      codigo: fatura.atividadeDeclarada.codigo,
+      taxa: taxa
+    });
+    console.log(this.faturaForm.value);
+
   }
 
   munisipiuChange(event: any): void {
@@ -279,6 +259,10 @@ export class ApplicationDetailComponent {
     this.requestForm.get('tipoAtividadeCodigo')?.setValue(event.value.codigo);
   }
 
+  atividadeDeclaradaChange(event: any): void {
+    this.faturaForm.get('codigo')?.setValue(event.value.codigo);
+  }
+
   atividadePrincipalChange(event: any): void {
     this.requestForm.get('atividadePrincipalCodigo')?.patchValue(event.value.codigo);
   }
@@ -303,6 +287,8 @@ export class ApplicationDetailComponent {
           this.addMessages(true, true);
           callback(3);
 
+          this.pedidoId = response.id;
+          this.aplicanteData.pedidoInscricaoCadastroDto = response;
           this.requestForm.patchValue({
             id: response.id,
           });
@@ -341,6 +327,60 @@ export class ApplicationDetailComponent {
     }
   }
 
+  saveFatura(form: FormGroup): void {
+    console.log(form.value);
+
+    let formData = { ...form.value }
+    formData.pedidoInscricaoCadastro = {
+      id: this.pedidoId
+    }
+
+    console.log(formData);
+
+
+    if (this.pedidoId && formData.id) {
+
+      this.pedidoService.updateFatura(this.pedidoId, formData.id, formData).subscribe({
+        next: (response) => {
+          console.log(response);
+          this.faturaId = response.id;
+          this.aplicanteData.pedidoInscricaoCadastroDto.fatura = response;
+          this.addMessages(true, false);
+        },
+        error: error => {
+          this.addMessages(false, true, error);
+          console.error(error);
+          this.pedidoLoading = false;
+        },
+        complete: () => {
+          this.pedidoLoading = false;
+          // this.closeDialog();
+        }
+      });
+
+    } else {
+      this.pedidoService.saveFatura(this.pedidoId, form.value).subscribe({
+        next: (response) => {
+          console.log(response);
+          this.faturaId = response.id;
+          this.aplicanteData.pedidoInscricaoCadastroDto.fatura = response;
+          this.addMessages(true, false);
+        },
+        error: error => {
+          this.addMessages(false, true, error);
+          console.error(error);
+          this.pedidoLoading = false;
+        },
+        complete: () => {
+          this.pedidoLoading = false;
+          // this.closeDialog();
+        }
+      });
+    }
+
+
+  }
+
   onUpload(event: any, arg: string) {
     for (const file of event.files) {
       this.uploadedFiles.push(file);
@@ -376,6 +416,7 @@ export class ApplicationDetailComponent {
       localEstabelecimento: [null],
       tipoEstabelecimento: [null],
       tipoEmpresa: [null],
+      quantoAtividade: [null],
       caraterizacaoEstabelecimento: [null],
       risco: [null],
       ato: [null],
@@ -389,11 +430,12 @@ export class ApplicationDetailComponent {
     });
 
     this.faturaForm = this._fb.group({
-      ato: [null],
-      nomeRequerente: [null],
+      id: [null],
+      taxa: [null],
+      nomeEmpresa: [null],
       sociedadeComercial: [null],
       atividadeDeclarada: [null],
-      codigo: [null]
+      codigo: new FormControl({ value: null, disabled: true }),
     });
   }
 
