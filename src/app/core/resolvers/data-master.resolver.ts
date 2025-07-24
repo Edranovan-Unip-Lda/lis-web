@@ -36,3 +36,8 @@ export const getTipoRiscoResolver: ResolveFn<any> = () => {
     const service = inject(DataMasterService);
     return service.getTipoRisco();
 }
+
+export const getTaxaResolver: ResolveFn<any> = () => {
+    const service = inject(DataMasterService);
+    return service.getTaxa();
+}

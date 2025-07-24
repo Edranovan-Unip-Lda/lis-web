@@ -1,6 +1,6 @@
 import { DataMasterService } from '@/core/services/data-master.service';
 import { categoryTpesOptions, nivelRiscoOptions } from '@/core/utils/global-function';
-import { TitleCasePipe } from '@angular/common';
+import { CurrencyPipe, TitleCasePipe } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -17,7 +17,7 @@ import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-lista',
-  imports: [TableModule, InputText, Button, Dialog, TitleCasePipe, Select, ReactiveFormsModule, ConfirmDialog, Toast, IconField, InputIcon],
+  imports: [TableModule, InputText, Button, Dialog, TitleCasePipe, Select, ReactiveFormsModule, ConfirmDialog, Toast, IconField, InputIcon, CurrencyPipe],
   templateUrl: './lista.component.html',
   styleUrl: './lista.component.scss',
   providers: [ConfirmationService, MessageService]
@@ -33,7 +33,7 @@ export class ListaComponent {
   nivelRiscoOpts = nivelRiscoOptions;
   categoryOpts = categoryTpesOptions;
   loading = false;
-   page = 0;
+  page = 0;
   size = 50;
   totalData = 0;
   dataIsFetching = false;
@@ -67,6 +67,19 @@ export class ListaComponent {
           tipoRisco: ['', [Validators.required, Validators.minLength(1)]],
         });
         break;
+      case 'taxas':
+        this.dataList = this.route.snapshot.data['listaTaxa']._embedded.taxas;
+        this.cols = [
+          { field: 'ato', header: 'Ato' },
+          { field: 'montante', header: 'Montante' },
+        ];
+        this.dataForm = this._fb.group({
+          id: [''],
+          ato: ['', [Validators.required, Validators.minLength(1)]],
+          montante: ['', [Validators.required, Validators.min(1)]],
+        });
+
+        break;
     }
   }
 
@@ -79,9 +92,15 @@ export class ListaComponent {
     this.loading = true;
 
     const formData = { ...form.value };
-    formData.tipo = formData.tipo.value;
-    formData.tipoRisco = formData.tipoRisco.value;
 
+    switch (this.type) {
+      case 'atividade-economica':
+        formData.tipo = formData.tipo.value;
+        formData.tipoRisco = formData.tipoRisco.value;
+        break;
+    }
+
+    console.log(formData);
 
     this.service.save(this.type, formData).subscribe({
       next: response => {
@@ -104,8 +123,12 @@ export class ListaComponent {
     this.loading = true;
 
     const formData = { ...form.value };
-    formData.tipo = formData.tipo.value;
-    formData.tipoRisco = formData.tipoRisco.value;
+    switch (this.type) {
+      case 'atividade-economica':
+        formData.tipo = formData.tipo.value;
+        formData.tipoRisco = formData.tipoRisco.value;
+        break;
+    }
 
     this.service.update(this.type, this.selectedData.id, formData).subscribe({
       next: response => {
@@ -167,13 +190,26 @@ export class ListaComponent {
   }
 
   openDialogEditData(data: any, index?: any,): void {
-    const formEditData = {
-      id: data.id,
-      codigo: data.codigo,
-      descricao: data.descricao,
-      tipo: categoryTpesOptions.find(item => item.value === data.tipo),
-      tipoRisco: nivelRiscoOptions.find(item => item.value === data.tipoRisco),
-    };
+    let formEditData = {};
+    switch (this.type) {
+      case 'value':
+        formEditData = {
+          id: data.id,
+          codigo: data.codigo,
+          descricao: data.descricao,
+          tipo: categoryTpesOptions.find(item => item.value === data.tipo),
+          tipoRisco: nivelRiscoOptions.find(item => item.value === data.tipoRisco),
+        };
+        break;
+
+      case 'taxas':
+        formEditData = {
+          id: data.id,
+          ato: data.ato,
+          montante: data.montante,
+        };
+        break;
+    }
 
     this.showDialog = true;
     this.isNew = false;

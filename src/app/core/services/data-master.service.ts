@@ -102,4 +102,12 @@ export class DataMasterService {
         return this.http.get<any>(`${this.apiUrl}/tipo-risco`, { params }).pipe(take(1));
     }
 
+    getTaxa(page = 0, size = 50): Observable<any> {
+        let params = new HttpParams()
+            .set('page', page.toString())
+            .set('size', size.toString())
+            .set('sort', 'id,desc')
+        return this.http.get<any>(`${this.apiUrl}/taxas`, { params }).pipe(take(1));
+    }
+
 }

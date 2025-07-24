@@ -1,4 +1,4 @@
-import { getAtividadeEconomicaResolver, getTipoRiscoResolver } from "@/core/resolvers/data-master.resolver";
+import { getAtividadeEconomicaResolver, getTaxaResolver, getTipoRiscoResolver } from "@/core/resolvers/data-master.resolver";
 import { Routes } from "@angular/router";
 
 export default [
@@ -27,6 +27,17 @@ export default [
         loadComponent: () => import('@/pages/dados-mestre/lista/lista.component').then((c) => c.ListaComponent),
         resolve: {
             listaTipoRisco: getTipoRiscoResolver
+        }
+    },
+    {
+        path: 'taxa',
+        data: {
+            breadcrumb: 'Taxa',
+            type: 'taxas'
+        },
+        loadComponent: () => import('@/pages/dados-mestre/lista/lista.component').then((c) => c.ListaComponent),
+        resolve: {
+            listaTaxa: getTaxaResolver
         }
     },
     { path: '**', redirectTo: '/notfound' }

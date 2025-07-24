@@ -129,6 +129,11 @@ export const model_admin: MenuItem[] = [
                 icon: 'bi bi-fw bi-bookmark',
                 routerLink: ['dados-mestre/atividade-economica']
             },
+             {
+                label: 'Taxas',
+                icon: 'bi bi-fw bi-currency-dollar',
+                routerLink: ['dados-mestre/taxa']
+            },
             {
                 label: 'Localização',
                 icon: 'bi bi-fw bi-pin-map',
