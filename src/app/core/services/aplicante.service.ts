@@ -2,6 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, take } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { AplicanteType } from '../models/enums';
+import { PedidoInscricaoCadastro } from '../models/entities.model';
 
 @Injectable({ providedIn: 'root' })
 export class AplicanteService {
@@ -24,6 +26,14 @@ export class AplicanteService {
 
     getById(id: number): Observable<any> {
         return this.http.get<any>(`${this.apiUrl}/${id}`);
+    }
+
+    savePedido(aplicanteId: number, tipo: AplicanteType, formData: any): Observable<PedidoInscricaoCadastro> {
+        return this.http.post<PedidoInscricaoCadastro>(`${this.apiUrl}/${aplicanteId}/pedidos?tipo=${tipo}`, formData);
+    }
+
+    updatePedido(aplicanteId: number, pedidoId: number, tipo: AplicanteType, formData: any): Observable<PedidoInscricaoCadastro> {
+        return this.http.put<PedidoInscricaoCadastro>(`${this.apiUrl}/${aplicanteId}/pedidos/${pedidoId}?tipo=${tipo}`, formData);
     }
 
 }

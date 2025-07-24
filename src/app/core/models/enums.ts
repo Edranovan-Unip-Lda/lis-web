@@ -57,3 +57,8 @@ export enum TipoEmpresa {
     media = 'MEDIA_EMPRESA',
     grande = 'GRANDE_EMPRESA'
 }
+
+export enum FaturaStatus {
+    emitida = 'EMITIDA',
+    paga = 'PAGA',
+}

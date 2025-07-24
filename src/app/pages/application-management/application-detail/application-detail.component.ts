@@ -1,81 +1,49 @@
+import { Aplicante, Empresa, PedidoInscricaoCadastro } from '@/core/models/entities.model';
+import { AplicanteType, Categoria } from '@/core/models/enums';
 import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
-import { CommonModule } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { AplicanteService } from '@/core/services/aplicante.service';
+import { DataMasterService } from '@/core/services/data-master.service';
+import { caraterizacaEstabelecimentoOptions, mapToAtividadeEconomica, mapToIdAndNome, nivelRiscoOptions, tipoAtoOptions, tipoEmpresaOptions, tipoEstabelecimentoOptions, tipoPedidoCadastroOptions } from '@/core/utils/global-function';
+import { CurrencyPipe, DatePipe } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { FileUpload } from 'primeng/fileupload';
 import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { StepperModule } from 'primeng/stepper';
 import { Tag } from 'primeng/tag';
-import { PedidoCadastroComponent } from '../pedido-cadastro/pedido-cadastro.component';
-import { Aplicante } from '@/core/models/entities.model';
+import { Toast } from 'primeng/toast';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-application-detail',
-  imports: [CommonModule, ReactiveFormsModule, Button, StepperModule, Select, InputText, FileUpload, Tag, StatusSeverityPipe, PedidoCadastroComponent],
+  imports: [ReactiveFormsModule, Button, StepperModule, Select, InputText, FileUpload, Tag, StatusSeverityPipe, CurrencyPipe, DatePipe, Toast],
   templateUrl: './application-detail.component.html',
-  styleUrl: './application-detail.component.scss'
+  styleUrl: './application-detail.component.scss',
+  providers: [MessageService]
 })
 export class ApplicationDetailComponent {
-  private route = inject(ActivatedRoute);
-  aplicanteData = signal<Aplicante>(this.route.snapshot.data['aplicanteResolver']);
+  aplicanteData!: Aplicante;
+  faturaForm!: FormGroup;
+  pedidoLoading = false;
+  isNew = false;
 
-  pedidoData = computed(() => this.aplicanteData().pedido);
-  empresaData = computed(() => this.aplicanteData().empresa);
-
-  requestForm: FormGroup;
-  faturaForm: FormGroup;
-  requestTypes: any[] = [
-    {
-      name: 'Inscrição Inicial',
-      value: 'Inscrição Inicial'
-    },
-    {
-      name: 'Alteracao',
-      value: 'Alteracao'
-    },
-    {
-      name: 'Atualizacao Anual',
-      value: 'Atualizacao Anual'
-    },
-  ];
-
-  estabelecimentoTypes: any[] = [
-    {
-      name: 'Estabelecimento Principal',
-      value: 'Estabelecimento Principal'
-    },
-    { name: 'Delegacao', value: 'Delegacao' },
-    { name: 'Sucursal', value: 'Sucursal' },
-  ];
-
-  caraterizacaoEstabelecimentoTypes: any[] = [
-    {
-      name: 'Kiosk',
-      value: 'Kiosk'
-    },
-    { name: 'Loja', value: 'Loja' },
-    { name: 'Armazem', value: 'Armazem' },];
-
-  riscoTypes: any[] = [
-    {
-      name: 'Baixo',
-      value: 'Baixo'
-    },
-    { name: 'Medio', value: 'Medio' },
-    { name: 'Alto', value: 'Alto' },]
-
-  atoTypes: any[] = [
-    {
-      name: 'Venda a Retalho',
-      value: 'Venda a Retalho'
-    },
-    {
-      name: 'Venda a Grosso',
-      value: 'Venda a Grosso'
-    }];
+  requestForm!: FormGroup;
+  tipoPedidoOpts = tipoPedidoCadastroOptions;
+  tipoEmpresaOpts = tipoEmpresaOptions;
+  tipoEstabelecimentoOpts = tipoEstabelecimentoOptions;
+  caraterizacaEstabelecimentoOpts = caraterizacaEstabelecimentoOptions;
+  nivelRiscoOpts = nivelRiscoOptions;
+  tipoAtoOpts = tipoAtoOptions;
+  categoria!: Categoria;
+  listaMunicipio: any[] = [];
+  listaPosto: any[] = [];
+  listaSuco: any[] = [];
+  listaAldeia: any[] = [];
+  listaAtividadeEconomica: any[] = [];
 
   pedidoAto: any[] = [
     {
@@ -134,46 +102,243 @@ export class ApplicationDetailComponent {
 
   constructor(
     private _fb: FormBuilder,
+    private router: ActivatedRoute,
+    private dataMasterService: DataMasterService,
+    private aplicanteService: AplicanteService,
+    private messageService: MessageService,
   ) {
-    this.requestForm = this._fb.group({
-      requestType: [null],
-      empresa: this._fb.group({
-        nome: [null],
-        sede: [null],
-        nif: [null],
-        numeruRegisto: [null],
-        telemovel: [null],
-        telefone: [null],
-        email: [null],
-        gerente: [null],
-      }),
-      nomeEstabelecimento: [null],
-      localEstabelecimento: [null],
-      tipoEstabelecimento: [null],
-      caraterizacaoEstabelecimento: [null],
-      risco: [null],
-      ato: [null],
-      tipoAtividade: [null],
-      tipoAtividadeCodigo: [null],
-      atividadePrincipal: [null],
-      atividadePrincipalCodigo: [null],
-      alteracoes: [null],
-      dataEmissao: [null],
-      observacao: [null],
-    });
+  }
 
-    this.faturaForm = this._fb.group({
-      ato: [null],
-      nomeRequerente: [null],
-      sociedadeComercial: [null],
-      atividadeDeclarada: [null],
-      codigo: [null]
-    });
+  ngOnInit(): void {
+    this.initForm();
 
-    // this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
+    this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
     console.log(this.aplicanteData);
+    
 
+    if (!this.aplicanteData.pedidoInscricaoCadastroDto) {
+      this.isNew = true;
+      this.mapNewPedido(this.aplicanteData.empresaDto);
+    } else {
+      this.isNew = false;
+      this.mapEditPedido(this.aplicanteData.pedidoInscricaoCadastroDto);
+    }
+  }
 
+  private mapNewPedido(empresa: Empresa): void {
+    const municipio = empresa.sede.aldeia.suco.postoAdministrativo.municipio;
+    const postoAdministrativo = {
+      id: empresa.sede.aldeia.suco.postoAdministrativo.id,
+      nome: empresa.sede.aldeia.suco.postoAdministrativo.nome
+    };
+    const suco = {
+      id: empresa.sede.aldeia.suco.id,
+      nome: empresa.sede.aldeia.suco.nome
+    };
+    const aldeia = {
+      id: empresa.sede.aldeia.id,
+      nome: empresa.sede.aldeia.nome
+    };
+
+    this.requestForm.patchValue({
+      nomeEmpresa: empresa.nome,
+      nif: empresa.nif,
+      numeroRegistoComercial: empresa?.numeroRegistoComercial,
+      telemovel: empresa.telemovel,
+      telefone: empresa.telefone,
+      email: empresa.utilizador.email,
+      gerente: empresa.gerente,
+    });
+
+    const municipios = this.dataMasterService.getMunicipios();
+    const postos = this.dataMasterService.getPostosByMunicipio(empresa.sede.aldeia.suco.postoAdministrativo.municipio.id);
+    const sucos = this.dataMasterService.getSucosByPosto(empresa.sede.aldeia.suco.postoAdministrativo.id);
+    const aldeias = this.dataMasterService.getAldeiasBySuco(empresa.sede.aldeia.suco.id);
+    const atividadeEconomicas = this.dataMasterService.getAtividadeEconomica();
+
+    forkJoin([municipios, postos, sucos, aldeias, atividadeEconomicas]).subscribe({
+      next: responses => {
+
+        this.listaMunicipio = mapToIdAndNome(responses[0]._embedded.municipios);
+        this.listaPosto = mapToIdAndNome(responses[1]._embedded.postos);
+        this.listaSuco = mapToIdAndNome(responses[2]._embedded.sucos);
+        this.listaAldeia = mapToIdAndNome(responses[3]._embedded.aldeias);
+        this.listaAtividadeEconomica = mapToAtividadeEconomica(responses[4]._embedded.atividadeEconomica);
+
+        this.requestForm.patchValue({
+          sede: {
+            local: empresa.sede.local,
+            aldeia: aldeia,
+            suco: suco,
+            postoAdministrativo: postoAdministrativo,
+            municipio: municipio
+          }
+        });
+
+      }
+    });
+  }
+
+  mapEditPedido(pedido: PedidoInscricaoCadastro): void {
+    this.requestForm.patchValue(pedido);
+    const municipio = pedido.sede.aldeia.suco.postoAdministrativo.municipio;
+    const postoAdministrativo = {
+      id: pedido.sede.aldeia.suco.postoAdministrativo.id,
+      nome: pedido.sede.aldeia.suco.postoAdministrativo.nome
+    };
+    const suco = {
+      id: pedido.sede.aldeia.suco.id,
+      nome: pedido.sede.aldeia.suco.nome
+    };
+    const aldeia = {
+      id: pedido.sede.aldeia.id,
+      nome: pedido.sede.aldeia.nome
+    };
+
+    let tipoAtividade = {
+      id: pedido.tipoAtividade.id,
+      codigo: pedido.tipoAtividade.codigo,
+      descricao: pedido.tipoAtividade.descricao
+    }
+
+    let atividadePrincipal = {
+      id: pedido.atividadePrincipal.id,
+      codigo: pedido.atividadePrincipal.codigo,
+      descricao: pedido.atividadePrincipal.descricao
+    }
+
+    this.requestForm.patchValue({
+      tipoPedidoCadastro: this.tipoPedidoOpts.find(item => item.value === pedido.tipoPedidoCadastro),
+      tipoEstabelecimento: this.tipoEstabelecimentoOpts.find(item => item.value === pedido.tipoEstabelecimento),
+      tipoEmpresa: pedido.categoria === Categoria.industrial ? pedido.tipoEmpresa : null,
+      caraterizacaoEstabelecimento: this.caraterizacaEstabelecimentoOpts.find(item => item.value === pedido.caraterizacaoEstabelecimento),
+      risco: this.nivelRiscoOpts.find(item => item.value === pedido.risco),
+      ato: this.tipoAtoOpts.find(item => item.value === pedido.ato),
+      tipoAtividade: tipoAtividade,
+      atividadePrincipal: atividadePrincipal,
+      tipoAtividadeCodigo: pedido.tipoAtividade.codigo,
+      atividadePrincipalCodigo: pedido.atividadePrincipal.codigo,
+    });
+
+    const municipios = this.dataMasterService.getMunicipios();
+    const postos = this.dataMasterService.getPostosByMunicipio(pedido.sede.aldeia.suco.postoAdministrativo.municipio.id);
+    const sucos = this.dataMasterService.getSucosByPosto(pedido.sede.aldeia.suco.postoAdministrativo.id);
+    const aldeias = this.dataMasterService.getAldeiasBySuco(pedido.sede.aldeia.suco.id);
+    const atividadeEconomicas = this.dataMasterService.getAtividadeEconomica();
+
+    forkJoin([municipios, postos, sucos, aldeias, atividadeEconomicas]).subscribe({
+      next: responses => {
+
+        this.listaMunicipio = mapToIdAndNome(responses[0]._embedded.municipios);
+        this.listaPosto = mapToIdAndNome(responses[1]._embedded.postos);
+        this.listaSuco = mapToIdAndNome(responses[2]._embedded.sucos);
+        this.listaAldeia = mapToIdAndNome(responses[3]._embedded.aldeias);
+        this.listaAtividadeEconomica = mapToAtividadeEconomica(responses[4]._embedded.atividadeEconomica);
+
+        this.requestForm.patchValue({
+          sede: {
+            id: pedido.sede.id,
+            local: pedido.sede.local,
+            aldeia: aldeia,
+            suco: suco,
+            postoAdministrativo: postoAdministrativo,
+            municipio: municipio
+          }
+        });
+      }
+    });
+    console.log(this.requestForm.value);
+  }
+
+  munisipiuChange(event: any): void {
+    this.dataMasterService.getPostosByMunicipio(event.value.id).subscribe({
+      next: (response) => {
+        this.listaPosto = response._embedded.postos;
+        this.listaSuco = [];
+        this.listaAldeia = [];
+      }
+    });
+  }
+
+  postuChange(event: any): void {
+    this.dataMasterService.getSucosByPosto(event.value.id).subscribe({
+      next: (response) => {
+        this.listaSuco = response._embedded.sucos;
+        this.listaAldeia = [];
+      }
+    });
+  }
+
+  sukuChange(event: any): void {
+    this.dataMasterService.getAldeiasBySuco(event.value.id).subscribe({
+      next: (response) => this.listaAldeia = response._embedded.aldeias
+    });
+  }
+
+  tipoAtividadeChange(event: any): void {
+    this.requestForm.get('tipoAtividadeCodigo')?.setValue(event.value.codigo);
+  }
+
+  atividadePrincipalChange(event: any): void {
+    this.requestForm.get('atividadePrincipalCodigo')?.patchValue(event.value.codigo);
+  }
+
+  submit(form: FormGroup, callback: any): void {
+    console.log(form.value);
+    this.pedidoLoading = true;
+
+    let formData: PedidoInscricaoCadastro = form.value;
+
+    formData.tipoPedidoCadastro = form.value.tipoPedidoCadastro.value;
+    formData.tipoEstabelecimento = form.value.tipoEstabelecimento.value;
+    formData.caraterizacaoEstabelecimento = form.value.caraterizacaoEstabelecimento.value;
+    formData.risco = form.value.risco.value;
+    formData.ato = form.value.ato.value;
+
+    console.log(formData);
+
+    if (this.isNew) {
+      this.aplicanteService.savePedido(this.aplicanteData.id, AplicanteType.cadastro, formData).subscribe({
+        next: (response) => {
+          this.addMessages(true, true);
+          callback(3);
+
+          this.requestForm.patchValue({
+            id: response.id,
+          });
+          this.requestForm.get('sede')?.patchValue({
+            id: response.sede.id
+          });
+        },
+        error: error => {
+          this.addMessages(false, true, error);
+          console.error(error);
+          this.pedidoLoading = false;
+        },
+        complete: () => {
+          callback(3);
+          this.pedidoLoading = false;
+          // this.closeDialog();
+        }
+      });
+    } else {
+      this.aplicanteService.updatePedido(this.aplicanteData.id, formData.id, AplicanteType.cadastro, formData).subscribe({
+        next: (response) => {
+          this.addMessages(true, false);
+          callback(3);
+        },
+        error: error => {
+          this.addMessages(false, true, error);
+          console.error(error);
+          this.pedidoLoading = false;
+        },
+        complete: () => {
+          callback(3);
+          this.pedidoLoading = false;
+          // this.closeDialog();
+        }
+      });
+    }
   }
 
   onUpload(event: any, arg: string) {
@@ -186,5 +351,56 @@ export class ApplicationDetailComponent {
     //   summary: 'Success',
     //   detail: 'File Uploaded'
     // });
+  }
+
+  private initForm(): void {
+    this.requestForm = this._fb.group({
+      id: [null],
+      tipoPedidoCadastro: [null],
+      nomeEmpresa: [null],
+      nif: [null],
+      numeroRegistoComercial: [null],
+      telemovel: [null],
+      telefone: [null],
+      email: [null],
+      gerente: [null],
+      sede: this._fb.group({
+        id: [null],
+        local: [null, [Validators.required]],
+        aldeia: [null, [Validators.required]],
+        suco: [null, [Validators.required]],
+        postoAdministrativo: [null, [Validators.required]],
+        municipio: [null, [Validators.required]],
+      }),
+      nomeEstabelecimento: [null],
+      localEstabelecimento: [null],
+      tipoEstabelecimento: [null],
+      tipoEmpresa: [null],
+      caraterizacaoEstabelecimento: [null],
+      risco: [null],
+      ato: [null],
+      tipoAtividade: [null],
+      tipoAtividadeCodigo: new FormControl({ value: null, disabled: true }),
+      atividadePrincipal: [null],
+      atividadePrincipalCodigo: new FormControl({ value: null, disabled: true }),
+      alteracoes: [null],
+      dataEmissaoCertAnterior: [null],
+      observacao: [null],
+    });
+
+    this.faturaForm = this._fb.group({
+      ato: [null],
+      nomeRequerente: [null],
+      sociedadeComercial: [null],
+      atividadeDeclarada: [null],
+      codigo: [null]
+    });
+  }
+
+  private addMessages(isSuccess: boolean, isNew: boolean, error?: any) {
+    const summary = isSuccess ? (isNew ? 'Dados registados com sucesso!' : 'Dados atualizados com sucesso!') : 'Error';
+    const detail = isSuccess ? (isNew ? `Os dados foram registados` : `Os dados foram actualizados`) : 'Desculpe, algo deu errado. Tente novamente ou procure o administrador do sistema para mais informações.';
+
+    this.messageService.add({ severity: isSuccess ? 'success' : 'error', summary, detail });
   }
 }

@@ -1,3 +1,4 @@
+ <p-toast position="bottom-right" />
  <div class="card">
      <span class="text-surface-900 dark:text-surface-0 text-2xl font-bold mb-6 block">
          Candidatura para o Pedido Inscricacao no Cadastro (Comercial / Industrial)
@@ -43,8 +44,9 @@
                              </div>
                              <div class="flex justify-between mb-1 text-gray-600">
                                  <span>Formulário</span>
-                                 @if (aplicanteData.pedidoStatus) {
-                                 <p-tag value="Esboco" [severity]="aplicanteData.pedidoStatus | statusSeverity" />
+                                 @if (aplicanteData.pedidoInscricaoCadastroDto) {
+                                 <p-tag [value]="aplicanteData.pedidoInscricaoCadastroDto.status"
+                                     [severity]="aplicanteData.pedidoInscricaoCadastroDto.status| statusSeverity" />
                                  }@else {
                                  <p-tag value="Esboco" [severity]="'info'" />
                                  }
@@ -52,9 +54,9 @@
                              </div>
                              <div class="flex justify-between text-gray-600">
                                  <span>Fatura</span>
-                                 @if (aplicanteData.faturaStatus) {
-                                 <p-tag [value]="aplicanteData.faturaStatus"
-                                     [severity]="aplicanteData.faturaStatus | statusSeverity" />
+                                 @if (aplicanteData.pedido) {
+                                 <p-tag [value]="aplicanteData.pedidoInscricaoCadastroDto.fatura"
+                                     [severity]="aplicanteData.pedidoInscricaoCadastroDto.fatura| statusSeverity" />
                                  }@else {
                                  <p-tag value="Nao Paga" [severity]="'secondary'" />
                                  }
@@ -69,21 +71,288 @@
                  </ng-template>
              </p-step-panel>
 
+             <!-- Pedido Inscricao Cadastro -->
              <p-step-panel [value]="2">
                  <ng-template #content let-activateCallback="activateCallback">
 
-                     <app-pedido-cadastro [pedidoData]="pedidoData"
-                         [empresaData]="empresaData"></app-pedido-cadastro>
+                     <form [formGroup]="requestForm">
+                         <span class="text-xl font-bold mt-6 mb-3 block">
+                             PEDIDO
+                         </span>
+                         <div class="grid grid-cols-12 gap-4">
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="tipoPedidoCadastro"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Tipo
+                                 </label>
+                                 <p-select formControlName="tipoPedidoCadastro" inputId="tipoPedidoCadastro"
+                                     [options]="tipoPedidoOpts" optionLabel="name" fluid filterBy="name"
+                                     [showClear]="true" placeholder="Selecione o tipo">
+                                 </p-select>
+                             </div>
+                         </div>
+                         <span class="text-xl font-bold mt-6 mb-3 block">
+                             IDENTIFICACAO DA EMPRESA
+                         </span>
+                         <div class="grid grid-cols-12 gap-4">
+                             <div class="mb-6 col-span-12">
+                                 <label for="nomeEmpresa"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Nome da Empresa
+                                 </label>
+                                 <input formControlName="nomeEmpresa" id="nomeEmpresa" type="text" pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12">
+                                 <div formGroupName="sede" class="grid grid-cols-12">
+                                     <div class="mb-6 col-span-12">
+                                         <label for="local"
+                                             class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                             Sede
+                                         </label>
+                                         <input formControlName="local" id="local" type="text" pInputText fluid />
+                                     </div>
+                                     <div class="mb-6 col-span-12">
+                                         <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+                                             <div class="flex-auto">
+                                                 <label for="municipio"
+                                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                                     Municipio
+                                                 </label>
+                                                 <p-select formControlName="municipio"
+                                                     (onChange)="munisipiuChange($event)" inputId="municipio"
+                                                     dataKey="id" [options]="listaMunicipio" optionLabel="nome" fluid
+                                                     [showClear]="true" placeholder="Selecione o Municipio">
+                                                 </p-select>
+                                             </div>
+                                             <div class="flex-auto">
+                                                 <label for="posto"
+                                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                                     Posto Administrativo
+                                                 </label>
+                                                 <p-select formControlName="postoAdministrativo"
+                                                     (onChange)="postuChange($event)" inputId="posto"
+                                                     [options]="listaPosto" optionLabel="nome" fluid [showClear]="true"
+                                                     placeholder="Selecione o Posto">
+                                                 </p-select>
+                                             </div>
+                                             <div class="flex-auto">
+                                                 <label for="suco"
+                                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                                     Suco
+                                                 </label>
+                                                 <p-select formControlName="suco" inputId="suco"
+                                                     (onChange)="sukuChange($event)" [options]="listaSuco"
+                                                     optionLabel="nome" fluid [showClear]="true"
+                                                     placeholder="Selecione o Suco">
+                                                 </p-select>
+                                             </div>
+                                             <div class="flex-auto">
+                                                 <label for="aldeia"
+                                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                                     Aldeia
+                                                 </label>
+                                                 <p-select formControlName="aldeia" inputId="aldeia"
+                                                     [options]="listaAldeia" optionLabel="nome" fluid [showClear]="true"
+                                                     placeholder="Selecione o Suco">
+                                                 </p-select>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
 
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="nif" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     NIF
+                                 </label>
+                                 <input formControlName="nif" id="nif" type="text" pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="numeruRegisto"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Nº Registo Comercial/Industrial
+                                 </label>
+                                 <input formControlName="numeroRegistoComercial" id="numeruRegisto" type="text"
+                                     pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="telemovel"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Telemovel
+                                 </label>
+                                 <input formControlName="telemovel" id="telemovel" type="text" pInputText fluid />
+                             </div>
+
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="telefone"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Telefone
+                                 </label>
+                                 <input formControlName="telefone" id="telefone" type="text" pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12">
+                                 <label for="gerente"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Gerente
+                                 </label>
+                                 <input formControlName="gerente" id="gerente" type="text" pInputText fluid />
+                             </div>
+                         </div>
+                         <span class="text-xl font-bold mt-6 mb-3 block">
+                             IDENTIFICACAO DO ESTABELECIMENTO
+                         </span>
+                         <div class="grid grid-cols-12 gap-4">
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="nomeEstabelecimento"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Nome do Estabelecimento
+                                 </label>
+                                 <input formControlName="nomeEstabelecimento" id="nomeEstabelecimento" type="text"
+                                     pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="localEstabelecimento"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Local do Estabelecimento
+                                 </label>
+                                 <input formControlName="localEstabelecimento" id="localEstabelecimento" type="text"
+                                     pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="tipoEstabelecimento"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Tipo do Estabelecimento
+                                 </label>
+                                 <p-select formControlName="tipoEstabelecimento" inputId="tipoEstabelecimento"
+                                     [options]="tipoEstabelecimentoOpts" optionLabel="name" fluid filterBy="name"
+                                     [showClear]="true" placeholder="Selecione o Tipo de Estabelecimento">
+                                 </p-select>
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="caraterizacaoEstabelecimento"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Caraterizacao do Estabelecimento
+                                 </label>
+                                 <p-select formControlName="caraterizacaoEstabelecimento"
+                                     inputId="caraterizacaoEstabelecimento" [options]="caraterizacaEstabelecimentoOpts"
+                                     optionLabel="name" fluid filterBy="name" [showClear]="true"
+                                     placeholder="Selecione a Caraterizacao do Estabelecimento">
+                                 </p-select>
+                             </div>
+                         </div>
+
+                         <span class="text-xl font-bold mt-6 mb-3 block">
+                             CARATERIZACAO DA ATIVIDADE
+                         </span>
+                         <div class="grid grid-cols-12 gap-4">
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="risco" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Quanto ao Risco
+                                 </label>
+                                 <p-select formControlName="risco" inputId="risco" [options]="nivelRiscoOpts"
+                                     optionLabel="name" fluid filterBy="name" [showClear]="true"
+                                     placeholder="Selecione o risco">
+                                 </p-select>
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="ato" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Quanto ao tipo de Ato
+                                 </label>
+                                 <p-select formControlName="ato" inputId="ato" [options]="tipoAtoOpts"
+                                     optionLabel="name" fluid filterBy="name" [showClear]="true"
+                                     placeholder="Selecione o tipo de ato">
+                                 </p-select>
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="tipoAtividade"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Tipo de Atividade no Estabelecimento
+                                 </label>
+                                 <p-select formControlName="tipoAtividade" (onChange)="tipoAtividadeChange($event)"
+                                     inputId="tipoAtividade" [options]="listaAtividadeEconomica" optionLabel="descricao"
+                                     fluid [filter]="true" filterBy="codigo,descricao" [showClear]="true"
+                                     placeholder="Selecione o tipo de atividade">
+                                     <ng-template let-tipo #item>
+                                         <div class="flex items-center gap-2">
+                                             <span>{{tipo.codigo}} </span> - <span>{{tipo.descricao}} </span>
+                                         </div>
+                                     </ng-template>
+                                 </p-select>
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="tipoAtividadeCodigo"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Codigo
+                                 </label>
+                                 <input formControlName="tipoAtividadeCodigo" id="tipoAtividadeCodigo" type="text"
+                                     pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="atividadePrincipal"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Atividade Principal exercida no Estabelecimento
+                                 </label>
+                                 <p-select formControlName="atividadePrincipal"
+                                     (onChange)="atividadePrincipalChange($event)" inputId="atividadePrincipal"
+                                     [options]="listaAtividadeEconomica" optionLabel="descricao" fluid [filter]="true"
+                                     filterBy="codigo,descricao" [showClear]="true"
+                                     placeholder="Selecione a atividade principal">
+                                     <ng-template let-tipo #item>
+                                         <div class="flex items-center gap-2">
+                                             <span>{{tipo.codigo}} </span> - <span>{{tipo.descricao}} </span>
+                                         </div>
+                                     </ng-template>
+                                 </p-select>
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="atividadePrincipalCodigo"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Codigo
+                                 </label>
+                                 <input formControlName="atividadePrincipalCodigo" id="atividadePrincipalCodigo"
+                                     type="text" pInputText fluid />
+                             </div>
+
+                             <div class="mb-6 col-span-12">
+                                 <label for="alteracoes"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Alteracoes a Averbar
+                                 </label>
+                                 <input formControlName="alteracoes" id="alteracoes" type="text" pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="dataEmissao"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Data da Emissao do Certificado anterior (Se Aplicavel)
+                                 </label>
+                                 <input formControlName="dataEmissaoCertAnterior" id="dataEmissao" type="date"
+                                     pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12">
+                                 <label for="observacao"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Observacao
+                                 </label>
+                                 <input formControlName="observacao" id="observacao" type="text" pInputText fluid />
+                             </div>
+                         </div>
+                         <!-- <div class="flex pt-6 justify-between">
+                             <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" />
+                             <p-button label="Guardar e Continuar" icon="pi pi-arrow-right" iconPos="right"
+                                 (onClick)="submit(requestForm)" />
+                         </div> -->
+                     </form>
                      <div class="flex pt-6 justify-between">
-                         <p-button label="Back" severity="secondary" icon="pi pi-arrow-left"
+                         <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="right"
                              (onClick)="activateCallback(1)" />
-                         <p-button label="Guardar e Continuar" icon="pi pi-arrow-right" iconPos="right"
-                             (onClick)="activateCallback(3)" />
+                         <p-button [label]="isNew? 'Guardar': 'Atualizar'" [icon]=" isNew? 'pi pi-save': 'pi pi-sync' "
+                             [loading]="pedidoLoading" iconPos="left" (click)="submit(requestForm, activateCallback)" />
                      </div>
                  </ng-template>
              </p-step-panel>
+             <!-- END Pedido Inscricao Cadastro -->
 
+             <!-- Fatura -->
              <p-step-panel [value]="3">
                  <ng-template #content let-activateCallback="activateCallback">
                      <form [formGroup]="faturaForm">
@@ -169,11 +438,15 @@
                                          Arraste e largue os ficheiros aqui para carregar.
                                      </ng-template>
                                      <ng-template #content>
-                                         <ul *ngIf="uploadedFiles.length">
-                                             <li *ngFor="let file of uploadedFiles">{{ file.name }} - {{ file.size }}
+                                         @if (uploadedFiles.length) {
+                                         <ul>
+                                             @for (file of uploadedFiles; track $index) {
+                                             <li>{{ file.name }} - {{ file.size }}
                                                  bytes
                                              </li>
+                                             }
                                          </ul>
+                                         }
                                      </ng-template>
                                  </p-fileupload>
                              </div>
@@ -186,6 +459,8 @@
                      </div>
                  </ng-template>
              </p-step-panel>
+
+             <!-- End Fatura -->
          </p-step-panels>
      </p-stepper>
  </div>

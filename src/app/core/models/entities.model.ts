@@ -1,5 +1,6 @@
-import { AtividadeEconomica, Endereco, Role } from "./data-master.model";
-import { AplicanteType, CaraterizacaoEstabelecimento, NivelRisco, TipoAto, TipoEstabelecimento, TipoPedidoCadastro } from "./enums";
+import { BaseModel } from "./base";
+import { Endereco, Role } from "./data-master.model";
+import { AplicanteType, CaraterizacaoEstabelecimento, Categoria, FaturaStatus, NivelRisco, TipoAto, TipoEstabelecimento, TipoPedidoCadastro } from "./enums";
 
 export interface User {
     id: number;
@@ -60,13 +61,15 @@ export interface Participantes {
     cargoBombeiros: string | null;
 }
 
-export interface Aplicante {
+export interface Aplicante extends BaseModel {
     tipo: AplicanteType;
     categoria: string;
     numero: string;
     estado: string;
     empresa: Empresa;
+    empresaDto: Empresa
     pedido: PedidoInscricaoCadastro;
+    pedidoInscricaoCadastroDto: PedidoInscricaoCadastro
 }
 
 export interface VistoriaComercialRequestForm {
@@ -143,4 +146,23 @@ export interface PedidoInscricaoCadastro {
     dataEmissaoCertAnterior: string;
     observacao: string;
     fatura: any;
+}
+
+
+export interface Fatura extends BaseModel {
+    status: FaturaStatus;
+    atoFatura: number;
+    nomeEmpresa: string;
+    sociedadeComercial: string;
+    atividadeDeclarada: string;
+    atividadeDeclaradaCodigo: string;
+}
+
+export interface AtividadeEconomica extends BaseModel {
+    codigo: string;
+    descricao: string;
+    tipo: Categoria;
+    tipoRisco: NivelRisco;
+    listaPedidoInscricaoCadastro: PedidoInscricaoCadastro[];
+    listaPedidoInscricaoCadastroAtividadePrincipal: PedidoInscricaoCadastro[];
 }

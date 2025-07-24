@@ -24,6 +24,16 @@ export function mapToIdAndNome(array: any[]): { id: number, nome: string }[] {
     });
 }
 
+export function mapToAtividadeEconomica(array: any[]): { id: number, codigo: string, descricao: string }[] {
+    return array.map(item => {
+        return {
+            id: item.id,
+            codigo: item.codigo,
+            descricao: item.descricao
+        };
+    });
+}
+
 export const statusOptions: any[] = [
     { name: Status.active, value: Status.active, icon: 'bi bi-fw bi-shield-check', color: 'text-green-500' },
     { name: Status.pending, value: Status.pending, icon: 'bi bi-fw bi-pause-circle', color: 'text-yellow-500' },
