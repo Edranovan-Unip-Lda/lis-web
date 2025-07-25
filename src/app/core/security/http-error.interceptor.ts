@@ -5,6 +5,7 @@ import { catchError } from 'rxjs/operators';
 
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../services';
+import * as Sentry from "@sentry/angular";
 
 export const httpErrorInterceptor: HttpInterceptorFn = (
     req: HttpRequest<unknown>,
@@ -31,6 +32,9 @@ export const httpErrorInterceptor: HttpInterceptorFn = (
                 // Connection/network error
                 errorMessage = 'Something went wrong! Please try again later.';
             }
+
+
+            Sentry.captureException(error);
 
             return throwError(() => errorMessage);
         })

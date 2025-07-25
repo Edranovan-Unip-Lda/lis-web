@@ -21,6 +21,7 @@
         "@angular/router": "^19.0.0",
         "@fontsource/noto-sans": "^5.2.7",
         "@primeng/themes": "^19.0.6",
+        "@sentry/angular": "^9.41.0",
         "bootstrap-icons": "^1.13.1",
         "chart.js": "4.4.2",
         "primeclt": "^0.1.5",

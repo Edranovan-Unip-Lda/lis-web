@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-certificate-pdf',
-  imports: [TitleCasePipe],
+  imports: [],
   templateUrl: './certificate-pdf.component.html',
   styleUrl: './certificate-pdf.component.scss'
 })
