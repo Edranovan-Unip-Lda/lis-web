@@ -274,10 +274,17 @@ export class ApplicationDetailComponent {
     let formData: PedidoInscricaoCadastro = form.value;
 
     formData.tipoPedidoCadastro = form.value.tipoPedidoCadastro.value;
-    formData.tipoEstabelecimento = form.value.tipoEstabelecimento.value;
     formData.caraterizacaoEstabelecimento = form.value.caraterizacaoEstabelecimento.value;
     formData.risco = form.value.risco.value;
-    formData.ato = form.value.ato.value;
+
+    if (this.aplicanteData.categoria === Categoria.comercial) {
+      formData.tipoEstabelecimento = form.value.tipoEstabelecimento.value;
+      formData.ato = form.value.ato.value;
+    } else {
+      formData.tipoEmpresa = form.value.tipoEmpresa.value;
+      formData.quantoAtividade = form.value.quantoAtividade;
+    }
+
 
     console.log(formData);
 
