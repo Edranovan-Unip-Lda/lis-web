@@ -67,3 +67,16 @@ export enum FaturaStatus {
     emitida = 'EMITIDA',
     paga = 'PAGA',
 }
+
+export enum TipoPropriedade {
+    individual = 'INDIVIDUAL',
+    sociedade = 'SOCIEDADE',
+}
+
+export enum TipoDocumento {
+    bilheteIdentidade = 'BILHETE_IDENTIDADE',
+    passaporte = 'PASSAPORTE',
+    cartaConducao = 'CARTA_CONDUCAO',
+    eleitoral = 'ELEITORAL',
+    outro = 'OUTRO',
+}

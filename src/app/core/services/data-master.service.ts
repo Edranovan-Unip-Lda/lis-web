@@ -82,6 +82,21 @@ export class DataMasterService {
         return this.http.get<any>(`${this.apiUrl}/aldeias`, { params }).pipe(take(1));
     }
 
+    getAllAldeias(): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/aldeias`).pipe(take(1));
+    }
+
+    getAldeiaById(id: number): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/aldeias/${id}?projection=withSuco`).pipe(take(1));
+    }
+
+    searchAldeiasByNome(nome: string): Observable<any> {
+        let params = new HttpParams()
+        .set('nome', nome)
+        .set('projection', 'withSuco');
+        return this.http.get<any>(`${this.apiUrl}/aldeias/search/findByNomeContainingIgnoreCase`, { params }).pipe(take(1));
+    }
+
     getAtividadeEconomica(page = 0, size = 50): Observable<any> {
         let params = new HttpParams()
             .set('page', page.toString())

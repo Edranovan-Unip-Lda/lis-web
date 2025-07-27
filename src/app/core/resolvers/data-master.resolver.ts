@@ -27,6 +27,11 @@ export const getAldeiasResolver: ResolveFn<any> = () => {
     return service.getAldeias();
 }
 
+export const getAllAldeiasResolver: ResolveFn<any> = () => {
+    const service = inject(DataMasterService);
+    return service.getAllAldeias();
+}
+
 export const getAtividadeEconomicaResolver: ResolveFn<any> = () => {
     const service = inject(DataMasterService);
     return service.getAtividadeEconomica();

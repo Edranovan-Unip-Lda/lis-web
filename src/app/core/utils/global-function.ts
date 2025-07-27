@@ -1,4 +1,4 @@
-import { AplicanteType, CaraterizacaoEstabelecimento, Categoria, NivelRisco, QuantoAtividade, Role, Status, TipoAto, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro } from "../models/enums";
+import { AplicanteType, CaraterizacaoEstabelecimento, Categoria, NivelRisco, QuantoAtividade, Role, Status, TipoAto, TipoDocumento, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro, TipoPropriedade } from "../models/enums";
 
 /**
   * Maps an array of objects to an array of objects with only id and name properties.
@@ -161,4 +161,16 @@ export const caraterizacaEstabelecimentoOptions: any[] = [
 export const tipoAtoOptions: any[] = [
     { name: 'Venda a retalho', value: TipoAto.retalho },
     { name: 'Venda a grosso', value: TipoAto.grosso },
+];
+
+export const tipoPropriedadeOptions: any[] = [
+    { name: 'Empresário em Nome Individual', value: TipoPropriedade.individual },
+    { name: 'Sociedade por Quotas', value: TipoPropriedade.sociedade },
+];
+
+export const tipoDocumentoOptions: any[] = [
+    { name: 'Bilhete de Identidade', value: TipoDocumento.bilheteIdentidade },
+    { name: 'Cartão de Eleitoral', value: TipoDocumento.eleitoral },
+    { name: 'Passaporte', value: TipoDocumento.passaporte },
+    { name: 'Carta de Condução', value: TipoDocumento.cartaConducao },
 ];

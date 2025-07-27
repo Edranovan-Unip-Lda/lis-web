@@ -3,7 +3,7 @@ import { AuthenticationService } from '@/core/services';
 import { LayoutService } from '@/layout/service/layout.service';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { Fluid } from 'primeng/fluid';
@@ -15,7 +15,7 @@ import { Ripple } from 'primeng/ripple';
 @Component({
     selector: 'app-verification',
     standalone: true,
-    imports: [Ripple, RouterModule, Fluid, InputOtp, MessagesModule, Button, ReactiveFormsModule],
+    imports: [Ripple, RouterLink, Fluid, InputOtp, MessagesModule, Button, ReactiveFormsModule],
     templateUrl: './verification.component.html',
     providers: [MessageService]
 })

@@ -25,11 +25,11 @@
           </div>
           <div class="mt-6 text-left" style="max-width: 320px; min-width: 270px">
               <div class="flex items-center gap-4">
-                  <button pButton pRipple type="button" [routerLink]="['/']" class="block" severity="danger" outlined
-                      style="max-width: 320px; margin-bottom: 32px">Cancel</button>
-                  <p-button [loading]="otpLoading" (click)="validateOTP(otpInput)" [disabled]="!otpInput.valid" pButton
-                      pRipple type="button" class="block" [style]="{ 'max-width': '320px', 'margin-bottom': '32px' }">
-                      Verify</p-button>
+                  <p-button icon="pi pi-times" [routerLink]="['/']" severity="danger" label="Cancelar" outlined>
+                  </p-button>
+                  <p-button label="Validar" icon="pi pi-check-circle" [loading]="otpLoading"
+                      (click)="validateOTP(otpInput)" [disabled]="!otpInput.valid" pRipple>
+                  </p-button>
               </div>
           </div>
       </div>

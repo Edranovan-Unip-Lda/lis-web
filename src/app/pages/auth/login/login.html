@@ -18,25 +18,25 @@
             </div>
             }
 
-            <form class="form-container" [formGroup]="loginForm">
+            <form class="form-container" [formGroup]="loginForm" class="form">
                 <p-iconfield>
                     <p-inputicon class="pi pi-envelope" />
                     <input formControlName="username" pInputText type="text" placeholder="Email" class="block mb-4"
-                        style="max-width: 320px; min-width: 270px" />
+                        fluid />
                 </p-iconfield>
 
                 <p-iconfield>
                     <p-inputicon class="pi pi-key" />
                     <input pInputText type="password" formControlName="password" placeholder="Palavra-passe"
-                        class="block mb-4" style="max-width: 320px; min-width: 270px" />
+                        class="block mb-4" fluid />
                 </p-iconfield>
                 <a href="#" class="flex text-surface-500 dark:text-surface-400 mb-6 text-sm">
                     Esqueceu-se da sua palavra-passe?
                 </a>
                 <div class="mt-6">
-                    <button [loading]="loading" (click)="login(loginForm)" pButton pRipple [disabled]="!loginForm.valid"
-                        style="max-width: 320px; margin-bottom: 32px">Login</button>
-                    <span class="flex text-sm text-surface-500 dark:text-surface-400">Não tem uma conta?
+                    <p-button icon="pi pi-sign-in" label="Login" [loading]="loading" (click)="login(loginForm)" pRipple
+                        [disabled]="!loginForm.valid" fluid></p-button>
+                    <span class="flex text-sm text-surface-500 dark:text-surface-400 mt-6">Não tem uma conta?
                         <a routerLink="/auth/register" class="cursor-pointer ml-1">Registe-se aqui</a></span>
                 </div>
             </form>

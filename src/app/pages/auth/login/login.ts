@@ -1,27 +1,22 @@
 import { AuthenticationService } from '@/core/services';
 import { OtpSessionService } from '@/core/services/otp-session.service';
-import { AppConfigurator } from "@/layout/components/app.configurator";
 import { LayoutService } from '@/layout/service/layout.service';
-import { CommonModule } from "@angular/common";
 import { Component, inject } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
+import { Button } from 'primeng/button';
 import { Fluid } from 'primeng/fluid';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
-import { InputTextModule } from 'primeng/inputtext';
+import { InputText } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
-import { MessagesModule } from 'primeng/messages';
-import { PasswordModule } from 'primeng/password';
-import { RippleModule } from 'primeng/ripple';
+import { Ripple } from 'primeng/ripple';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [CommonModule, ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule, InputIcon, IconField, Fluid, ReactiveFormsModule, MessageModule],
+    imports: [Button, InputText, RouterLink, Ripple, InputIcon, IconField, Fluid, ReactiveFormsModule, MessageModule],
     templateUrl: './login.html',
     providers: [MessageService]
 })
