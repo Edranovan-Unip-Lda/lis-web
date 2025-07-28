@@ -64,16 +64,18 @@ export class Register {
         private empresaService: EmpresaService,
     ) {
         this.empresaForm = this._fb.group({
-            nome: ['null', [Validators.required, Validators.minLength(3)]],
+            nome: [null, [Validators.required, Validators.minLength(3)]],
             nif: [null, [Validators.required]],
             sede: [null, [Validators.required]],
             municipio: new FormControl({ value: null, disabled: true }),
             postoAdministrativo: new FormControl({ value: null, disabled: true }),
             suco: new FormControl({ value: null, disabled: true }),
             aldeia: [null, [Validators.required]],
-            numeruRegisto: [null, [Validators.required]],
+            numeroRegistoComercial: [null, [Validators.required]],
             capitalSocial: [null, [Validators.required]],
             dataRegisto: [null, [Validators.required]],
+            telefone: [null, [Validators.required]],
+            telemovel: [null, [Validators.required]],
             tipoPropriedade: [null, [Validators.required]],
             acionistas: this._fb.array([]),
             utilizador: this._fb.group({
@@ -228,15 +230,31 @@ export class Register {
         }
     }
 
+    /**
+     * Generate a new form for a acionista.
+     *
+     * The form is a `FormGroup` containing the following fields:
+     * - `nome`: string, required, minimum length 3
+     * - `nif`: string, required
+     * - `tipoDocumento`: string, required
+     * - `numeroDocumento`: string, required, default value is '78833'
+     * - `telefone`: string, required
+     * - `email`: string, required, must be a valid email
+     * - `acoes`: string, required, default value is '100'
+     * - `sectionTitle`: string, required, default value is `Acionista n.º ${this.acionistasArray.length + 1}`
+     *
+     * @returns a new `FormGroup` for a acionista
+     */
+
     generateAcionistaForm() {
         return this._fb.group({
-            nome: ['Antonio', [Validators.required, Validators.minLength(3)]],
-            nif: ['83239239', [Validators.required]],
+            nome: [null, [Validators.required, Validators.minLength(3)]],
+            nif: [null, [Validators.required]],
             tipoDocumento: [null, [Validators.required]],
-            numeroDocumento: ['78833', [Validators.required]],
-            telefone: ['8392393', [Validators.required]],
-            email: ['gvinhas@tic.gov.tl', [Validators.required, Validators.email]],
-            acoes: ['100', [Validators.required]],
+            numeroDocumento: [, [Validators.required]],
+            telefone: [null, [Validators.required]],
+            email: [null, [Validators.required, Validators.email]],
+            acoes: [null, [Validators.required]],
             sectionTitle: [`Acionista n.º ${this.acionistasArray.length + 1}`]
         });
     }
@@ -253,6 +271,31 @@ export class Register {
         if (this.acionistasArray.length > 1) {
             this.acionistasArray.removeAt(index);
         }
+    }
+
+    disableStepEmpresa(): boolean {
+        return !!(
+            this.empresaForm.get('nome')?.invalid ||
+            this.empresaForm.get('sede')?.invalid ||
+            this.empresaForm.get('aldeia')?.invalid ||
+            this.empresaForm.get('nif')?.invalid ||
+            this.empresaForm.get('numeroRegistoComercial')?.invalid ||
+            this.empresaForm.get('capitalSocial')?.invalid ||
+            this.empresaForm.get('dataRegisto')?.invalid
+        );
+    }
+
+    disableStepProprietario(): boolean {
+        return !!(
+            this.empresaForm.get('tipoPropriedade')?.invalid ||
+            this.acionistasArray.invalid);
+    }
+
+    disableStepConta(): boolean {
+        return !!(
+            this.empresaForm.get('utilizador.gerente')?.invalid ||
+            this.empresaForm.get('utilizador.email')?.invalid ||
+            this.empresaForm.get('utilizador.password')?.invalid);
     }
 
     private formatDateForLocalDate(date: Date): string {

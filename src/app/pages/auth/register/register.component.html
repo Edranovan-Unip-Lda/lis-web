@@ -4,7 +4,7 @@
          style="padding: 2% 10% 2% 10%; background: var(--exception-pages-image); background-size: contain;">
          <div class="flex flex-col">
              <div class="flex items-center justify-center">
-                 <img src="/images/logo.png" style="width: 100px" alt="logo" />
+                 <img src="/images/logo.png" style="width:85px" alt="mci-logo" />
              </div>
              <div class="mt-2 mb-8">
                  <p class="text-xl">
@@ -16,7 +16,7 @@
 
 
      <div class="w-full px-8" style="background: var(--surface-ground)">
-         <p-stepper [value]="1" class="basis-[50rem]">
+         <p-stepper [value]="1" class="basis-[50rem]" [linear]="true">
              <p-step-list>
                  <p-step [value]="1">Empresa</p-step>
                  <p-step [value]="2">Proprietário(a) / Titular da empresa</p-step>
@@ -118,11 +118,25 @@
                                      <p-date-picker formControlName="dataRegisto" id="dataRegisto" [showIcon]="true"
                                          [showButtonBar]="true" fluid dateFormat="dd/mm/yy" inputStyleClass="w-full" />
                                  </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="telefone"
+                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         Nº Telefone
+                                     </label>
+                                     <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="telemovel"
+                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         Nº Telemóvel
+                                     </label>
+                                     <input formControlName="telemovel" id="telemovel" type="tel" pInputText fluid />
+                                 </div>
                              </div>
                          </form>
                          <div class="flex pt-6 justify-end">
-                             <p-button label="Continuar" icon="pi pi-arrow-right" iconPos="right"
-                                 (onClick)="activateCallback(2)" />
+                             <p-button [disabled]="disableStepEmpresa()" label="Continuar" icon="pi pi-arrow-right"
+                                 iconPos="right" (onClick)="activateCallback(2)" />
                          </div>
                      </ng-template>
                  </p-step-panel>
@@ -166,8 +180,8 @@
                                              Ações
                                          </label>
                                          <p-inputgroup>
-                                             <p-inputgroup-addon>$</p-inputgroup-addon>
-                                             <p-inputnumber formControlName="acoes" mode="decimal"
+                                             <p-inputgroup-addon>%</p-inputgroup-addon>
+                                             <p-inputnumber formControlName="acoes" mode="decimal" [max]="100"
                                                  [minFractionDigits]="2" [maxFractionDigits]="2" />
                                          </p-inputgroup>
                                      </div>
@@ -224,8 +238,8 @@
                          <div class="flex pt-6 justify-between">
                              <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
                                  (onClick)="activateCallback(1)" />
-                             <p-button label="Continuar" icon="pi pi-arrow-right" iconPos="right"
-                                 (onClick)="activateCallback(3)" />
+                             <p-button [disabled]="disableStepProprietario()" label="Continuar" icon="pi pi-arrow-right"
+                                 iconPos="right" (onClick)="activateCallback(3)" />
                          </div>
                      </ng-template>
                  </p-step-panel>
@@ -262,8 +276,8 @@
                              <div class="mt-6 mb-6 text-left flex justify-between">
                                  <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
                                      (onClick)="activateCallback(2)" />
-                                 <p-button label="Continuar" icon="pi pi-arrow-right" iconPos="right"
-                                     (onClick)="activateCallback(4)" />
+                                 <p-button [disabled]="disableStepConta()" label="Continuar" icon="pi pi-arrow-right"
+                                     iconPos="right" (onClick)="activateCallback(4)" />
                              </div>
                          </form>
                      </ng-template>
@@ -431,8 +445,9 @@
                  <button icon="pi pi-send" (click)="submit(empresaForm)" [loading]="loading"
                      [disabled]="empresaForm.valid" pButton label="Reenviar email" style="max-width:200px">
                  </button>
-                 <button icon="pi pi-sign-in" pButton label="Logar" style="max-width:200px" routerLink="/auth/login" [rounded]="true" [outlined]="true">
-             </button>
+                 <button icon="pi pi-sign-in" pButton label="Logar" style="max-width:200px" routerLink="/auth/login"
+                     [rounded]="true" [outlined]="true">
+                 </button>
              </div>
 
          </div>
