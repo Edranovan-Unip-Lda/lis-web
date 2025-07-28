@@ -46,3 +46,8 @@ export const getTaxaResolver: ResolveFn<any> = () => {
     const service = inject(DataMasterService);
     return service.getTaxa();
 }
+
+export const getSociedadeComercialResolver: ResolveFn<any> = () => {
+    const service = inject(DataMasterService);
+    return service.getSociedadeComercial();
+}

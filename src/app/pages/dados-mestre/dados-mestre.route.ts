@@ -1,4 +1,4 @@
-import { getAtividadeEconomicaResolver, getTaxaResolver, getTipoRiscoResolver } from "@/core/resolvers/data-master.resolver";
+import { getAtividadeEconomicaResolver, getSociedadeComercialResolver, getTaxaResolver, getTipoRiscoResolver } from "@/core/resolvers/data-master.resolver";
 import { Routes } from "@angular/router";
 
 export default [
@@ -38,6 +38,17 @@ export default [
         loadComponent: () => import('@/pages/dados-mestre/lista/lista.component').then((c) => c.ListaComponent),
         resolve: {
             listaTaxa: getTaxaResolver
+        }
+    },
+    {
+        path: 'sociedade-comercial',
+        data: {
+            breadcrumb: 'Sociedade Comercial',
+            type: 'sociedade-comercial'
+        },
+        loadComponent: () => import('@/pages/dados-mestre/lista/lista.component').then((c) => c.ListaComponent),
+        resolve: {
+            listaSociedadeComercial: getSociedadeComercialResolver
         }
     },
     { path: '**', redirectTo: '/notfound' }

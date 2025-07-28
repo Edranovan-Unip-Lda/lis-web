@@ -92,8 +92,8 @@ export class DataMasterService {
 
     searchAldeiasByNome(nome: string): Observable<any> {
         let params = new HttpParams()
-        .set('nome', nome)
-        .set('projection', 'withSuco');
+            .set('nome', nome)
+            .set('projection', 'withSuco');
         return this.http.get<any>(`${this.apiUrl}/aldeias/search/findByNomeContainingIgnoreCase`, { params }).pipe(take(1));
     }
 
@@ -123,6 +123,14 @@ export class DataMasterService {
             .set('size', size.toString())
             .set('sort', 'id,desc')
         return this.http.get<any>(`${this.apiUrl}/taxas`, { params }).pipe(take(1));
+    }
+
+    getSociedadeComercial(page = 0, size = 50): Observable<any> {
+        let params = new HttpParams()
+            .set('page', page.toString())
+            .set('size', size.toString())
+            .set('sort', 'id,desc')
+        return this.http.get<any>(`${this.apiUrl}/sociedade-comercial`, { params }).pipe(take(1));
     }
 
 }

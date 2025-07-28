@@ -2,7 +2,8 @@
     <p-table #dt [value]="dataList" [paginator]="true" paginatorDropdownAppendTo="body" [rows]="50" [columns]="cols"
         [rowHover]="true" [showCurrentPageReport]="true" responsiveLayout="scroll" dataKey="id"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        [rowsPerPageOptions]="[10, 25, 50]" [globalFilterFields]="['codigo', 'descricao', 'tipo', 'tipoRisco', 'ato', 'montante']">
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [globalFilterFields]="['codigo', 'descricao', 'tipo', 'tipoRisco', 'ato', 'montante']">
         <ng-template #caption>
             <div class="flex flex-wrap gap-2 items-center justify-between">
                 <p-icon-field class="order-1 sm:order-none">
@@ -59,21 +60,9 @@
     [(visible)]="showDialog" [style]="{ 'min-width': '30rem' }">
     <form [formGroup]="dataForm">
         <div class="grid grid-cols-12 gap-4">
-            @if (type === 'taxas') {
-            <div class="mb-6 col-span-12">
-                <label for="ato" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                    Ato
-                </label>
-                <input formControlName="ato" id="ato" type="text" pInputText fluid />
-            </div>
-            <div class="mb-6 col-span-12">
-                <label for="montante" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                    Montante
-                </label>
-                <input formControlName="montante" id="montante" type="number" pInputText fluid />
-            </div>
-            }
-            @else {
+            @switch (type) {
+            @case ('atividade-economica') {
+
             <div class="mb-6 col-span-12">
                 <label for="codigo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
                     Código
@@ -102,6 +91,35 @@
                     optionLabel="name" fluid [showClear]="true" placeholder="Selecione o Nivel Risco">
                 </p-select>
             </div>
+            }
+            @case ('taxas') {
+            <div class="mb-6 col-span-12">
+                <label for="ato" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Ato
+                </label>
+                <input formControlName="ato" id="ato" type="text" pInputText fluid />
+            </div>
+            <div class="mb-6 col-span-12">
+                <label for="montante" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Montante
+                </label>
+                <input formControlName="montante" id="montante" type="number" pInputText fluid />
+            </div>
+            }
+            @case ('sociedade-comercial'){
+            <div class="mb-6 col-span-12">
+                <label for="nome" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Nome
+                </label>
+                <input formControlName="nome" id="nome" type="text" pInputText fluid />
+            </div>
+            <div class="mb-6 col-span-12">
+                <label for="acronimo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Acrónimo
+                </label>
+                <input formControlName="acronimo" id="acronimo" type="text" pInputText fluid />
+            </div>
+            }
             }
 
             <div class="mb-6 col-span-12">

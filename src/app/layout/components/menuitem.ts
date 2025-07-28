@@ -135,6 +135,11 @@ export const model_admin: MenuItem[] = [
                 routerLink: ['dados-mestre/taxa']
             },
             {
+                label: 'Sociedade Comercial',
+                icon: 'bi bi-fw bi-building',
+                routerLink: ['dados-mestre/sociedade-comercial']
+            },
+            {
                 label: 'Localização',
                 icon: 'bi bi-fw bi-pin-map',
                 items: [

@@ -1,7 +1,7 @@
 import { DataMasterService } from '@/core/services/data-master.service';
 import { categoryTpesOptions, nivelRiscoOptions } from '@/core/utils/global-function';
 import { CurrencyPipe, TitleCasePipe } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -79,6 +79,18 @@ export class ListaComponent {
           montante: ['', [Validators.required, Validators.min(1)]],
         });
 
+        break;
+      case 'sociedade-comercial':
+        this.dataList = this.route.snapshot.data['listaSociedadeComercial']._embedded.sociedadeComercial;
+        this.cols = [
+          { field: 'nome', header: 'Nome' },
+          { field: 'acronimo', header: 'Acrónimo' },
+        ];
+        this.dataForm = this._fb.group({
+          id: [''],
+          nome: ['', [Validators.required, Validators.minLength(1)]],
+          acronimo: ['', [Validators.required, Validators.minLength(1)]],
+        });
         break;
     }
   }
@@ -192,7 +204,7 @@ export class ListaComponent {
   openDialogEditData(data: any, index?: any,): void {
     let formEditData = {};
     switch (this.type) {
-      case 'value':
+      case 'atividade-economica':
         formEditData = {
           id: data.id,
           codigo: data.codigo,
@@ -207,6 +219,13 @@ export class ListaComponent {
           id: data.id,
           ato: data.ato,
           montante: data.montante,
+        };
+        break;
+      case 'sociedade-comercial':
+        formEditData = {
+          id: data.id,
+          nome: data.nome,
+          acronimo: data.acronimo,
         };
         break;
     }
