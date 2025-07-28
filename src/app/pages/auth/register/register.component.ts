@@ -64,40 +64,23 @@ export class Register {
         private empresaService: EmpresaService,
     ) {
         this.empresaForm = this._fb.group({
-            nome: ['Mr. Robot Lda', [Validators.required, Validators.minLength(3)]],
-            nif: ['8392383', [Validators.required]],
-            sede: ['Avenida Prest. António de Sousa', [Validators.required]],
+            nome: ['null', [Validators.required, Validators.minLength(3)]],
+            nif: [null, [Validators.required]],
+            sede: [null, [Validators.required]],
             municipio: new FormControl({ value: null, disabled: true }),
             postoAdministrativo: new FormControl({ value: null, disabled: true }),
             suco: new FormControl({ value: null, disabled: true }),
             aldeia: [null, [Validators.required]],
-            numeroRegistoComercial: ['832932833', [Validators.required]],
+            numeruRegisto: [null, [Validators.required]],
             capitalSocial: [null, [Validators.required]],
             dataRegisto: [null, [Validators.required]],
             tipoPropriedade: [null, [Validators.required]],
             acionistas: this._fb.array([]),
             utilizador: this._fb.group({
-                gerente: ['Geovannio', [Validators.required, Validators.minLength(3)]],
-                email: ['gvinhas@tic.gov.tl', [Validators.required, Validators.email]],
-                password: ['lospalos', [Validators.required]],
+                gerente: [null, [Validators.required, Validators.minLength(3)]],
+                email: [null, [Validators.required, Validators.email]],
+                password: [null],
             })
-            // nome: ['null', [Validators.required, Validators.minLength(3)]],
-            // nif: [null, [Validators.required]],
-            // sede: [null, [Validators.required]],
-            // municipio: new FormControl({ value: null, disabled: true }),
-            // postoAdministrativo: new FormControl({ value: null, disabled: true }),
-            // suco: new FormControl({ value: null, disabled: true }),
-            // aldeia: [null, [Validators.required]],
-            // numeruRegisto: [null, [Validators.required]],
-            // capitalSocial: [null, [Validators.required]],
-            // dataRegisto: [null, [Validators.required]],
-            // tipoPropriedade: [null, [Validators.required]],
-            // acionistas: this._fb.array([]),
-            // utilizador: this._fb.group({
-            //     gerente: [null, [Validators.required, Validators.minLength(3)]],
-            //     email: [null, [Validators.required, Validators.email]],
-            //     password: [null],
-            // })
         });
 
         this.aldeias = this.route.snapshot.data['aldeiasResolver']._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
