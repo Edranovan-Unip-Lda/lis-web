@@ -1,6 +1,5 @@
 import { User } from '@/core/models/entities.model';
 import { StatusIconPipe, StatusSeverityPipe } from '@/core/pipes/custom.pipe';
-import { CustomerService } from '@/pages/service/customer.service';
 import { Customer } from '@/types/customer';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
@@ -18,14 +17,12 @@ import { TagModule } from 'primeng/tag';
     standalone: true,
     imports: [CommonModule, TableModule, InputTextModule, ProgressBarModule, ButtonModule, IconField, InputIcon, RouterModule, TagModule, StatusSeverityPipe, StatusIconPipe],
     templateUrl: './userlist.html',
-    providers: [CustomerService]
 })
 export class UserList {
     customers: Customer[] = [];
     users: User[] = [];
 
     constructor(
-        private customerService: CustomerService,
         private router: Router,
         private route: ActivatedRoute,
     ) {
@@ -33,7 +30,6 @@ export class UserList {
     }
 
     ngOnInit() {
-        this.customerService.getCustomersLarge().then((customers) => (this.customers = customers));
     }
 
     onGlobalFilter(table: Table, event: Event) {

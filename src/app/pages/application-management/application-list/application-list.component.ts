@@ -2,9 +2,9 @@ import { Role } from '@/core/models/enums';
 import { StatusIconPipe, StatusSeverityPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService } from '@/core/services';
 import { EmpresaService } from '@/core/services/empresa.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterLink, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
@@ -13,10 +13,11 @@ import { PopoverModule } from 'primeng/popover';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { Table, TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
+import { Tooltip } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-application-list',
-  imports: [CommonModule, TableModule, InputTextModule, ProgressBarModule, ButtonModule, IconField, InputIcon, RouterModule, TagModule, StatusSeverityPipe, StatusIconPipe, PopoverModule],
+  imports: [TableModule, InputTextModule, ProgressBarModule, ButtonModule, IconField, InputIcon, RouterModule, TagModule, StatusSeverityPipe, StatusIconPipe, RouterLink, Tooltip, TitleCasePipe, DatePipe],
   templateUrl: './application-list.component.html',
   styleUrl: './application-list.component.scss'
 })
@@ -36,7 +37,7 @@ export class ApplicationListComponent {
     private authService: AuthenticationService,
   ) {
     this.currentRole = this.authService.currentRole.name;
-    
+
     this.applications = this.route.snapshot.data['applicationPage'].content;
     this.totalData = this.route.snapshot.data['applicationPage'].totalElements;
   }

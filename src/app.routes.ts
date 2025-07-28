@@ -40,11 +40,6 @@ export const appRoutes: Routes = [
                 loadChildren: () => import('@/pages/licencas-certificados/licencas-certificados.routes')
             },
             {
-                path: 'documentation',
-                data: { breadcrumb: 'Documentation' },
-                loadComponent: () => import('@/pages/documentation/documentation').then((c) => c.Documentation)
-            },
-            {
                 path: 'pages',
                 data: { breadcrumb: 'Pages' },
                 loadChildren: () => import('@/pages/pages.routes')
@@ -58,11 +53,6 @@ export const appRoutes: Routes = [
                 path: 'ecommerce',
                 data: { breadcrumb: 'E-Commerce' },
                 loadChildren: () => import('@/pages/ecommerce/ecommerce.routes')
-            },
-            {
-                path: 'blocks',
-                data: { breadcrumb: 'Prime Blocks' },
-                loadChildren: () => import('@/pages/blocks/blocks.routes')
             },
             {
                 path: 'utilizador',
