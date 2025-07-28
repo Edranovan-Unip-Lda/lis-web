@@ -9,7 +9,7 @@ import { Register } from './register/register.component';
 import { Verification } from './verification/verification';
 import { ActivationComponent } from './activation/activation.component';
 import { getTokenActivationResolver } from '@/core/resolvers/user.resolver';
-import { getAllAldeiasResolver, getMunicipiosResolver } from '@/core/resolvers/data-master.resolver';
+import { getAllAldeiasResolver, getMunicipiosResolver, getSociedadeComercialResolver } from '@/core/resolvers/data-master.resolver';
 import { AuthLayoutComponent } from './auth-layout/auth-layout.component';
 
 export default [
@@ -29,7 +29,8 @@ export default [
                 path: 'register',
                 component: Register,
                 resolve: {
-                    aldeiasResolver: getAllAldeiasResolver
+                    aldeiasResolver: getAllAldeiasResolver,
+                    listaSociedadeComercial: getSociedadeComercialResolver,
                 }
             },
             {

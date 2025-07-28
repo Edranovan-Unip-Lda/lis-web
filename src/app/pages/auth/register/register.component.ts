@@ -43,6 +43,7 @@ export class Register {
     postos = [];
     sucos = [];
     aldeias: any = [];
+    listaSociedadeComercial = [];
 
     layoutService = inject(LayoutService);
     empresaForm: FormGroup;
@@ -67,6 +68,7 @@ export class Register {
             nome: [null, [Validators.required, Validators.minLength(3)]],
             nif: [null, [Validators.required]],
             sede: [null, [Validators.required]],
+            sociedadeComercial: [null, [Validators.required]],
             municipio: new FormControl({ value: null, disabled: true }),
             postoAdministrativo: new FormControl({ value: null, disabled: true }),
             suco: new FormControl({ value: null, disabled: true }),
@@ -86,6 +88,9 @@ export class Register {
         });
 
         this.aldeias = this.route.snapshot.data['aldeiasResolver']._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+        console.log(this.route.snapshot.data['listaSociedadeComercial']);
+
+        this.listaSociedadeComercial = this.route.snapshot.data['listaSociedadeComercial']._embedded.sociedadeComercial.map((s: any) => ({ nome: s.nome, value: s.id }));
         this.originalAldeias = [...this.aldeias];
     }
 
@@ -172,6 +177,10 @@ export class Register {
                     nome: form.value.aldeia.nome
                 },
             };
+            formData.sociedadeComercial = {
+                id: formData.sociedadeComercial.value,
+                nome: formData.sociedadeComercial.nome
+            }
 
             formData.gerente = form.value.utilizador.gerente;
             formData.tipoPropriedade = form.value.tipoPropriedade.value;
@@ -277,6 +286,7 @@ export class Register {
         return !!(
             this.empresaForm.get('nome')?.invalid ||
             this.empresaForm.get('sede')?.invalid ||
+            this.empresaForm.get('sociedadeComercial')?.invalid ||
             this.empresaForm.get('aldeia')?.invalid ||
             this.empresaForm.get('nif')?.invalid ||
             this.empresaForm.get('numeroRegistoComercial')?.invalid ||

@@ -35,12 +35,22 @@
                                      </label>
                                      <input formControlName="nome" id="nome" type="text" pInputText fluid />
                                  </div>
-                                 <div class="mb-6 col-span-12">
+                                 <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="sede"
                                          class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
                                          Sede
                                      </label>
                                      <input formControlName="sede" id="sede" type="text" pInputText fluid />
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="sociedadeComercial"
+                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         Tipo de Sociedade Comercial
+                                     </label>
+                                     <p-select fluid formControlName="sociedadeComercial"
+                                         [options]="listaSociedadeComercial" optionLabel="nome"
+                                         placeholder="Selecione o tipo de sociedade" [showClear]="true">
+                                     </p-select>
                                  </div>
                              </div>
                              <div class="flex flex-col gap-6 w-full sm:w-auto mb-6">
