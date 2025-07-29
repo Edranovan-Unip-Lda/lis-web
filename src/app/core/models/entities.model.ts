@@ -161,6 +161,9 @@ export interface Fatura extends BaseModel {
     taxas: Taxa[];
     superficie: number;
     total: number;
+    sede: string;
+    nif: string;
+    nivelRisco: NivelRisco;
 }
 
 export interface Taxa extends BaseModel {

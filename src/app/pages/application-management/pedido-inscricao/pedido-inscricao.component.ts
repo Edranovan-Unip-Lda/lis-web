@@ -4,10 +4,12 @@ import { caraterizacaEstabelecimentoOptions, nivelRiscoOptions, quantoAtividadeo
 import { DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { NgxPrintModule } from 'ngx-print';
+import { Button } from 'primeng/button';
 
 @Component({
   selector: 'app-pedido-inscricao',
-  imports: [DatePipe],
+  imports: [DatePipe, NgxPrintModule, Button],
   templateUrl: './pedido-inscricao.component.html',
   styleUrl: './pedido-inscricao.component.scss'
 })
@@ -35,7 +37,6 @@ export class PedidoInscricaoComponent {
 
   ngOnInit(): void {
     this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
-    console.log(this.aplicanteData);
     this.pedido = this.aplicanteData.pedidoInscricaoCadastroDto;
     this.selectedTipoPedido = this.tipoPedido.find(item => item.value === this.pedido.tipoPedidoCadastro).name;
 

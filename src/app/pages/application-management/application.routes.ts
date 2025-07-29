@@ -3,6 +3,8 @@ import { getAplicante, getPageAplicanteOrByEmpresaIdResolver } from '@/core/reso
 import { Routes } from '@angular/router';
 import { ApplicationDetailComponent } from './application-detail/application-detail.component';
 import { ApplicationListComponent } from './application-list/application-list.component';
+import { PedidoInscricaoComponent } from './pedido-inscricao/pedido-inscricao.component';
+import { FaturaComponent } from './fatura/fatura.component';
 
 export default [
     {
@@ -13,11 +15,6 @@ export default [
             applicationPage: getPageAplicanteOrByEmpresaIdResolver
         }
     },
-    // {
-    //     path: 'create',
-    //     data: { breadcrumb: 'Criar' },
-    //     component: ApplicationFormComponent
-    // },
     {
         path: ':id',
         data: { breadcrumb: 'Detail' },
@@ -32,6 +29,22 @@ export default [
 
         }
     },
+    {
+        path: ':id/pedido-inscricao',
+        data: { breadcrumb: 'Pedido Inscricao PDF' },
+        component: PedidoInscricaoComponent,
+        resolve: {
+            aplicanteResolver: getAplicante,
+        }
+    },
+    {
+        path: ':id/fatura-inscricao',
+        data: { breadcrumb: 'Fatura PDF' },
+        component: FaturaComponent,
+        resolve: {
+            aplicanteResolver: getAplicante,
+        }
+    }
 
     // {
     //     path: 'cadastro',
