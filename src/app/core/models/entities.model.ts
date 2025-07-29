@@ -71,6 +71,8 @@ export interface Aplicante extends BaseModel {
     empresaDto: Empresa
     pedido: PedidoInscricaoCadastro;
     pedidoInscricaoCadastroDto: PedidoInscricaoCadastro
+    pedidoStatus: string;
+    faturaStatus: string;
 }
 
 export interface VistoriaComercialRequestForm {

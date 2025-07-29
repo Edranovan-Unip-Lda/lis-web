@@ -24,10 +24,18 @@
                              <div>
                                  <div class="text-gray-500 text-md">
                                      Certificado:</div>
-                                 <p-tag value="Pendente" [severity]="'warn'" />
-                                 <a class="ml-4" routerLink="/certificados/{{aplicanteData.id}}">
-                                     <p-tag value="Baixar" icon="pi pi-download" severity="info" />
+
+                                 @if (
+                                 aplicanteData.pedidoStatus === 'SUBMETIDO' && aplicanteData.faturaStatus === 'EMITIDA')
+                                 {
+                                 <p-tag value="EMITIDO" [severity]="'success'" />
+                                 <a class="ml-4" [routerLink]="['certificado-inscricao']">
+                                     <p-tag value="Pré-visualizar" icon="pi pi-eye" severity="info" />
                                  </a>
+                                 }@else {
+                                 <p-tag value="Pendente" [severity]="'warn'" />
+                                 }
+
                              </div>
                          </div>
 
@@ -481,7 +489,7 @@
                                          [loading]="faturaLoading" class="w-auto mt-3" [disabled]="!faturaForm.valid"
                                          (click)="saveFatura(faturaForm)" />
                                      @if (faturaId) {
-                                     <p-button label="Baixar Fatura" [outlined]="true" icon="pi pi-download"
+                                     <p-button label="Baixar Fatura" [routerLink]="['fatura-inscricao']" [outlined]="true" icon="pi pi-download"
                                          iconPos="left" class="w-auto mt-3" />
                                      }
                                  </div>

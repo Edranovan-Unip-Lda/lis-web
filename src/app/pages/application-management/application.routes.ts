@@ -5,6 +5,7 @@ import { ApplicationDetailComponent } from './application-detail/application-det
 import { ApplicationListComponent } from './application-list/application-list.component';
 import { PedidoInscricaoComponent } from './pedido-inscricao/pedido-inscricao.component';
 import { FaturaComponent } from './fatura/fatura.component';
+import { CertificatePdfComponent } from './certificate-pdf/certificate-pdf.component';
 
 export default [
     {
@@ -41,6 +42,14 @@ export default [
         path: ':id/fatura-inscricao',
         data: { breadcrumb: 'Fatura PDF' },
         component: FaturaComponent,
+        resolve: {
+            aplicanteResolver: getAplicante,
+        }
+    },
+     {
+        path: ':id/certificado-inscricao',
+        data: { breadcrumb: 'Certificado PDF' },
+        component: CertificatePdfComponent,
         resolve: {
             aplicanteResolver: getAplicante,
         }

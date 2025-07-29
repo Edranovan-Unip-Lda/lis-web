@@ -1,0 +1,161 @@
+<div class="card">
+    <div class="grid grid-cols-1 mb-4">
+        <div class="col-span-1">
+            <span class="text-2xl font-bold mb-4 mr-4">Certificado de Inscrição no Cadastro</span>
+            <p-button icon="pi pi-file-pdf" size="large" [raised]="true" printSectionId="myDiv" [useExistingCss]="true"
+                ngxPrint />
+        </div>
+    </div>
+
+    <div id="myDiv">
+        @if (aplicanteData.categoria === 'COMERCIAL') {
+        <div class="max-w-2xl mx-auto bg-white text-black p-2 rounded shadow-lg border relative mt-10"
+            style="border: 6px solid #db2828;">
+
+            <div class="rounded max-h-screen" style="border: 6px solid #f5c60e;">
+                <!-- Header -->
+                <div class="relative z-10 text-center pt-6">
+                    <div class="flex justify-center mb-3">
+                        <img src="/images/rdtl.png" alt="Logo" class="h-16 w-16 object-contain" />
+                    </div>
+
+                    <div class="font-bold text-2xl uppercase">Ministério do Comércio e Indústria</div>
+                    <div class="font-semibold text-xl">Direção-Geral do Comércio</div>
+                    <div class="mt-4 font-extrabold text-5xl text-red tracking-wide">CERTIFICADO</div>
+                    <div class="text-lg font-semibold text-red">DE INSCRIÇÃO NO CADASTRO COMERCIAL</div>
+                </div>
+
+                <!-- Certificate Body -->
+                <div class="mt-8 text-base p-6">
+                    <div class="mb-3 font-bold text-4xl">N.º <span class="font-normal">
+                            {{aplicanteData.numero}}
+                        </span></div>
+                    <p class="mb-6">
+                        Certifica-se que a Sociedade comercial <span class="font-semibold underline">
+                            {{aplicanteData.empresaDto.nome}}
+                        </span>,
+                        titular de Registo Comercial n.º <span class="font-semibold underline">
+                            {{aplicanteData.empresaDto.numeroRegistoComercial}}
+                        </span> e sede em
+                        <span class="font-semibold underline">
+                            {{aplicanteData.empresaDto.sede.local}},
+                            {{aplicanteData.empresaDto.sede.aldeia.nome}},
+                            {{aplicanteData.empresaDto.sede.aldeia.suco.nome}},
+                            {{aplicanteData.empresaDto.sede.aldeia.suco.postoAdministrativo.nome}},
+                            {{aplicanteData.empresaDto.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
+                        </span>,<br>
+                        está inscrita no sistema de registo do cadastro comercial junto da Direção-Geral do Comércio do
+                        Ministério
+                        do Comércio e Indústria, pelo exercício da atividade de
+                        <span class="font-semibold underline">
+                            {{aplicanteData.pedidoInscricaoCadastroDto.atividadePrincipal.descricao}}
+                        </span>, nos termos do
+                        Decreto-Lei
+                        n.º
+                        90/2023, de 27 de dezembro.
+                    </p>
+                    <div class="mb-4">
+                        Validade até <span class="font-semibold">
+                            {{dataValido | date: 'dd/MM/yyyy'}}
+                        </span>
+                    </div>
+                    <div class="mb-6">
+                        Díli, <span class="font-semibold">
+                            {{aplicanteData.updatedAt | date: 'dd'}}
+                        </span> de <span class="font-semibold">
+                            {{aplicanteData.updatedAt | date: 'MMMM':'':'pt'}}
+                        </span> de <span class="font-semibold">
+                            {{aplicanteData.updatedAt | date: 'yyyy'}}
+                        </span>
+                    </div>
+
+                </div>
+                <div class="flex flex-col items-center fixed bottom-0">
+                    <div class="mt-8 mb-2 text-center">O Diretor-Geral do Comércio</div>
+                    <span class="with-image">
+                        <img src="images/stamp.png" alt="Stamp" class="stamp" width="110" height="110" />
+                        <span class="text-label text-gray-600">Donald Trump</span>
+                    </span>
+                    <div class="flex-1"></div>
+                    <span class="w-72 inline-block border-b border-black text-center text-value text-black"></span>
+                </div>
+            </div>
+
+
+        </div>
+        }
+
+
+        @else {
+        <div class="max-w-2xl mx-auto bg-white text-black p-2 rounded shadow-lg border relative mt-10"
+            style="border: 6px solid #0769C0;">
+
+            <div class="rounded min-h-screen" style="border: 2px solid #076ac0b5;">
+                <!-- Header -->
+                <div class="relative z-10 text-center pt-6">
+                    <div class="flex justify-center mb-3">
+                        <img src="/images/rdtl.png" alt="Logo" class="h-16 w-16 object-contain" />
+                    </div>
+
+                    <div class="font-bold text-2xl uppercase">Ministério do Comércio e Indústria</div>
+                    <div class="font-semibold text-xl">Direção-Geral do Indústria</div>
+                    <div class="mt-4 font-extrabold text-5xl text-blue tracking-wide">CERTIFICADO</div>
+                    <div class="text-lg font-semibold text-blue">DE INSCRIÇÃO NO CADASTRO INDUSTRIAL</div>
+                </div>
+
+                <!-- Certificate Body -->
+                <div class="mt-8 text-base p-6">
+                    <div class="mb-6 font-bold text-4xl">N.º <span class="font-normal">
+                            {{aplicanteData.numero}}
+                        </span></div>
+                    <p class="mb-6">
+                        Certifica-se que a Sociedade comercial <span class="font-semibold underline">COMERCIAL TIMOR
+                            LESTE,
+                            LDA</span>,
+                        titular de Registo Comercial n.º <span class="font-semibold underline">
+                            {{aplicanteData.empresaDto.numeroRegistoComercial}}
+                        </span> e sede em
+                        <span class="font-semibold underline">
+                            {{aplicanteData.empresaDto.sede.local}},
+                            {{aplicanteData.empresaDto.sede.aldeia.nome}},
+                            {{aplicanteData.empresaDto.sede.aldeia.suco.nome}},
+                            {{aplicanteData.empresaDto.sede.aldeia.suco.postoAdministrativo.nome}},
+                            {{aplicanteData.empresaDto.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
+                        </span>,<br>
+                        está inscrita no sistema de registo do cadastro comercial junto da Direção-Geral do Comércio do
+                        Ministério
+                        do Comércio e Indústria, pelo exercício da atividade de
+                        <span class="font-semibold underline">
+                            {{aplicanteData.pedidoInscricaoCadastroDto.atividadePrincipal.descricao}}
+                        </span>, nos termos do Decreto-Lei
+                        n.º
+                        90/2023, de 27 de dezembro.
+                    </p>
+                    <div class="mb-4">
+                        Validade até <span class="font-semibold">
+                            {{dataValido | date: 'dd/MM/yyyy'}}
+                        </span>
+                    </div>
+                    <div class="mb-6">
+                        Díli, <span class="font-semibold">
+                            {{aplicanteData.updatedAt | date: 'dd'}}
+                        </span> de <span class="font-semibold">
+                            {{aplicanteData.updatedAt | date: 'MMMM':'':'pt'}}
+                        </span> de <span class="font-semibold">
+                            {{aplicanteData.updatedAt | date: 'yyyy'}}
+                        </span>
+                    </div>
+                    <div class="mt-8 mb-2 text-center">O Diretor-Geral do Comércio</div>
+                    <div class="h-12"></div>
+                    <div class="border-t w-60 mx-auto"></div>
+                    <div class="text-center mt-2 text-sm font-medium text-gray-600"></div>
+                </div>
+            </div>
+
+
+        </div>
+        }
+
+
+    </div>
+</div>
