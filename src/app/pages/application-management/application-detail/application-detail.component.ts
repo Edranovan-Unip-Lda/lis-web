@@ -276,7 +276,7 @@ export class ApplicationDetailComponent {
 
     formData.tipoPedidoCadastro = form.value.tipoPedidoCadastro.value;
     formData.caraterizacaoEstabelecimento = form.value.caraterizacaoEstabelecimento.value;
-    formData.risco = form.value.risco;
+    formData.risco = form.getRawValue().risco;
 
     if (this.aplicanteData.categoria === Categoria.comercial) {
       formData.tipoEstabelecimento = form.value.tipoEstabelecimento.value;

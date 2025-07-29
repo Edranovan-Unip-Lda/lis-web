@@ -1,7 +1,7 @@
 import { AplicanteType, CaraterizacaoEstabelecimento, Categoria, NivelRisco, QuantoAtividade, Role, Status, TipoAtividadeEconomica, TipoAto, TipoDocumento, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro, TipoPropriedade } from "../models/enums";
 
 export function calculateCommercialLicenseTax(areaM2: number, T_MIN: number, T_MAX: number): number {
-  if (areaM2 > 900) {
+  if (areaM2 >= 900) {
     return T_MAX;
   }
 
