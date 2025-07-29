@@ -25,6 +25,7 @@ export interface Empresa {
     telefone: string;
     telemovel: string;
     sede: Endereco;
+    sociedadeComercial: SociedadeComercial;
 }
 
 export interface Requerente {
@@ -157,13 +158,16 @@ export interface Fatura extends BaseModel {
     sociedadeComercial: string;
     atividadeDeclarada: AtividadeEconomica;
     atividadeDeclaradaCodigo: string;
-    taxa: Taxa;
+    taxas: Taxa[];
+    superficie: number;
+    total: number;
 }
 
 export interface Taxa extends BaseModel {
     id: number;
     ato: string;
     montante: number;
+    faturas: Fatura[];
 }
 
 export interface AtividadeEconomica extends BaseModel {
@@ -173,4 +177,9 @@ export interface AtividadeEconomica extends BaseModel {
     tipoRisco: NivelRisco;
     listaPedidoInscricaoCadastro: PedidoInscricaoCadastro[];
     listaPedidoInscricaoCadastroAtividadePrincipal: PedidoInscricaoCadastro[];
+}
+
+export interface SociedadeComercial extends BaseModel {
+    nome: string;
+    acronimo: string;
 }

@@ -37,6 +37,16 @@ export const getAtividadeEconomicaResolver: ResolveFn<any> = () => {
     return service.getAtividadeEconomica();
 }
 
+export const getAtividadeEconomicaTipoResolver: ResolveFn<any> = () => {
+    const service = inject(DataMasterService);
+    return service.getAllAtividadeEconomicaTipo();
+}
+
+export const getAtividadeEconomicaAtividadeResolver: ResolveFn<any> = () => {
+    const service = inject(DataMasterService);
+    return service.getAllAtividadeEconomicaAtividade();
+}
+
 export const getTipoRiscoResolver: ResolveFn<any> = () => {
     const service = inject(DataMasterService);
     return service.getTipoRisco();
@@ -50,4 +60,13 @@ export const getTaxaResolver: ResolveFn<any> = () => {
 export const getSociedadeComercialResolver: ResolveFn<any> = () => {
     const service = inject(DataMasterService);
     return service.getSociedadeComercial();
+}
+
+export const getTaxaByCategoriaAndTipoResolver: ResolveFn<any> = (route) => {
+    const service = inject(DataMasterService);
+    const categoria = route.queryParams['categoria'];
+    const tipo = route.queryParams['tipo'];
+    console.log(categoria, tipo);
+
+    return service.getAllTaxaByCategoriaAndTipo(categoria, tipo);
 }

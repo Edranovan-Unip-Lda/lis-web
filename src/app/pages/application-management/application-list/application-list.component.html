@@ -68,8 +68,7 @@
                 </td>
 
                 <td>
-                    <a [routerLink]="['/application',candidatura.tipo.toLowerCase(), candidatura.id]" pTooltip="Detalho"
-                        tooltipPosition="top">
+                    <a (click)="toDetail(candidatura)" pTooltip="Detalho" tooltipPosition="top">
                         <p-button icon="pi pi-eye" class="mr-2" severity="info" [rounded]="true" [outlined]="true" />
                     </a>
                     <a [routerLink]="['/empresa', candidatura.id]">

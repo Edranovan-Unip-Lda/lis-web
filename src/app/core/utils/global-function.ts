@@ -1,4 +1,15 @@
-import { AplicanteType, CaraterizacaoEstabelecimento, Categoria, NivelRisco, QuantoAtividade, Role, Status, TipoAto, TipoDocumento, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro, TipoPropriedade } from "../models/enums";
+import { AplicanteType, CaraterizacaoEstabelecimento, Categoria, NivelRisco, QuantoAtividade, Role, Status, TipoAtividadeEconomica, TipoAto, TipoDocumento, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro, TipoPropriedade } from "../models/enums";
+
+export function calculateCommercialLicenseTax(areaM2: number, T_MIN: number, T_MAX: number): number {
+  if (areaM2 > 900) {
+    return T_MAX;
+  }
+
+  const blocks = Math.ceil(areaM2 / 100);
+  const tax = blocks * T_MIN;
+
+  return Math.min(tax, T_MAX);
+}
 
 /**
   * Maps an array of objects to an array of objects with only id and name properties.
@@ -24,22 +35,26 @@ export function mapToIdAndNome(array: any[]): { id: number, nome: string }[] {
     });
 }
 
-export function mapToAtividadeEconomica(array: any[]): { id: number, codigo: string, descricao: string }[] {
+export function mapToAtividadeEconomica(array: any[]): { id: number, codigo: string, descricao: string, tipoRisco: NivelRisco }[] {
     return array.map(item => {
         return {
             id: item.id,
             codigo: item.codigo,
-            descricao: item.descricao
+            descricao: item.descricao,
+            tipoRisco: item.tipoRisco,
         };
     });
 }
 
-export function mapToTaxa(array: any[]): { id: number, ato: string, montante: number }[] {
+export function mapToTaxa(array: any[]): { id: number, categoria: string, tipo: string, ato: string, montanteMinimo: number, montanteMaximo: number }[] {
     return array.map(item => {
         return {
             id: item.id,
+            categoria: item.categoria,
+            tipo: item.tipo,
             ato: item.ato,
-            montante: item.montante
+            montanteMinimo: item.montanteMinimo,
+            montanteMaximo: item.montanteMaximo,
         };
     });
 }
@@ -173,4 +188,15 @@ export const tipoDocumentoOptions: any[] = [
     { name: 'Cartão de Eleitoral', value: TipoDocumento.eleitoral },
     { name: 'Passaporte', value: TipoDocumento.passaporte },
     { name: 'Carta de Condução', value: TipoDocumento.cartaConducao },
+];
+
+export const tipoAtividadeEconomicaOptions: any[] = [
+    {
+        name: 'Tipo Atividade no estabelecimento',
+        value: TipoAtividadeEconomica.tipo
+    },
+    {
+        name: 'Atividade Principal exercida no estabelecimento',
+        value: TipoAtividadeEconomica.atividadePrincipal
+    }
 ];

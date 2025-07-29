@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, take } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AtividadeEconomica } from '../models/data-master.model';
+import { AplicanteType, Categoria, TipoAtividadeEconomica } from '../models/enums';
 
 @Injectable({
     providedIn: 'root'
@@ -109,6 +110,16 @@ export class DataMasterService {
         return this.http.get<AtividadeEconomica[]>(`${this.apiUrl}/atividade-economica`).pipe(take(1));
     }
 
+    getAllAtividadeEconomicaTipo(): Observable<AtividadeEconomica[]> {
+        let params = new HttpParams().set('tipoAtividadeEconomica', TipoAtividadeEconomica.tipo);
+        return this.http.get<AtividadeEconomica[]>(`${this.apiUrl}/atividade-economica/search/findByTipoAtividadeEconomica?${params}`).pipe(take(1));
+    }
+
+    getAllAtividadeEconomicaAtividade(): Observable<AtividadeEconomica[]> {
+        let params = new HttpParams().set('tipoAtividadeEconomica', TipoAtividadeEconomica.atividadePrincipal);
+        return this.http.get<AtividadeEconomica[]>(`${this.apiUrl}/atividade-economica/search/findByTipoAtividadeEconomica?${params}`).pipe(take(1));
+    }
+
     getTipoRisco(page = 0, size = 50): Observable<any> {
         let params = new HttpParams()
             .set('page', page.toString())
@@ -123,6 +134,13 @@ export class DataMasterService {
             .set('size', size.toString())
             .set('sort', 'id,desc')
         return this.http.get<any>(`${this.apiUrl}/taxas`, { params }).pipe(take(1));
+    }
+
+    getAllTaxaByCategoriaAndTipo(categoria: Categoria, tipo: AplicanteType): Observable<any> {
+        let params = new HttpParams()
+            .set('categoria', categoria)
+            .set('tipo', tipo);
+        return this.http.get<any>(`${this.apiUrl}/taxas/search/findByCategoriaAndTipo`, { params }).pipe(take(1));
     }
 
     getSociedadeComercial(page = 0, size = 50): Observable<any> {

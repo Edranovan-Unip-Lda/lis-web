@@ -27,7 +27,7 @@ export const getPageAplicanteOrByEmpresaIdResolver: ResolveFn<any> = () => {
     const aplicanteService = inject(AplicanteService);
     const authServiec = inject(AuthenticationService);
 
-    if (authServiec.currentUserValue.role === Role.client) {
+    if (authServiec.currentUserValue.role.name === Role.client) {
         const empresaId = authServiec.currentUserValue?.empresa?.id;
         return service.getAplicantesPage(empresaId);
     } else {
@@ -49,7 +49,7 @@ export const getAplicante: ResolveFn<any> = (route: ActivatedRouteSnapshot) => {
     const authService = inject(AuthenticationService);
     const service = inject(EmpresaService);
     const empresaId = authService.currentUserValue.empresa.id
-    console.log(empresaId,id);
+    console.log(empresaId, id);
     if (id) {
         return service.getAplicanteByEmpresaIdAndAplicanteId(empresaId, +id);
     } else {

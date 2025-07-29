@@ -1,10 +1,11 @@
+import { Aplicante } from '@/core/models/entities.model';
 import { Role } from '@/core/models/enums';
 import { StatusIconPipe, StatusSeverityPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService } from '@/core/services';
 import { EmpresaService } from '@/core/services/empresa.service';
 import { CommonModule, DatePipe, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
-import { ActivatedRoute, RouterLink, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
@@ -32,6 +33,7 @@ export class ApplicationListComponent {
   roleClient = Role.client;
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private service: EmpresaService,
     private authService: AuthenticationService,
@@ -44,5 +46,14 @@ export class ApplicationListComponent {
 
   onGlobalFilter(table: Table, event: Event) {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+  }
+
+  toDetail(aplicante: Aplicante) {
+    this.router.navigate(['/application', aplicante.id], {
+      queryParams: {
+        categoria: aplicante.categoria,
+        tipo: aplicante.tipo
+      }
+    });
   }
 }

@@ -96,8 +96,9 @@
                                      Tipo
                                  </label>
                                  <p-select formControlName="tipoPedidoCadastro" inputId="tipoPedidoCadastro"
-                                     [options]="tipoPedidoOpts" optionLabel="name" fluid filterBy="name"
-                                     [showClear]="true" placeholder="Selecione o tipo">
+                                     (onChange)="pedidoCadstroOnChange($event)" [options]="tipoPedidoOpts"
+                                     optionLabel="name" fluid filterBy="name" [showClear]="true"
+                                     placeholder="Selecione o tipo">
                                  </p-select>
                              </div>
                          </div>
@@ -124,25 +125,15 @@
                                      <div class="mb-6 col-span-12">
                                          <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                                              <div class="flex-auto">
-                                                 <label for="municipio"
+                                                 <label for="aldeia"
                                                      class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                                     Municipio
+                                                     Aldeia
                                                  </label>
-                                                 <p-select formControlName="municipio"
-                                                     (onChange)="munisipiuChange($event)" inputId="municipio"
-                                                     dataKey="id" [options]="listaMunicipio" optionLabel="nome" fluid
-                                                     [showClear]="true" placeholder="Selecione o Municipio">
-                                                 </p-select>
-                                             </div>
-                                             <div class="flex-auto">
-                                                 <label for="posto"
-                                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                                     Posto Administrativo
-                                                 </label>
-                                                 <p-select formControlName="postoAdministrativo"
-                                                     (onChange)="postuChange($event)" inputId="posto"
-                                                     [options]="listaPosto" optionLabel="nome" fluid [showClear]="true"
-                                                     placeholder="Selecione o Posto">
+                                                 <p-select fluid formControlName="aldeia" [options]="listaAldeia"
+                                                     optionLabel="nome" placeholder="Selecione a Aldeia" [filter]="true"
+                                                     filterBy="nome" [showClear]="true"
+                                                     (onFilter)="aldeiaFilter($event)" (onpanelHide)="onPanelHide()"
+                                                     (onChange)="aldeiaOnChange($event)" (onClear)="onPanelHide()">
                                                  </p-select>
                                              </div>
                                              <div class="flex-auto">
@@ -150,21 +141,23 @@
                                                      class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
                                                      Suco
                                                  </label>
-                                                 <p-select formControlName="suco" inputId="suco"
-                                                     (onChange)="sukuChange($event)" [options]="listaSuco"
-                                                     optionLabel="nome" fluid [showClear]="true"
-                                                     placeholder="Selecione o Suco">
-                                                 </p-select>
+                                                 <input formControlName="suco" id="suco" type="text" pInputText fluid />
                                              </div>
                                              <div class="flex-auto">
-                                                 <label for="aldeia"
+                                                 <label for="posto"
                                                      class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                                     Aldeia
+                                                     Posto Administrativo
                                                  </label>
-                                                 <p-select formControlName="aldeia" inputId="aldeia"
-                                                     [options]="listaAldeia" optionLabel="nome" fluid [showClear]="true"
-                                                     placeholder="Selecione o Suco">
-                                                 </p-select>
+                                                 <input formControlName="postoAdministrativo" id="postoAdministrativo"
+                                                     type="text" pInputText fluid />
+                                             </div>
+                                             <div class="flex-auto">
+                                                 <label for="municipio"
+                                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                                     Municipio
+                                                 </label>
+                                                 <input formControlName="municipio" id="municipio" type="text"
+                                                     pInputText fluid />
                                              </div>
                                          </div>
                                      </div>
@@ -246,8 +239,8 @@
                                      Tipo do Empresa
                                  </label>
                                  <p-select formControlName="tipoEmpresa" inputId="tipoEmpresa"
-                                     [options]="tipoEmpresaOpts" optionLabel="name" fluid filterBy="name"
-                                     [showClear]="true" placeholder="Selecione o Tipo de Empresa">
+                                     [options]="tipoEmpresaOpts" optionLabel="name" optionValue="value" fluid
+                                     filterBy="name" [showClear]="true" placeholder="Selecione o Tipo de Empresa">
                                  </p-select>
                              </div>
                              }
@@ -273,10 +266,7 @@
                                  <label for="risco" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
                                      Quanto ao Risco
                                  </label>
-                                 <p-select formControlName="risco" inputId="risco" [options]="nivelRiscoOpts"
-                                     optionLabel="name" fluid filterBy="name" [showClear]="true"
-                                     placeholder="Selecione o risco">
-                                 </p-select>
+                                 <input formControlName="risco" id="risco" type="text" pInputText fluid />
                              </div>
                              @if (categoria === 'COMERCIAL') {
                              <div class="mb-6 col-span-12 md:col-span-6">
@@ -295,8 +285,8 @@
                                      Quanto à atividade
                                  </label>
                                  <p-select formControlName="quantoAtividade" inputId="quantoAtividade"
-                                     [options]="quantoAtividadeOpts" optionLabel="name" fluid filterBy="name"
-                                     [showClear]="true" placeholder="Selecione a atividade">
+                                     [options]="quantoAtividadeOpts" optionLabel="name" optionValue="value" fluid
+                                     filterBy="name" [showClear]="true" placeholder="Selecione a atividade">
                                  </p-select>
                              </div>
                              }
@@ -307,9 +297,9 @@
                                      Tipo de Atividade no Estabelecimento
                                  </label>
                                  <p-select formControlName="tipoAtividade" (onChange)="tipoAtividadeChange($event)"
-                                     inputId="tipoAtividade" [options]="listaAtividadeEconomica" optionLabel="descricao"
-                                     fluid [filter]="true" filterBy="codigo,descricao" [showClear]="true"
-                                     placeholder="Selecione o tipo de atividade">
+                                     inputId="tipoAtividade" [options]="listaAtividadeEconomicaTipo"
+                                     optionLabel="codigo" fluid [filter]="true" filterBy="codigo,descricao"
+                                     [showClear]="true" placeholder="Selecione o tipo de atividade">
                                      <ng-template let-tipo #item>
                                          <div class="flex items-center gap-2">
                                              <span>{{tipo.codigo}} </span> - <span>{{tipo.descricao}} </span>
@@ -320,7 +310,7 @@
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="tipoAtividadeCodigo"
                                      class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                     Codigo
+                                     Descricao
                                  </label>
                                  <input formControlName="tipoAtividadeCodigo" id="tipoAtividadeCodigo" type="text"
                                      pInputText fluid />
@@ -332,8 +322,8 @@
                                  </label>
                                  <p-select formControlName="atividadePrincipal"
                                      (onChange)="atividadePrincipalChange($event)" inputId="atividadePrincipal"
-                                     [options]="listaAtividadeEconomica" optionLabel="descricao" fluid [filter]="true"
-                                     filterBy="codigo,descricao" [showClear]="true"
+                                     [options]="listaAtividadeEconomicaAtividade" optionLabel="codigo" fluid
+                                     [filter]="true" filterBy="codigo,descricao" [showClear]="true"
                                      placeholder="Selecione a atividade principal">
                                      <ng-template let-tipo #item>
                                          <div class="flex items-center gap-2">
@@ -345,7 +335,7 @@
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="atividadePrincipalCodigo"
                                      class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                     Codigo
+                                     Descricao
                                  </label>
                                  <input formControlName="atividadePrincipalCodigo" id="atividadePrincipalCodigo"
                                      type="text" pInputText fluid />
@@ -358,14 +348,17 @@
                                  </label>
                                  <input formControlName="alteracoes" id="alteracoes" type="text" pInputText fluid />
                              </div>
+                             @if (!this.showDataEmissaoCertAnterior) {
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="dataEmissao"
                                      class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                     Data da Emissao do Certificado anterior (Se Aplicavel)
+                                     Data da Emissao do Certificado anterior
                                  </label>
                                  <input formControlName="dataEmissaoCertAnterior" id="dataEmissao" type="date"
                                      pInputText fluid />
                              </div>
+                             }
+
                              <div class="mb-6 col-span-12">
                                  <label for="observacao"
                                      class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
@@ -374,11 +367,6 @@
                                  <input formControlName="observacao" id="observacao" type="text" pInputText fluid />
                              </div>
                          </div>
-                         <!-- <div class="flex pt-6 justify-between">
-                             <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" />
-                             <p-button label="Guardar e Continuar" icon="pi pi-arrow-right" iconPos="right"
-                                 (onClick)="submit(requestForm)" />
-                         </div> -->
                      </form>
                      <div class="flex pt-6 justify-between">
                          <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="right"
@@ -395,36 +383,47 @@
                  <ng-template #content let-activateCallback="activateCallback">
                      <form [formGroup]="faturaForm">
                          <div class="flex flex-col h-48">
-                             <span class="text-xl font-bold mt-6 mb-3 block">
+                             <span class="text-xl font-bold mt-6 mb-4 block">
                                  Emitir uma Fatura
                              </span>
                              <div class="grid grid-cols-12 gap-4">
                                  <div class="mb-6 col-span-12">
-                                     <label for="taxa"
+                                     <label for="taxas"
                                          class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                         Selecionar o Ato
+                                         Ato da taxa
                                      </label>
-                                     <p-select formControlName="taxa" inputId="taxa" [options]="listaPedidoAto"
-                                         optionLabel="name" fluid filterBy="name" [checkmark]="true" [showClear]="true"
-                                         placeholder="Selecionar">
-                                         <ng-template let-item #selectedItem>
-                                             <div class="flex items-center gap-2">
-
-                                                 <div>{{ item.ato }}</div>
-                                                 -
-                                                 <div> {{item.montante |currency }} </div>
-                                             </div>
-                                         </ng-template>
-                                         <ng-template let-item #item>
-                                             <div class="flex items-center gap-2">
-
-                                                 <div>{{ item.ato }}</div>
-                                                 -
-                                                 <div> {{item.montante |currency }} </div>
-                                             </div>
-                                         </ng-template>
-                                     </p-select>
+                                     <p-multiselect formControlName="taxas" inputId="taxas" [options]="listaPedidoAto"
+                                         optionLabel="ato" optionValue="id" fluid [showClear]="true"
+                                         placeholder="Selecione a sociedade comercial">
+                                     </p-multiselect>
                                  </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="superficie"
+                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         Superfície do estabelecimento comercial <span class="">(&#13217;)</span>
+                                     </label>
+                                     <p-inputgroup>
+                                         <p-inputnumber formControlName="superficie" mode="decimal"
+                                             [minFractionDigits]="2" [maxFractionDigits]="2" />
+                                         <p-inputgroup-addon>
+                                             <span class="text-2xl font-bold">&#13217;</span>
+                                         </p-inputgroup-addon>
+                                     </p-inputgroup>
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="total"
+                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         Total
+                                     </label>
+                                     <p-inputgroup>
+                                         <p-inputnumber formControlName="total" mode="decimal" [minFractionDigits]="2"
+                                             [maxFractionDigits]="2" />
+                                         <p-inputgroup-addon>
+                                             <span class="text-2xl font-bold">$</span>
+                                         </p-inputgroup-addon>
+                                     </p-inputgroup>
+                                 </div>
+                                 <!-- 
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="nomeEmpresa"
                                          class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
@@ -438,8 +437,10 @@
                                          class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
                                          Sociedade Comercial
                                      </label>
-                                     <input formControlName="sociedadeComercial" id="sociedadeComercial" type="text"
-                                         pInputText fluid />
+                                     <p-select formControlName="sociedadeComercial" inputId="sociedadeComercial"
+                                         [options]="listaSociedadeComercial" optionLabel="nome" optionValue="nome" fluid
+                                         [showClear]="true" placeholder="Selecione a sociedade comercial">
+                                     </p-select>
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-7">
                                      <label for="atividadeDeclarada"
@@ -448,9 +449,9 @@
                                      </label>
                                      <p-select formControlName="atividadeDeclarada"
                                          (onChange)="atividadeDeclaradaChange($event)" inputId="atividadeDeclarada"
-                                         [options]="listaAtividadeEconomica" optionLabel="descricao" fluid
-                                         [filter]="true" filterBy="codigo,descricao" [showClear]="true"
-                                         placeholder="Selecione a atividade">
+                                         [options]="listaAtividadeEconomicaAtividade" optionLabel="codigo"
+                                         optionValue="id" fluid [filter]="true" filterBy="codigo,descricao"
+                                         [showClear]="true" placeholder="Selecione a atividade">
                                          <ng-template let-tipo #item>
                                              <div class="flex items-center gap-2">
                                                  <span>{{tipo.codigo}} </span> - <span>{{tipo.descricao}} </span>
@@ -460,17 +461,19 @@
 
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-5">
-                                     <label for="codigo"
+                                     <label for="descricao"
                                          class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                         Codigo
+                                         Descricao
                                      </label>
-                                     <input formControlName="codigo" id="codigo" type="text" pInputText fluid />
-                                 </div>
+                                     <input formControlName="descricao" id="descricao" type="text" pInputText fluid />
+                                 </div> -->
+
                              </div>
                              <div class="grid grid-cols-12 gap-4">
                                  <div class="mb-6 col-span-12 md:col-span-4 flex justify-between">
-                                     <p-button label="Emitir Fatura" icon="pi pi-file" iconPos="left"
-                                         [loading]="faturaLoading" class="w-auto mt-3"
+                                     <p-button [label]="faturaId? 'Atualizar Fatura' : 'Emitir Fatura'"
+                                         [icon]="faturaId? 'pi pi-sync' : 'pi pi-file'" iconPos="left"
+                                         [loading]="faturaLoading" class="w-auto mt-3" [disabled]="!faturaForm.valid"
                                          (click)="saveFatura(faturaForm)" />
                                      @if (faturaId) {
                                      <p-button label="Baixar Fatura" [outlined]="true" icon="pi pi-download"

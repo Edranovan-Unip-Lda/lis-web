@@ -80,3 +80,8 @@ export enum TipoDocumento {
     eleitoral = 'ELEITORAL',
     outro = 'OUTRO',
 }
+
+export enum TipoAtividadeEconomica {
+    tipo = 'TIPO_ATIVIDADE',
+    atividadePrincipal = 'ATIVIDADE_PRINCIPAL',
+}

@@ -1,5 +1,6 @@
+import { TipoAtividadeEconomica } from '@/core/models/enums';
 import { DataMasterService } from '@/core/services/data-master.service';
-import { categoryTpesOptions, nivelRiscoOptions } from '@/core/utils/global-function';
+import { applicationTypesOptions, categoryTpesOptions, nivelRiscoOptions, tipoAtividadeEconomicaOptions } from '@/core/utils/global-function';
 import { CurrencyPipe, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -32,6 +33,8 @@ export class ListaComponent {
   selectedData: any;
   nivelRiscoOpts = nivelRiscoOptions;
   categoryOpts = categoryTpesOptions;
+  aplicanteOpts = applicationTypesOptions;
+  tipoAtividadeEconomicaOpts = tipoAtividadeEconomicaOptions;
   loading = false;
   page = 0;
   size = 50;
@@ -45,7 +48,27 @@ export class ListaComponent {
     private confirmationService: ConfirmationService,
     private messageService: MessageService
   ) {
+
+  }
+
+  ngOnInit(): void {
     this.setDataMaster(this.route.snapshot.data['type']);
+
+    if (this.type === 'atividade-economica') {
+      this.dataForm.get('tipoAtividadeEconomica')?.valueChanges.subscribe({
+        next: value => {
+          switch (value.value) {
+            case TipoAtividadeEconomica.tipo:
+              this.dataForm.get('codigo')?.setValidators([Validators.minLength(2), Validators.maxLength(2)]);
+              break;
+            case TipoAtividadeEconomica.atividadePrincipal:
+              this.dataForm.get('codigo')?.setValidators([Validators.minLength(4), Validators.maxLength(4)]);
+              break;
+          }
+        }
+      });
+    }
+
   }
 
   private setDataMaster(type: string): void {
@@ -61,22 +84,29 @@ export class ListaComponent {
         ];
         this.dataForm = this._fb.group({
           id: [''],
-          codigo: ['', [Validators.required, Validators.minLength(1)]],
+          codigo: ['', [Validators.required]],
           descricao: ['', [Validators.required, Validators.minLength(1)]],
           tipo: ['', [Validators.required, Validators.minLength(1)]],
           tipoRisco: ['', [Validators.required, Validators.minLength(1)]],
+          tipoAtividadeEconomica: ['', [Validators.required, Validators.minLength(1)]],
         });
         break;
       case 'taxas':
         this.dataList = this.route.snapshot.data['listaTaxa']._embedded.taxas;
         this.cols = [
+          { field: 'categoria', header: 'Categoria' },
+          { field: 'tipo', header: 'Tipo' },
           { field: 'ato', header: 'Ato' },
-          { field: 'montante', header: 'Montante' },
+          { field: 'montanteMinimo', header: 'Montante Mínimo' },
+          { field: 'montanteMaximo', header: 'Montante Máximo' },
         ];
         this.dataForm = this._fb.group({
           id: [''],
+          categoria: ['', [Validators.required, Validators.minLength(1)]],
+          tipo: ['', [Validators.required, Validators.minLength(1)]],
           ato: ['', [Validators.required, Validators.minLength(1)]],
-          montante: ['', [Validators.required, Validators.min(1)]],
+          montanteMinimo: ['', [Validators.required, Validators.min(1)]],
+          montanteMaximo: ['', [Validators.required, Validators.min(1)]],
         });
 
         break;
@@ -109,6 +139,7 @@ export class ListaComponent {
       case 'atividade-economica':
         formData.tipo = formData.tipo.value;
         formData.tipoRisco = formData.tipoRisco.value;
+        formData.tipoAtividadeEconomica = formData.tipoAtividadeEconomica.value;
         break;
     }
 
@@ -139,6 +170,7 @@ export class ListaComponent {
       case 'atividade-economica':
         formData.tipo = formData.tipo.value;
         formData.tipoRisco = formData.tipoRisco.value;
+        formData.tipoAtividadeEconomica = formData.tipoAtividadeEconomica.value;
         break;
     }
 
@@ -211,14 +243,18 @@ export class ListaComponent {
           descricao: data.descricao,
           tipo: categoryTpesOptions.find(item => item.value === data.tipo),
           tipoRisco: nivelRiscoOptions.find(item => item.value === data.tipoRisco),
+          tipoAtividadeEconomica: this.tipoAtividadeEconomicaOpts.find(item => item.value === data.tipoAtividadeEconomica)
         };
         break;
 
       case 'taxas':
         formEditData = {
           id: data.id,
+          categoria: data.categoria,
+          tipo: data.tipo,
           ato: data.ato,
-          montante: data.montante,
+          montanteMinimo: data.montanteMinimo,
+          montanteMaximo: data.montanteMaximo
         };
         break;
       case 'sociedade-comercial':
