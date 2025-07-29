@@ -58,15 +58,12 @@ export class InicioComponent {
         this.loading = false;
         this.applicationForm.reset();
 
-        switch (formData.tipo) {
-          case AplicanteType.cadastro:
-            this.route.navigateByUrl(`/application/cadastro/${response.id}`);
-            break;
-
-          case AplicanteType.licenca:
-            this.route.navigateByUrl(`/application/atividade/${response.id}`);
-            break;
-        }
+        this.route.navigate(['/application', response.id], {
+          queryParams: {
+            categoria: response.categoria,
+            tipo: response.tipo
+          }
+        });
       },
       error: (error) => {
         this.visible = false;
