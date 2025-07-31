@@ -1,14 +1,24 @@
-<div [class]="'flex min-h-screen  ' + (layoutService.isDarkTheme() ? 'layout-dark' : 'layout-light')">
+<div [class]="'flex h-screen' + (layoutService.isDarkTheme() ? 'layout-dark' : 'layout-light')">
     @if (layoutService.isDarkTheme()) {
-    <div class="w-6/12 h-screen hidden md:block flex-shrink-0"
+    <div class="w-6/12 hidden md:block flex-shrink-0"
         style="max-width: 490px; background-image: url('/images/pages/login1.webp'); background-repeat: no-repeat; background-size: cover">
     </div>
     } @else {
-    <div class="w-6/12 h-screen hidden md:block flex-shrink-0"
+    <div class="w-6/12 hidden md:block flex-shrink-0"
         style="max-width: 490px; background-image: url('/images/pages/login1.webp'); background-repeat: no-repeat; background-size: cover">
     </div>
     }
-    <div class="w-full" style="background: var(--surface-ground)">
-        <router-outlet></router-outlet>
+    <div class="w-full overflow-y-auto h-screen flex flex-col items-center justify-around" style="background: var(--surface-ground)">
+        <div>
+            <router-outlet></router-outlet>
+        </div>
+        <div class="flex items-end justify-end bottom-0 pb-8">
+            <div class="flex items-center pr-6 mr-6 border-r border-surface-200">
+                <h4>
+                    Ministério de Comércio e Indústria
+                </h4>
+            </div>
+            <span class="text-sm text-surface-500 dark:text-surface-400">Copyright 2025</span>
+        </div>
     </div>
 </div>

@@ -6,3 +6,7 @@
 @use './assets/_overrides.scss';
 /* BootStrap */
 @use "bootstrap-icons/font/bootstrap-icons.scss";
+
+#login {
+    max-width: 350px;
+}
