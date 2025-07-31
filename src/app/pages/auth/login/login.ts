@@ -11,12 +11,13 @@ import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
+import { Password } from 'primeng/password';
 import { Ripple } from 'primeng/ripple';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [Button, InputText, RouterLink, Ripple, InputIcon, IconField, Fluid, ReactiveFormsModule, MessageModule],
+    imports: [Button, InputText, RouterLink, Ripple, InputIcon, IconField, Fluid, ReactiveFormsModule, MessageModule, Password],
     templateUrl: './login.html',
     providers: [MessageService]
 })

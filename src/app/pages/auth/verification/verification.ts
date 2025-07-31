@@ -6,7 +6,6 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
-import { Fluid } from 'primeng/fluid';
 import { InputNumber } from 'primeng/inputnumber';
 import { InputOtp } from 'primeng/inputotp';
 import { MessagesModule } from 'primeng/messages';
@@ -15,7 +14,7 @@ import { Ripple } from 'primeng/ripple';
 @Component({
     selector: 'app-verification',
     standalone: true,
-    imports: [Ripple, RouterLink, Fluid, InputOtp, MessagesModule, Button, ReactiveFormsModule],
+    imports: [Ripple, RouterLink, InputOtp, MessagesModule, Button, ReactiveFormsModule],
     templateUrl: './verification.component.html',
     providers: [MessageService]
 })

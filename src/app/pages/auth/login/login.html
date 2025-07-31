@@ -6,7 +6,7 @@
                 <img src="/images/logo.png" style="width: 100px" alt="logo" />
             </div>
             <div class="mt-2 mb-8">
-                <p class="text-xl">
+                <p class="text-2xl font-bold">
                     Sistema de Gestão de <br> Licenças Comerciais e Indústriais
                 </p>
             </div>
@@ -25,16 +25,15 @@
                 </p-iconfield>
 
                 <p-iconfield>
-                    <p-inputicon class="pi pi-key" />
-                    <input pInputText type="password" formControlName="password" placeholder="Palavra-passe"
-                        class="block mb-4" fluid />
+                    <p-password [toggleMask]="true" [feedback]="false" formControlName="password"
+                        placeholder="Palavra-passe" class="block mb-4" fluid />
                 </p-iconfield>
                 <a href="#" class="flex text-surface-500 dark:text-surface-400 mb-6 text-sm">
                     Esqueceu-se da sua palavra-passe?
                 </a>
                 <div class="mt-6">
-                    <p-button icon="pi pi-sign-in" label="Logar" [loading]="loading" (click)="login(loginForm)" pRipple
-                        [disabled]="!loginForm.valid" fluid></p-button>
+                    <p-button icon="pi pi-sign-in" label="Logar" [loading]="loading" type="submit"
+                        (click)="login(loginForm)" pRipple [disabled]="!loginForm.valid" fluid></p-button>
                     <span class="flex text-sm text-surface-500 dark:text-surface-400 mt-6">Não tem uma conta?
                         <a routerLink="/auth/register" class="cursor-pointer ml-1">Registe-se aqui</a></span>
                 </div>
