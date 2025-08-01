@@ -1,9 +1,13 @@
 <div class="card">
-    <div class="grid grid-cols-1 mb-4">
-        <div class="col-span-1">
-            <span class="text-2xl font-bold mb-4 mr-4">fatura de Inscrição</span>
+    <div class="grid grid-cols-12 mb-4">
+        <div class="col-span-6">
+            <span class="text-2xl font-bold mr-4">fatura de Inscrição</span>
             <p-button icon="pi pi-file-pdf" size="large" [raised]="true" printSectionId="myDiv" [useExistingCss]="true"
                 ngxPrint />
+        </div>
+        <div class="col-span-6 flex justify-end mb-4">
+            <p-button (click)="goBack()" icon="pi pi-chevron-circle-left" label="Voltar" severity="help" size="large"
+                [text]="true" [rounded]="true" [raised]="true" />
         </div>
     </div>
     <div id="myDiv" class="bg-white text-black px-4 pt-2">

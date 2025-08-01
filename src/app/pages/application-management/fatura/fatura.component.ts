@@ -1,6 +1,6 @@
 import { Aplicante, Fatura } from '@/core/models/entities.model';
 import { calculateCommercialLicenseTax, nivelRiscoOptions } from '@/core/utils/global-function';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, Location } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgxPrintModule } from 'ngx-print';
@@ -21,6 +21,7 @@ export class FaturaComponent {
 
   constructor(
     private router: ActivatedRoute,
+    private location: Location,
   ) { }
 
   ngOnInit() {
@@ -34,5 +35,9 @@ export class FaturaComponent {
 
   getMontanteSubTotal(montanteMinimo: number, montanteMaximo: number): number {
     return calculateCommercialLicenseTax(this.fatura.superficie, montanteMinimo, montanteMaximo);
+  }
+
+  goBack() {
+    this.location.back();
   }
 }

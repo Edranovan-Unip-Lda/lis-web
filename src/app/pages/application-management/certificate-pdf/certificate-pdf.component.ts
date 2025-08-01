@@ -1,5 +1,5 @@
 import { Aplicante } from '@/core/models/entities.model';
-import { CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, Location, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgxPrintModule } from 'ngx-print';
@@ -18,6 +18,7 @@ export class CertificatePdfComponent {
 
   constructor(
     private router: ActivatedRoute,
+    private location: Location
   ) { }
 
   ngOnInit(): void {
@@ -25,5 +26,9 @@ export class CertificatePdfComponent {
     this.aplicanteData.updatedAt = new Date(this.aplicanteData.updatedAt)
     this.aplicanteData.updatedAt.setFullYear(this.aplicanteData.updatedAt.getFullYear() + 1);
     this.dataValido = this.aplicanteData.updatedAt
+  }
+
+  goBack() {
+    this.location.back();
   }
 }
