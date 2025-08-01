@@ -166,6 +166,7 @@ export interface Fatura extends BaseModel {
     sede: string;
     nif: string;
     nivelRisco: NivelRisco;
+    recibo: Documento;
 }
 
 export interface Taxa extends BaseModel {
@@ -187,4 +188,13 @@ export interface AtividadeEconomica extends BaseModel {
 export interface SociedadeComercial extends BaseModel {
     nome: string;
     acronimo: string;
+}
+
+export interface Documento extends BaseModel {
+    nome: string;
+    caminho: string;
+    extensao: string;
+    descricao: string;
+    tipo: string;
+    tamanho: string;
 }

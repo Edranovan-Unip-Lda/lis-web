@@ -1,7 +1,8 @@
 import { Aldeia } from '@/core/models/data-master.model';
-import { Aplicante, Empresa, Fatura, PedidoInscricaoCadastro } from '@/core/models/entities.model';
+import { Aplicante, Documento, Empresa, Fatura, PedidoInscricaoCadastro } from '@/core/models/entities.model';
 import { AplicanteType, Categoria, TipoPedidoCadastro } from '@/core/models/enums';
 import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
+import { AuthenticationService } from '@/core/services';
 import { AplicanteService } from '@/core/services/aplicante.service';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { PedidoService } from '@/core/services/pedido.service';
@@ -22,6 +23,7 @@ import { Select, SelectFilterEvent } from 'primeng/select';
 import { StepperModule } from 'primeng/stepper';
 import { Tag } from 'primeng/tag';
 import { Toast } from 'primeng/toast';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-application-detail',
@@ -60,6 +62,13 @@ export class ApplicationDetailComponent {
   originalAldeias: any = [];
 
   uploadedFiles: any[] = [];
+  uploadUrl = `${environment.apiUrl}/aplicantes`;
+  maxFileSize = 20 * 1024 * 1024;
+  downloadLoading = false;
+  deleteLoading = false;
+
+  pedidoActive = false;
+  faturaActive = false;
 
   constructor(
     private _fb: FormBuilder,
@@ -68,6 +77,7 @@ export class ApplicationDetailComponent {
     private aplicanteService: AplicanteService,
     private messageService: MessageService,
     private pedidoService: PedidoService,
+    private authService: AuthenticationService,
   ) {
   }
 
@@ -86,25 +96,22 @@ export class ApplicationDetailComponent {
     this.categoria = this.aplicanteData.categoria;
     this.listaPedidoAto = mapToTaxa(this.router.snapshot.data['listaTaxaResolver']._embedded.taxas);
 
-
-
-    console.log(this.aplicanteData);
-
     this.mapNewFatura(this.aplicanteData);
-
-    console.log(this.faturaForm.value);
-
 
     if (!this.aplicanteData.pedidoInscricaoCadastroDto) {
       this.isNew = true;
       this.mapNewPedido(this.aplicanteData.empresaDto);
     } else {
       this.isNew = false;
+      this.pedidoActive = true;
       this.pedidoId = this.aplicanteData.pedidoInscricaoCadastroDto.id;
 
       if (this.aplicanteData.pedidoInscricaoCadastroDto.fatura) {
+        this.faturaActive = true;
         this.faturaId = this.aplicanteData.pedidoInscricaoCadastroDto.fatura.id;
         this.mapEditFatura(this.aplicanteData.pedidoInscricaoCadastroDto.fatura);
+        this.uploadUrl = `${this.uploadUrl}/${this.aplicanteData.id}/pedidos/${this.pedidoId}/faturas/${this.faturaId}/upload/${this.authService.currentUserValue.username}`;
+
       } else {
         this.faturaForm.patchValue({
           atividadeDeclarada: this.aplicanteData.pedidoInscricaoCadastroDto.atividadePrincipal.id,
@@ -216,9 +223,6 @@ export class ApplicationDetailComponent {
       tipoRisco: pedido.atividadePrincipal.tipoRisco
     }
 
-    console.log(pedido.tipoEmpresa, this.categoria === Categoria.industrial);
-
-
     this.requestForm.patchValue({
       tipoPedidoCadastro: this.tipoPedidoOpts.find(item => item.value === pedido.tipoPedidoCadastro),
       tipoEstabelecimento: this.tipoEstabelecimentoOpts.find(item => item.value === pedido.tipoEstabelecimento),
@@ -286,8 +290,6 @@ export class ApplicationDetailComponent {
       formData.quantoAtividade = form.value.quantoAtividade;
     }
 
-
-
     if (this.isNew) {
       this.aplicanteService.savePedido(this.aplicanteData.id, AplicanteType.cadastro, formData).subscribe({
         next: (response) => {
@@ -304,6 +306,7 @@ export class ApplicationDetailComponent {
           });
           // Set data in Fatura form
           this.mapNewFatura(this.aplicanteData);
+          this.pedidoActive = true;
         },
         error: error => {
           this.addMessages(false, true, error);
@@ -369,6 +372,7 @@ export class ApplicationDetailComponent {
         next: (response) => {
           this.faturaId = response.id;
           this.aplicanteData.pedidoInscricaoCadastroDto.fatura = response;
+          this.faturaActive = true;
           this.addMessages(true, false);
         },
         error: error => {
@@ -405,15 +409,77 @@ export class ApplicationDetailComponent {
   }
 
   onUpload(event: any, arg: string) {
-    for (const file of event.files) {
-      this.uploadedFiles.push(file);
+    if (event.originalEvent.body) {
+      this.uploadedFiles.push(event.originalEvent.body)
     }
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Sucesso',
+      detail: 'Arquivo carregado com sucesso!'
+    });
+  }
 
-    // this.messageService.add({
-    //   severity: 'info',
-    //   summary: 'Success',
-    //   detail: 'File Uploaded'
-    // });
+  downloadFile(file: Documento) {
+    this.downloadLoading = true;
+    this.pedidoService.downloadRecibo(this.aplicanteData.id, this.pedidoId, this.faturaId, file.id).subscribe({
+      next: (response) => {
+        const url = window.URL.createObjectURL(response);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.nome;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Success',
+          detail: 'Arquivo descarregado com sucesso!'
+        });
+      },
+      error: error => {
+        this.downloadLoading = false;
+        console.error(error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Falha no download do arquivo!'
+        });
+      },
+      complete: () => {
+        this.downloadLoading = false;
+      }
+    });
+  }
+
+  removeFile(file: Documento) {
+    this.deleteLoading = true;
+    this.pedidoService.deleteRecibo(this.aplicanteData.id, this.pedidoId, this.faturaId, file.id).subscribe({
+      next: () => {
+        this.uploadedFiles.pop();
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Success',
+          detail: 'Arquivo excluído com sucesso!'
+        });
+      },
+      error: error => {
+        this.deleteLoading = false;
+        console.error(error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Falha no exclusão do arquivo!'
+        });
+      },
+      complete: () => {
+        this.deleteLoading = false;
+      }
+    });
+  }
+
+  bytesToMBs(value: number): string {
+    if (!value && value !== 0) return '';
+    const mb = value / (1024 * 1024);
+    return `${mb.toFixed(2)} MB`;
   }
 
   private initForm(): void {
@@ -495,6 +561,10 @@ export class ApplicationDetailComponent {
       taxas: fatura.taxas.map(t => t.id),
       sociedadeComercial: fatura.sociedadeComercial,
     });
+
+    if (fatura.recibo) {
+      this.uploadedFiles.push(fatura.recibo);
+    }
   }
 
   private enableSuperficieFormControl() {

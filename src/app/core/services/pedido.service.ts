@@ -21,4 +21,12 @@ export class PedidoService {
         return this.http.put<Fatura>(`${this.apiUrl}/${id}/faturas/${faturaId}`, formData);
     }
 
+    downloadRecibo(aplicanteId: number, pedidoId: number, faturaId: number, reciboId: number): Observable<Blob> {
+        return this.http.get(`${environment.apiUrl}/aplicantes/${aplicanteId}/pedidos/${pedidoId}/faturas/${faturaId}/recibos/${reciboId}`, { responseType: 'blob' as 'blob' });
+    }
+
+    deleteRecibo(aplicanteId: number, pedidoId: number, faturaId: number, reciboId: number): Observable<any> {
+        return this.http.delete(`${environment.apiUrl}/aplicantes/${aplicanteId}/pedidos/${pedidoId}/faturas/${faturaId}/recibos/${reciboId}`);
+    }
+
 }
