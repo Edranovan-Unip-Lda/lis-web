@@ -3,24 +3,26 @@ import { Role } from '@/core/models/enums';
 import { StatusIconPipe, StatusSeverityPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService } from '@/core/services';
 import { EmpresaService } from '@/core/services/empresa.service';
-import { CommonModule, DatePipe, TitleCasePipe } from '@angular/common';
+import { DatePipe, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink, RouterModule } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { Button } from 'primeng/button';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
-import { InputTextModule } from 'primeng/inputtext';
-import { PopoverModule } from 'primeng/popover';
-import { ProgressBarModule } from 'primeng/progressbar';
+import { InputText } from 'primeng/inputtext';
 import { Table, TableModule } from 'primeng/table';
-import { TagModule } from 'primeng/tag';
+import { Tag } from 'primeng/tag';
+import { Toast } from 'primeng/toast';
 import { Tooltip } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-application-list',
-  imports: [TableModule, InputTextModule, ProgressBarModule, ButtonModule, IconField, InputIcon, RouterModule, TagModule, StatusSeverityPipe, StatusIconPipe, RouterLink, Tooltip, TitleCasePipe, DatePipe],
+  imports: [TableModule, InputText, Button, IconField, InputIcon, RouterModule, Tag, StatusSeverityPipe, StatusIconPipe, Tooltip, TitleCasePipe, DatePipe, Toast, ConfirmDialog],
   templateUrl: './application-list.component.html',
-  styleUrl: './application-list.component.scss'
+  styleUrl: './application-list.component.scss',
+  providers: [ConfirmationService, MessageService]
 })
 export class ApplicationListComponent {
   applications: any[] = [];
@@ -37,6 +39,8 @@ export class ApplicationListComponent {
     private route: ActivatedRoute,
     private service: EmpresaService,
     private authService: AuthenticationService,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService
   ) {
     this.currentRole = this.authService.currentRole.name;
 
@@ -54,6 +58,49 @@ export class ApplicationListComponent {
         categoria: aplicante.categoria,
         tipo: aplicante.tipo
       }
+    });
+  }
+
+  delete(aplicante: Aplicante) {
+    const empresaId = this.authService.currentUserValue.empresa.id;
+
+    this.confirmationService.confirm({
+      message: 'Quer apagar este aplicante?',
+      header: 'Zona de risco',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Cancel',
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'secondary',
+        outlined: true,
+        icon: 'pi pi-times'
+      },
+      acceptButtonProps: {
+        label: 'Eliminar',
+        severity: 'danger',
+        icon: 'pi pi-check'
+      },
+
+      accept: () => {
+        this.service.deleteApicante(empresaId, aplicante.id).subscribe({
+          next: () => {
+            this.applications = this.applications.filter(item => item.id !== aplicante.id);
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: 'Aplicante removido com sucesso'
+            });
+          },
+          error: error => {
+            console.error(error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erro',
+              detail: 'Ocorreu um erro ao remover o aplicante'
+            });
+          },
+        });
+      },
     });
   }
 }

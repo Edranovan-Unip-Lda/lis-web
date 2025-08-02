@@ -71,7 +71,7 @@
                     <a (click)="toDetail(candidatura)" pTooltip="Detalho" tooltipPosition="top">
                         <p-button icon="pi pi-eye" class="mr-2" severity="info" [rounded]="true" [outlined]="true" />
                     </a>
-                    <a [routerLink]="['/empresa', candidatura.id]">
+                    <a (click)="delete(candidatura)">
                         <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
                             pTooltip="Eliminar" tooltipPosition="top" />
                     </a>
@@ -80,3 +80,5 @@
         </ng-template>
     </p-table>
 </div>
+<p-confirmdialog />
+<p-toast />

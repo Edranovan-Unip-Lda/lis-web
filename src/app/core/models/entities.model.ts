@@ -16,7 +16,7 @@ export interface User {
     updatedAt: Date;
 }
 
-export interface Empresa {
+export interface Empresa extends BaseModel {
     nome: string;
     nif: string;
     utilizador: User;

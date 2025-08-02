@@ -61,7 +61,7 @@ export class EmpresaService {
     return this.http.get<any>(`${this.apiUrl}/${empresaId}/aplicantes/${aplicanteId}`);
   }
 
-  deleteApicante(empresaId: number, aplicanteId: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/${empresaId}/aplicantes/${aplicanteId}`);
+  deleteApicante(empresaId: number, aplicanteId: number): Observable<string> {
+    return this.http.delete<string>(`${this.apiUrl}/${empresaId}/aplicantes/${aplicanteId}`);
   }
 }
