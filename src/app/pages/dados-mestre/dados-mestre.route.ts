@@ -1,4 +1,4 @@
-import { getAtividadeEconomicaResolver, getSociedadeComercialResolver, getTaxaResolver, getTipoRiscoResolver } from "@/core/resolvers/data-master.resolver";
+import { getPageClasseAtividadeResolver, getPageGrupoAtividadeResolver, getSociedadeComercialResolver, getTaxaResolver, getTipoRiscoResolver } from "@/core/resolvers/data-master.resolver";
 import { Routes } from "@angular/router";
 
 export default [
@@ -10,13 +10,37 @@ export default [
     {
         path: 'atividade-economica',
         data: {
-            breadcrumb: 'Atividade',
+            breadcrumb: 'Atividade Económica',
             type: 'atividade-economica'
         },
-        loadComponent: () => import('@/pages/dados-mestre/lista/lista.component').then((c) => c.ListaComponent),
-        resolve: {
-            listaAtividade: getAtividadeEconomicaResolver
-        }
+        children: [
+            {
+                path: 'grupo',
+                data: {
+                    breadcrumb: 'Grupo',
+                    type: 'grupo-atividades'
+                },
+                loadComponent: () => import('@/pages/dados-mestre/lista/lista.component').then((c) => c.ListaComponent),
+                resolve: {
+                    listaGrupoAtividade: getPageGrupoAtividadeResolver
+                }
+            },
+            {
+                path: 'classe',
+                data: {
+                    breadcrumb: 'Classe',
+                    type: 'classe-atividades'
+                },
+                loadComponent: () => import('@/pages/dados-mestre/lista/lista.component').then((c) => c.ListaComponent),
+                resolve: {
+                    listaClasseAtividade: getPageClasseAtividadeResolver,
+                }
+            },
+        ]
+        // loadComponent: () => import('@/pages/dados-mestre/lista/lista.component').then((c) => c.ListaComponent),
+        // resolve: {
+        //     listaAtividade: getAtividadeEconomicaResolver
+        // }
     },
     {
         path: 'tipo-risco',

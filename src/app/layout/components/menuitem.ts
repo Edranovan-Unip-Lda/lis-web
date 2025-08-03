@@ -119,17 +119,7 @@ export const model_admin: MenuItem[] = [
     {
         label: 'Dados Mestre',
         items: [
-            // {
-            //     label: 'Tipo Risco',
-            //     icon: 'bi bi-fw bi-ui-checks',
-            //     routerLink: ['dados-mestre/tipo-risco']
-            // },
             {
-                label: 'Atividade Economica',
-                icon: 'bi bi-fw bi-bookmark',
-                routerLink: ['dados-mestre/atividade-economica']
-            },
-             {
                 label: 'Taxas',
                 icon: 'bi bi-fw bi-currency-dollar',
                 routerLink: ['dados-mestre/taxa']
@@ -138,6 +128,22 @@ export const model_admin: MenuItem[] = [
                 label: 'Sociedade Comercial',
                 icon: 'bi bi-fw bi-building',
                 routerLink: ['dados-mestre/sociedade-comercial']
+            },
+            {
+                label: 'Atividade Economica',
+                icon: 'bi bi-fw bi-activity',
+                items: [
+                    {
+                        label: 'Grupo',
+                        icon: 'bi bi-fw bi-bookmark',
+                        routerLink: ['dados-mestre/atividade-economica/grupo']
+                    },
+                    {
+                        label: 'Classe',
+                        icon: 'bi bi-fw bi-bookmarks',
+                        routerLink: ['dados-mestre/atividade-economica/classe']
+                    },
+                ]
             },
             {
                 label: 'Localização',

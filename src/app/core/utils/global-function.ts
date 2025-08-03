@@ -1,14 +1,14 @@
 import { AplicanteType, CaraterizacaoEstabelecimento, Categoria, NivelRisco, QuantoAtividade, Role, Status, TipoAtividadeEconomica, TipoAto, TipoDocumento, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro, TipoPropriedade } from "../models/enums";
 
 export function calculateCommercialLicenseTax(areaM2: number, T_MIN: number, T_MAX: number): number {
-  if (areaM2 >= 900) {
-    return T_MAX;
-  }
+    if (areaM2 >= 900) {
+        return T_MAX;
+    }
 
-  const blocks = Math.ceil(areaM2 / 100);
-  const tax = blocks * T_MIN;
+    const blocks = Math.ceil(areaM2 / 100);
+    const tax = blocks * T_MIN;
 
-  return Math.min(tax, T_MAX);
+    return Math.min(tax, T_MAX);
 }
 
 /**
@@ -35,13 +35,12 @@ export function mapToIdAndNome(array: any[]): { id: number, nome: string }[] {
     });
 }
 
-export function mapToAtividadeEconomica(array: any[]): { id: number, codigo: string, descricao: string, tipoRisco: NivelRisco }[] {
+export function mapToAtividadeEconomica(array: any[]): { id: number, codigo: string, descricao: string }[] {
     return array.map(item => {
         return {
             id: item.id,
             codigo: item.codigo,
             descricao: item.descricao,
-            tipoRisco: item.tipoRisco,
         };
     });
 }
@@ -190,13 +189,13 @@ export const tipoDocumentoOptions: any[] = [
     { name: 'Carta de Condução', value: TipoDocumento.cartaConducao },
 ];
 
-export const tipoAtividadeEconomicaOptions: any[] = [
-    {
-        name: 'Tipo Atividade no estabelecimento',
-        value: TipoAtividadeEconomica.tipo
-    },
-    {
-        name: 'Atividade Principal exercida no estabelecimento',
-        value: TipoAtividadeEconomica.atividadePrincipal
-    }
-];
+// export const tipoAtividadeEconomicaOptions: any[] = [
+//     {
+//         name: 'Tipo Atividade no estabelecimento',
+//         value: TipoAtividadeEconomica.tipo
+//     },
+//     {
+//         name: 'Atividade Principal exercida no estabelecimento',
+//         value: TipoAtividadeEconomica.atividadePrincipal
+//     }
+// ];

@@ -30,9 +30,13 @@
             <tr>
                 @for(col of columns; track col){
                 <td>
+
                     @if (col.field === 'montanteMinimo' || col.field === 'montanteMaximo') {
                     {{item[col.field] |currency}}
-                    }@else {
+                    }
+                    @else if (col.field === 'grupoAtividade') {
+                    {{item[col.field].codigo}}
+                    }@else{
                     {{item[col.field]}}
                     }
                 </td>
@@ -52,19 +56,19 @@
 <p-confirmdialog />
 
 @if (showDialog) {
-<p-dialog #dg header="{{isNew?'New':'Edit'}} {{type|titlecase}}" [modal]="true" [position]="'top'"
+<p-dialog #dg header="{{isNew?'New':'Edit'}} {{type.replace('-',' ')|titlecase}}" [modal]="true" [position]="'top'"
     [(visible)]="showDialog" [style]="{ 'min-width': '30rem' }">
     <form [formGroup]="dataForm">
         <div class="grid grid-cols-12 gap-4">
             @switch (type) {
-            @case ('atividade-economica') {
-            <div class="col-span-12">
-                <label for="tipoAtividadeEconomica" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                    Tipo de Atividade Economica
+            @case ('grupo-atividades') {
+            <div class="mb-2 col-span-12">
+                <label for="tipo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Categoria (Comercial/Industrial)
                 </label>
-                <p-select [appendTo]="'body'" formControlName="tipoAtividadeEconomica" inputId="tipoAtividadeEconomica"
-                    [options]="tipoAtividadeEconomicaOpts" optionLabel="name" fluid [showClear]="true"
-                    placeholder="Selecione o tipo de atividade">
+                <p-select [appendTo]="'body'" formControlName="tipo" inputId="tipo" [options]="categoryOpts"
+                    optionLabel="name" optionValue="value" fluid [showClear]="true"
+                    placeholder="Selecione o Tipo Economico">
                 </p-select>
             </div>
             <div class="mb-6 col-span-12">
@@ -79,20 +83,50 @@
                 </label>
                 <input formControlName="descricao" id="descricao" type="text" pInputText fluid />
             </div>
+            }
+            @case ('classe-atividades') {
             <div class="mb-2 col-span-12">
                 <label for="tipo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
                     Categoria (Comercial/Industrial)
                 </label>
                 <p-select [appendTo]="'body'" formControlName="tipo" inputId="tipo" [options]="categoryOpts"
-                    optionLabel="name" fluid [showClear]="true" placeholder="Selecione o Tipo Economico">
+                    optionLabel="name" optionValue="value" fluid [showClear]="true"
+                    placeholder="Selecione o Tipo Economico">
                 </p-select>
+            </div>
+            <div class="mb-2 col-span-12">
+                <label for="grupoAtividade" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Grupo Atividade
+                </label>
+                <p-select [appendTo]="'body'" formControlName="grupoAtividade" inputId="grupoAtividade"
+                    [options]="grupoAtivadadeOpts" fluid [showClear]="true" placeholder="Selecione o grupo atividade">
+                    <ng-template #selectedItem let-selectedOption>
+                        <span>{{selectedOption.codigo}} - {{selectedOption.descricao}}</span>
+                    </ng-template>
+                    <ng-template let-item #item>
+                        <span>{{item.codigo}} - {{item.descricao}}</span>
+                    </ng-template>
+                </p-select>
+            </div>
+            <div class="mb-6 col-span-12">
+                <label for="codigo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Código
+                </label>
+                <input formControlName="codigo" id="codigo" type="text" pInputText fluid />
+            </div>
+            <div class="mb-6 col-span-12">
+                <label for="descricao" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Descrição
+                </label>
+                <input formControlName="descricao" id="descricao" type="text" pInputText fluid />
             </div>
             <div class="col-span-12">
                 <label for="tipoRisco" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
                     Risco
                 </label>
                 <p-select [appendTo]="'body'" formControlName="tipoRisco" inputId="tipoRisco" [options]="nivelRiscoOpts"
-                    optionLabel="name" fluid [showClear]="true" placeholder="Selecione o Nivel Risco">
+                    optionLabel="name" optionValue="value" fluid [showClear]="true"
+                    placeholder="Selecione o Nivel Risco">
                 </p-select>
             </div>
             }

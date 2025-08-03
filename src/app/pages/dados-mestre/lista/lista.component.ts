@@ -1,6 +1,6 @@
-import { TipoAtividadeEconomica } from '@/core/models/enums';
+import { Categoria, TipoAtividadeEconomica } from '@/core/models/enums';
 import { DataMasterService } from '@/core/services/data-master.service';
-import { applicationTypesOptions, categoryTpesOptions, nivelRiscoOptions, tipoAtividadeEconomicaOptions } from '@/core/utils/global-function';
+import { applicationTypesOptions, categoryTpesOptions, mapToAtividadeEconomica, mapToIdAndName, nivelRiscoOptions } from '@/core/utils/global-function';
 import { CurrencyPipe, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -34,7 +34,8 @@ export class ListaComponent {
   nivelRiscoOpts = nivelRiscoOptions;
   categoryOpts = categoryTpesOptions;
   aplicanteOpts = applicationTypesOptions;
-  tipoAtividadeEconomicaOpts = tipoAtividadeEconomicaOptions;
+  // tipoAtividadeEconomicaOpts = tipoAtividadeEconomicaOptions;
+  grupoAtivadadeOpts: any[] = [];
   loading = false;
   page = 0;
   size = 50;
@@ -54,29 +55,47 @@ export class ListaComponent {
   ngOnInit(): void {
     this.setDataMaster(this.route.snapshot.data['type']);
 
-    if (this.type === 'atividade-economica') {
-      this.dataForm.get('tipoAtividadeEconomica')?.valueChanges.subscribe({
-        next: value => {
-          switch (value.value) {
-            case TipoAtividadeEconomica.tipo:
-              this.dataForm.get('codigo')?.setValidators([Validators.minLength(2), Validators.maxLength(2)]);
-              break;
-            case TipoAtividadeEconomica.atividadePrincipal:
-              this.dataForm.get('codigo')?.setValidators([Validators.minLength(4), Validators.maxLength(4)]);
-              break;
-          }
-        }
-      });
-    }
+    this.dataForm.get('tipo')?.valueChanges.subscribe((value) => {
+      if (value) {
+        console.log("Value " + value);
+        this.getGrupoAtividadesByTipo(value);
+      } else {
+        // this.dataForm.get('codigo')?.reset();
+      }
+    });
+
+
+    this.dataForm.get('grupoAtividade')?.valueChanges.subscribe((value) => {
+      if (value) {
+        this.dataForm.get('codigo')?.setValue(value.codigo);
+      } else {
+        this.dataForm.get('codigo')?.reset();
+      }
+    });
 
   }
 
   private setDataMaster(type: string): void {
     this.type = type;
     switch (type) {
-      case 'atividade-economica':
-        this.dataList = this.route.snapshot.data['listaAtividade']._embedded.atividadeEconomica;
+      case 'grupo-atividades':
+        this.dataList = this.route.snapshot.data['listaGrupoAtividade']._embedded.grupoAtividade;
         this.cols = [
+          { field: 'tipo', header: 'Categoria' },
+          { field: 'codigo', header: 'Codigo' },
+          { field: 'descricao', header: 'Descricao' },
+        ];
+        this.dataForm = this._fb.group({
+          id: [''],
+          tipo: ['', [Validators.required, Validators.minLength(1)]],
+          codigo: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(2)]],
+          descricao: ['', [Validators.required, Validators.minLength(1)]],
+        });
+        break;
+      case 'classe-atividades':
+        this.dataList = this.route.snapshot.data['listaClasseAtividade']._embedded.classeAtividade;
+        this.cols = [
+          { field: 'grupoAtividade', header: 'Grupo Codigo' },
           { field: 'codigo', header: 'Codigo' },
           { field: 'descricao', header: 'Descricao' },
           { field: 'tipo', header: 'Categoria' },
@@ -84,11 +103,11 @@ export class ListaComponent {
         ];
         this.dataForm = this._fb.group({
           id: [''],
-          codigo: ['', [Validators.required]],
-          descricao: ['', [Validators.required, Validators.minLength(1)]],
           tipo: ['', [Validators.required, Validators.minLength(1)]],
+          grupoAtividade: ['', [Validators.required]],
+          codigo: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(4)]],
+          descricao: ['', [Validators.required, Validators.minLength(1)]],
           tipoRisco: ['', [Validators.required, Validators.minLength(1)]],
-          tipoAtividadeEconomica: ['', [Validators.required, Validators.minLength(1)]],
         });
         break;
       case 'taxas':
@@ -135,18 +154,13 @@ export class ListaComponent {
 
     const formData = { ...form.value };
 
-    switch (this.type) {
-      case 'atividade-economica':
-        formData.tipo = formData.tipo.value;
-        formData.tipoRisco = formData.tipoRisco.value;
-        formData.tipoAtividadeEconomica = formData.tipoAtividadeEconomica.value;
-        break;
-    }
-
-    console.log(formData);
-
     this.service.save(this.type, formData).subscribe({
       next: response => {
+        if (this.type === 'classe-atividades') {
+          response.grupoAtividade = form.value.grupoAtividade
+        }
+        console.log(response);
+
         this.dataList.push(response);
         this.addMessages(true, true);
       },
@@ -166,16 +180,16 @@ export class ListaComponent {
     this.loading = true;
 
     const formData = { ...form.value };
-    switch (this.type) {
-      case 'atividade-economica':
-        formData.tipo = formData.tipo.value;
-        formData.tipoRisco = formData.tipoRisco.value;
-        formData.tipoAtividadeEconomica = formData.tipoAtividadeEconomica.value;
-        break;
+
+    let grupoAtividade = formData.grupoAtividade;
+    if (this.type === 'classe-atividades') {
+      delete formData.grupoAtividade;
     }
 
     this.service.update(this.type, this.selectedData.id, formData).subscribe({
       next: response => {
+        response.grupoAtividade = grupoAtividade;
+        console.log(response);
         this.dataList[this.selectedData.index] = response
         this.addMessages(true, false);
       },
@@ -236,17 +250,25 @@ export class ListaComponent {
   openDialogEditData(data: any, index?: any,): void {
     let formEditData = {};
     switch (this.type) {
-      case 'atividade-economica':
+      case 'grupo-atividades':
         formEditData = {
           id: data.id,
+          tipo: data.tipo,
           codigo: data.codigo,
           descricao: data.descricao,
-          tipo: categoryTpesOptions.find(item => item.value === data.tipo),
-          tipoRisco: nivelRiscoOptions.find(item => item.value === data.tipoRisco),
-          tipoAtividadeEconomica: this.tipoAtividadeEconomicaOpts.find(item => item.value === data.tipoAtividadeEconomica)
         };
         break;
-
+      case 'classe-atividades':
+        delete data.grupoAtividade._links;
+        formEditData = {
+          id: data.id,
+          grupoAtividade: data.grupoAtividade,
+          codigo: data.codigo,
+          descricao: data.descricao,
+          tipo: data.tipo,
+          tipoRisco: data.tipoRisco,
+        }
+        break;
       case 'taxas':
         formEditData = {
           id: data.id,
@@ -270,12 +292,24 @@ export class ListaComponent {
     this.isNew = false;
     this.dataForm.patchValue(formEditData);
     this.selectedData = data;
+    console.log(this.selectedData);
+
     this.selectedData.index = index;
   }
 
   closeDialog(): void {
     this.showDialog = false;
     this.dataForm.reset();
+  }
+
+  private getGrupoAtividadesByTipo(categoria: Categoria): void {
+    this.service.getAllGrupoAtividadeByTipo(categoria).subscribe({
+      next: (response) => {
+        this.grupoAtivadadeOpts = mapToAtividadeEconomica(response._embedded.grupoAtividade);
+
+
+      }
+    });
   }
 
   private addMessages(isSuccess: boolean, isNew: boolean, error?: any) {

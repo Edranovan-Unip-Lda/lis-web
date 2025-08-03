@@ -32,6 +32,16 @@ export const getAllAldeiasResolver: ResolveFn<any> = () => {
     return service.getAllAldeias();
 }
 
+export const getPageGrupoAtividadeResolver: ResolveFn<any> = () => {
+    const service = inject(DataMasterService);
+    return service.getPageGrupoAtividade();
+}
+
+export const getPageClasseAtividadeResolver: ResolveFn<any> = () => {
+    const service = inject(DataMasterService);
+    return service.getPageClasseAtividade();
+}
+
 export const getAtividadeEconomicaResolver: ResolveFn<any> = () => {
     const service = inject(DataMasterService);
     return service.getAtividadeEconomica();

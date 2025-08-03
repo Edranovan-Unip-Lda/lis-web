@@ -1,4 +1,5 @@
-import { Categoria } from "./enums";
+import { BaseModel } from "./base";
+import { Categoria, NivelRisco } from "./enums";
 
 export interface Role {
     id: number;
@@ -43,4 +44,19 @@ export interface AtividadeEconomica {
     codigo: string;
     descricao: string;
     tipo: Categoria;
+}
+
+export interface GrupoAtividade extends BaseModel {
+    tipo: Categoria;
+    codigo: string;
+    descricao: string;
+    classes: ClasseAtividade[];
+}
+
+export interface ClasseAtividade extends BaseModel {
+    grupoAtividade: GrupoAtividade;
+    codigo: string;
+    descricao: string;
+    tipo: Categoria;
+    risco: NivelRisco;
 }

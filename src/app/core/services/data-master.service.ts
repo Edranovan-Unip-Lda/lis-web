@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, take } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { AtividadeEconomica } from '../models/data-master.model';
+import { AtividadeEconomica, GrupoAtividade } from '../models/data-master.model';
 import { AplicanteType, Categoria, TipoAtividadeEconomica } from '../models/enums';
 
 @Injectable({
@@ -98,12 +98,37 @@ export class DataMasterService {
         return this.http.get<any>(`${this.apiUrl}/aldeias/search/findByNomeContainingIgnoreCase`, { params }).pipe(take(1));
     }
 
+    getPageGrupoAtividade(page = 0, size = 50): Observable<any> {
+        let params = new HttpParams()
+            .set('page', page.toString())
+            .set('size', size.toString())
+            .set('sort', 'codigo,asc')
+        return this.http.get<any>(`${this.apiUrl}/grupo-atividades`, { params }).pipe(take(1));
+    }
+
+    getAllGrupoAtividade(): Observable<GrupoAtividade[]> {
+        return this.http.get<GrupoAtividade[]>(`${this.apiUrl}/grupo-atividades`).pipe(take(1));
+    }
+
+    getAllGrupoAtividadeByTipo(tipo: Categoria): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/grupo-atividades/search/findByTipo?tipo=${tipo}`).pipe(take(1));
+    }
+
+    getPageClasseAtividade(page = 0, size = 50): Observable<any> {
+        let params = new HttpParams()
+            .set('page', page.toString())
+            .set('size', size.toString())
+            .set('sort', 'codigo,asc')
+        return this.http.get<any>(`${this.apiUrl}/classe-atividades?projection=withGrupo`, { params }).pipe(take(1));
+    }
+
+
     getAtividadeEconomica(page = 0, size = 50): Observable<any> {
         let params = new HttpParams()
             .set('page', page.toString())
             .set('size', size.toString())
             .set('sort', 'codigo,asc')
-        return this.http.get<any>(`${this.apiUrl}/atividade-economica`, { params }).pipe(take(1));
+        return this.http.get<any>(`${this.apiUrl}/atividade-economica?projections=withGrupo`, { params }).pipe(take(1));
     }
 
     getAllAtividadeEconomica(): Observable<AtividadeEconomica[]> {
