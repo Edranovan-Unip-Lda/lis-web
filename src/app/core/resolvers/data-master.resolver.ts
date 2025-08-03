@@ -37,24 +37,16 @@ export const getPageGrupoAtividadeResolver: ResolveFn<any> = () => {
     return service.getPageGrupoAtividade();
 }
 
+export const getAllGrupoAtividadeByTipoResolver: ResolveFn<any> = (route) => {
+    const service = inject(DataMasterService);
+    const categoria = route.queryParams['categoria'];
+    return service.getAllGrupoAtividadeByTipo(categoria);
+}
+
+
 export const getPageClasseAtividadeResolver: ResolveFn<any> = () => {
     const service = inject(DataMasterService);
     return service.getPageClasseAtividade();
-}
-
-export const getAtividadeEconomicaResolver: ResolveFn<any> = () => {
-    const service = inject(DataMasterService);
-    return service.getAtividadeEconomica();
-}
-
-export const getAtividadeEconomicaTipoResolver: ResolveFn<any> = () => {
-    const service = inject(DataMasterService);
-    return service.getAllAtividadeEconomicaTipo();
-}
-
-export const getAtividadeEconomicaAtividadeResolver: ResolveFn<any> = () => {
-    const service = inject(DataMasterService);
-    return service.getAllAtividadeEconomicaAtividade();
 }
 
 export const getTipoRiscoResolver: ResolveFn<any> = () => {

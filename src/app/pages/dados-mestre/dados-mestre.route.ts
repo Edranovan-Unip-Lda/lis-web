@@ -37,10 +37,6 @@ export default [
                 }
             },
         ]
-        // loadComponent: () => import('@/pages/dados-mestre/lista/lista.component').then((c) => c.ListaComponent),
-        // resolve: {
-        //     listaAtividade: getAtividadeEconomicaResolver
-        // }
     },
     {
         path: 'tipo-risco',

@@ -1,4 +1,4 @@
-import { AplicanteType, CaraterizacaoEstabelecimento, Categoria, NivelRisco, QuantoAtividade, Role, Status, TipoAtividadeEconomica, TipoAto, TipoDocumento, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro, TipoPropriedade } from "../models/enums";
+import { AplicanteType, CaraterizacaoEstabelecimento, Categoria, NivelRisco, QuantoAtividade, Role, Status, TipoAto, TipoDocumento, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro, TipoPropriedade } from "../models/enums";
 
 export function calculateCommercialLicenseTax(areaM2: number, T_MIN: number, T_MAX: number): number {
     if (areaM2 >= 900) {
@@ -35,12 +35,23 @@ export function mapToIdAndNome(array: any[]): { id: number, nome: string }[] {
     });
 }
 
-export function mapToAtividadeEconomica(array: any[]): { id: number, codigo: string, descricao: string }[] {
+export function mapToGrupoAtividade(array: any[]): { id: number, codigo: string, descricao: string }[] {
     return array.map(item => {
         return {
             id: item.id,
             codigo: item.codigo,
             descricao: item.descricao,
+        };
+    });
+}
+
+export function mapToAtividadeEconomica(array: any[]): { id: number, codigo: string, descricao: string, tipoRisco: NivelRisco }[] {
+    return array.map(item => {
+        return {
+            id: item.id,
+            codigo: item.codigo,
+            descricao: item.descricao,
+            tipoRisco: item.tipoRisco
         };
     });
 }

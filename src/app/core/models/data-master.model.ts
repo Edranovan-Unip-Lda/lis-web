@@ -58,5 +58,5 @@ export interface ClasseAtividade extends BaseModel {
     codigo: string;
     descricao: string;
     tipo: Categoria;
-    risco: NivelRisco;
+    tipoRisco: NivelRisco;
 }

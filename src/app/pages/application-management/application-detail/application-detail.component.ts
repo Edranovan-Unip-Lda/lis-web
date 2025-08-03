@@ -6,7 +6,7 @@ import { AuthenticationService } from '@/core/services';
 import { AplicanteService } from '@/core/services/aplicante.service';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { PedidoService } from '@/core/services/pedido.service';
-import { calculateCommercialLicenseTax, caraterizacaEstabelecimentoOptions, mapToAtividadeEconomica, mapToIdAndNome, mapToTaxa, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEmpresaOptions, tipoEstabelecimentoOptions, tipoPedidoCadastroOptions } from '@/core/utils/global-function';
+import { calculateCommercialLicenseTax, caraterizacaEstabelecimentoOptions, mapToAtividadeEconomica, mapToGrupoAtividade, mapToIdAndNome, mapToTaxa, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEmpresaOptions, tipoEstabelecimentoOptions, tipoPedidoCadastroOptions } from '@/core/utils/global-function';
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -23,6 +23,7 @@ import { Select, SelectFilterEvent } from 'primeng/select';
 import { StepperModule } from 'primeng/stepper';
 import { Tag } from 'primeng/tag';
 import { Toast } from 'primeng/toast';
+import { forkJoin } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -55,8 +56,8 @@ export class ApplicationDetailComponent {
   listaPosto: any[] = [];
   listaSuco: any[] = [];
   listaAldeia: any[] = [];
-  listaAtividadeEconomicaTipo: any[] = [];
-  listaAtividadeEconomicaAtividade: any[] = [];
+  listaGrupoAtividade: any[] = [];
+  listaClasseAtividade: any[] = [];
   listaSociedadeComercial: any[] = [];
   listaPedidoAto: any[] = [];
   originalAldeias: any = [];
@@ -85,9 +86,8 @@ export class ApplicationDetailComponent {
     this.initForm();
 
     this.listaAldeia = mapToIdAndNome(this.router.snapshot.data['aldeiasResolver']._embedded.aldeias);
-    this.listaAtividadeEconomicaTipo = mapToAtividadeEconomica(this.router.snapshot.data['atividadeEconomicaTipoResolver']._embedded.atividadeEconomica);
-    this.listaAtividadeEconomicaAtividade = mapToAtividadeEconomica(this.router.snapshot.data['atividadeEconomicaAtividadeResolver']._embedded.atividadeEconomica);
-    this.listaSociedadeComercial = mapToIdAndNome(this.router.snapshot.data['sociedadeComercialResolver']._embedded.sociedadeComercial)
+    this.listaSociedadeComercial = mapToIdAndNome(this.router.snapshot.data['sociedadeComercialResolver']._embedded.sociedadeComercial);
+
 
     this.originalAldeias = this.listaAldeia;
 
@@ -95,6 +95,8 @@ export class ApplicationDetailComponent {
     this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
     this.categoria = this.aplicanteData.categoria;
     this.listaPedidoAto = mapToTaxa(this.router.snapshot.data['listaTaxaResolver']._embedded.taxas);
+    this.listaGrupoAtividade = mapToGrupoAtividade(this.router.snapshot.data['grupoAtividadeResolver']._embedded.grupoAtividade)
+
 
     this.mapNewFatura(this.aplicanteData);
 
@@ -114,8 +116,8 @@ export class ApplicationDetailComponent {
 
       } else {
         this.faturaForm.patchValue({
-          atividadeDeclarada: this.aplicanteData.pedidoInscricaoCadastroDto.atividadePrincipal.id,
-          descricao: this.aplicanteData.pedidoInscricaoCadastroDto.atividadePrincipal.descricao,
+          atividadeDeclarada: this.aplicanteData.pedidoInscricaoCadastroDto.classeAtividade.id,
+          descricao: this.aplicanteData.pedidoInscricaoCadastroDto.classeAtividade.descricao,
         });
       }
 
@@ -195,33 +197,6 @@ export class ApplicationDetailComponent {
 
   mapEditPedido(pedido: PedidoInscricaoCadastro): void {
     this.requestForm.patchValue(pedido);
-    const municipio = pedido.sede.aldeia.suco.postoAdministrativo.municipio;
-    const postoAdministrativo = {
-      id: pedido.sede.aldeia.suco.postoAdministrativo.id,
-      nome: pedido.sede.aldeia.suco.postoAdministrativo.nome
-    };
-    const suco = {
-      id: pedido.sede.aldeia.suco.id,
-      nome: pedido.sede.aldeia.suco.nome
-    };
-    const aldeia = {
-      id: pedido.sede.aldeia.id,
-      nome: pedido.sede.aldeia.nome
-    };
-
-    let tipoAtividade = {
-      id: pedido.tipoAtividade.id,
-      codigo: pedido.tipoAtividade.codigo,
-      descricao: pedido.tipoAtividade.descricao,
-      tipoRisco: pedido.tipoAtividade.tipoRisco
-    }
-
-    let atividadePrincipal = {
-      id: pedido.atividadePrincipal.id,
-      codigo: pedido.atividadePrincipal.codigo,
-      descricao: pedido.atividadePrincipal.descricao,
-      tipoRisco: pedido.atividadePrincipal.tipoRisco
-    }
 
     this.requestForm.patchValue({
       tipoPedidoCadastro: this.tipoPedidoOpts.find(item => item.value === pedido.tipoPedidoCadastro),
@@ -229,39 +204,60 @@ export class ApplicationDetailComponent {
       tipoEmpresa: this.categoria === Categoria.industrial ? pedido.tipoEmpresa : null,
       quantoAtividade: this.categoria === Categoria.industrial ? pedido.quantoAtividade : null,
       caraterizacaoEstabelecimento: this.caraterizacaEstabelecimentoOpts.find(item => item.value === pedido.caraterizacaoEstabelecimento),
-      risco: pedido.tipoAtividade.tipoRisco,
+      risco: pedido.classeAtividade.tipoRisco,
       ato: this.tipoAtoOpts.find(item => item.value === pedido.ato),
-      tipoAtividade: tipoAtividade,
-      atividadePrincipal: atividadePrincipal,
-      tipoAtividadeCodigo: pedido.tipoAtividade.descricao,
-      atividadePrincipalCodigo: pedido.atividadePrincipal.descricao,
+      grupoAtividade: {
+        id: pedido.classeAtividade.grupoAtividade.id,
+        codigo: pedido.classeAtividade.grupoAtividade.codigo,
+        descricao: pedido.classeAtividade.grupoAtividade.descricao
+      },
+      grupoAtividadeCodigo: pedido.classeAtividade.grupoAtividade.descricao,
     });
 
-    this.dataMasterService.getAldeiasBySuco(pedido.sede.aldeia.suco.id).subscribe({
-      next: (response) => {
-        this.listaAldeia = [...mapToIdAndNome(response._embedded.aldeias), ...this.listaAldeia];
-        this.requestForm.patchValue({
-          sede: {
-            id: pedido.sede.id,
-            local: pedido.sede.local,
-            aldeia: aldeia,
-            suco: suco.nome,
-            postoAdministrativo: postoAdministrativo.nome,
-            municipio: municipio.nome
-          }
-        });
-      }
-    });
+    forkJoin([
+      this.dataMasterService.getClassesByGrupoId(pedido.classeAtividade.grupoAtividade.id),
+      this.dataMasterService.getAldeiasBySuco(pedido.sede.aldeia.suco.id)]).subscribe({
+        next: responses => {
+
+          this.listaClasseAtividade = mapToAtividadeEconomica(responses[0]._embedded.classeAtividade);
+          this.listaAldeia = [...mapToIdAndNome(responses[1]._embedded.aldeias), ...this.listaAldeia];
+
+          // Map Grupo Classe Atividade & Aldeia 
+          this.requestForm.patchValue({
+            sede: {
+              id: pedido.sede.id,
+              local: pedido.sede.local,
+              aldeia: {
+                id: pedido.sede.aldeia.id,
+                nome: pedido.sede.aldeia.nome
+              },
+              suco: pedido.sede.aldeia.suco.nome,
+              postoAdministrativo: pedido.sede.aldeia.suco.postoAdministrativo.nome,
+              municipio: pedido.sede.aldeia.suco.postoAdministrativo.municipio
+            },
+            classeAtividade: {
+              id: pedido.classeAtividade.id,
+              codigo: pedido.classeAtividade.codigo,
+              descricao: pedido.classeAtividade.descricao,
+              tipoRisco: pedido.classeAtividade.tipoRisco
+            },
+            classeAtividadeCodigo: pedido.classeAtividade.descricao,
+          });
+        }
+      });
   }
 
   tipoAtividadeChange(event: any): void {
     const value = event.value;
     if (value) {
-      this.requestForm.get('tipoAtividadeCodigo')?.setValue(event.value.descricao);
-      this.requestForm.get('risco')?.setValue(value.tipoRisco)
+      this.requestForm.get('grupoAtividadeCodigo')?.setValue(event.value.descricao);
+
+      this.dataMasterService.getClassesByGrupoId(value.id).subscribe({
+        next: response => this.listaClasseAtividade = response._embedded.classeAtividade
+      });
     } else {
-      this.requestForm.get('tipoAtividadeCodigo')?.reset();
-      this.requestForm.get('risco')?.reset();
+      this.requestForm.get('grupoAtividadeCodigo')?.reset();
+      this.listaClasseAtividade = [];
     }
   }
 
@@ -270,7 +266,13 @@ export class ApplicationDetailComponent {
   }
 
   atividadePrincipalChange(event: any): void {
-    event.value ? this.requestForm.get('atividadePrincipalCodigo')?.patchValue(event.value.descricao) : this.requestForm.get('atividadePrincipalCodigo')?.reset();
+    if (event.value) {
+      this.requestForm.get('classeAtividadeCodigo')?.patchValue(event.value.descricao);
+      this.requestForm.get('risco')?.setValue(event.value.tipoRisco);
+    } else {
+      this.requestForm.get('classeAtividadeCodigo')?.reset();
+      this.requestForm.get('risco')?.reset();
+    }
   }
 
   submit(form: FormGroup, callback: any): void {
@@ -301,6 +303,7 @@ export class ApplicationDetailComponent {
           this.requestForm.patchValue({
             id: response.id,
           });
+          this.isNew = false;
           this.requestForm.get('sede')?.patchValue({
             id: response.sede.id
           });
@@ -310,7 +313,6 @@ export class ApplicationDetailComponent {
         },
         error: error => {
           this.addMessages(false, true, error);
-          console.error(error);
           this.pedidoLoading = false;
         },
         complete: () => {
@@ -327,13 +329,11 @@ export class ApplicationDetailComponent {
         },
         error: error => {
           this.addMessages(false, true, error);
-          console.error(error);
           this.pedidoLoading = false;
         },
         complete: () => {
           callback(3);
           this.pedidoLoading = false;
-          // this.closeDialog();
         }
       });
     }
@@ -345,12 +345,12 @@ export class ApplicationDetailComponent {
     formData.pedidoInscricaoCadastro = {
       id: this.pedidoId
     }
-    formData.atividadeDeclarada = this.listaAtividadeEconomicaAtividade.find(item => item.id === formData.atividadeDeclarada);
+    // formData.atividadeDeclarada = this.listaAtividadeEconomicaAtividade.find(item => item.id === formData.atividadeDeclarada);
     formData.taxas = this.listaPedidoAto.filter(item => formData.taxas.includes(item.id));
 
-    if (this.pedidoId && formData.id) {
-
-      this.pedidoService.updateFatura(this.pedidoId, formData.id, formData).subscribe({
+    if (this.pedidoId && this.faturaId) {
+      formData.id = this.faturaId;
+      this.pedidoService.updateFatura(this.pedidoId, this.faturaId, formData).subscribe({
         next: (response) => {
           this.faturaId = response.id;
           this.aplicanteData.pedidoInscricaoCadastroDto.fatura = response;
@@ -358,7 +358,6 @@ export class ApplicationDetailComponent {
         },
         error: error => {
           this.addMessages(false, true, error);
-          console.error(error);
           this.faturaLoading = false;
         },
         complete: () => {
@@ -377,7 +376,6 @@ export class ApplicationDetailComponent {
         },
         error: error => {
           this.addMessages(false, true, error);
-          console.error(error);
           this.faturaLoading = false;
         },
         complete: () => {
@@ -437,7 +435,6 @@ export class ApplicationDetailComponent {
       },
       error: error => {
         this.downloadLoading = false;
-        console.error(error);
         this.messageService.add({
           severity: 'error',
           summary: 'Erro',
@@ -463,7 +460,6 @@ export class ApplicationDetailComponent {
       },
       error: error => {
         this.deleteLoading = false;
-        console.error(error);
         this.messageService.add({
           severity: 'error',
           summary: 'Erro',
@@ -509,10 +505,10 @@ export class ApplicationDetailComponent {
       caraterizacaoEstabelecimento: [null],
       risco: new FormControl({ value: null, disabled: true }),
       ato: [null],
-      tipoAtividade: [null],
-      tipoAtividadeCodigo: new FormControl({ value: null, disabled: true }),
-      atividadePrincipal: [null],
-      atividadePrincipalCodigo: new FormControl({ value: null, disabled: true }),
+      grupoAtividade: [null, Validators.required],
+      grupoAtividadeCodigo: new FormControl({ value: null, disabled: true }),
+      classeAtividade: [null, Validators.required],
+      classeAtividadeCodigo: new FormControl({ value: null, disabled: true }),
       alteracoes: [null],
       dataEmissaoCertAnterior: [null],
       observacao: [null],
@@ -526,8 +522,6 @@ export class ApplicationDetailComponent {
       nif: [null, [Validators.required]],
       sede: [null, [Validators.required]],
       nivelRisco: [null, [Validators.required]],
-      atividadeDeclarada: [null, [Validators.required]],
-      descricao: new FormControl({ value: null, disabled: true }),
       superficie: new FormControl({ value: null, disabled: true, }),
       total: new FormControl({ value: null, disabled: true, }, [Validators.required]),
     });
@@ -539,9 +533,7 @@ export class ApplicationDetailComponent {
       sociedadeComercial: aplicante.empresaDto.sociedadeComercial.nome,
       nif: aplicante.empresaDto.nif,
       sede: `${aplicante.empresaDto.sede.local}, ${aplicante.empresaDto.sede.aldeia.nome}, ${aplicante.empresaDto.sede.aldeia.suco.nome}, ${aplicante.empresaDto.sede.aldeia.suco.postoAdministrativo.nome}, ${aplicante.empresaDto.sede.aldeia.suco.postoAdministrativo.municipio.nome}`,
-      atividadeDeclarada: aplicante.pedidoInscricaoCadastroDto?.atividadePrincipal.id,
-      descricao: aplicante.pedidoInscricaoCadastroDto?.atividadePrincipal.descricao,
-      nivelRisco: aplicante.pedidoInscricaoCadastroDto?.atividadePrincipal.tipoRisco,
+      nivelRisco: aplicante.pedidoInscricaoCadastroDto?.classeAtividade.tipoRisco,
     });
 
   }
@@ -556,8 +548,6 @@ export class ApplicationDetailComponent {
 
     this.faturaForm.patchValue(fatura);
     this.faturaForm.patchValue({
-      atividadeDeclarada: fatura.atividadeDeclarada.id,
-      codigo: fatura.atividadeDeclarada.codigo,
       taxas: fatura.taxas.map(t => t.id),
       sociedadeComercial: fatura.sociedadeComercial,
     });

@@ -1,7 +1,7 @@
 import { Aplicante, PedidoInscricaoCadastro } from '@/core/models/entities.model';
 import { CaraterizacaoEstabelecimento, Categoria, NivelRisco, QuantoAtividade, TipoAto, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro } from '@/core/models/enums';
 import { caraterizacaEstabelecimentoOptions, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEmpresaOptions, tipoEstabelecimentoOptions, tipoPedidoCadastroOptions } from '@/core/utils/global-function';
-import { DatePipe } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgxPrintModule } from 'ngx-print';
@@ -33,6 +33,7 @@ export class PedidoInscricaoComponent {
 
   constructor(
     private router: ActivatedRoute,
+    private location: Location
   ) { }
 
   ngOnInit(): void {
@@ -50,5 +51,9 @@ export class PedidoInscricaoComponent {
       this.selectedTipoEstabelecimento = this.tipoEstabelecimentoOpts.find(item => item.value === this.pedido.tipoEstabelecimento).name;
       this.selectedTipoAto = this.tipoAtoOpts.find(item => item.value === this.pedido.ato).name;
     }
+  }
+
+  goBack() {
+    this.location.back();
   }
 }

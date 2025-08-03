@@ -1,5 +1,5 @@
 import { BaseModel } from "./base";
-import { Endereco, Role } from "./data-master.model";
+import { ClasseAtividade, Endereco, Role } from "./data-master.model";
 import { AplicanteType, CaraterizacaoEstabelecimento, Categoria, FaturaStatus, NivelRisco, QuantoAtividade, TipoAto, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro } from "./enums";
 
 export interface User {
@@ -144,8 +144,7 @@ export interface PedidoInscricaoCadastro {
     caraterizacaoEstabelecimento: CaraterizacaoEstabelecimento;
     risco: NivelRisco;
     ato: TipoAto;
-    tipoAtividade: AtividadeEconomica;
-    atividadePrincipal: AtividadeEconomica;
+    classeAtividade: ClasseAtividade;
     alteracoes: string;
     dataEmissaoCertAnterior: string;
     observacao: string;
@@ -158,8 +157,6 @@ export interface Fatura extends BaseModel {
     atoFatura: number;
     nomeEmpresa: string;
     sociedadeComercial: string;
-    atividadeDeclarada: AtividadeEconomica;
-    atividadeDeclaradaCodigo: string;
     taxas: Taxa[];
     superficie: number;
     total: number;
@@ -174,15 +171,6 @@ export interface Taxa extends BaseModel {
     ato: string;
     montante: number;
     faturas: Fatura[];
-}
-
-export interface AtividadeEconomica extends BaseModel {
-    codigo: string;
-    descricao: string;
-    tipo: Categoria;
-    tipoRisco: NivelRisco;
-    listaPedidoInscricaoCadastro: PedidoInscricaoCadastro[];
-    listaPedidoInscricaoCadastroAtividadePrincipal: PedidoInscricaoCadastro[];
 }
 
 export interface SociedadeComercial extends BaseModel {
