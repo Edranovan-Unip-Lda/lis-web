@@ -2,7 +2,7 @@
     <p-table #dt [value]="applications" [paginator]="true" paginatorDropdownAppendTo="body" [rows]="10"
         [showCurrentPageReport]="true" responsiveLayout="scroll"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        [rowsPerPageOptions]="[10, 25, 50]" [globalFilterFields]="['firstName', 'role.name', 'email', 'status']">
+        [rowsPerPageOptions]="[10, 25, 50]" [globalFilterFields]="['candidatura.numero', 'candidatura.empresa.nome', 'candidatura.categoria', 'candidatura.tipo']">
         <ng-template #caption>
             <div class="flex flex-wrap gap-2 items-center justify-between">
                 <p-icon-field class="w-1/2 sm:w-80 order-1 sm:order-none">
@@ -17,8 +17,8 @@
         </ng-template>
         <ng-template #header>
             <tr>
-                <th pSortableColumn="firstName" class="white-space-nowrap">Nº da Aplicante
-                    <p-sortIcon field="firstName">
+                <th pSortableColumn="candidatura.numero" class="white-space-nowrap">Nº da Aplicante
+                    <p-sortIcon field="candidatura.numero">
                     </p-sortIcon>
                 </th>
                 @if (currentRole === roleAdmin) {
@@ -71,10 +71,12 @@
                     <a (click)="toDetail(candidatura)" pTooltip="Detalho" tooltipPosition="top">
                         <p-button icon="pi pi-eye" class="mr-2" severity="info" [rounded]="true" [outlined]="true" />
                     </a>
+                    @if (candidatura.estado === 'EM_CURSO') {
                     <a (click)="delete(candidatura)">
                         <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
                             pTooltip="Eliminar" tooltipPosition="top" />
                     </a>
+                    }
                 </td>
             </tr>
         </ng-template>

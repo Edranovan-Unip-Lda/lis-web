@@ -1,6 +1,6 @@
  <p-toast position="bottom-right" />
  <div class="card">
-     <span class="text-surface-900 dark:text-surface-0 text-2xl font-bold mb-6 block">
+     <span class="text-sur  face-900 dark:text-surface-0 text-2xl font-bold mb-6 block">
          Candidatura para o Pedido Inscricacao no Cadastro {{categoria | titlecase}}
      </span>
 
@@ -26,7 +26,7 @@
                                      Certificado:</div>
 
                                  @if (
-                                 aplicanteData.pedidoStatus === 'SUBMETIDO' && aplicanteData.faturaStatus === 'EMITIDA')
+                                 aplicanteData.faturaStatus === 'EMITIDA')
                                  {
                                  <p-tag value="EMITIDO" [severity]="'success'" />
                                  <a class="ml-4" [routerLink]="['certificado-inscricao']">
@@ -367,8 +367,9 @@
                                      class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
                                      Data da Emissao do Certificado anterior
                                  </label>
-                                 <input formControlName="dataEmissaoCertAnterior" id="dataEmissao" type="date"
-                                     pInputText fluid />
+                                 <p-date-picker formControlName="dataEmissaoCertAnterior" id="dataEmissaoCertAnterior"
+                                     [showIcon]="true" [showButtonBar]="true" fluid dateFormat="dd/mm/yy"
+                                     inputStyleClass="w-full" />
                              </div>
                              }
 
@@ -381,12 +382,14 @@
                              </div>
                          </div>
                      </form>
+                     <p-button [label]="isNew? 'Guardar': 'Atualizar'" [disabled]="!requestForm.valid"
+                         [icon]=" isNew? 'pi pi-save': 'pi pi-sync' " [loading]="pedidoLoading" iconPos="left"
+                         (click)="submit(requestForm, activateCallback)" />
                      <div class="flex pt-6 justify-between">
-                         <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="right"
+                         <p-button label="Voltar" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
                              (onClick)="activateCallback(1)" />
-                         <p-button [label]="isNew? 'Guardar': 'Atualizar'" [disabled]="!requestForm.valid"
-                             [icon]=" isNew? 'pi pi-save': 'pi pi-sync' " [loading]="pedidoLoading" iconPos="left"
-                             (click)="submit(requestForm, activateCallback)" />
+                         <p-button [disabled]="!pedidoId" label="Próximo" severity="secondary" icon="pi pi-arrow-right"
+                             iconPos="right" (onClick)="activateCallback(3)" />
                      </div>
                  </ng-template>
              </p-step-panel>
@@ -487,7 +490,8 @@
                                  <div class="mb-6 col-span-12 md:col-span-4 flex justify-between">
                                      <p-button [label]="faturaId? 'Atualizar Fatura' : 'Emitir Fatura'"
                                          [icon]="faturaId? 'pi pi-sync' : 'pi pi-file'" iconPos="left"
-                                         [loading]="faturaLoading" class="w-auto mt-3" [disabled]="!faturaForm.valid"
+                                         [loading]="faturaLoading" class="w-auto mt-3"
+                                         [disabled]="!faturaForm.valid || disableAllForm"
                                          (click)="saveFatura(faturaForm)" />
                                      @if (faturaId) {
                                      <p-button label="Baixar Fatura" [routerLink]="['fatura-inscricao']"
@@ -521,9 +525,9 @@
                                                      icon="pi pi-download" [rounded]="true" [text]="true"
                                                      severity="success" />
                                                  &nbsp;
-                                                 <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
-                                                     [loading]="deleteLoading" severity="danger"
-                                                     (click)="removeFile(file)" />
+                                                 <p-button [disabled]="disableAllForm" icon="pi pi-trash"
+                                                     [rounded]="true" [text]="true" [loading]="deleteLoading"
+                                                     severity="danger" (click)="removeFile(file)" />
                                              </li>
                                              }
                                          </ul>
@@ -534,10 +538,11 @@
                          </div>
                      </form>
                      <div class="flex pt-6 justify-between">
-                         <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="right"
+                         <p-button label="Voltar" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
                              (onClick)="activateCallback(2)" />
-                         <p-button [disabled]="uploadedFiles.length === 0" label="Submeter" icon="pi pi-save"
-                             iconPos="left" (onClick)="activateCallback(1)" />
+                         <p-button (click)="submitAplicante(activateCallback)" [loading]="aplicanteLoading"
+                             [disabled]="uploadedFiles.length === 0 || disableAllForm" label="Submeter"
+                             icon="pi pi-save" iconPos="left" />
                      </div>
                  </ng-template>
              </p-step-panel>

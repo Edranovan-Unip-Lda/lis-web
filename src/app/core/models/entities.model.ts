@@ -1,6 +1,6 @@
 import { BaseModel } from "./base";
 import { ClasseAtividade, Endereco, Role } from "./data-master.model";
-import { AplicanteType, CaraterizacaoEstabelecimento, Categoria, FaturaStatus, NivelRisco, QuantoAtividade, TipoAto, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro } from "./enums";
+import { AplicanteStatus, AplicanteType, CaraterizacaoEstabelecimento, Categoria, FaturaStatus, NivelRisco, QuantoAtividade, TipoAto, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro } from "./enums";
 
 export interface User {
     id: number;
@@ -66,7 +66,7 @@ export interface Aplicante extends BaseModel {
     tipo: AplicanteType;
     categoria: Categoria;
     numero: string;
-    estado: string;
+    estado: AplicanteStatus;
     empresa: Empresa;
     empresaDto: Empresa
     pedido: PedidoInscricaoCadastro;

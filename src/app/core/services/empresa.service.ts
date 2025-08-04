@@ -40,6 +40,10 @@ export class EmpresaService {
     return this.http.post<any>(`${this.apiUrl}/${empresaId}/aplicantes`, formData);
   }
 
+  submitAplicanteByEmpresaIdAndAplicanteId(empresaId: number, aplicanteId: number, formData: any): Observable<any> {
+    return this.http.patch<any>(`${this.apiUrl}/${empresaId}/aplicantes/${aplicanteId}`, formData);
+  }
+
   getAplicantesPage(empresaId: number, page?: number, size?: number): Observable<any> {
     let params = new HttpParams();
     if (page && size) {

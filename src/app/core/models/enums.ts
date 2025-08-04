@@ -15,6 +15,13 @@ export enum AplicanteType {
     licenca = 'ATIVIDADE',
 }
 
+export enum AplicanteStatus {
+    emCurso = 'EM_CURSO',
+    submetido = 'SUBMETIDO',
+    rejeitado = 'REJEITADO',
+    aprovado = 'APROVADO'
+}
+
 export enum Categoria {
     com = 'COM',
     ind = 'IND',

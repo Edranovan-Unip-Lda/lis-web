@@ -1,10 +1,11 @@
 import { Aldeia } from '@/core/models/data-master.model';
 import { Aplicante, Documento, Empresa, Fatura, PedidoInscricaoCadastro } from '@/core/models/entities.model';
-import { AplicanteType, Categoria, TipoPedidoCadastro } from '@/core/models/enums';
+import { AplicanteStatus, AplicanteType, Categoria, TipoPedidoCadastro } from '@/core/models/enums';
 import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService } from '@/core/services';
 import { AplicanteService } from '@/core/services/aplicante.service';
 import { DataMasterService } from '@/core/services/data-master.service';
+import { EmpresaService } from '@/core/services/empresa.service';
 import { PedidoService } from '@/core/services/pedido.service';
 import { calculateCommercialLicenseTax, caraterizacaEstabelecimentoOptions, mapToAtividadeEconomica, mapToGrupoAtividade, mapToIdAndNome, mapToTaxa, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEmpresaOptions, tipoEstabelecimentoOptions, tipoPedidoCadastroOptions } from '@/core/utils/global-function';
 import { DatePipe, TitleCasePipe } from '@angular/common';
@@ -13,6 +14,7 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } 
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
+import { DatePicker } from 'primeng/datepicker';
 import { FileUpload } from 'primeng/fileupload';
 import { InputGroup } from 'primeng/inputgroup';
 import { InputGroupAddon } from 'primeng/inputgroupaddon';
@@ -28,7 +30,7 @@ import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-application-detail',
-  imports: [ReactiveFormsModule, Button, StepperModule, Select, InputText, FileUpload, Tag, StatusSeverityPipe, DatePipe, Toast, TitleCasePipe, RouterLink, InputNumber, InputGroup, InputGroupAddon, MultiSelect],
+  imports: [ReactiveFormsModule, Button, StepperModule, Select, InputText, FileUpload, Tag, StatusSeverityPipe, DatePipe, Toast, TitleCasePipe, RouterLink, InputNumber, InputGroup, InputGroupAddon, MultiSelect, DatePicker],
   templateUrl: './application-detail.component.html',
   styleUrl: './application-detail.component.scss',
   providers: [MessageService]
@@ -36,12 +38,15 @@ import { environment } from 'src/environments/environment';
 export class ApplicationDetailComponent {
   aplicanteData!: Aplicante;
   faturaForm!: FormGroup;
+  aplicanteLoading = false;
   pedidoLoading = false;
   faturaLoading = false;
   pedidoId!: number;
   faturaId!: number;
   isNew = false;
   showDataEmissaoCertAnterior = true;
+  aplicanteEstado!: AplicanteStatus;
+  disableAllForm = false;
 
   requestForm!: FormGroup;
   tipoPedidoOpts = tipoPedidoCadastroOptions;
@@ -79,6 +84,7 @@ export class ApplicationDetailComponent {
     private messageService: MessageService,
     private pedidoService: PedidoService,
     private authService: AuthenticationService,
+    private empresaService: EmpresaService,
   ) {
   }
 
@@ -94,6 +100,14 @@ export class ApplicationDetailComponent {
 
     this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
     this.categoria = this.aplicanteData.categoria;
+    this.aplicanteEstado = this.aplicanteData.estado;
+
+    if (this.aplicanteData.estado === AplicanteStatus.submetido) {
+      this.requestForm.disable();
+      this.faturaForm.disable();
+      this.disableAllForm = true;
+    }
+
     this.listaPedidoAto = mapToTaxa(this.router.snapshot.data['listaTaxaResolver']._embedded.taxas);
     this.listaGrupoAtividade = mapToGrupoAtividade(this.router.snapshot.data['grupoAtividadeResolver']._embedded.grupoAtividade)
 
@@ -273,6 +287,38 @@ export class ApplicationDetailComponent {
       this.requestForm.get('classeAtividadeCodigo')?.reset();
       this.requestForm.get('risco')?.reset();
     }
+  }
+
+  submitAplicante(callback: any) {
+    this.aplicanteLoading = true;
+
+    const formData = {
+      id: this.aplicanteData.id,
+      tipo: this.aplicanteData.tipo,
+      categoria: this.aplicanteData.categoria,
+      numero: this.aplicanteData.numero,
+      estado: AplicanteStatus.submetido
+    }
+
+    this.empresaService.submitAplicanteByEmpresaIdAndAplicanteId(this.aplicanteData.empresaDto.id, this.aplicanteData.id, formData).subscribe({
+      next: response => {
+        this.aplicanteEstado = response.estado;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: 'A Aplicante foi submetido com sucesso!'
+        });
+        this.disableAllForm = true;
+        callback(1);
+      },
+      error: err => {
+        this.aplicanteLoading = false;
+        this.addMessages(false, true, err);
+      },
+      complete: () => {
+        this.aplicanteLoading = false;
+      }
+    });
   }
 
   submit(form: FormGroup, callback: any): void {
