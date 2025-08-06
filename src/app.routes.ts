@@ -45,6 +45,11 @@ export const appRoutes: Routes = [
                 loadChildren: () => import('@/pages/pages.routes')
             },
             {
+                path: 'gestor',
+                data: { breadcrumb: 'Gestor' },
+                loadChildren: () => import('@/pages/gestor/gestor.routes')
+            },
+            {
                 path: 'apps',
                 data: { breadcrumb: 'Apps' },
                 loadChildren: () => import('./app/apps/apps.routes')

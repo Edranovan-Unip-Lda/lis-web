@@ -61,6 +61,27 @@
     <form [formGroup]="dataForm">
         <div class="grid grid-cols-12 gap-4">
             @switch (type) {
+            @case ('direcoes') {
+            <div class="mb-2 col-span-12">
+                <label for="nome" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Categoria (Comercial/Industrial)
+                </label>
+                <p-select [appendTo]="'body'" formControlName="nome" inputId="nome" [options]="categoryOpts"
+                    optionLabel="name" optionValue="value" fluid [showClear]="true"
+                    placeholder="Selecione a direção">
+                </p-select>
+            </div>
+            }
+            @case ('roles') {
+            <div class="mb-2 col-span-12">
+                <label for="name" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Nome
+                </label>
+                <p-select [appendTo]="'body'" formControlName="name" inputId="name" [options]="rolesOpts"
+                    optionLabel="name" optionValue="value" fluid [showClear]="true" placeholder="Selecione a função">
+                </p-select>
+            </div>
+            }
             @case ('grupo-atividades') {
             <div class="mb-2 col-span-12">
                 <label for="tipo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">

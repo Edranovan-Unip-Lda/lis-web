@@ -1,4 +1,4 @@
-import { getPageClasseAtividadeResolver, getPageGrupoAtividadeResolver, getSociedadeComercialResolver, getTaxaResolver, getTipoRiscoResolver } from "@/core/resolvers/data-master.resolver";
+import { getDirecaoResolver, getPageClasseAtividadeResolver, getPageGrupoAtividadeResolver, getRolesResolver, getSociedadeComercialResolver, getTaxaResolver, getTipoRiscoResolver } from "@/core/resolvers/data-master.resolver";
 import { Routes } from "@angular/router";
 
 export default [
@@ -39,6 +39,17 @@ export default [
         ]
     },
     {
+        path: 'roles',
+        data: {
+            breadcrumb: 'Função',
+            type: 'roles'
+        },
+        loadComponent: () => import('@/pages/dados-mestre/lista/lista.component').then((c) => c.ListaComponent),
+        resolve: {
+            listaRoles: getRolesResolver
+        }
+    },
+    {
         path: 'tipo-risco',
         data: {
             breadcrumb: 'Risco',
@@ -69,6 +80,17 @@ export default [
         loadComponent: () => import('@/pages/dados-mestre/lista/lista.component').then((c) => c.ListaComponent),
         resolve: {
             listaSociedadeComercial: getSociedadeComercialResolver
+        }
+    },
+    {
+        path: 'direcao',
+        data: {
+            breadcrumb: 'Direções',
+            type: 'direcoes'
+        },
+        loadComponent: () => import('@/pages/dados-mestre/lista/lista.component').then((c) => c.ListaComponent),
+        resolve: {
+            listaDirecao: getDirecaoResolver
         }
     },
     { path: '**', redirectTo: '/notfound' }

@@ -161,4 +161,12 @@ export class DataMasterService {
         return this.http.get<any>(`${this.apiUrl}/sociedade-comercial`, { params }).pipe(take(1));
     }
 
+    getPageDirecao(page = 0, size = 50): Observable<any> {
+        let params = new HttpParams()
+            .set('page', page.toString())
+            .set('size', size.toString())
+            .set('sort', 'id,desc')
+        return this.http.get<any>(`${this.apiUrl}/direcoes`, { params }).pipe(take(1));
+    }
+
 }

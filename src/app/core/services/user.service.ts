@@ -44,16 +44,27 @@ export class UserService {
     }
   }
 
-   /**
-   * Makes a POST request to the users endpoint with the
-   * /activate?token={token} path to activate a user by their token.
-   *
-   * @param token The token of the user to be activated.
-   * @param form The object containing the user's new password and confirm password.
-   * @returns An observable of the server response.
-   */
+  /**
+  * Makes a POST request to the users endpoint with the
+  * /activate?token={token} path to activate a user by their token.
+  *
+  * @param token The token of the user to be activated.
+  * @param form The object containing the user's new password and confirm password.
+  * @returns An observable of the server response.
+  */
   activate(token: string, form: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/activate?token=${token}`, form);
+  }
+
+  getPaginationAplicante(username: string, page?: number, size?: number): Observable<any> {
+    let params = new HttpParams();
+    if (page && size) {
+      params.append('page', page)
+      params.append('size', size);
+      return this.http.get<any>(`${this.apiUrl}/${username}/aplicantes`, { params }).pipe(take(1));
+    } else {
+      return this.http.get<any>(`${this.apiUrl}/${username}/aplicantes`, { params }).pipe(take(1));
+    }
   }
 
 

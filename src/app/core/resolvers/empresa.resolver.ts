@@ -35,23 +35,30 @@ export const getPageAplicanteOrByEmpresaIdResolver: ResolveFn<any> = () => {
     }
 }
 
+
 /**
  * Resolver function to fetch an aplicante based on the current user's empresa ID and the aplicante ID from the route.
  * If the aplicante ID is present in the route parameters, it returns the aplicante details from the EmpresaService.
+ * If the current user is a client (i.e. has a empresa), it fetches the aplicante by the empresa ID and the aplicante ID.
+ * If the current user is not a client, it fetches the aplicante by the aplicante ID.
  * If no aplicante ID is found, it returns `null`.
  *
  * @param route - The activated route snapshot containing the route parameters.
  * @returns An observable containing the aplicante details or `null`.
  */
-
 export const getAplicante: ResolveFn<any> = (route: ActivatedRouteSnapshot) => {
     const id = route.paramMap.get('id');
     const authService = inject(AuthenticationService);
-    const service = inject(EmpresaService);
-    const empresaId = authService.currentUserValue.empresa.id
-    console.log(empresaId, id);
+    const empresaService = inject(EmpresaService);
+    const aplicanteService = inject(AplicanteService);
+
     if (id) {
-        return service.getAplicanteByEmpresaIdAndAplicanteId(empresaId, +id);
+        const empresa = authService.currentUserValue.empresa;
+        if (empresa) {
+            return empresaService.getAplicanteByEmpresaIdAndAplicanteId(empresa.id, +id);
+        } else {
+            return aplicanteService.getById(+id);
+        }
     } else {
         return of(null);
     }

@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { UserList } from './userlist';
 import { UserCreate } from './usercreate';
 import { getPageUserResolver, getUserByUsernameResolver } from '@/core/resolvers/user.resolver';
-import { getRolesResolver } from '@/core/resolvers/data-master.resolver';
+import { getDirecaoResolver, getRolesResolver } from '@/core/resolvers/data-master.resolver';
 
 export default [
     { path: '', redirectTo: 'list', pathMatch: 'full' },
@@ -20,6 +20,7 @@ export default [
         component: UserCreate,
         resolve: {
             roleList: getRolesResolver,
+            direcaoList: getDirecaoResolver,
         }
     },
     {
@@ -29,6 +30,7 @@ export default [
         resolve: {
             roleList: getRolesResolver,
             userData: getUserByUsernameResolver,
+            direcaoList: getDirecaoResolver,
         }
     }
 ] as Routes;

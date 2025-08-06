@@ -1,6 +1,6 @@
 import { Categoria, TipoAtividadeEconomica } from '@/core/models/enums';
 import { DataMasterService } from '@/core/services/data-master.service';
-import { applicationTypesOptions, categoryTpesOptions, mapToAtividadeEconomica, mapToIdAndName, nivelRiscoOptions } from '@/core/utils/global-function';
+import { applicationTypesOptions, categoryTpesOptions, mapToAtividadeEconomica, mapToIdAndName, nivelRiscoOptions, roleOptions } from '@/core/utils/global-function';
 import { CurrencyPipe, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -34,6 +34,7 @@ export class ListaComponent {
   nivelRiscoOpts = nivelRiscoOptions;
   categoryOpts = categoryTpesOptions;
   aplicanteOpts = applicationTypesOptions;
+  rolesOpts = roleOptions;
   // tipoAtividadeEconomicaOpts = tipoAtividadeEconomicaOptions;
   grupoAtivadadeOpts: any[] = [];
   loading = false;
@@ -78,6 +79,26 @@ export class ListaComponent {
   private setDataMaster(type: string): void {
     this.type = type;
     switch (type) {
+      case 'direcoes':
+        this.dataList = this.route.snapshot.data['listaDirecao']._embedded.direcoes;
+         this.cols = [
+          { field: 'nome', header: 'Nome' },
+        ];
+        this.dataForm = this._fb.group({
+          id: [''],
+          nome: ['', [Validators.required, Validators.minLength(1)]],
+        });
+        break;
+      case 'roles':
+        this.dataList = this.route.snapshot.data['listaRoles']._embedded.roles;
+         this.cols = [
+          { field: 'name', header: 'Nome' },
+        ];
+         this.dataForm = this._fb.group({
+          id: [''],
+          name: ['', [Validators.required, Validators.minLength(1)]],
+        });
+        break;
       case 'grupo-atividades':
         this.dataList = this.route.snapshot.data['listaGrupoAtividade']._embedded.grupoAtividade;
         this.cols = [

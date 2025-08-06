@@ -1,5 +1,11 @@
 <div class="card">
-    <span class="text-surface-900 dark:text-surface-0 text-xl font-bold mb-6 block">Create User</span>
+    <span class="text-surface-900 dark:text-surface-0 text-xl font-bold mb-6 block">
+        @if (isNew) {
+        Criar Novo Utilizadór
+        }@else {
+        Atualizar Utilizadór
+        }
+    </span>
 
     <!-- Success/Error Message -->
     @for (message of messages(); track message; let first = $first) {
@@ -9,21 +15,28 @@
     <div class="grid grid-cols-12 gap-4">
         <div class="col-span-12 lg:col-span-2">
             <!-- <div class="text-surface-900 dark:text-surface-0 font-medium text-xl mb-4">Profile</div> -->
-            <p class="m-0 p-0 text-surface-600 dark:text-surface-200 leading-normal mr-4">Provide the necessary
-                information below to set up a new user account.</p>
+            <p class="m-0 p-0 text-surface-600 dark:text-surface-200 leading-normal mr-4">
+                @if (isNew) {
+                Forneça as informações
+                necessárias abaixo para configurar uma nova conta de utilizador.
+                }@else {
+                Forneça as informações necessárias abaixo para atualizar a conta de utilizador.
+                }
+
+            </p>
         </div>
         <div class="col-span-12 lg:col-span-10">
             <form [formGroup]="userForm">
                 <div class="grid grid-cols-12 gap-4">
                     <div class="mb-6 col-span-12 md:col-span-6">
                         <label for="firstName" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                            Firstname
+                            Nome próprio
                         </label>
                         <input formControlName="firstName" id="firstName" type="text" pInputText fluid />
                     </div>
                     <div class="mb-6 col-span-12 md:col-span-6">
                         <label for="lastName" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                            Lastname
+                            Apelido
                         </label>
                         <input formControlName="lastName" id="lastName" type="text" pInputText fluid />
                     </div>
@@ -34,16 +47,15 @@
                     </div>
                     <div class="mb-6 col-span-12 md:col-span-6">
                         <label for="username" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                            Username
+                            Nome de Utilizadór
                         </label>
                         <input formControlName="username" id="username" pInputText fluid />
                     </div>
 
-                    @if (!isNew) {
                     <!-- Password -->
                     <div class="mb-6 col-span-12 md:col-span-6">
                         <label for="password" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                            Password
+                            Palavra-passe
                         </label>
                         <p-password formControlName="password" id="password" [feedback]="true" [fluid]="true"
                             [toggleMask]="true" />
@@ -51,40 +63,94 @@
                     <div class="mb-6 col-span-12 md:col-span-6">
                         <label for="confirmPassword"
                             class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                            Confirm Password
+                            Confirmar palavra-passe
                         </label>
                         <p-password formControlName="confirmPassword" id="confirmPassword" [feedback]="false"
                             [fluid]="true" [toggleMask]="true" />
                     </div>
-                    }
 
                     <!-- Role -->
                     <div class="mb-6 col-span-12 md:col-span-6">
                         <label for="role" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                            Role
+                            Função
                         </label>
-                        <p-select formControlName="role" inputId="role" [options]="roleList" optionLabel="name" fluid
+                        <p-select formControlName="role" [appendTo]="'body'" (onChange)="roleOnChange($event)"
+                            inputId="role" [options]="roleList" optionLabel="name" optionValue="name" fluid
                             filterBy="name" [showClear]="true" placeholder="Select a Role">
                             <ng-template #selectedItem let-selectedOption>
                                 @if (selectedOption) {
                                 <div class="flex items-center gap-2">
-                                    <div>{{ selectedOption.name.replace('ROLE_', '') }}</div>
+                                    @switch (selectedOption.name) {
+                                    @case ('ROLE_ADMIN') {
+                                    <div>
+                                        Administradór
+                                    </div>
+                                    }
+                                    @case ('ROLE_MANAGER') {
+                                    <div>
+                                        Gestór
+                                    </div>
+                                    }
+                                    @case ('ROLE_STAFF') {
+                                    <div>
+                                        Funcionário
+                                    </div>
+                                    }
+                                    @case ('ROLE_CLIENT') {
+                                    <div>
+                                        Empresa
+                                    </div>
+                                    }
+                                    }
                                 </div>
                                 }
                             </ng-template>
                             <ng-template let-role #item>
                                 <div class="flex items-center gap-2">
-                                    <div>{{ role.name.replace('ROLE_', '') }}</div>
+                                    @switch (role.name) {
+                                    @case ('ROLE_ADMIN') {
+                                    <div>
+                                        Administradór
+                                    </div>
+                                    }
+                                    @case ('ROLE_MANAGER') {
+                                    <div>
+                                        Gestór
+                                    </div>
+                                    }
+                                    @case ('ROLE_STAFF') {
+                                    <div>
+                                        Funcionário
+                                    </div>
+                                    }
+                                    @case ('ROLE_CLIENT') {
+                                    <div>
+                                        Empresa
+                                    </div>
+                                    }
+                                    }
                                 </div>
                             </ng-template>
                         </p-select>
                     </div>
+                    @if (showCategoria) {
+                    <div class="mb-6 col-span-12 md:col-span-6">
+                        <label for="direcao" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                            Direção
+                        </label>
+                        <p-select [appendTo]="'body'" formControlName="direcao" inputId="direcao"
+                            [options]="direcaoList" optionLabel="nome" optionValue="id" fluid [showClear]="true"
+                            placeholder="Selecione a Direção">
+                        </p-select>
+                    </div>
+                    }
+
 
                     @if (!isNew) {
                     <!-- Status -->
                     <div class="mb-6 col-span-12 md:col-span-6">
                         <label for="status" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                            Status
+                            Estado
                         </label>
                         <p-selectButton inputId="status" formControlName="status" [options]="statusOptions"
                             optionLabel="name" optionValue="value" class="pt-3">
@@ -100,11 +166,11 @@
                     <div class="col-span-12">
                         @if (isNew) {
                         <button (click)="createUser(userForm)" icon="pi pi-save" [loading]="loading"
-                            [disabled]="!userForm.valid" pButton pRipple label="Create User"
+                            [disabled]="!userForm.valid" pButton pRipple label="Criar Utilizadór"
                             class="w-auto mt-3"></button>
                         } @else {
                         <button (click)="updateUser(userForm)" icon="pi pi-sync" [loading]="loading"
-                            [disabled]="!userForm.valid" pButton pRipple label="Update User"
+                            [disabled]="!userForm.valid" pButton pRipple label="Atualizar Utilizadór"
                             class="w-auto mt-3"></button>
                         }
 

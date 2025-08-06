@@ -1,6 +1,7 @@
 import { User } from '@/core/models/entities.model';
+import { Role } from '@/core/models/enums';
 import { UserService } from '@/core/services';
-import { mapToIdAndName, roleOptions, statusOptions } from '@/core/utils/global-function';
+import { categoryTpesOptions, mapToIdAndName, mapToIdAndNome, roleOptions, statusOptions } from '@/core/utils/global-function';
 import { mustMatch } from '@/core/validators/must-match';
 import { CommonModule } from '@angular/common';
 import { Component, signal } from '@angular/core';
@@ -26,60 +27,72 @@ import { TextareaModule } from 'primeng/textarea';
     providers: [MessageService]
 })
 export class UserCreate {
-    userForm: FormGroup;
-    roleList: any[];
+    userForm!: FormGroup;
+    roleList: any[] = [];
+    direcaoList: any[] = [];
     loading = false;
-    userData: User;
+    userData!: User;
     isNew = false;
     statusOptions = statusOptions;
     roleOptions = roleOptions;
     messages = signal<any[]>([]);
     username!: string;
+    showCategoria = false;
 
     constructor(
         private _fb: FormBuilder,
         private userService: UserService,
         private route: ActivatedRoute,
-    ) {
-        this.userForm = this._fb.group({
-            id: [''],
-            firstName: new FormControl(null, [Validators.required]),
-            lastName: new FormControl(null, [Validators.required]),
-            email: new FormControl(null, [Validators.required, Validators.email]),
-            username: new FormControl(null, [Validators.required]),
-            password: new FormControl(null),
-            confirmPassword: new FormControl(null),
-            role: new FormControl(null, [Validators.required]),
-            status: new FormControl('pending', [Validators.required]),
-        }, {
-            validators: mustMatch('password', 'confirmPassword')
-        });
-        this.roleList = mapToIdAndName(this.route.snapshot.data['roleList']._embedded.roles || []);
+    ) { }
+
+    ngOnInit() {
+        this.initForm();
 
         this.userData = this.route.snapshot.data['userData'];
+        console.log(this.route.snapshot.data['direcaoList']);
+
+        this.direcaoList = mapToIdAndNome(this.route.snapshot.data['direcaoList']._embedded.direcoes);
+
         this.isNew = !this.userData;
 
         if (!this.isNew) {
+            this.roleList = mapToIdAndName(this.route.snapshot.data['roleList']._embedded.roles || []);
+
+
             this.userData.password = ''; // Do not show password in edit form
-            this.userData.role = {
-                id: this.userData.role.id,
-                name: this.userData.role.name
-            };
+
             this.userForm.patchValue(this.userData);
+            this.userForm.patchValue({
+                role: this.userData.role.name
+            });
+
             this.username = this.userData.username;
-            this.userForm.get('username')?.disable()
+            this.userForm.get('username')?.disable();
+
+
+            if (this.userData.role.name === Role.client) {
+                this.userForm.get('role')?.disable();
+            }
+        } else {
+            this.roleList = mapToIdAndName(this.route.snapshot.data['roleList']._embedded.roles || []).filter(item => item.name !== Role.client);
         }
-
-    }
-
-    ngOnInit() {
     }
 
     createUser(form: FormGroup) {
         if (form.valid) {
             this.loading = true;
 
-            this.userService.save(form.value).subscribe({
+            const formData = form.value;
+            formData.role = this.roleList.find(item => item.name === formData.role);
+
+
+            if (formData.direcao) {
+                formData.direcao = {
+                    id: formData.direcao
+                }
+            }
+
+            this.userService.save(formData).subscribe({
                 next: (response) => {
                     this.loading = false;
                     console.log(response);
@@ -98,9 +111,18 @@ export class UserCreate {
     updateUser(form: FormGroup) {
         if (form.valid) {
             this.loading = true;
-            console.log(form.value);
-            form.value.username = this.username;
-            this.userService.update(this.username, form.value).subscribe({
+
+            const formData = form.getRawValue();
+            formData.role = this.roleList.find(item => item.name === formData.role);
+            formData.username = this.username;
+
+            if (formData.direcao) {
+                formData.direcao = {
+                    id: formData.direcao
+                }
+            }
+
+            this.userService.update(this.username, formData).subscribe({
                 next: (response) => {
                     this.loading = false;
                     console.log(response);
@@ -122,8 +144,35 @@ export class UserCreate {
             ]);
         } else {
             this.messages.set([
-                { severity: 'error', content: detail, icon: 'pi pi-times-circle' },
+                { severity: 'error', content: 'Desculpe, algo deu errado. Tente novamente ou procure o administrador do sistema para mais informações.', icon: 'pi pi-times-circle' },
             ]);
         }
+    }
+
+    roleOnChange(event: any) {
+        if (event.value === Role.manager || event.value === Role.staff) {
+            this.showCategoria = true;
+            this.userForm.get('direcao')?.setValidators(Validators.required);
+        } else {
+            this.userForm.get('direcao')?.clearAsyncValidators();
+            this.showCategoria = false;
+        }
+    }
+
+    private initForm(): void {
+        this.userForm = this._fb.group({
+            id: [''],
+            firstName: new FormControl(null, [Validators.required]),
+            lastName: new FormControl(null, [Validators.required]),
+            email: new FormControl(null, [Validators.required, Validators.email]),
+            username: new FormControl(null, [Validators.required]),
+            password: new FormControl(null),
+            confirmPassword: new FormControl(null),
+            role: new FormControl(null, [Validators.required]),
+            status: new FormControl('pending', [Validators.required]),
+            direcao: new FormControl(null),
+        }, {
+            validators: mustMatch('password', 'confirmPassword')
+        });
     }
 }

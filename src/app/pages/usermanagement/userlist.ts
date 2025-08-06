@@ -37,6 +37,6 @@ export class UserList {
     }
 
     navigateToCreateUser() {
-        this.router.navigate(['profile/create']);
+        this.router.navigate(['utilizador/create']);
     }
 }

@@ -72,3 +72,8 @@ export const getTaxaByCategoriaAndTipoResolver: ResolveFn<any> = (route) => {
 
     return service.getAllTaxaByCategoriaAndTipo(categoria, tipo);
 }
+
+export const getDirecaoResolver: ResolveFn<any> = () => {
+    const service = inject(DataMasterService);
+    return service.getPageDirecao();
+}

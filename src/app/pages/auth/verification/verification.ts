@@ -62,6 +62,7 @@ export class Verification {
             next: response => {
                 switch (response.role.name) {
                     case Role.admin:
+                    case Role.manager:
                     case Role.staff:
                         this.otpSessionActive = true;
                         setTimeout(() => {

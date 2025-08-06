@@ -76,9 +76,9 @@ export const statusOptions: any[] = [
 ];
 
 export const roleOptions: any[] = [
-    { name: 'Admin', value: Role.admin },
-    { name: 'User', value: Role.staff },
-    { name: 'Guest', value: Role.client }
+    { name: 'Administrador', value: Role.admin },
+    { name: 'Gestor', value: Role.manager },
+    { name: 'Funcionário', value: Role.staff },
 ];
 
 export const nivelRiscoOptions: any[] = [

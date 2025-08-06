@@ -1,7 +1,7 @@
 import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, ResolveFn, Router } from "@angular/router";
 import { EMPTY, of } from "rxjs";
-import { UserService } from "../services";
+import { AuthenticationService, UserService } from "../services";
 
 /**
  * Resolves a page of users.
@@ -52,5 +52,17 @@ export const getTokenActivationResolver: ResolveFn<any> = (route: ActivatedRoute
         // If token is invalid or missing, navigate to the index route
         router.navigate(['/']);
         return EMPTY;
+    }
+}
+
+export const getPageAplicanteByUsernameResolver: ResolveFn<any> = () => {
+    const authService = inject(AuthenticationService);
+    const username = authService.currentUserValue.username;
+
+    const service = inject(UserService);
+    if (authService.currentUserValue.username) {
+        return service.getPaginationAplicante(username);
+    } else {
+        return of(null);
     }
 }
