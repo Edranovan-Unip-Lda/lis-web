@@ -1,4 +1,5 @@
-import { authenticationCanActivate } from '@/core/security/route.guard';
+import { Role } from '@/core/models/enums';
+import { authenticationCanActivate, canActivateByRole } from '@/core/security/route.guard';
 import { AppLayout } from '@/layout/components/app.layout';
 import { Routes } from '@angular/router';
 
@@ -46,7 +47,11 @@ export const appRoutes: Routes = [
             },
             {
                 path: 'gestor',
-                data: { breadcrumb: 'Gestor' },
+                data: {
+                    breadcrumb: 'Gestor',
+                    role: [Role.manager, Role.staff]
+                },
+                canActivate: [canActivateByRole],
                 loadChildren: () => import('@/pages/gestor/gestor.routes')
             },
             {

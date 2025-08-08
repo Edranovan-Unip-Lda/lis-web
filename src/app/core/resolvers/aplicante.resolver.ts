@@ -3,7 +3,7 @@ import { AplicanteService } from "../services/aplicante.service";
 import { inject } from "@angular/core";
 import { of } from "rxjs";
 
-export const getPageEmpresaResolver: ResolveFn<any> = () => {
+export const getPageResolver: ResolveFn<any> = () => {
     const service = inject(AplicanteService);
     return service.getPage();
 }

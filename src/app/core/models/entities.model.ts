@@ -73,6 +73,18 @@ export interface Aplicante extends BaseModel {
     pedidoInscricaoCadastroDto: PedidoInscricaoCadastro
     pedidoStatus: string;
     faturaStatus: string;
+    certificadoInscricaoCadastro: CertificadoCadastro;
+    historicoStatusDto: HistoricoEstadoAplicante[];
+}
+
+export interface CertificadoCadastro extends BaseModel {
+    sociedadeComercial: string;
+    numeroRegistoComercial: string;
+    sede: Endereco;
+    atividade: string;
+    dataValidade: string;
+    dataEmissao: string;
+    nomeDiretorGeral: string;
 }
 
 export interface VistoriaComercialRequestForm {
@@ -163,7 +175,7 @@ export interface Fatura extends BaseModel {
     sede: string;
     nif: string;
     nivelRisco: NivelRisco;
-    recibo: Documento;
+    recibo: Documento | null;
 }
 
 export interface Taxa extends BaseModel {
@@ -185,4 +197,11 @@ export interface Documento extends BaseModel {
     descricao: string;
     tipo: string;
     tamanho: string;
+}
+
+export interface HistoricoEstadoAplicante extends BaseModel {
+    status: AplicanteStatus;
+    descricao: string;
+    alteradoPor: string;
+    dataAlteracao: Date;
 }

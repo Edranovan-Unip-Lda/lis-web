@@ -1,5 +1,5 @@
 import { Aldeia } from '@/core/models/data-master.model';
-import { Aplicante, Documento, Empresa, Fatura, PedidoInscricaoCadastro } from '@/core/models/entities.model';
+import { Aplicante, Documento, Empresa, Fatura, HistoricoEstadoAplicante, PedidoInscricaoCadastro } from '@/core/models/entities.model';
 import { AplicanteStatus, AplicanteType, Categoria, TipoPedidoCadastro } from '@/core/models/enums';
 import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService } from '@/core/services';
@@ -75,6 +75,7 @@ export class ApplicationDetailComponent {
 
   pedidoActive = false;
   faturaActive = false;
+  motivoRejeicao: any;
 
   constructor(
     private _fb: FormBuilder,
@@ -101,12 +102,9 @@ export class ApplicationDetailComponent {
     this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
     this.categoria = this.aplicanteData.categoria;
     this.aplicanteEstado = this.aplicanteData.estado;
+    this.motivoRejeicao = this.getRejectedReason(this.aplicanteData.historicoStatusDto);
 
-    if (this.aplicanteData.estado === AplicanteStatus.submetido) {
-      this.requestForm.disable();
-      this.faturaForm.disable();
-      this.disableAllForm = true;
-    }
+    this.disabledForms(this.aplicanteData.estado);
 
     this.listaPedidoAto = mapToTaxa(this.router.snapshot.data['listaTaxaResolver']._embedded.taxas);
     this.listaGrupoAtividade = mapToGrupoAtividade(this.router.snapshot.data['grupoAtividadeResolver']._embedded.grupoAtividade)
@@ -247,7 +245,7 @@ export class ApplicationDetailComponent {
               },
               suco: pedido.sede.aldeia.suco.nome,
               postoAdministrativo: pedido.sede.aldeia.suco.postoAdministrativo.nome,
-              municipio: pedido.sede.aldeia.suco.postoAdministrativo.municipio
+              municipio: pedido.sede.aldeia.suco.postoAdministrativo.municipio.nome
             },
             classeAtividade: {
               id: pedido.classeAtividade.id,
@@ -455,6 +453,7 @@ export class ApplicationDetailComponent {
   onUpload(event: any, arg: string) {
     if (event.originalEvent.body) {
       this.uploadedFiles.push(event.originalEvent.body)
+      this.aplicanteData.pedidoInscricaoCadastroDto.fatura.recibo = event.originalEvent.body
     }
     this.messageService.add({
       severity: 'info',
@@ -498,6 +497,8 @@ export class ApplicationDetailComponent {
     this.pedidoService.deleteRecibo(this.aplicanteData.id, this.pedidoId, this.faturaId, file.id).subscribe({
       next: () => {
         this.uploadedFiles.pop();
+        this.aplicanteData.pedidoInscricaoCadastroDto.fatura.recibo = null;
+
         this.messageService.add({
           severity: 'info',
           summary: 'Success',
@@ -522,6 +523,14 @@ export class ApplicationDetailComponent {
     if (!value && value !== 0) return '';
     const mb = value / (1024 * 1024);
     return `${mb.toFixed(2)} MB`;
+  }
+
+  private getRejectedReason(historico: HistoricoEstadoAplicante[]): string | undefined {
+    if (historico && historico.length) {
+      return historico.find(h => h.status === AplicanteStatus.rejeitado)?.descricao;
+    } else {
+      return;
+    }
   }
 
   private initForm(): void {
@@ -571,6 +580,14 @@ export class ApplicationDetailComponent {
       superficie: new FormControl({ value: null, disabled: true, }),
       total: new FormControl({ value: null, disabled: true, }, [Validators.required]),
     });
+  }
+
+  private disabledForms(aplicanteEstado: AplicanteStatus): void {
+    if (aplicanteEstado === AplicanteStatus.submetido || aplicanteEstado === AplicanteStatus.aprovado) {
+      this.requestForm.disable();
+      this.faturaForm.disable();
+      this.disableAllForm = true;
+    }
   }
 
   private mapNewFatura(aplicante: Aplicante): void {

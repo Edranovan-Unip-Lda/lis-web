@@ -61,7 +61,19 @@ export const getPageAplicanteByUsernameResolver: ResolveFn<any> = () => {
 
     const service = inject(UserService);
     if (authService.currentUserValue.username) {
-        return service.getPaginationAplicante(username);
+        return service.getPaginationAssignedAplicante(username);
+    } else {
+        return of(null);
+    }
+}
+
+export const getAssignedAplicanteByIdResolver: ResolveFn<any> = (route: ActivatedRouteSnapshot) => {
+    const id = route.paramMap.get('id');
+    const authService = inject(AuthenticationService);
+    const service = inject(UserService);
+    const username = authService.currentUserValue.username;
+    if (id) {
+        return service.getAssignedAplicante(username, +id);
     } else {
         return of(null);
     }

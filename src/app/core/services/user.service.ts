@@ -56,7 +56,7 @@ export class UserService {
     return this.http.post<any>(`${this.apiUrl}/activate?token=${token}`, form);
   }
 
-  getPaginationAplicante(username: string, page?: number, size?: number): Observable<any> {
+  getPaginationAssignedAplicante(username: string, page?: number, size?: number): Observable<any> {
     let params = new HttpParams();
     if (page && size) {
       params.append('page', page)
@@ -65,6 +65,22 @@ export class UserService {
     } else {
       return this.http.get<any>(`${this.apiUrl}/${username}/aplicantes`, { params }).pipe(take(1));
     }
+  }
+
+  getAssignedAplicante(username: string, aplicanteId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${username}/aplicantes/${aplicanteId}`);
+  }
+
+  /**
+   * Sends a PATCH request to approve an aplicante associated with a user.
+   *
+   * @param username The username of the user associated with the aplicante.
+   * @param aplicanteId The ID of the aplicante to be approved.
+   * @param form The form data containing approval information.
+   * @returns An observable of the server response.
+   */
+  updateAplicante(username: string, aplicanteId: number, form: any): Observable<any> {
+    return this.http.patch<any>(`${this.apiUrl}/${username}/aplicantes/${aplicanteId}`, form);
   }
 
 

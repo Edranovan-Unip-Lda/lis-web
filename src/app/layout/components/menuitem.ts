@@ -230,7 +230,7 @@ export const model_manager: MenuItem[] = [
             {
                 label: 'Lista',
                 icon: 'pi pi-fw pi-list',
-                routerLink: ['application/list']
+                routerLink: ['gestor/application/list']
             },
         ]
     },

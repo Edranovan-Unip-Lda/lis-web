@@ -3,7 +3,7 @@ import { Role } from '@/core/models/enums';
 import { StatusIconPipe, StatusSeverityPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService } from '@/core/services';
 import { EmpresaService } from '@/core/services/empresa.service';
-import { DatePipe, TitleCasePipe } from '@angular/common';
+import { DatePipe, TitleCasePipe, UpperCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -19,7 +19,7 @@ import { Tooltip } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-application-list',
-  imports: [TableModule, InputText, Button, IconField, InputIcon, RouterModule, Tag, StatusSeverityPipe, StatusIconPipe, Tooltip, TitleCasePipe, DatePipe, Toast, ConfirmDialog],
+  imports: [TableModule, InputText, Button, IconField, InputIcon, RouterModule, Tag, StatusSeverityPipe, StatusIconPipe, Tooltip, UpperCasePipe, DatePipe, Toast, ConfirmDialog],
   templateUrl: './application-list.component.html',
   styleUrl: './application-list.component.scss',
   providers: [ConfirmationService, MessageService]
@@ -53,12 +53,42 @@ export class ApplicationListComponent {
   }
 
   toDetail(aplicante: Aplicante) {
-    this.router.navigate(['/application', aplicante.id], {
-      queryParams: {
-        categoria: aplicante.categoria,
-        tipo: aplicante.tipo
+    const user = this.authService.currentUserValue;
+
+    if (user.role.name === Role.client) {
+      this.router.navigate(['/application', aplicante.id], {
+        queryParams: {
+          categoria: aplicante.categoria,
+          tipo: aplicante.tipo
+        }
+      });
+    } else {
+      console.log(aplicante.estado);
+
+      if (aplicante.estado === 'APROVADO') {
+        this.router.navigate(['/gestor/application', aplicante.id], {
+          queryParams: {
+            categoria: aplicante.categoria,
+            tipo: aplicante.tipo
+          }
+        });
+      } else {
+        this.router.navigate(['/gestor/application/task', aplicante.id], {
+          queryParams: {
+            categoria: aplicante.categoria,
+            tipo: aplicante.tipo
+          }
+        });
       }
-    });
+
+      this.router.navigate(['/gestor/application', aplicante.id], {
+        queryParams: {
+          categoria: aplicante.categoria,
+          tipo: aplicante.tipo
+        }
+      });
+    }
+
   }
 
   delete(aplicante: Aplicante) {

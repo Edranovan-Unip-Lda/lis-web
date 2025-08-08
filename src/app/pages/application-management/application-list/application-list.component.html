@@ -2,7 +2,8 @@
     <p-table #dt [value]="applications" [paginator]="true" paginatorDropdownAppendTo="body" [rows]="10"
         [showCurrentPageReport]="true" responsiveLayout="scroll"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        [rowsPerPageOptions]="[10, 25, 50]" [globalFilterFields]="['candidatura.numero', 'candidatura.empresa.nome', 'candidatura.categoria', 'candidatura.tipo']">
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [globalFilterFields]="['candidatura.numero', 'candidatura.empresa.nome', 'candidatura.categoria', 'candidatura.tipo']">
         <ng-template #caption>
             <div class="flex flex-wrap gap-2 items-center justify-between">
                 <p-icon-field class="w-1/2 sm:w-80 order-1 sm:order-none">
@@ -63,7 +64,7 @@
                     {{ candidatura.createdAt | date: 'dd/MMM/yyyy, HH:mm:ss' }}
                 </td>
                 <td>
-                    <p-tag value="{{candidatura.estado.replace('_', ' ') | titlecase}}"
+                    <p-tag value="{{candidatura.estado.replace('_', ' ') | uppercase}}"
                         [severity]="candidatura.estado | statusSeverity" icon="{{candidatura.estado | statusIcon}}" />
                 </td>
 
@@ -71,7 +72,7 @@
                     <a (click)="toDetail(candidatura)" pTooltip="Detalho" tooltipPosition="top">
                         <p-button icon="pi pi-eye" class="mr-2" severity="info" [rounded]="true" [outlined]="true" />
                     </a>
-                    @if (candidatura.estado === 'EM_CURSO') {
+                    @if (candidatura.estado === 'EM_CURSO' || candidatura.estado === 'REJEITADO') {
                     <a (click)="delete(candidatura)">
                         <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
                             pTooltip="Eliminar" tooltipPosition="top" />

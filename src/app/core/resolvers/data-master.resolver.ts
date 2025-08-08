@@ -68,8 +68,6 @@ export const getTaxaByCategoriaAndTipoResolver: ResolveFn<any> = (route) => {
     const service = inject(DataMasterService);
     const categoria = route.queryParams['categoria'];
     const tipo = route.queryParams['tipo'];
-    console.log(categoria, tipo);
-
     return service.getAllTaxaByCategoriaAndTipo(categoria, tipo);
 }
 

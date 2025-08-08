@@ -13,6 +13,7 @@ export class StatusIconPipe implements PipeTransform {
         ativo: 'bi bi-fw bi-shield-check',
         expirado: 'bi bi-fw bi-ban',
         EM_CURSO: 'bi bi-fw bi-hourglass-split',
+        REJEITADO: 'bi bi-fw bi-ban',
     };
 
     transform(status: string): string {
@@ -40,7 +41,8 @@ export class StatusSeverityPipe implements PipeTransform {
         expirado: 'danger',
         PAGA: 'success',
         SUBMETIDO: 'success',
-        EMITIDA: 'success'
+        EMITIDA: 'success',
+        REJEITADO: 'danger',
     };
 
     transform(status: string): Severity {

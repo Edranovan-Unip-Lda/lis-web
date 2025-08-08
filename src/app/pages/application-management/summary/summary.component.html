@@ -1,0 +1,317 @@
+@if (aplicanteData) {
+<div class="card rounded-xl shadow-lg p-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-white mb-2">
+            Resumo do Aplicante
+        </h1>
+        <p class="text-gray-400">
+            Visão geral da candidatura para registo {{aplicanteData.categoria.toLocaleLowerCase()}}.
+        </p>
+    </div>
+    <div class="grid grid-cols-4 md:grid-cols-5 gap-6 mb-8">
+        <div class="col-span-4 md:col-span-3 bg-[#26262B] p-6 rounded-lg">
+            <h2 class="text-xl font-semibold text-white mb-4">Detalhes do Aplicante</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-gray-300">
+                <div>
+                    <p class="font-medium text-gray-400">Nº do Aplicante:</p>
+                    <p class="text-lg">
+                        {{aplicanteData.numero}}
+                    </p>
+                </div>
+                <div>
+                    <p class="font-medium text-gray-400">Estado:</p>
+                    <p-tag [value]="aplicanteData.estado" [severity]="aplicanteData.estado| statusSeverity" />
+                </div>
+                <div>
+                    <p class="font-medium text-gray-400">
+                        Criado Em:
+                    </p>
+                    <p>
+                        {{aplicanteData.createdAt | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                    </p>
+                </div>
+                <div>
+                    <p class="font-medium text-gray-400">Atualizado Em:</p>
+                    <p>
+                        {{aplicanteData.updatedAt | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-span-4 md:col-span-2 bg-[#26262B] p-6 rounded-lg flex flex-col justify-center">
+            <h2 class="text-xl font-semibold text-white mb-4">Informação da Empresa</h2>
+            <div class="space-y-2 text-gray-300">
+                <p>
+                    <span class="font-medium text-gray-400">Nome:</span>
+                    {{aplicanteData.empresaDto.nome}}
+                </p>
+                <p>
+                    <span class="font-medium text-gray-400">NIF:</span>
+                    {{aplicanteData.empresaDto.nif}}
+                </p>
+                <p>
+                    <span class="font-medium text-gray-400">Telefone/Telemovel:</span>
+                    {{aplicanteData.empresaDto.telefone}} / {{aplicanteData.empresaDto.telemovel}}
+                </p>
+                <p>
+                    <span class="font-medium text-gray-400">Sede:</span>
+                    {{aplicanteData.empresaDto.sede.local}} - {{aplicanteData.empresaDto.sede.aldeia.nome}},
+                    {{aplicanteData.empresaDto.sede.aldeia.suco.nome}},
+                    {{aplicanteData.empresaDto.sede.aldeia.suco.postoAdministrativo.nome}},
+                    {{aplicanteData.empresaDto.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="bg-[#26262B] p-6 rounded-lg mb-8">
+        <h2 class="text-xl font-semibold text-white mb-6">
+            Etapas do Aplicante
+        </h2>
+        <div class="space-y-6">
+            <div
+                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                <div class="flex items-center mb-4 sm:mb-0">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-blue-500 text-white mr-4">
+                        <i class="bi bi-file-text text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-white">
+                            Formulário do Pedido Inscrição do Cadastro
+                        </h3>
+                        <p class="text-sm text-gray-400">
+                            Detalhes do Pedido Inscrição do Cadastro
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <p-tag [value]="aplicanteData.pedidoInscricaoCadastroDto.status"
+                        [severity]="aplicanteData.pedidoInscricaoCadastroDto.status| statusSeverity" />
+                    <p-button routerLink="/gestor/application/{{aplicanteData.id}}/pedido-inscricao" icon="pi pi-eye"
+                        label="Pré-visualização" [raised]="true" severity="info" />
+                </div>
+            </div>
+            <div
+                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                <div class="flex items-center mb-4 sm:mb-0">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-green-500 text-white mr-4">
+                        <i class="bi bi-credit-card text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-white">
+                            Fatura
+                        </h3>
+                        <p class="text-sm text-gray-400">Informação da Fatura</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <p-tag [value]="aplicanteData.pedidoInscricaoCadastroDto.fatura.status"
+                        [severity]="aplicanteData.pedidoInscricaoCadastroDto.fatura.status| statusSeverity" />
+                    <p-button routerLink="/gestor/application/{{aplicanteData.id}}/fatura-inscricao" icon="pi pi-eye"
+                        label="Pré-visualização" [raised]="true" severity="info" />
+                </div>
+            </div>
+            <div
+                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                <div class="flex items-center mb-4 sm:mb-0">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-zinc-500 text-white mr-4">
+                        <i class="bi bi-receipt text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-white">
+                            Recibo
+                        </h3>
+                        <p class="text-sm text-gray-400">Informação do Recibo</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <p-tag [value]="'SUBMETIDO'" [severity]="'success'" />
+                    <p-button (click)="downloadFile()" icon="pi pi-download" label="Decarregar Recibo" [raised]="true"
+                        [loading]="downloadLoading" severity="info" />
+                </div>
+            </div>
+            <div
+                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                <div class="flex items-center mb-4 sm:mb-0">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-purple-500 text-white mr-4">
+                        <i class="bi bi-award text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-white">Certificado</h3>
+                        <p class="text-sm text-gray-400">Certificado oficial de registo
+                            {{aplicanteData.categoria |titlecase}}.</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    @if (aplicanteData.certificadoInscricaoCadastro) {
+                    <p-tag [value]="'EMITIDO'" [severity]="'success'" />
+                    <p-button routerLink="/gestor/application/{{aplicanteData.id}}/certificado-inscricao"
+                        icon="pi pi-eye" label="Pré-visualização" [raised]="true" severity="info" />
+                    }@else {
+                    <p-tag value="Nao Emitido" [severity]="'warn'" icon="pi pi-times" />
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bg-[#26262B] p-6 rounded-lg mb-8">
+        <h2 class="text-xl font-semibold text-white mb-6">Histórico do Aplicante</h2>
+        <div class="relative pl-8">
+            <div class="absolute left-2 top-2 bottom-2 w-0.5 bg-gray-600"></div>
+            <div class="space-y-8">
+                @for (item of aplicanteData.historicoStatusDto; track $index) {
+                <div class="relative">
+                    @switch (item.status) {
+                    @case ('EM_CURSO') {
+                    <div
+                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-gray-500 ring-4 ring-[#2D3748]">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="font-semibold text-white">Application Created</p>
+                        <p class="text-sm text-gray-400">Applicant submitted the initial form.</p>
+                        <p class="text-xs text-gray-500 mt-1">
+                            {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                        </p>
+                    </div>
+                    }
+                    @case ('APROVADO') {
+                    <div
+                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-green-500 ring-4 ring-[#2D3748]">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="font-semibold text-white">Aplicante Aprovado</p>
+                        <p class="text-sm text-gray-400">Aplicante foi aprovado pelo Gestor.</p>
+                        <p class="text-xs text-gray-500 mt-1">
+                            {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                        </p>
+                    </div>
+                    }
+                    @case ('SUBMETIDO') {
+                    <div
+                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-blue-500 ring-4 ring-[#2D3748]">
+                        <i class="bi bi-person"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="font-semibold text-white">Application Assigned to Reviewer</p>
+                        <p class="text-sm text-gray-400">Assigned to: <span class="font-medium text-gray-300">
+                                {{item.alteradoPor}}
+                            </span></p>
+                        <p class="text-xs text-gray-500 mt-1">
+                            {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                        </p>
+                    </div>
+                    }
+                    @case ('REJEITADO') {
+                    <div
+                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-red-500 ring-4 ring-[#2D3748]">
+                        <i class="bi bi-ban"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="font-semibold text-white">Application Rejected by Reviewer</p>
+                        <p class="text-sm text-gray-400">Assigned to: <span class="font-medium text-gray-300">
+                                {{item.alteradoPor}}
+                            </span></p>
+                        <p class="text-xs text-gray-500 mt-1">
+                            {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                        </p>
+                    </div>
+                    }
+                    }
+
+                </div>
+                }
+
+            </div>
+        </div>
+    </div>
+    @if (aplicanteData.estado === 'SUBMETIDO') {
+    <div class="mt-10 flex justify-end space-x-4">
+        <p-button (click)="cancelar($event)" icon="pi pi-times" label="Rejeitar o Aplicante" [raised]="true"
+            severity="danger" />
+        <p-button (click)="aprovar($event)" icon="pi pi-check-circle" label="Aceitar o Aplicante" [raised]="true"
+            severity="success" />
+    </div>
+    }
+</div>
+<p-confirmdialog key="aprovar">
+    <ng-template #headless let-message let-onAccept="onAccept" let-onReject="onReject">
+        <div class="flex flex-col items-center p-8 rounded">
+            <div
+                class="rounded-full bg-amber-400 text-primary-contrast inline-flex justify-center items-center h-24 w-24 -mt-20">
+                <i class="pi pi-exclamation-triangle !text-5xl"></i>
+            </div>
+            <div class="flex flex-col items-start gap-4">
+                <p class="mb-0 text-balance">
+                    Ao aprovar este aplicante, será automaticamente gerado <br> <span class="font-semibold">o
+                        certificado de inscrição e
+                        cadastro</span>
+                    correspondente.
+                </p>
+            </div>
+            <div class="flex items-center gap-2 mt-6">
+                <p-button type="button" [outlined]="true" severity="secondary" icon="pi pi-times" label="Cancel"
+                    (click)="onReject()"></p-button>
+                <p-button type="button" icon="pi pi-check" label="Confirmar" (onClick)="onAccept()">
+                </p-button>
+            </div>
+        </div>
+        <!-- <div [formGroup]="form"
+            class="flex flex-col items-start w-full gap-4 border-b border-surface-200 dark:border-surface-700">
+            <label for="description">
+                Motivo de Rejeicao
+            </label>
+            <textarea rows="5" cols="30" id="description" pTextarea [formControl]="descricao"></textarea>
+        </div>
+        <div>
+            <p-button type="button" [outlined]="true" severity="secondary" icon="pi pi-times" label="Cancel"
+                (click)="onReject()"></p-button>
+            <p-button [disabled]="!descricao.valid" type="button" icon="pi pi-check" label="Confirmar"
+                (onClick)="onAccept()">
+            </p-button>
+        </div> -->
+    </ng-template>
+</p-confirmdialog>
+<p-confirmdialog key="cancelar">
+    <ng-template #headless let-message let-onAccept="onAccept" let-onReject="onReject">
+        <div class="flex flex-col items-center p-8 rounded">
+            <div
+                class="rounded-full bg-amber-400 text-primary-contrast inline-flex justify-center items-center h-24 w-24 -mt-20">
+                <i class="pi pi-exclamation-triangle !text-5xl"></i>
+            </div>
+            <div [formGroup]="form"
+                class="flex flex-col items-start w-full gap-4 border-b border-surface-200 dark:border-surface-700">
+                <label for="description">
+                    Motivo de Rejeicao
+                </label>
+                <textarea rows="5" cols="30" id="description" pTextarea [formControl]="descricao"></textarea>
+            </div>
+            <p class="mb-0">{{ message.message }}</p>
+            <div class="flex items-center gap-2 mt-6">
+                <p-button type="button" [outlined]="true" severity="secondary" icon="pi pi-times" label="Cancel"
+                    (click)="onReject()"></p-button>
+                <p-button [disabled]="!descricao.valid" type="button" icon="pi pi-check" label="Confirmar"
+                    (onClick)="onAccept()">
+                </p-button>
+            </div>
+        </div>
+        <!-- <div [formGroup]="form"
+            class="flex flex-col items-start w-full gap-4 border-b border-surface-200 dark:border-surface-700">
+            <label for="description">
+                Motivo de Rejeicao
+            </label>
+            <textarea rows="5" cols="30" id="description" pTextarea [formControl]="descricao"></textarea>
+        </div>
+        <div>
+            <p-button type="button" [outlined]="true" severity="secondary" icon="pi pi-times" label="Cancel"
+                (click)="onReject()"></p-button>
+            <p-button [disabled]="!descricao.valid" type="button" icon="pi pi-check" label="Confirmar"
+                (onClick)="onAccept()">
+            </p-button>
+        </div> -->
+    </ng-template>
+</p-confirmdialog>
+<p-toast position="top-right" key="tr" />
+<p-toast position="bottom-right" key="br" />
+}

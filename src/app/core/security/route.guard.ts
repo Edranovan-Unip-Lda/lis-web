@@ -27,11 +27,14 @@ export const canActivateByRole: CanActivateChildFn = (
 
     const allowedRoles: any[] = childRoute.data['role'];
 
+    console.log(allowedRoles, user.role.name);
+
+
     if (!allowedRoles || allowedRoles.length === 0) {
         // role not authorised so redirect to home page
         location.back();
         return of(false);
-    } else if (allowedRoles.includes(user.role)) {
+    } else if (allowedRoles.includes(user.role.name)) {
         return of(true);
     } else {
         location.back();
@@ -55,7 +58,7 @@ export const loginGuard: CanActivateFn = () => {
     const authService = inject(AuthenticationService);
     const router = inject(Router);
     const user = authService.currentUserValue;
-    
+
     if (user) {
         router.navigate(['/dashboard']).then();
         return of(false);

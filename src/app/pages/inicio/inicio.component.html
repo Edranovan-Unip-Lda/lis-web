@@ -29,12 +29,12 @@
 <p-dialog header="Criar Aplicante" [modal]="true" [position]="'top'" [(visible)]="visible" [style]="{ width: '45rem' }">
     <div class="card">
         <div class="grid grid-cols-12 gap-8 md:gap-4">
-            <div class="col-span-12 lg:col-span-2">
+            <div class="col-span-12">
                 <p class="m-0 p-0 text-surface-600 dark:text-surface-200 leading-normal mr-4">Forneça as informações
                     necessárias abaixo para configurar uma nova inscrição.</p>
             </div>
 
-            <div class="col-span-12 lg:col-span-10">
+            <div class="col-span-12">
                 <form [formGroup]="applicationForm">
                     <div class="grid grid-cols-12 gap-4">
                         <div class="mb-6 col-span-12">

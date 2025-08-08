@@ -13,76 +13,194 @@
          <p-step-panels>
              <p-step-panel [value]="1">
                  <ng-template #content let-activateCallback="activateCallback">
-                     <div class="max-w-lg mx-auto px-8 font-sans">
-                         <div class="flex justify-between items-center border-b border-gray-200 pb-4 mb-6">
-                             <div>
-                                 <div class="text-gray-500 text-md">Nº da Candidatura:</div>
-                                 <div class="text-xl font-semibold tracking-wider text-gray-300">
-                                     {{aplicanteData.numero}}
+                     <div class="px-8 font-sans">
+                         <div class="grid grid-cols-4 md:grid-cols-5 gap-6 mb-8">
+                             <div class="col-span-4 md:col-span-3 bg-[#26262B] p-6 rounded-lg">
+                                 <h2 class="text-xl font-semibold text-white mb-4">Detalhes do Aplicante</h2>
+                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-gray-300">
+                                     <div>
+                                         <p class="font-medium text-gray-400">Nº do Aplicante:</p>
+                                         <p class="text-lg">
+                                             {{aplicanteData.numero}}
+                                         </p>
+                                     </div>
+                                     <div>
+                                         <p class="font-medium text-gray-400">Estado:</p>
+                                         <p-tag [value]="aplicanteEstado"
+                                             [severity]="aplicanteEstado| statusSeverity" />
+                                     </div>
+                                     <div>
+                                         <p class="font-medium text-gray-400">
+                                             Criado Em:
+                                         </p>
+                                         <p>
+                                             {{aplicanteData.createdAt | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                                         </p>
+                                     </div>
+                                     <div>
+                                         <p class="font-medium text-gray-400">Atualizado Em:</p>
+                                         <p>
+                                             {{aplicanteData.updatedAt | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                                         </p>
+                                     </div>
                                  </div>
                              </div>
-                             <div>
-                                 <div class="text-gray-500 text-md">
-                                     Certificado:</div>
-
-                                 @if (
-                                 aplicanteData.faturaStatus === 'EMITIDA')
-                                 {
-                                 <p-tag value="EMITIDO" [severity]="'success'" />
-                                 <a class="ml-4" [routerLink]="['certificado-inscricao']">
-                                     <p-tag value="Pré-visualizar" icon="pi pi-eye" severity="info" />
-                                 </a>
-                                 }@else {
-                                 <p-tag value="Pendente" [severity]="'warn'" />
-                                 }
-
+                             <div
+                                 class="col-span-4 md:col-span-2 bg-[#26262B] p-6 rounded-lg flex flex-col justify-center">
+                                 <h2 class="text-xl font-semibold text-white mb-4">Informação da Empresa</h2>
+                                 <div class="space-y-2 text-gray-300">
+                                     <p>
+                                         <span class="font-medium text-gray-400">Nome:</span>
+                                         {{aplicanteData.empresaDto.nome}}
+                                     </p>
+                                     <p>
+                                         <span class="font-medium text-gray-400">NIF:</span>
+                                         {{aplicanteData.empresaDto.nif}}
+                                     </p>
+                                     <p>
+                                         <span class="font-medium text-gray-400">Telefone/Telemovel:</span>
+                                         {{aplicanteData.empresaDto.telefone}} / {{aplicanteData.empresaDto.telemovel}}
+                                     </p>
+                                     <p>
+                                         <span class="font-medium text-gray-400">Sede:</span>
+                                         {{aplicanteData.empresaDto.sede.local}} -
+                                         {{aplicanteData.empresaDto.sede.aldeia.nome}},
+                                         {{aplicanteData.empresaDto.sede.aldeia.suco.nome}},
+                                         {{aplicanteData.empresaDto.sede.aldeia.suco.postoAdministrativo.nome}},
+                                         {{aplicanteData.empresaDto.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
+                                     </p>
+                                 </div>
                              </div>
                          </div>
-
-                         <div class="flex justify-between text-sm text-gray-400 mb-8">
-                             <div>
-                                 <span class="font-medium text-gray-500">Criado em:</span>
-                                 {{aplicanteData.createdAt | date:'dd MMM yyyy, HH:mm:ss'}}
-                             </div>
-                             <div>
-                                 <span class="font-medium text-gray-500">Atualizado em:</span>
-                                 {{aplicanteData.updatedAt | date:'dd MMM yyyy, HH:mm:ss'}}
+                         @if(aplicanteEstado == 'REJEITADO') {
+                         <div class="bg-[#26262B] p-6 rounded-lg mb-8 reason-for-rejection" id="rejectionSection">
+                             <h2 class="text-xl font-semibold text-white mb-4">
+                                 Motivo de Rejeição
+                             </h2>
+                             <div class="bg-[#3A3A41] p-4 rounded-lg">
+                                 <p class="text-gray-300">
+                                     {{motivoRejeicao}}
+                                 </p>
                              </div>
                          </div>
+                         }
 
-                         <div class="mb-8">
-                             <div class="text-gray-500 font-semibold mb-2 tracking-wide text-base">Pedido de Inscricao
-                                 no Cadastro
-                             </div>
-                             <div class="flex justify-between mb-1 text-gray-600">
-                                 <span>Formulário</span>
-                                 @if (aplicanteData.pedidoInscricaoCadastroDto) {
-                                 <div>
-                                     <a class="mr-4" [routerLink]="['pedido-inscricao']">
-                                         <p-tag value="Pré-visualizar" icon="pi pi-eye" severity="info" />
-                                     </a>
-                                     <p-tag [value]="aplicanteData.pedidoInscricaoCadastroDto.status"
-                                         [severity]="aplicanteData.pedidoInscricaoCadastroDto.status| statusSeverity" />
-                                 </div>
-                                 }@else {
-                                 <p-tag value="Esboco" [severity]="'info'" />
-                                 }
+                         <div class="bg-[#26262B] p-6 rounded-lg mb-8">
+                             <h2 class="text-xl font-semibold text-white mb-6">
+                                 Etapas do Aplicante
+                             </h2>
+                             <div class="space-y-6">
+                                 <div
+                                     class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                                     <div class="flex items-center mb-4 sm:mb-0">
+                                         <div
+                                             class="flex items-center justify-center h-12 w-12 rounded-full bg-blue-500 text-white mr-4">
+                                             <i class="bi bi-file-text text-2xl"></i>
+                                         </div>
+                                         <div>
+                                             <h3 class="text-lg font-semibold text-white">
+                                                 Formulário do Pedido Inscrição do Cadastro
+                                             </h3>
+                                             <p class="text-sm text-gray-400">
+                                                 Detalhes do Pedido Inscrição do Cadastro
+                                             </p>
+                                         </div>
+                                     </div>
+                                     <div class="flex items-center space-x-4">
+                                         @if (aplicanteData.pedidoInscricaoCadastroDto) {
+                                         <p-tag [value]="aplicanteData.pedidoInscricaoCadastroDto.status"
+                                             [severity]="aplicanteData.pedidoInscricaoCadastroDto.status| statusSeverity" />
+                                         <p-button [routerLink]="['pedido-inscricao']" icon="pi pi-eye"
+                                             label="Pré-visualização" [raised]="true" severity="info" />
+                                         }
+                                         @else {
+                                         <p-tag value="Em curso" [severity]="'info'" icon="pi pi-clock" />
+                                         }
 
-                             </div>
-                             <div class="flex justify-between text-gray-600">
-                                 <span>Fatura</span>
-                                 @if (aplicanteData.pedidoInscricaoCadastroDto &&
-                                 aplicanteData.pedidoInscricaoCadastroDto.fatura) {
-                                 <div>
-                                     <a class="mr-4" [routerLink]="['fatura-inscricao']">
-                                         <p-tag value="Pré-visualizar" icon="pi pi-eye" severity="info" />
-                                     </a>
-                                     <p-tag [value]="aplicanteData.pedidoInscricaoCadastroDto.fatura.status"
-                                         [severity]="aplicanteData.pedidoInscricaoCadastroDto.fatura.status| statusSeverity" />
+                                     </div>
                                  </div>
-                                 }@else {
-                                 <p-tag value="Nao Paga" [severity]="'secondary'" />
-                                 }
+                                 <div
+                                     class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                                     <div class="flex items-center mb-4 sm:mb-0">
+                                         <div
+                                             class="flex items-center justify-center h-12 w-12 rounded-full bg-green-500 text-white mr-4">
+                                             <i class="bi bi-credit-card text-2xl"></i>
+                                         </div>
+                                         <div>
+                                             <h3 class="text-lg font-semibold text-white">
+                                                 Fatura
+                                             </h3>
+                                             <p class="text-sm text-gray-400">Informação da Fatura</p>
+                                         </div>
+                                     </div>
+                                     <div class="flex items-center space-x-4">
+                                         @if (aplicanteData.pedidoInscricaoCadastroDto &&
+                                         aplicanteData.pedidoInscricaoCadastroDto.fatura) {
+                                         <p-tag [value]="aplicanteData.pedidoInscricaoCadastroDto.fatura.status"
+                                             [severity]="aplicanteData.pedidoInscricaoCadastroDto.fatura.status| statusSeverity" />
+                                         <p-button [routerLink]="['fatura-inscricao']" icon="pi pi-eye"
+                                             label="Pré-visualização" [raised]="true" severity="info" />
+                                         }@else {
+                                         <p-tag value="Não Emitida" [severity]="'secondary'" icon="pi pi-ban" />
+                                         }
+
+                                     </div>
+                                 </div>
+                                 <div
+                                     class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                                     <div class="flex items-center mb-4 sm:mb-0">
+                                         <div
+                                             class="flex items-center justify-center h-12 w-12 rounded-full bg-zinc-500 text-white mr-4">
+                                             <i class="bi bi-receipt text-2xl"></i>
+                                         </div>
+                                         <div>
+                                             <h3 class="text-lg font-semibold text-white">
+                                                 Recibo
+                                             </h3>
+                                             <p class="text-sm text-gray-400">Informação do Recibo</p>
+                                         </div>
+                                     </div>
+                                     <div class="flex items-center space-x-4">
+                                         @if (aplicanteData.pedidoInscricaoCadastroDto
+                                         && aplicanteData.pedidoInscricaoCadastroDto.fatura
+                                         && aplicanteData.pedidoInscricaoCadastroDto.fatura.recibo
+                                         ){
+                                         <p-tag [value]="'SUBMETIDO'" [severity]="'success'" />
+                                         <p-button (click)="downloadFile(uploadedFiles[0])" icon="pi pi-download"
+                                             label="Decarregar Recibo" [raised]="true" [loading]="downloadLoading"
+                                             severity="info" />
+                                         }@else {
+                                         <p-tag value="Não Submetida" [severity]="'secondary'" icon="pi pi-ban" />
+                                         }
+
+                                     </div>
+                                 </div>
+                                 <div
+                                     class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                                     <div class="flex items-center mb-4 sm:mb-0">
+                                         <div
+                                             class="flex items-center justify-center h-12 w-12 rounded-full bg-purple-500 text-white mr-4">
+                                             <i class="bi bi-award text-2xl"></i>
+                                         </div>
+                                         <div>
+                                             <h3 class="text-lg font-semibold text-white">Certificado</h3>
+                                             <p class="text-sm text-gray-400">Certificado oficial de registo
+                                                 {{aplicanteData.categoria |titlecase}}.</p>
+                                         </div>
+                                     </div>
+                                     <div class="flex items-center space-x-4">
+                                         @if (aplicanteData.certificadoInscricaoCadastro) {
+                                         <p-tag [value]="'EMITIDO'" [severity]="'success'" />
+                                         <p-button
+                                             routerLink="/application/{{aplicanteData.id}}/certificado-inscricao"
+                                             icon="pi pi-eye" label="Pré-visualização" [raised]="true"
+                                             severity="info" />
+                                         }@else {
+                                         <p-tag value="Nao Emitido" [severity]="'warn'" icon="pi pi-times" />
+                                         }
+
+                                     </div>
+                                 </div>
                              </div>
                          </div>
 
@@ -399,7 +517,7 @@
              <p-step-panel [value]="3">
                  <ng-template #content let-activateCallback="activateCallback">
                      <form [formGroup]="faturaForm">
-                         <div class="flex flex-col h-48">
+                         <div class="flex flex-col">
                              <span class="text-xl font-bold mt-6 mb-4 block">
                                  Emitir uma Fatura
                              </span>
