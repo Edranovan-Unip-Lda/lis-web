@@ -74,7 +74,7 @@ export class SummaryComponent {
         this.userService.updateAplicante(this.user.username, this.aplicanteData.id, formData).subscribe({
           next: response => {
             this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Aplicante aprovado com sucesso. O certificao foi gerado com sucesso', life: 3000, key: 'tr' });
-
+            this.aplicanteData = response;
             this.route.navigate(['gestor/application', this.aplicanteData.id],
               {
                 queryParams: {
@@ -131,12 +131,12 @@ export class SummaryComponent {
 
   downloadFile() {
     this.downloadLoading = true;
-    this.pedidoService.downloadRecibo(this.aplicanteData.id, this.aplicanteData.pedidoInscricaoCadastroDto.id, this.aplicanteData.pedidoInscricaoCadastroDto.fatura.id, this.aplicanteData.pedidoInscricaoCadastroDto.fatura.recibo?.id!).subscribe({
+    this.pedidoService.downloadRecibo(this.aplicanteData.id, this.aplicanteData.pedidoInscricaoCadastro.id, this.aplicanteData.pedidoInscricaoCadastro.fatura.id, this.aplicanteData.pedidoInscricaoCadastro.fatura.recibo?.id!).subscribe({
       next: (response) => {
         const url = window.URL.createObjectURL(response);
         const a = document.createElement('a');
         a.href = url;
-        a.download = this.aplicanteData.pedidoInscricaoCadastroDto.fatura.recibo?.nome ?? 'recibo.pdf';
+        a.download = this.aplicanteData.pedidoInscricaoCadastro.fatura.recibo?.nome ?? 'recibo.pdf';
         a.click();
         window.URL.revokeObjectURL(url);
         this.messageService.add({

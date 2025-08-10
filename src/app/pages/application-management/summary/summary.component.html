@@ -43,22 +43,22 @@
             <div class="space-y-2 text-gray-300">
                 <p>
                     <span class="font-medium text-gray-400">Nome:</span>
-                    {{aplicanteData.empresaDto.nome}}
+                    {{aplicanteData.empresa.nome}}
                 </p>
                 <p>
                     <span class="font-medium text-gray-400">NIF:</span>
-                    {{aplicanteData.empresaDto.nif}}
+                    {{aplicanteData.empresa.nif}}
                 </p>
                 <p>
                     <span class="font-medium text-gray-400">Telefone/Telemovel:</span>
-                    {{aplicanteData.empresaDto.telefone}} / {{aplicanteData.empresaDto.telemovel}}
+                    {{aplicanteData.empresa.telefone}} / {{aplicanteData.empresa.telemovel}}
                 </p>
                 <p>
                     <span class="font-medium text-gray-400">Sede:</span>
-                    {{aplicanteData.empresaDto.sede.local}} - {{aplicanteData.empresaDto.sede.aldeia.nome}},
-                    {{aplicanteData.empresaDto.sede.aldeia.suco.nome}},
-                    {{aplicanteData.empresaDto.sede.aldeia.suco.postoAdministrativo.nome}},
-                    {{aplicanteData.empresaDto.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
+                    {{aplicanteData.empresa.sede.local}} - {{aplicanteData.empresa.sede.aldeia.nome}},
+                    {{aplicanteData.empresa.sede.aldeia.suco.nome}},
+                    {{aplicanteData.empresa.sede.aldeia.suco.postoAdministrativo.nome}},
+                    {{aplicanteData.empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
                 </p>
             </div>
         </div>
@@ -84,8 +84,8 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <p-tag [value]="aplicanteData.pedidoInscricaoCadastroDto.status"
-                        [severity]="aplicanteData.pedidoInscricaoCadastroDto.status| statusSeverity" />
+                    <p-tag [value]="aplicanteData.pedidoInscricaoCadastro.status"
+                        [severity]="aplicanteData.pedidoInscricaoCadastro.status| statusSeverity" />
                     <p-button routerLink="/gestor/application/{{aplicanteData.id}}/pedido-inscricao" icon="pi pi-eye"
                         label="Pré-visualização" [raised]="true" severity="info" />
                 </div>
@@ -104,8 +104,8 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <p-tag [value]="aplicanteData.pedidoInscricaoCadastroDto.fatura.status"
-                        [severity]="aplicanteData.pedidoInscricaoCadastroDto.fatura.status| statusSeverity" />
+                    <p-tag [value]="aplicanteData.pedidoInscricaoCadastro.fatura.status"
+                        [severity]="aplicanteData.pedidoInscricaoCadastro.fatura.status| statusSeverity" />
                     <p-button routerLink="/gestor/application/{{aplicanteData.id}}/fatura-inscricao" icon="pi pi-eye"
                         label="Pré-visualização" [raised]="true" severity="info" />
                 </div>
@@ -159,7 +159,7 @@
         <div class="relative pl-8">
             <div class="absolute left-2 top-2 bottom-2 w-0.5 bg-gray-600"></div>
             <div class="space-y-8">
-                @for (item of aplicanteData.historicoStatusDto; track $index) {
+                @for (item of aplicanteData.historicoStatus; track $index) {
                 <div class="relative">
                     @switch (item.status) {
                     @case ('EM_CURSO') {
@@ -168,8 +168,8 @@
                         <i class="bi bi-clock-history"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-white">Application Created</p>
-                        <p class="text-sm text-gray-400">Applicant submitted the initial form.</p>
+                        <p class="font-semibold text-white">Aplicante Criado</p>
+                        <p class="text-sm text-gray-400">Aplicante criado</p>
                         <p class="text-xs text-gray-500 mt-1">
                             {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                         </p>
@@ -194,8 +194,8 @@
                         <i class="bi bi-person"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-white">Application Assigned to Reviewer</p>
-                        <p class="text-sm text-gray-400">Assigned to: <span class="font-medium text-gray-300">
+                        <p class="font-semibold text-white">Aplicante Atribuído ao Revisor</p>
+                        <p class="text-sm text-gray-400">Atribuído ao: <span class="font-medium text-gray-300">
                                 {{item.alteradoPor}}
                             </span></p>
                         <p class="text-xs text-gray-500 mt-1">

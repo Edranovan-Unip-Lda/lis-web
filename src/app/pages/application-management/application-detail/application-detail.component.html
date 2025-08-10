@@ -51,23 +51,23 @@
                                  <div class="space-y-2 text-gray-300">
                                      <p>
                                          <span class="font-medium text-gray-400">Nome:</span>
-                                         {{aplicanteData.empresaDto.nome}}
+                                         {{aplicanteData.empresa.nome}}
                                      </p>
                                      <p>
                                          <span class="font-medium text-gray-400">NIF:</span>
-                                         {{aplicanteData.empresaDto.nif}}
+                                         {{aplicanteData.empresa.nif}}
                                      </p>
                                      <p>
                                          <span class="font-medium text-gray-400">Telefone/Telemovel:</span>
-                                         {{aplicanteData.empresaDto.telefone}} / {{aplicanteData.empresaDto.telemovel}}
+                                         {{aplicanteData.empresa.telefone}} / {{aplicanteData.empresa.telemovel}}
                                      </p>
                                      <p>
                                          <span class="font-medium text-gray-400">Sede:</span>
-                                         {{aplicanteData.empresaDto.sede.local}} -
-                                         {{aplicanteData.empresaDto.sede.aldeia.nome}},
-                                         {{aplicanteData.empresaDto.sede.aldeia.suco.nome}},
-                                         {{aplicanteData.empresaDto.sede.aldeia.suco.postoAdministrativo.nome}},
-                                         {{aplicanteData.empresaDto.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
+                                         {{aplicanteData.empresa.sede.local}} -
+                                         {{aplicanteData.empresa.sede.aldeia.nome}},
+                                         {{aplicanteData.empresa.sede.aldeia.suco.nome}},
+                                         {{aplicanteData.empresa.sede.aldeia.suco.postoAdministrativo.nome}},
+                                         {{aplicanteData.empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
                                      </p>
                                  </div>
                              </div>
@@ -107,9 +107,9 @@
                                          </div>
                                      </div>
                                      <div class="flex items-center space-x-4">
-                                         @if (aplicanteData.pedidoInscricaoCadastroDto) {
-                                         <p-tag [value]="aplicanteData.pedidoInscricaoCadastroDto.status"
-                                             [severity]="aplicanteData.pedidoInscricaoCadastroDto.status| statusSeverity" />
+                                         @if (aplicanteData.pedidoInscricaoCadastro) {
+                                         <p-tag [value]="aplicanteData.pedidoInscricaoCadastro.status"
+                                             [severity]="aplicanteData.pedidoInscricaoCadastro.status| statusSeverity" />
                                          <p-button [routerLink]="['pedido-inscricao']" icon="pi pi-eye"
                                              label="Pré-visualização" [raised]="true" severity="info" />
                                          }
@@ -134,10 +134,10 @@
                                          </div>
                                      </div>
                                      <div class="flex items-center space-x-4">
-                                         @if (aplicanteData.pedidoInscricaoCadastroDto &&
-                                         aplicanteData.pedidoInscricaoCadastroDto.fatura) {
-                                         <p-tag [value]="aplicanteData.pedidoInscricaoCadastroDto.fatura.status"
-                                             [severity]="aplicanteData.pedidoInscricaoCadastroDto.fatura.status| statusSeverity" />
+                                         @if (aplicanteData.pedidoInscricaoCadastro &&
+                                         aplicanteData.pedidoInscricaoCadastro.fatura) {
+                                         <p-tag [value]="aplicanteData.pedidoInscricaoCadastro.fatura.status"
+                                             [severity]="aplicanteData.pedidoInscricaoCadastro.fatura.status| statusSeverity" />
                                          <p-button [routerLink]="['fatura-inscricao']" icon="pi pi-eye"
                                              label="Pré-visualização" [raised]="true" severity="info" />
                                          }@else {
@@ -161,9 +161,9 @@
                                          </div>
                                      </div>
                                      <div class="flex items-center space-x-4">
-                                         @if (aplicanteData.pedidoInscricaoCadastroDto
-                                         && aplicanteData.pedidoInscricaoCadastroDto.fatura
-                                         && aplicanteData.pedidoInscricaoCadastroDto.fatura.recibo
+                                         @if (aplicanteData.pedidoInscricaoCadastro
+                                         && aplicanteData.pedidoInscricaoCadastro.fatura
+                                         && aplicanteData.pedidoInscricaoCadastro.fatura.recibo
                                          ){
                                          <p-tag [value]="'SUBMETIDO'" [severity]="'success'" />
                                          <p-button (click)="downloadFile(uploadedFiles[0])" icon="pi pi-download"
@@ -191,8 +191,7 @@
                                      <div class="flex items-center space-x-4">
                                          @if (aplicanteData.certificadoInscricaoCadastro) {
                                          <p-tag [value]="'EMITIDO'" [severity]="'success'" />
-                                         <p-button
-                                             routerLink="/application/{{aplicanteData.id}}/certificado-inscricao"
+                                         <p-button routerLink="/application/{{aplicanteData.id}}/certificado-inscricao"
                                              icon="pi pi-eye" label="Pré-visualização" [raised]="true"
                                              severity="info" />
                                          }@else {
@@ -233,10 +232,10 @@
                                  </p-select>
                              </div>
                          </div>
-                         <span class="text-xl font-bold mt-6 mb-3 block">
+                         <!-- <span class="text-xl font-bold mt-6 mb-3 block">
                              IDENTIFICACAO DA EMPRESA
-                         </span>
-                         <div class="grid grid-cols-12 gap-4">
+                         </span> -->
+                         <!-- <div class="grid grid-cols-12 gap-4">
                              <div class="mb-6 col-span-12">
                                  <label for="nomeEmpresa"
                                      class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
@@ -331,7 +330,7 @@
                                  </label>
                                  <input formControlName="gerente" id="gerente" type="text" pInputText fluid />
                              </div>
-                         </div>
+                         </div> -->
                          <span class="text-xl font-bold mt-6 mb-3 block">
                              IDENTIFICACAO DO ESTABELECIMENTO
                          </span>
@@ -344,13 +343,64 @@
                                  <input formControlName="nomeEstabelecimento" id="nomeEstabelecimento" type="text"
                                      pInputText fluid />
                              </div>
-                             <div class="mb-6 col-span-12 md:col-span-6">
+                             <!-- <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="localEstabelecimento"
                                      class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
                                      Local do Estabelecimento
                                  </label>
                                  <input formControlName="localEstabelecimento" id="localEstabelecimento" type="text"
                                      pInputText fluid />
+                             </div> -->
+                             <div class="mb-6 col-span-12">
+                                 <div formGroupName="localEstabelecimento" class="grid grid-cols-12">
+                                     <div class="mb-6 col-span-12">
+                                         <label for="local"
+                                             class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                             Local do Estabelecimento
+                                         </label>
+                                         <input formControlName="local" id="local" type="text" pInputText fluid
+                                             placeholder="ex. Av. Pres. Nicolau Lobato" />
+                                     </div>
+                                     <div class="mb-6 col-span-12">
+                                         <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+                                             <div class="flex-auto">
+                                                 <label for="aldeia"
+                                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                                     Aldeia
+                                                 </label>
+                                                 <p-select fluid formControlName="aldeia" [options]="listaAldeia"
+                                                     optionLabel="nome" placeholder="Selecione a Aldeia" [filter]="true"
+                                                     filterBy="nome" [showClear]="true"
+                                                     (onFilter)="aldeiaFilter($event)" (onpanelHide)="onPanelHide()"
+                                                     (onChange)="aldeiaOnChange($event)" (onClear)="onPanelHide()">
+                                                 </p-select>
+                                             </div>
+                                             <div class="flex-auto">
+                                                 <label for="suco"
+                                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                                     Suco
+                                                 </label>
+                                                 <input formControlName="suco" id="suco" type="text" pInputText fluid />
+                                             </div>
+                                             <div class="flex-auto">
+                                                 <label for="posto"
+                                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                                     Posto Administrativo
+                                                 </label>
+                                                 <input formControlName="postoAdministrativo" id="postoAdministrativo"
+                                                     type="text" pInputText fluid />
+                                             </div>
+                                             <div class="flex-auto">
+                                                 <label for="municipio"
+                                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                                     Municipio
+                                                 </label>
+                                                 <input formControlName="municipio" id="municipio" type="text"
+                                                     pInputText fluid />
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
                              </div>
                              @if (categoria === 'COMERCIAL') {
                              <div class="mb-6 col-span-12 md:col-span-6">
@@ -529,7 +579,7 @@
                                      </label>
                                      <p-multiselect formControlName="taxas" inputId="taxas" [options]="listaPedidoAto"
                                          optionLabel="ato" optionValue="id" fluid [showClear]="true"
-                                         placeholder="Selecione a sociedade comercial">
+                                         placeholder="Selecione o ato">
                                      </p-multiselect>
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
@@ -624,7 +674,7 @@
                              <div class="card">
                                  <p-fileupload name="file" [disabled]="uploadedFiles.length > 0" method="put"
                                      (onUpload)="onUpload($event, 'advanced')" [maxFileSize]="maxFileSize"
-                                     [multiple]="false" accept="application/pdf" mode="advanced" [url]="uploadUrl">
+                                     [multiple]="false" accept="application/pdf" mode="advanced" [url]="uploadUrl()">
                                      <ng-template #empty>
                                          @if (uploadedFiles.length === 0) {
                                          Arraste e largue os ficheiros aqui para carregar.

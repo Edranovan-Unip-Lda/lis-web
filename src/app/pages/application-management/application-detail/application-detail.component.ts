@@ -9,7 +9,7 @@ import { EmpresaService } from '@/core/services/empresa.service';
 import { PedidoService } from '@/core/services/pedido.service';
 import { calculateCommercialLicenseTax, caraterizacaEstabelecimentoOptions, mapToAtividadeEconomica, mapToGrupoAtividade, mapToIdAndNome, mapToTaxa, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEmpresaOptions, tipoEstabelecimentoOptions, tipoPedidoCadastroOptions } from '@/core/utils/global-function';
 import { DatePipe, TitleCasePipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -68,7 +68,8 @@ export class ApplicationDetailComponent {
   originalAldeias: any = [];
 
   uploadedFiles: any[] = [];
-  uploadUrl = `${environment.apiUrl}/aplicantes`;
+  // uploadUrl = `${environment.apiUrl}/aplicantes`;
+  uploadUrl = signal(`${environment.apiUrl}/aplicantes`);
   maxFileSize = 20 * 1024 * 1024;
   downloadLoading = false;
   deleteLoading = false;
@@ -102,7 +103,7 @@ export class ApplicationDetailComponent {
     this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
     this.categoria = this.aplicanteData.categoria;
     this.aplicanteEstado = this.aplicanteData.estado;
-    this.motivoRejeicao = this.getRejectedReason(this.aplicanteData.historicoStatusDto);
+    this.motivoRejeicao = this.getRejectedReason(this.aplicanteData.historicoStatus);
 
     this.disabledForms(this.aplicanteData.estado);
 
@@ -112,28 +113,30 @@ export class ApplicationDetailComponent {
 
     this.mapNewFatura(this.aplicanteData);
 
-    if (!this.aplicanteData.pedidoInscricaoCadastroDto) {
+    if (!this.aplicanteData.pedidoInscricaoCadastro) {
       this.isNew = true;
-      this.mapNewPedido(this.aplicanteData.empresaDto);
+      // this.mapNewPedido(this.aplicanteData.empresaDto);
     } else {
       this.isNew = false;
       this.pedidoActive = true;
-      this.pedidoId = this.aplicanteData.pedidoInscricaoCadastroDto.id;
+      this.pedidoId = this.aplicanteData.pedidoInscricaoCadastro.id;
 
-      if (this.aplicanteData.pedidoInscricaoCadastroDto.fatura) {
+      if (this.aplicanteData.pedidoInscricaoCadastro.fatura) {
         this.faturaActive = true;
-        this.faturaId = this.aplicanteData.pedidoInscricaoCadastroDto.fatura.id;
-        this.mapEditFatura(this.aplicanteData.pedidoInscricaoCadastroDto.fatura);
-        this.uploadUrl = `${this.uploadUrl}/${this.aplicanteData.id}/pedidos/${this.pedidoId}/faturas/${this.faturaId}/upload/${this.authService.currentUserValue.username}`;
+        this.faturaId = this.aplicanteData.pedidoInscricaoCadastro.fatura.id;
+        this.mapEditFatura(this.aplicanteData.pedidoInscricaoCadastro.fatura);
+        this.uploadUrl.set(
+          `${environment.apiUrl}/aplicantes/${this.aplicanteData.id}/pedidos/${this.pedidoId}/faturas/${this.faturaId}/upload/${this.authService.currentUserValue.username}`
+        );
 
       } else {
         this.faturaForm.patchValue({
-          atividadeDeclarada: this.aplicanteData.pedidoInscricaoCadastroDto.classeAtividade.id,
-          descricao: this.aplicanteData.pedidoInscricaoCadastroDto.classeAtividade.descricao,
+          atividadeDeclarada: this.aplicanteData.pedidoInscricaoCadastro.classeAtividade.id,
+          descricao: this.aplicanteData.pedidoInscricaoCadastro.classeAtividade.descricao,
         });
       }
 
-      this.mapEditPedido(this.aplicanteData.pedidoInscricaoCadastroDto);
+      this.mapEditPedido(this.aplicanteData.pedidoInscricaoCadastro);
     }
 
     this.enableSuperficieFormControl();
@@ -150,7 +153,7 @@ export class ApplicationDetailComponent {
 
       this.dataMasterService.getAldeiaById(selectedItem).subscribe({
         next: (aldeia: Aldeia) => {
-          this.requestForm.get('sede')?.patchValue({
+          this.requestForm.get('localEstabelecimento')?.patchValue({
             municipio: aldeia.suco.postoAdministrativo.municipio.nome,
             postoAdministrativo: aldeia.suco.postoAdministrativo.nome,
             suco: aldeia.suco.nome
@@ -166,46 +169,46 @@ export class ApplicationDetailComponent {
     }
   }
 
-  private mapNewPedido(empresa: Empresa): void {
-    const municipio = empresa.sede.aldeia.suco.postoAdministrativo.municipio;
-    const postoAdministrativo = {
-      id: empresa.sede.aldeia.suco.postoAdministrativo.id,
-      nome: empresa.sede.aldeia.suco.postoAdministrativo.nome
-    };
-    const suco = {
-      id: empresa.sede.aldeia.suco.id,
-      nome: empresa.sede.aldeia.suco.nome
-    };
-    const aldeia = {
-      id: empresa.sede.aldeia.id,
-      nome: empresa.sede.aldeia.nome
-    };
+  // private mapNewPedido(empresa: Empresa): void {
+  //   const municipio = empresa.sede.aldeia.suco.postoAdministrativo.municipio;
+  //   const postoAdministrativo = {
+  //     id: empresa.sede.aldeia.suco.postoAdministrativo.id,
+  //     nome: empresa.sede.aldeia.suco.postoAdministrativo.nome
+  //   };
+  //   const suco = {
+  //     id: empresa.sede.aldeia.suco.id,
+  //     nome: empresa.sede.aldeia.suco.nome
+  //   };
+  //   const aldeia = {
+  //     id: empresa.sede.aldeia.id,
+  //     nome: empresa.sede.aldeia.nome
+  //   };
 
-    this.requestForm.patchValue({
-      nomeEmpresa: empresa.nome,
-      nif: empresa.nif,
-      numeroRegistoComercial: empresa?.numeroRegistoComercial,
-      telemovel: empresa.telemovel,
-      telefone: empresa.telefone,
-      email: empresa.utilizador.email,
-      gerente: empresa.gerente,
-    });
+  //   this.requestForm.patchValue({
+  //     nomeEmpresa: empresa.nome,
+  //     nif: empresa.nif,
+  //     numeroRegistoComercial: empresa?.numeroRegistoComercial,
+  //     telemovel: empresa.telemovel,
+  //     telefone: empresa.telefone,
+  //     email: empresa.utilizador.email,
+  //     gerente: empresa.gerente,
+  //   });
 
-    this.dataMasterService.getAldeiasBySuco(empresa.sede.aldeia.suco.id).subscribe({
-      next: (response) => {
-        this.listaAldeia = [...mapToIdAndNome(response._embedded.aldeias), ...this.listaAldeia];
-        this.requestForm.patchValue({
-          sede: {
-            local: empresa.sede.local,
-            aldeia: aldeia,
-            suco: suco.nome,
-            postoAdministrativo: postoAdministrativo.nome,
-            municipio: municipio.nome
-          }
-        });
-      }
-    });
-  }
+  //   this.dataMasterService.getAldeiasBySuco(empresa.sede.aldeia.suco.id).subscribe({
+  //     next: (response) => {
+  //       this.listaAldeia = [...mapToIdAndNome(response._embedded.aldeias), ...this.listaAldeia];
+  //       this.requestForm.patchValue({
+  //         sede: {
+  //           local: empresa.sede.local,
+  //           aldeia: aldeia,
+  //           suco: suco.nome,
+  //           postoAdministrativo: postoAdministrativo.nome,
+  //           municipio: municipio.nome
+  //         }
+  //       });
+  //     }
+  //   });
+  // }
 
   mapEditPedido(pedido: PedidoInscricaoCadastro): void {
     this.requestForm.patchValue(pedido);
@@ -228,7 +231,7 @@ export class ApplicationDetailComponent {
 
     forkJoin([
       this.dataMasterService.getClassesByGrupoId(pedido.classeAtividade.grupoAtividade.id),
-      this.dataMasterService.getAldeiasBySuco(pedido.sede.aldeia.suco.id)]).subscribe({
+      this.dataMasterService.getAldeiasBySuco(pedido.localEstabelecimento.aldeia.suco.id)]).subscribe({
         next: responses => {
 
           this.listaClasseAtividade = mapToAtividadeEconomica(responses[0]._embedded.classeAtividade);
@@ -236,16 +239,16 @@ export class ApplicationDetailComponent {
 
           // Map Grupo Classe Atividade & Aldeia 
           this.requestForm.patchValue({
-            sede: {
-              id: pedido.sede.id,
-              local: pedido.sede.local,
+            localEstabelecimento: {
+              id: pedido.localEstabelecimento.id,
+              local: pedido.localEstabelecimento.local,
               aldeia: {
-                id: pedido.sede.aldeia.id,
-                nome: pedido.sede.aldeia.nome
+                id: pedido.localEstabelecimento.aldeia.id,
+                nome: pedido.localEstabelecimento.aldeia.nome
               },
-              suco: pedido.sede.aldeia.suco.nome,
-              postoAdministrativo: pedido.sede.aldeia.suco.postoAdministrativo.nome,
-              municipio: pedido.sede.aldeia.suco.postoAdministrativo.municipio.nome
+              suco: pedido.localEstabelecimento.aldeia.suco.nome,
+              postoAdministrativo: pedido.localEstabelecimento.aldeia.suco.postoAdministrativo.nome,
+              municipio: pedido.localEstabelecimento.aldeia.suco.postoAdministrativo.municipio.nome
             },
             classeAtividade: {
               id: pedido.classeAtividade.id,
@@ -298,7 +301,7 @@ export class ApplicationDetailComponent {
       estado: AplicanteStatus.submetido
     }
 
-    this.empresaService.submitAplicanteByEmpresaIdAndAplicanteId(this.aplicanteData.empresaDto.id, this.aplicanteData.id, formData).subscribe({
+    this.empresaService.submitAplicanteByEmpresaIdAndAplicanteId(this.aplicanteData.empresa.id, this.aplicanteData.id, formData).subscribe({
       next: response => {
         this.aplicanteEstado = response.estado;
         this.messageService.add({
@@ -306,7 +309,7 @@ export class ApplicationDetailComponent {
           summary: 'Sucesso',
           detail: 'A Aplicante foi submetido com sucesso!'
         });
-        this.disableAllForm = true;
+        this.disabledForms(AplicanteStatus.submetido);
         callback(1);
       },
       error: err => {
@@ -343,13 +346,13 @@ export class ApplicationDetailComponent {
           callback(3);
 
           this.pedidoId = response.id;
-          this.aplicanteData.pedidoInscricaoCadastroDto = response;
+          this.aplicanteData.pedidoInscricaoCadastro = response;
           this.requestForm.patchValue({
             id: response.id,
           });
           this.isNew = false;
-          this.requestForm.get('sede')?.patchValue({
-            id: response.sede.id
+          this.requestForm.get('localEstabelecimento')?.patchValue({
+            id: response.localEstabelecimento.id
           });
           // Set data in Fatura form
           this.mapNewFatura(this.aplicanteData);
@@ -397,7 +400,7 @@ export class ApplicationDetailComponent {
       this.pedidoService.updateFatura(this.pedidoId, this.faturaId, formData).subscribe({
         next: (response) => {
           this.faturaId = response.id;
-          this.aplicanteData.pedidoInscricaoCadastroDto.fatura = response;
+          this.aplicanteData.pedidoInscricaoCadastro.fatura = response;
           this.addMessages(true, false);
         },
         error: error => {
@@ -414,9 +417,11 @@ export class ApplicationDetailComponent {
       this.pedidoService.saveFatura(this.pedidoId, formData).subscribe({
         next: (response) => {
           this.faturaId = response.id;
-          this.aplicanteData.pedidoInscricaoCadastroDto.fatura = response;
+          this.aplicanteData.pedidoInscricaoCadastro.fatura = response;
           this.faturaActive = true;
           this.addMessages(true, false);
+
+          this.updateUploadUrl();
         },
         error: error => {
           this.addMessages(false, true, error);
@@ -453,13 +458,19 @@ export class ApplicationDetailComponent {
   onUpload(event: any, arg: string) {
     if (event.originalEvent.body) {
       this.uploadedFiles.push(event.originalEvent.body)
-      this.aplicanteData.pedidoInscricaoCadastroDto.fatura.recibo = event.originalEvent.body
+      this.aplicanteData.pedidoInscricaoCadastro.fatura.recibo = event.originalEvent.body
     }
     this.messageService.add({
       severity: 'info',
       summary: 'Sucesso',
       detail: 'Arquivo carregado com sucesso!'
     });
+  }
+
+  updateUploadUrl() {
+    this.uploadUrl.set(
+      `${environment.apiUrl}/aplicantes/${this.aplicanteData.id}/pedidos/${this.pedidoId}/faturas/${this.faturaId}/upload/${this.authService.currentUserValue.username}`
+    );
   }
 
   downloadFile(file: Documento) {
@@ -497,7 +508,7 @@ export class ApplicationDetailComponent {
     this.pedidoService.deleteRecibo(this.aplicanteData.id, this.pedidoId, this.faturaId, file.id).subscribe({
       next: () => {
         this.uploadedFiles.pop();
-        this.aplicanteData.pedidoInscricaoCadastroDto.fatura.recibo = null;
+        this.aplicanteData.pedidoInscricaoCadastro.fatura.recibo = null;
 
         this.messageService.add({
           severity: 'info',
@@ -537,14 +548,8 @@ export class ApplicationDetailComponent {
     this.requestForm = this._fb.group({
       id: [null],
       tipoPedidoCadastro: [null],
-      nomeEmpresa: [null],
-      nif: [null],
-      numeroRegistoComercial: [null],
-      telemovel: [null],
-      telefone: [null],
-      email: [null],
-      gerente: [null],
-      sede: this._fb.group({
+      nomeEstabelecimento: [null],
+      localEstabelecimento: this._fb.group({
         id: [null],
         local: [null, [Validators.required]],
         aldeia: [null, [Validators.required]],
@@ -552,8 +557,6 @@ export class ApplicationDetailComponent {
         postoAdministrativo: new FormControl({ value: null, disabled: true }),
         municipio: new FormControl({ value: null, disabled: true }),
       }),
-      nomeEstabelecimento: [null],
-      localEstabelecimento: [null],
       tipoEstabelecimento: [null],
       tipoEmpresa: [null],
       quantoAtividade: [null],
@@ -592,11 +595,11 @@ export class ApplicationDetailComponent {
 
   private mapNewFatura(aplicante: Aplicante): void {
     this.faturaForm.patchValue({
-      nomeEmpresa: aplicante.empresaDto.nome,
-      sociedadeComercial: aplicante.empresaDto.sociedadeComercial.nome,
-      nif: aplicante.empresaDto.nif,
-      sede: `${aplicante.empresaDto.sede.local}, ${aplicante.empresaDto.sede.aldeia.nome}, ${aplicante.empresaDto.sede.aldeia.suco.nome}, ${aplicante.empresaDto.sede.aldeia.suco.postoAdministrativo.nome}, ${aplicante.empresaDto.sede.aldeia.suco.postoAdministrativo.municipio.nome}`,
-      nivelRisco: aplicante.pedidoInscricaoCadastroDto?.classeAtividade.tipoRisco,
+      nomeEmpresa: aplicante.empresa.nome,
+      sociedadeComercial: aplicante.empresa.sociedadeComercial.nome,
+      nif: aplicante.empresa.nif,
+      sede: `${aplicante.empresa.sede.local}, ${aplicante.empresa.sede.aldeia.nome}, ${aplicante.empresa.sede.aldeia.suco.nome}, ${aplicante.empresa.sede.aldeia.suco.postoAdministrativo.nome}, ${aplicante.empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome}`,
+      nivelRisco: aplicante.pedidoInscricaoCadastro?.classeAtividade.tipoRisco,
     });
 
   }

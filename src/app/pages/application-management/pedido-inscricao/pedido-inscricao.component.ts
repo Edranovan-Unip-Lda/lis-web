@@ -38,7 +38,7 @@ export class PedidoInscricaoComponent {
 
   ngOnInit(): void {
     this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
-    this.pedido = this.aplicanteData.pedidoInscricaoCadastroDto;
+    this.pedido = this.aplicanteData.pedidoInscricaoCadastro;
     this.selectedTipoPedido = this.tipoPedido.find(item => item.value === this.pedido.tipoPedidoCadastro).name;
 
     this.selectedCaraterizacaEstabelecimento = this.caraterizacaEstabelecimentoOpts.find(item => item.value === this.pedido.caraterizacaoEstabelecimento).name;

@@ -57,42 +57,46 @@
             <div class="mb-2 flex gap-2">
                 <span class="w-1/4 text-label text-gray-600">Sede:</span>
                 <span class="flex-1 text-value text-black">
-                    {{pedido.sede.local}} - {{pedido.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
+                    {{pedido.empresaSede.local}} -
+                    {{pedido.empresaSede.aldeia.nome}},
+                    {{pedido.empresaSede.aldeia.suco.nome}},
+                    {{pedido.empresaSede.aldeia.suco.postoAdministrativo.nome}},
+                    {{pedido.empresaSede.aldeia.suco.postoAdministrativo.municipio.nome}}
                 </span>
             </div>
 
             <div class="mb-2 flex gap-4">
                 <div class="mb-2 flex gap-2">
                     <span class="w-1/4 text-label text-gray-600">NIF:</span>
-                    <span class="w-1/3 text-value text-black">{{pedido.nif}}</span>
+                    <span class="w-1/3 text-value text-black">{{pedido.empresaNif}}</span>
+                </div>
+
+                <div class="mb-2 flex gap-2 grow">
+                    <span class="text-label text-gray-600">N.º de Registo Comercial:</span>
+                    <span class="w-1/3 text-value text-black">{{pedido.empresaNumeroRegistoComercial}}</span>
+                </div>
+            </div>
+
+            <div class="mb-2 flex gap-4">
+                <div class="mb-2 flex gap-2">
+                    <span class="w-1/2 text-label text-gray-600">Telemóvel:</span>
+                    <span class="w-1/3 text-value text-black">{{pedido.empresaTelemovel}}</span>
                 </div>
 
                 <div class="mb-2 flex gap-2">
-                    <span class="w-1/4 text-label text-gray-600">N.º de Registo Comercial:</span>
-                    <span class="w-1/3 text-value text-black">{{pedido.numeroRegistoComercial}}</span>
+                    <span class="w-1/2 text-label text-gray-600">Telefone:</span>
+                    <span class="w-1/3 text-value text-black">{{pedido.empresaTelefone}}</span>
                 </div>
             </div>
 
             <div class="mb-2 flex gap-2">
-                <div class="mb-2 flex gap-2">
-                    <span class="w-1/4 text-label text-gray-600">Telemóvel:</span>
-                    <span class="w-1/3 text-value text-black">{{pedido.telemovel}}</span>
-                </div>
-
-                <div class="mb-2 flex gap-2">
-                    <span class="w-1/4 text-label text-gray-600">Telefone:</span>
-                    <span class="w-1/3 text-value text-black">{{pedido.telefone}}</span>
-                </div>
-            </div>
-
-            <div class="mb-2 flex gap-2">
-                <span class="w-1/4 text-label text-gray-600">Email:</span>
-                <span class="flex-1 text-value text-black">{{pedido.email}}</span>
+                <span class="text-label text-gray-600">Email:</span>
+                <span class="w-1/4 text-value text-black">{{pedido.empresaEmail}}</span>
             </div>
 
             <div class="mb-2 flex gap-2">
                 <span class="w-1/4 text-label text-gray-600">Identificação do administrador/gerente:</span>
-                <span class="flex-1 text-value text-black">{{pedido.gerente}}</span>
+                <span class="flex-1 text-value text-black">{{pedido.empresaGerente}}</span>
             </div>
         </div>
 
@@ -108,7 +112,13 @@
 
             <div class="mb-2 flex gap-2">
                 <span class="w-1/4 text-label text-gray-600">Local do estabelecimento:</span>
-                <span class="flex-1 text-value text-black">{{pedido.localEstabelecimento}}</span>
+                <span class="flex-1 text-value text-black">
+                    {{pedido.localEstabelecimento.local}} -
+                    {{pedido.localEstabelecimento.aldeia.nome}}
+                    {{pedido.localEstabelecimento.aldeia.suco.nome}}
+                    {{pedido.localEstabelecimento.aldeia.suco.postoAdministrativo.nome}}
+                    {{pedido.localEstabelecimento.aldeia.suco.postoAdministrativo.municipio.nome}}
+                </span>
             </div>
 
             @if (aplicanteData.categoria === 'INDUSTRIAL') {
@@ -165,14 +175,14 @@
                 <span class="w-1/4 text-label text-gray-600">Tipo de atividade no estabelecimento:</span>
                 <span class="flex-1 text-value text-black">{{pedido.classeAtividade.grupoAtividade.descricao}}</span>
                 <span class="text-label text-gray-600 ml-2">Código</span>
-                <span class="w-32 text-value text-black">{{pedido.classeAtividade.grupoAtividade.codigo}}</span>
+                <span class="text-value text-black">{{pedido.classeAtividade.grupoAtividade.codigo}}</span>
             </div>
 
             <div class="mb-2 flex gap-2 items-center">
-                <span class="w-1/4 text-label text-gray-600">Atividade principal exercida no estabelecimento:</span>
+                <span class=" text-label text-gray-600">Atividade principal exercida no estabelecimento:</span>
                 <span class="flex-1 text-value text-black">{{pedido.classeAtividade.descricao}}</span>
                 <span class="text-label text-gray-600 ml-2">Código</span>
-                <span class="w-32 text-value text-black">{{pedido.classeAtividade.codigo}}</span>
+                <span class="text-value text-black">{{pedido.classeAtividade.codigo}}</span>
             </div>
 
             <div class="mb-2 flex gap-2">

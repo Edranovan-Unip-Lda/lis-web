@@ -68,13 +68,11 @@ export interface Aplicante extends BaseModel {
     numero: string;
     estado: AplicanteStatus;
     empresa: Empresa;
-    empresaDto: Empresa
-    pedido: PedidoInscricaoCadastro;
-    pedidoInscricaoCadastroDto: PedidoInscricaoCadastro
+    pedidoInscricaoCadastro: PedidoInscricaoCadastro
     pedidoStatus: string;
     faturaStatus: string;
     certificadoInscricaoCadastro: CertificadoCadastro;
-    historicoStatusDto: HistoricoEstadoAplicante[];
+    historicoStatus: HistoricoEstadoAplicante[];
 }
 
 export interface CertificadoCadastro extends BaseModel {
@@ -140,18 +138,18 @@ export interface PedidoInscricaoCadastro {
     status: string;
     tipoPedidoCadastro: TipoPedidoCadastro;
     nomeEmpresa: string;
-    nif: string;
-    gerente: string;
-    numeroRegistoComercial: string;
-    email: string;
-    telefone: string;
-    telemovel: string;
-    sede: Endereco;
+    empresaNif: string;
+    empresaGerente: string;
+    empresaNumeroRegistoComercial: string;
+    empresaEmail: string;
+    empresaTelefone: string;
+    empresaTelemovel: string;
+    empresaSede: Endereco;
     categoria: string;
     tipoEmpresa: TipoEmpresa;
     quantoAtividade: QuantoAtividade;
     nomeEstabelecimento: string;
-    localEstabelecimento: string;
+    localEstabelecimento: Endereco;
     tipoEstabelecimento: TipoEstabelecimento;
     caraterizacaoEstabelecimento: CaraterizacaoEstabelecimento;
     risco: NivelRisco;
