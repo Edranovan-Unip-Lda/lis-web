@@ -66,7 +66,7 @@ export class InicioComponent {
             }
           });
         } else {
-          this.route.navigate(['/application', response.id], {
+          this.route.navigate(['/application/cadastro', response.id], {
             queryParams: {
               categoria: response.categoria,
               tipo: response.tipo
