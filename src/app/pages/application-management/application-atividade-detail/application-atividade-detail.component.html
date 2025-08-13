@@ -1,6 +1,6 @@
 <div #form class="card">
     <span class="text-surface-900 dark:text-surface-0 text-2xl font-bold mb-6 block">
-        Candidatura para o Pedido de Licenca para Exercicio de Atividade Comercial
+        Candidatura para o Pedido de Licenca para Exercicio de Atividade {{aplicanteData.categoria | titlecase}}
     </span>
 
     <p-stepper [value]="1" class="basis-[50rem]">
@@ -18,56 +18,336 @@
             <!-- Detalho Aplicacao -->
             <p-step-panel [value]="1">
                 <ng-template #content let-activateCallback="activateCallback">
-                    <div class="max-w-lg mx-auto px-8 font-sans">
-                        <div class="flex justify-between items-center border-b border-gray-200 pb-4 mb-6">
-                            <div>
-                                <div class="text-gray-500 text-md">Nº da Candidatura:</div>
-                                <div class="text-xl font-semibold tracking-wider text-gray-300">00323893</div>
+                    <div class="px-8 font-sans">
+                        <div class="grid grid-cols-4 md:grid-cols-5 gap-6 mb-8">
+                            <div class="col-span-4 md:col-span-3 bg-[#26262B] p-6 rounded-lg">
+                                <h2 class="text-xl font-semibold text-white mb-4">Detalhes do Aplicante</h2>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-gray-300">
+                                    <div>
+                                        <p class="font-medium text-gray-400">Nº do Aplicante:</p>
+                                        <p class="text-lg">
+                                            {{aplicanteData.numero}}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-400">Estado:</p>
+                                        <p-tag [value]="aplicanteEstado" [severity]="aplicanteEstado| statusSeverity" />
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-400">
+                                            Criado Em:
+                                        </p>
+                                        <p>
+                                            {{aplicanteData.createdAt | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-400">Atualizado Em:</p>
+                                        <p>
+                                            {{aplicanteData.updatedAt | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <div class="text-gray-500 text-md">Certificado:</div>
-                                <p-tag value="Pendente" [severity]="'warn'" />
+                            <div
+                                class="col-span-4 md:col-span-2 bg-[#26262B] p-6 rounded-lg flex flex-col justify-center">
+                                <h2 class="text-xl font-semibold text-white mb-4">Informação da Empresa</h2>
+                                <div class="space-y-2 text-gray-300">
+                                    <p>
+                                        <span class="font-medium text-gray-400">Nome:</span>
+                                        {{aplicanteData.empresa.nome}}
+                                    </p>
+                                    <p>
+                                        <span class="font-medium text-gray-400">NIF:</span>
+                                        {{aplicanteData.empresa.nif}}
+                                    </p>
+                                    <p>
+                                        <span class="font-medium text-gray-400">Telefone/Telemovel:</span>
+                                        {{aplicanteData.empresa.telefone}} / {{aplicanteData.empresa.telemovel}}
+                                    </p>
+                                    <p>
+                                        <span class="font-medium text-gray-400">Sede:</span>
+                                        {{aplicanteData.empresa.sede.local}} -
+                                        {{aplicanteData.empresa.sede.aldeia.nome}},
+                                        {{aplicanteData.empresa.sede.aldeia.suco.nome}},
+                                        {{aplicanteData.empresa.sede.aldeia.suco.postoAdministrativo.nome}},
+                                        {{aplicanteData.empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        @if(aplicanteEstado == 'REJEITADO') {
+                        <div class="bg-[#26262B] p-6 rounded-lg mb-8 reason-for-rejection" id="rejectionSection">
+                            <h2 class="text-xl font-semibold text-white mb-4">
+                                Motivo de Rejeição
+                            </h2>
+                            <div class="bg-[#3A3A41] p-4 rounded-lg">
+                                <p class="text-gray-300">
+                                    {{motivoRejeicao}}
+                                </p>
+                            </div>
+                        </div>
+                        }
+
+                        <div class="bg-[#26262B] p-6 rounded-lg mb-8">
+                            <h2 class="text-xl font-semibold text-white mb-6">
+                                Etapas do Aplicante
+                            </h2>
+                            <div class="space-y-6">
+                                <div class="bg-[#3A3A41] rounded-lg">
+                                    <div
+                                        class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4">
+                                        <div class="flex items-center mb-4 sm:mb-0">
+                                            <div
+                                                class="flex items-center justify-center h-12 w-12 rounded-full bg-blue-500 text-white mr-4">
+                                                <i class="bi bi-file-text text-2xl"></i>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-lg font-semibold text-white">
+                                                    Formulário do Pedido de Licença para Exercício de Atividade
+                                                    {{aplicanteData.categoria |titlecase}}
+                                                </h3>
+                                                <p class="text-sm text-gray-400">
+                                                    Detalhes do Pedido de Licença para Exercício de Atividade
+                                                    {{aplicanteData.categoria |titlecase}}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-4">
+                                            @if (aplicanteData.pedidoInscricaoCadastro) {
+                                            <p-tag [value]="aplicanteData.pedidoInscricaoCadastro.status"
+                                                [severity]="aplicanteData.pedidoInscricaoCadastro.status| statusSeverity" />
+                                            <p-button [routerLink]="['pedido-inscricao']" icon="pi pi-eye"
+                                                label="Pré-visualização" [raised]="true" severity="info" />
+                                            }
+                                            @else {
+                                            <p-tag value="Em curso" [severity]="'info'" icon="pi pi-clock" />
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="border-t border-gray-600 mx-4"></div>
+                                    <div
+                                        class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4">
+                                        <div class="flex items-center mb-4 sm:mb-0">
+                                            <div
+                                                class="flex items-center justify-center h-12 w-12 rounded-full bg-green-500 text-white mr-4">
+                                                <i class="bi bi-credit-card text-2xl"></i>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-lg font-semibold text-white">
+                                                    Fatura
+                                                </h3>
+                                                <p class="text-sm text-gray-400">Informação da Fatura do Pedido de
+                                                    Licença
+                                                    para Exercício de Atividade</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-4">
+                                            @if (aplicanteData.pedidoInscricaoCadastro &&
+                                            aplicanteData.pedidoInscricaoCadastro.fatura) {
+                                            <p-tag [value]="aplicanteData.pedidoInscricaoCadastro.fatura.status"
+                                                [severity]="aplicanteData.pedidoInscricaoCadastro.fatura.status| statusSeverity" />
+                                            <p-button [routerLink]="['fatura-inscricao']" icon="pi pi-eye"
+                                                label="Pré-visualização" [raised]="true" severity="info" />
+                                            }@else {
+                                            <p-tag value="Não Emitida" [severity]="'secondary'" icon="pi pi-ban" />
+                                            }
+
+                                        </div>
+                                    </div>
+                                    <div class="border-t border-gray-600 mx-4"></div>
+                                    <div
+                                        class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                                        <div class="flex items-center mb-4 sm:mb-0">
+                                            <div
+                                                class="flex items-center justify-center h-12 w-12 rounded-full bg-zinc-500 text-white mr-4">
+                                                <i class="bi bi-receipt text-2xl"></i>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-lg font-semibold text-white">
+                                                    Recibo
+                                                </h3>
+                                                <p class="text-sm text-gray-400">
+                                                    Informação do Recibo da Fatura do Pedido de Licença
+                                                    para Exercício de Atividade
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-4">
+                                            @if (aplicanteData.pedidoInscricaoCadastro
+                                            && aplicanteData.pedidoInscricaoCadastro.fatura
+                                            && aplicanteData.pedidoInscricaoCadastro.fatura.recibo
+                                            ){
+                                            <p-tag [value]="'SUBMETIDO'" [severity]="'success'" />
+                                            <p-button (click)="downloadFile(uploadedFiles[0])" icon="pi pi-download"
+                                                label="Decarregar Recibo" [raised]="true" [loading]="downloadLoading"
+                                                severity="info" />
+                                            }@else {
+                                            <p-tag value="Não Submetida" [severity]="'secondary'" icon="pi pi-ban" />
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-[#3A3A41] rounded-lg">
+                                    <div
+                                        class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                                        <div class="flex items-center mb-4 sm:mb-0">
+                                            <div
+                                                class="flex items-center justify-center h-12 w-12 rounded-full bg-amber-500 text-white mr-4">
+                                                <i class="bi bi-file-text text-2xl"></i>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-lg font-semibold text-white">
+                                                    Formulário do Pedido de Vistoria para Licença de Exercício de
+                                                    Atividade
+                                                    {{aplicanteData.categoria |titlecase}}
+                                                </h3>
+                                                <p class="text-sm text-gray-400">
+                                                    Detalhes do Pedido de Vistoria
+                                                    {{aplicanteData.categoria |titlecase}}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-4">
+                                            @if (aplicanteData.pedidoInscricaoCadastro) {
+                                            <p-tag [value]="aplicanteData.pedidoInscricaoCadastro.status"
+                                                [severity]="aplicanteData.pedidoInscricaoCadastro.status| statusSeverity" />
+                                            <p-button [routerLink]="['pedido-inscricao']" icon="pi pi-eye"
+                                                label="Pré-visualização" [raised]="true" severity="info" />
+                                            }
+                                            @else {
+                                            <p-tag value="Em curso" [severity]="'info'" icon="pi pi-clock" />
+                                            }
+
+                                        </div>
+                                    </div>
+                                    <div class="border-t border-gray-600 mx-4"></div>
+                                    <div
+                                        class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                                        <div class="flex items-center mb-4 sm:mb-0">
+                                            <div
+                                                class="flex items-center justify-center h-12 w-12 rounded-full bg-green-500 text-white mr-4">
+                                                <i class="bi bi-credit-card text-2xl"></i>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-lg font-semibold text-white">
+                                                    Fatura
+                                                </h3>
+                                                <p class="text-sm text-gray-400">Informação da Fatura do Pedido de
+                                                    Vistoria
+                                                    para Licença de Exercício de Atividade
+                                                    {{aplicanteData.categoria |titlecase}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-4">
+                                            @if (aplicanteData.pedidoInscricaoCadastro &&
+                                            aplicanteData.pedidoInscricaoCadastro.fatura) {
+                                            <p-tag [value]="aplicanteData.pedidoInscricaoCadastro.fatura.status"
+                                                [severity]="aplicanteData.pedidoInscricaoCadastro.fatura.status| statusSeverity" />
+                                            <p-button [routerLink]="['fatura-inscricao']" icon="pi pi-eye"
+                                                label="Pré-visualização" [raised]="true" severity="info" />
+                                            }@else {
+                                            <p-tag value="Não Emitida" [severity]="'secondary'" icon="pi pi-ban" />
+                                            }
+
+                                        </div>
+                                    </div>
+                                    <div class="border-t border-gray-600 mx-4"></div>
+                                    <div
+                                        class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                                        <div class="flex items-center mb-4 sm:mb-0">
+                                            <div
+                                                class="flex items-center justify-center h-12 w-12 rounded-full bg-zinc-500 text-white mr-4">
+                                                <i class="bi bi-receipt text-2xl"></i>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-lg font-semibold text-white">
+                                                    Recibo
+                                                </h3>
+                                                <p class="text-sm text-gray-400">
+                                                    Informação do Recibo da Fatura do Pedido de Vistoria
+                                                    para Licença de Exercício de Atividade
+                                                    {{aplicanteData.categoria |titlecase}}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-4">
+                                            @if (aplicanteData.pedidoInscricaoCadastro
+                                            && aplicanteData.pedidoInscricaoCadastro.fatura
+                                            && aplicanteData.pedidoInscricaoCadastro.fatura.recibo
+                                            ){
+                                            <p-tag [value]="'SUBMETIDO'" [severity]="'success'" />
+                                            <p-button (click)="downloadFile(uploadedFiles[0])" icon="pi pi-download"
+                                                label="Decarregar Recibo" [raised]="true" [loading]="downloadLoading"
+                                                severity="info" />
+                                            }@else {
+                                            <p-tag value="Não Submetida" [severity]="'secondary'" icon="pi pi-ban" />
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                                    <div class="flex items-center mb-4 sm:mb-0">
+                                        <div
+                                            class="flex items-center justify-center h-12 w-12 rounded-full bg-cyan-500 text-white mr-4">
+                                            <i class="bi bi-list-check text-2xl"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-semibold text-white">
+                                                Formulário de Auto Vistoria
+                                                {{aplicanteData.categoria |titlecase}}
+                                            </h3>
+                                            <p class="text-sm text-gray-400">
+                                                Detalhes do Auto Vistoria
+                                                {{aplicanteData.categoria |titlecase}}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-4">
+                                        @if (aplicanteData.pedidoInscricaoCadastro) {
+                                        <p-tag [value]="aplicanteData.pedidoInscricaoCadastro.status"
+                                            [severity]="aplicanteData.pedidoInscricaoCadastro.status| statusSeverity" />
+                                        <p-button [routerLink]="['pedido-inscricao']" icon="pi pi-eye"
+                                            label="Pré-visualização" [raised]="true" severity="info" />
+                                        }
+                                        @else {
+                                        <p-tag value="Em curso" [severity]="'info'" icon="pi pi-clock" />
+                                        }
+
+                                    </div>
+                                </div>
+                                <div
+                                    class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                                    <div class="flex items-center mb-4 sm:mb-0">
+                                        <div
+                                            class="flex items-center justify-center h-12 w-12 rounded-full bg-purple-500 text-white mr-4">
+                                            <i class="bi bi-award text-2xl"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-semibold text-white">Certificado</h3>
+                                            <p class="text-sm text-gray-400">Certificado oficial de registo
+                                                {{aplicanteData.categoria |titlecase}}.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-4">
+                                        @if (aplicanteData.certificadoInscricaoCadastro) {
+                                        <p-tag [value]="'EMITIDO'" [severity]="'success'" />
+                                        <p-button routerLink="/application/{{aplicanteData.id}}/certificado-inscricao"
+                                            icon="pi pi-eye" label="Pré-visualização" [raised]="true" severity="info" />
+                                        }@else {
+                                        <p-tag value="Nao Emitido" [severity]="'warn'" icon="pi pi-times" />
+                                        }
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="flex justify-between text-sm text-gray-400 mb-8">
-                            <div>
-                                <span class="font-medium text-gray-500">Criado em:</span> 03 Oct 2025, 20:10
-                            </div>
-                            <div>
-                                <span class="font-medium text-gray-500">Atualizado em:</span> 04 Oct 2025, 20:10
-                            </div>
-                        </div>
-
-                        <div class="mb-8">
-                            <div class="text-gray-500 font-semibold mb-2 tracking-wide text-base">Pedido de Licença
-                            </div>
-                            <div class="flex justify-between mb-1 text-gray-600">
-                                <span>Formulário</span>
-                                <p-tag value="Esboco" [severity]="'info'" />
-                            </div>
-                            <div class="flex justify-between text-gray-600">
-                                <span>Fatura</span>
-                                <p-tag value="Nao Pago" [severity]="'secondary'" />
-                            </div>
-                        </div>
-
-                        <div class="mb-8">
-                            <div class="text-gray-500 font-semibold mb-2 tracking-wide text-base">Pedido de Vistoria
-                            </div>
-                            <div class="flex justify-between mb-1 text-gray-600">
-                                <span>Formulário</span>
-                                <p-tag value="Esboco" [severity]="'info'" />
-                            </div>
-                            <div class="flex justify-between mb-1 text-gray-600">
-                                <span>Fatura</span>
-                                <p-tag value="Nao Pago" [severity]="'secondary'" />
-                            </div>
-                            <div class="flex justify-between text-gray-600">
-                                <span>Auto de Vistoria</span>
-                                <p-tag value="Agendado" [severity]="'warn'" />
-                            </div>
-                        </div>
                     </div>
                     <div class="flex pt-6 justify-end">
                         <p-button label="Continuar" icon="pi pi-arrow-right" iconPos="right"
@@ -79,411 +359,14 @@
             <!-- Pedido de Licenca -->
             <p-step-panel [value]="2">
                 <ng-template #content let-activateCallback="activateCallback">
-                    <form [formGroup]="requestForm">
-                        <span class="text-xl font-bold mt-6 mb-3 block">
-                            PEDIDO
-                        </span>
-                        <div class="grid grid-cols-12 gap-4">
-                            <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="application"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Tipo
-                                </label>
-                                <p-select inputId="application" [options]="requestTypes" optionLabel="name" fluid
-                                    filterBy="name" [showClear]="true" placeholder="Select a Pedido">
-                                </p-select>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-12 gap-4">
-                            <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="firma" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Firma ou denominacao social
-                                </label>
-                                <input formControlName="firma" id="firma" type="text" pInputText fluid />
-                            </div>
-                            <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="numeroRegistoComercial"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Nº de Registo Comercial
-                                </label>
-                                <input formControlName="numeroRegistoComercial" id="numeroRegistoComercial" type="text"
-                                    pInputText fluid />
-                            </div>
-                        </div>
-                        <div formGroupName="sede">
-                            <div class="grid grid-cols-12">
-                                <div class="mb-6 col-span-12">
-                                    <label for="rua"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Sede: Rua
-                                    </label>
-                                    <input formControlName="rua" id="rua" type="text" pInputText fluid />
-                                </div>
-                            </div>
-                            <div class="flex flex-col md:flex-row gap-4 w-full">
-                                <div class="mb-6 flex-1">
-                                    <label for="municipio"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Municipio
-                                    </label>
-                                    <p-select formControlName="municipio" inputId="municipio" [options]="requestTypes"
-                                        optionLabel="name" fluid filterBy="name" [showClear]="true"
-                                        placeholder="Select a Pedido">
-                                    </p-select>
-                                </div>
-                                <div class="mb-6 flex-1">
-                                    <label for="postoAdministrativo"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Posto Administrativo
-                                    </label>
-                                    <p-select formControlName="postoAdministrativo" inputId="postoAdministrativo"
-                                        [options]="requestTypes" optionLabel="name" fluid filterBy="name"
-                                        [showClear]="true" placeholder="Select a Pedido">
-                                    </p-select>
-                                </div>
-                                <div class="mb-6 flex-1">
-                                    <label for="suco"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Suco
-                                    </label>
-                                    <p-select formControlName="suco" inputId="suco" [options]="requestTypes"
-                                        optionLabel="name" fluid filterBy="name" [showClear]="true"
-                                        placeholder="Select a Pedido">
-                                    </p-select>
-                                </div>
-                                <div class="mb-6 flex-1">
-                                    <label for="aldeia"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Aldeia
-                                    </label>
-                                    <p-select formControlName="aldeia" inputId="aldeia" [options]="requestTypes"
-                                        optionLabel="name" fluid filterBy="name" [showClear]="true"
-                                        placeholder="Select a Pedido">
-                                    </p-select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-12 gap-4">
-                            <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="tipoAtividade"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Tipo Atividade
-                                </label>
-                                <input formControlName="tipoAtividade" id="tipoAtividade" type="text" pInputText
-                                    fluid />
-                            </div>
-                            <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="nivelRisco"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Nivel de Risco
-                                </label>
-                                <input formControlName="nivelRisco" id="nivelRisco" type="text" pInputText fluid />
-                            </div>
-                        </div>
-
-                        <span class="text-xl font-bold mt-6 mb-3 block">
-                            REPRESENTANTE
-                        </span>
-                        <div formGroupName="representante">
-                            <div class="grid grid-cols-12 gap-4">
-                                <div class="mb-6 col-span-12">
-                                    <label for="nome"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Nome
-                                    </label>
-                                    <input formControlName="nome" id="nome" type="text" pInputText fluid />
-                                </div>
-                                <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="nacionalidade"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Nacionalidade
-                                    </label>
-                                    <input formControlName="nacionalidade" id="nacionalidade" type="text" pInputText
-                                        fluid />
-                                </div>
-                                <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="naturalidade"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Naturalidade
-                                    </label>
-                                    <input formControlName="naturalidade" id="naturalidade" type="text" pInputText
-                                        fluid />
-                                </div>
-                            </div>
-                            <div formGroupName="morada">
-                                <div class="grid grid-cols-12">
-                                    <div class="mb-6 col-span-12">
-                                        <label for="rua"
-                                            class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                            Morada
-                                        </label>
-                                        <input formControlName="rua" id="rua" type="text" pInputText fluid />
-                                    </div>
-                                </div>
-                                <div class="flex flex-col md:flex-row gap-4 w-full">
-                                    <div class="mb-6 flex-1">
-                                        <label for="municipio"
-                                            class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                            Municipio
-                                        </label>
-                                        <p-select formControlName="municipio" inputId="municipio"
-                                            [options]="requestTypes" optionLabel="name" fluid filterBy="name"
-                                            [showClear]="true" placeholder="Select a Pedido">
-                                        </p-select>
-                                    </div>
-                                    <div class="mb-6 flex-1">
-                                        <label for="postoAdministrativo"
-                                            class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                            Posto Administrativo
-                                        </label>
-                                        <p-select formControlName="postoAdministrativo" inputId="postoAdministrativo"
-                                            [options]="requestTypes" optionLabel="name" fluid filterBy="name"
-                                            [showClear]="true" placeholder="Select a Pedido">
-                                        </p-select>
-                                    </div>
-                                    <div class="mb-6 flex-1">
-                                        <label for="suco"
-                                            class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                            Suco
-                                        </label>
-                                        <p-select formControlName="suco" inputId="suco" [options]="requestTypes"
-                                            optionLabel="name" fluid filterBy="name" [showClear]="true"
-                                            placeholder="Select a Pedido">
-                                        </p-select>
-                                    </div>
-                                    <div class="mb-6 flex-1">
-                                        <label for="aldeia"
-                                            class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                            Aldeia
-                                        </label>
-                                        <p-select formControlName="aldeia" inputId="aldeia" [options]="requestTypes"
-                                            optionLabel="name" fluid filterBy="name" [showClear]="true"
-                                            placeholder="Select a Pedido">
-                                        </p-select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-12 gap-4">
-                                <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="telefone"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Telefone
-                                    </label>
-                                    <input formControlName="telefone" id="telefone" type="text" pInputText fluid />
-                                </div>
-                                <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="email"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Email
-                                    </label>
-                                    <input formControlName="email" id="email" type="text" pInputText fluid />
-                                </div>
-                            </div>
-                        </div>
-
-                        <span class="text-xl font-bold mt-6 mb-3 block">
-                            IDENTIFICACAO DO ADMINISTRADOR OU GERENTE
-                        </span>
-                        <div formGroupName="gerente">
-                            <div class="grid grid-cols-12 gap-4">
-                                <div class="mb-6 col-span-12">
-                                    <label for="nome"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Nome
-                                    </label>
-                                    <input formControlName="nome" id="nome" type="text" pInputText fluid />
-                                </div>
-                                <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="nacionalidade"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Nacionalidade
-                                    </label>
-                                    <input formControlName="nacionalidade" id="nacionalidade" type="text" pInputText
-                                        fluid />
-                                </div>
-                                <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="naturalidade"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Naturalidade
-                                    </label>
-                                    <input formControlName="naturalidade" id="naturalidade" type="text" pInputText
-                                        fluid />
-                                </div>
-                            </div>
-                            <div formGroupName="morada">
-                                <div class="grid grid-cols-12">
-                                    <div class="mb-6 col-span-12">
-                                        <label for="rua"
-                                            class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                            Morada
-                                        </label>
-                                        <input formControlName="rua" id="rua" type="text" pInputText fluid />
-                                    </div>
-                                </div>
-                                <div class="flex flex-col md:flex-row gap-4 w-full">
-                                    <div class="mb-6 flex-1">
-                                        <label for="municipio"
-                                            class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                            Municipio
-                                        </label>
-                                        <p-select formControlName="municipio" inputId="municipio"
-                                            [options]="requestTypes" optionLabel="name" fluid filterBy="name"
-                                            [showClear]="true" placeholder="Select a Pedido">
-                                        </p-select>
-                                    </div>
-                                    <div class="mb-6 flex-1">
-                                        <label for="postoAdministrativo"
-                                            class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                            Posto Administrativo
-                                        </label>
-                                        <p-select formControlName="postoAdministrativo" inputId="postoAdministrativo"
-                                            [options]="requestTypes" optionLabel="name" fluid filterBy="name"
-                                            [showClear]="true" placeholder="Select a Pedido">
-                                        </p-select>
-                                    </div>
-                                    <div class="mb-6 flex-1">
-                                        <label for="suco"
-                                            class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                            Suco
-                                        </label>
-                                        <p-select formControlName="suco" inputId="suco" [options]="requestTypes"
-                                            optionLabel="name" fluid filterBy="name" [showClear]="true"
-                                            placeholder="Select a Pedido">
-                                        </p-select>
-                                    </div>
-                                    <div class="mb-6 flex-1">
-                                        <label for="aldeia"
-                                            class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                            Aldeia
-                                        </label>
-                                        <p-select formControlName="aldeia" inputId="aldeia" [options]="requestTypes"
-                                            optionLabel="name" fluid filterBy="name" [showClear]="true"
-                                            placeholder="Select a Pedido">
-                                        </p-select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-12 gap-4">
-                                <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="telefone"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Telefone
-                                    </label>
-                                    <input formControlName="telefone" id="telefone" type="text" pInputText fluid />
-                                </div>
-                                <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="email"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Email
-                                    </label>
-                                    <input formControlName="email" id="email" type="text" pInputText fluid />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-12 gap-4">
-                            <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="numeroRegistoComercial"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Planta de Localizacao do Estabelecimento Comercial
-                                </label>
-                                <p-selectbutton [options]="stateOptions" formControlName="planta" optionLabel="label"
-                                    optionValue="value" />
-                            </div>
-                        </div>
-                        <span class="text-xl font-bold mt-6 mb-3 block">
-                            DOCUMENTO COMPROVATIVO DE PROPRIEDADE, POSSE DE IMOVEL OU OUTRO CONTRATO DE ARRENDAMENTO
-                        </span>
-                        <div class="grid grid-cols-12 gap-4">
-                            <div class="mb-6 col-span-12 md:col-span-4">
-                                <label for="documentoPropriedade"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Documento comprovativo do direito de propriedade
-                                </label>
-                                <p-selectbutton [options]="stateOptions" formControlName="documentoPropriedade"
-                                    optionLabel="label" optionValue="value" />
-                            </div>
-                            <div class="mb-6 col-span-12 md:col-span-4">
-                                <label for="documentoimovel"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Documento comprovativo de posse de imovel
-                                </label>
-                                <p-selectbutton [options]="stateOptions" formControlName="documentoimovel"
-                                    optionLabel="label" optionValue="value" />
-                            </div>
-                            <div class="mb-6 col-span-12 md:col-span-4">
-                                <label for="contratoArrendamento"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Contrato de arrendamento
-                                </label>
-                                <p-selectbutton [options]="stateOptions" formControlName="contratoArrendamento"
-                                    optionLabel="label" optionValue="value" />
-                            </div>
-                            <div class="mb-6 col-span-12 md:col-span-4">
-                                <label for="planoEmergencia"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    PLANO DE EMERGENCIA
-                                </label>
-                                <p-selectbutton [options]="stateOptions" formControlName="planoEmergencia"
-                                    optionLabel="label" optionValue="value" />
-                            </div>
-                            <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="estudoAmbiental"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    ESTUDO DE IMPACTO AMBIENTAL
-                                </label>
-                                <p-selectbutton [options]="stateOptions" formControlName="estudoAmbiental"
-                                    optionLabel="label" optionValue="value" />
-                            </div>
-                        </div>
-                        <span class="text-xl font-bold mt-6 mb-3 block">
-                            Nº DE POSTOS DE EMPREGO CRIADOS OU A CRIAR
-                        </span>
-                        <div class="grid grid-cols-12 gap-4">
-                            <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="numEmpregosCriados"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Nº de empregos ja criados
-                                </label>
-                                <input formControlName="numEmpregosCriados" id="numEmpregosCriados" type="number"
-                                    pInputText fluid />
-                            </div>
-                            <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="numEmpregadosCriar"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Nº de empregos a criar
-                                </label>
-                                <input formControlName="numEmpregadosCriar" id="numEmpregadosCriar" type="number"
-                                    pInputText fluid />
-                            </div>
-                        </div>
-                        <span class="text-xl font-bold mt-6 mb-3 block">
-                            COMPROVATIVO DO PAGAMENTO DA TAXA DE PEDIDO DE LICENCA
-                        </span>
-                        <div class="grid grid-cols-12 gap-4">
-                            <div class="mb-6 col-span-12">
-                                <label for="reciboPagamento"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Recibo de pagamento da taxa de pedido de licenca
-                                </label>
-                                <p-selectbutton [options]="stateOptions" formControlName="reciboPagamento"
-                                    optionLabel="label" optionValue="value" />
-                            </div>
-                            <div class="mb-6 col-span-12">
-                                <label for="outrosDocumentos"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    OUTROS DOCUMENTOS
-                                </label>
-                                <textarea rows="8" cols="30" variant="outlined" pTextarea
-                                    formControlName="outrosDocumentos" fluid></textarea>
-                            </div>
-                        </div>
-                    </form>
+                    <app-pedido-atividade-form [aplicanteData]="aplicanteData" [listaAldeia]="listaAldeia"
+                        [listaGrupoAtividade]="listaGrupoAtividade" (dataSent)="onDataReceived($event)">
+                    </app-pedido-atividade-form>
                     <div class="flex pt-6 justify-between">
                         <p-button label="Back" severity="secondary" icon="pi pi-arrow-left"
-                            (onClick)="activateCallback(1)" />
-                        <p-button label="Guardar e Continuar" icon="pi pi-arrow-right" iconPos="right"
-                            (onClick)="activateCallback(3)" />
+                            (click)="activateCallback(1)" />
+                        <p-button label="Próximo" severity="secondary" icon="pi pi-arrow-right" iconPos="right"
+                            (click)="activateCallback(3)" />
                     </div>
                 </ng-template>
             </p-step-panel>
@@ -491,103 +374,12 @@
             <!-- Fatura Pedido de Licenca -->
             <p-step-panel [value]="3">
                 <ng-template #content let-activateCallback="activateCallback">
-                    <form [formGroup]="faturaForm">
-                        <div class="flex flex-col h-48">
-                            <span class="text-xl font-bold mt-6 mb-3 block">
-                                Emitir uma Fatura
-                            </span>
-                            <div class="grid grid-cols-12 gap-4">
-                                <div class="mb-6 col-span-12">
-                                    <label for="ato"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Selecionar o Ato
-                                    </label>
-                                    <p-select inputId="ato" [options]="pedidoAto" optionLabel="name" fluid
-                                        filterBy="name" [checkmark]="true" [showClear]="true" placeholder="Selecionar">
-                                        <ng-template let-item #selectedItem>
-                                            <div class="flex items-center gap-2">
-
-                                                <div>{{ item.name }}</div>
-                                                -
-                                                <div> {{item.montante |currency }} </div>
-                                            </div>
-                                        </ng-template>
-                                        <ng-template let-item #item>
-                                            <div class="flex items-center gap-2">
-
-                                                <div>{{ item.name }}</div>
-                                                -
-                                                <div> {{item.montante |currency }} </div>
-                                            </div>
-                                        </ng-template>
-                                    </p-select>
-                                </div>
-                                <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="nomeRequerente"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Nome Requerente
-                                    </label>
-                                    <input formControlName="nomeRequerente" id="nomeRequerente" type="text" pInputText
-                                        fluid />
-                                </div>
-                                <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="sociedadeComercial"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Sociedade Comercial
-                                    </label>
-                                    <input formControlName="sociedadeComercial" id="sociedadeComercial" type="text"
-                                        pInputText fluid />
-                                </div>
-                                <div class="mb-6 col-span-12 md:col-span-7">
-                                    <label for="atividadeDeclarada"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Atividade Industrial declarada
-                                    </label>
-                                    <input formControlName="atividadeDeclarada" id="atividadeDeclarada" type="text"
-                                        pInputText fluid />
-                                </div>
-                                <div class="mb-6 col-span-12 md:col-span-5">
-                                    <label for="codigo"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Codigo
-                                    </label>
-                                    <input formControlName="codigo" id="codigo" type="text" pInputText fluid />
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-12 gap-4">
-                                <div class="mb-6 col-span-12 md:col-span-4 flex justify-between">
-                                    <p-button label="Emitir Fatura" icon="pi pi-file" iconPos="left"
-                                        class="w-auto mt-3" />
-                                    <p-button label="Baixar Fatura" [outlined]="true" icon="pi pi-download"
-                                        iconPos="left" class="w-auto mt-3" />
-                                </div>
-                            </div>
-
-                            <span class="text-xl font-bold mt-6 mb-3 block">
-                                Carregar Recibo
-                            </span>
-                            <div class="card">
-                                <p-fileupload name="demo1[]" (onUpload)="onUpload($event, 'advanced')"
-                                    [multiple]="false" accept="image/*" maxFileSize="1000000" mode="advanced"
-                                    url="https://www.primefaces.org/cdn/api/upload.php">
-                                    <ng-template #empty>
-                                        Arraste e largue os ficheiros aqui para carregar.
-                                    </ng-template>
-                                    <ng-template #content>
-                                        <ul *ngIf="uploadedFiles.length">
-                                            <li *ngFor="let file of uploadedFiles">{{ file.name }} - {{ file.size }}
-                                                bytes
-                                            </li>
-                                        </ul>
-                                    </ng-template>
-                                </p-fileupload>
-                            </div>
-                        </div>
-                    </form>
+                    <app-fatura-atividade-form [listaPedidoAto]="listaPedidoAto"></app-fatura-atividade-form>
                     <div class="flex pt-6 justify-between">
                         <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="right"
                             (onClick)="activateCallback(2)" />
-                        <p-button label="Guardar" icon="pi pi-save" iconPos="left" (onClick)="activateCallback(4)" />
+                        <p-button label="Próximo" severity="secondary" icon="pi pi-arrow-right" iconPos="right"
+                            (click)="activateCallback(4)" />
                     </div>
                 </ng-template>
             </p-step-panel>
@@ -595,211 +387,12 @@
             <!-- Pedido de Vistoria -->
             <p-step-panel [value]="4">
                 <ng-template #content let-activateCallback="activateCallback">
-                    <form [formGroup]="vistoriaComercialRequestForm">
-                        <span class="text-xl font-bold mt-6 mb-3 block">
-                            PEDIDO
-                        </span>
-                        <div class="grid grid-cols-12 gap-4">
-                            <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="tipoPedido"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Tipo
-                                </label>
-                                <p-select formControlName="tipoPedido" inputId="tipoPedido"
-                                    [options]="tipoPedidoVistoriaOpts" optionLabel="name" fluid filterBy="name"
-                                    [showClear]="true" placeholder="Select a Pedido">
-                                </p-select>
-                            </div>
-                        </div>
-                        <span class="text-xl font-bold mt-6 mb-3 block">
-                            IDENTIFICACAO DA EMPRESA
-                        </span>
-                        <div formGroupName="empresa">
-                            <div class="grid grid-cols-12 gap-4">
-                                <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="nome"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Nome da Empresa
-                                    </label>
-                                    <input formControlName="nome" id="nome" type="text" pInputText fluid />
-                                </div>
-                                <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="sede"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Sede
-                                    </label>
-                                    <input formControlName="sede" id="sede" type="text" pInputText fluid />
-                                </div>
-                                <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="nif"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        NIF
-                                    </label>
-                                    <input formControlName="nif" id="nif" type="text" pInputText fluid />
-                                </div>
-                                <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="numeroRegisto"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Nº Registo Comercial
-                                    </label>
-                                    <input formControlName="numeroRegisto" id="numeroRegisto" type="text" pInputText
-                                        fluid />
-                                </div>
-                                <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="telemovel"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Telemovel
-                                    </label>
-                                    <input formControlName="telemovel" id="telemovel" type="text" pInputText fluid />
-                                </div>
-                                <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="telefone"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Telefone
-                                    </label>
-                                    <input formControlName="telefone" id="telefone" type="text" pInputText fluid />
-                                </div>
-                                <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="email"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Email
-                                    </label>
-                                    <input formControlName="email" id="email" type="text" pInputText fluid />
-                                </div>
-                                <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="gerente"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Gerente
-                                    </label>
-                                    <input formControlName="gerente" id="gerente" type="text" pInputText fluid />
-                                </div>
-                            </div>
-                        </div>
-                        <span class="text-xl font-bold mt-6 mb-3 block">
-                            IDENTIFICACAO DO ESTABELECIMENTO
-                        </span>
-                        <div class="grid grid-cols-12 gap-4">
-                            <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="nomeEstabelecimento"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Nome do estabelecimento
-                                </label>
-                                <input formControlName="nomeEstabelecimento" id="nomeEstabelecimento" type="text"
-                                    pInputText fluid />
-                            </div>
-                            <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="localEstabelecimento"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Local do estabelecimento
-                                </label>
-                                <input formControlName="localEstabelecimento" id="localEstabelecimento" type="text"
-                                    pInputText fluid />
-                            </div>
-                        </div>
-
-                        <span class="text-xl font-bold mt-6 mb-3 block">
-                            CARATERIZACAO DO ESTABELECIMENTO
-                        </span>
-                        <div class="grid grid-cols-12 gap-4">
-                            <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="tipoEmpresa"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Tipo de Empresa
-                                </label>
-                                <p-select formControlName="tipoEmpresa" inputId="tipoEmpresa"
-                                    [options]="tipoEmpresaOpts" optionLabel="name" fluid filterBy="name"
-                                    [showClear]="true" placeholder="Select a Pedido">
-                                </p-select>
-                            </div>
-                            <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="tipoEstabelecimento"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Tipo de estabelecimento
-                                </label>
-                                <p-select formControlName="tipoEstabelecimento" inputId="tipoEstabelecimento"
-                                    [options]="tipoEstabelecimentoOpts" optionLabel="name" fluid filterBy="name"
-                                    [showClear]="true" placeholder="Select a Pedido">
-                                </p-select>
-                            </div>
-                        </div>
-                        <span class="text-xl font-bold mt-6 mb-3 block">
-                            CARATERIZACAO DA ATIVIDADE
-                        </span>
-                        <div class="grid grid-cols-12 gap-4">
-                            <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="nivelRisco"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Nivel de Risco
-                                </label>
-                                <p-select formControlName="nivelRisco" inputId="nivelRisco" [options]="nivelRiscoOpts"
-                                    optionLabel="name" fluid filterBy="name" [showClear]="true"
-                                    placeholder="Select a Pedido">
-                                </p-select>
-                            </div>
-                            <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="atividade"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Atividade
-                                </label>
-                                <p-select formControlName="atividade" inputId="atividade" [options]="atividadesOpts"
-                                    optionLabel="name" fluid filterBy="name" [showClear]="true"
-                                    placeholder="Select a Pedido">
-                                </p-select>
-                            </div>
-                            <div class="mb-6 col-span-12 md:col-span-7">
-                                <label for="tipoAtividade"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Tipo de atividade no estabelecimento
-                                </label>
-                                <input formControlName="tipoAtividade" id="tipoAtividade" type="text" pInputText
-                                    fluid />
-                            </div>
-                            <div class="mb-6 col-span-12 md:col-span-5">
-                                <label for="codigoTipoAtividade"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Codigo
-                                </label>
-                                <input formControlName="codigoTipoAtividade" id="codigoTipoAtividade" type="text"
-                                    pInputText fluid />
-                            </div>
-                            <div class="mb-6 col-span-12 md:col-span-7">
-                                <label for="codigoTipoAtividade"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Atividade principal exercida no estabelecimento
-                                </label>
-                                <input formControlName="codigoTipoAtividade" id="codigoTipoAtividade" type="text"
-                                    pInputText fluid />
-                            </div>
-                            <div class="mb-6 col-span-12 md:col-span-5">
-                                <label for="codigoAtividadePrincipal"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Codigo
-                                </label>
-                                <input formControlName="codigoAtividadePrincipal" id="codigoAtividadePrincipal"
-                                    type="text" pInputText fluid />
-                            </div>
-                            <div class="mb-6 col-span-12">
-                                <label for="alteracoes"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Alteracoes a averbar
-                                </label>
-                                <input formControlName="alteracoes" id="alteracoes" type="text" pInputText fluid />
-                            </div>
-                            <div class="mb-6 col-span-12">
-                                <label for="observacao"
-                                    class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                    Observacao
-                                </label>
-                                <textarea rows="8" cols="30" variant="outlined" pTextarea formControlName="observacao"
-                                    fluid></textarea>
-                            </div>
-                        </div>
-                    </form>
+                    <app-pedido-vistoria-form></app-pedido-vistoria-form>
                     <div class="flex pt-6 justify-between">
                         <p-button label="Back" severity="secondary" icon="pi pi-arrow-left"
                             (onClick)="activateCallback(3)" />
-                        <p-button label="Guardar e Continuar" icon="pi pi-arrow-right" iconPos="right"
-                            (onClick)="activateCallback(5)" />
+                        <p-button label="Próximo" severity="secondary" icon="pi pi-arrow-right" iconPos="right"
+                            (click)="activateCallback(5)" />
                     </div>
                 </ng-template>
             </p-step-panel>
@@ -807,103 +400,12 @@
             <!-- Fatura Pedido de Licenca -->
             <p-step-panel [value]="5">
                 <ng-template #content let-activateCallback="activateCallback">
-                    <form [formGroup]="faturaForm">
-                        <div class="flex flex-col h-48">
-                            <span class="text-xl font-bold mt-6 mb-3 block">
-                                Emitir uma Fatura
-                            </span>
-                            <div class="grid grid-cols-12 gap-4">
-                                <div class="mb-6 col-span-12">
-                                    <label for="ato"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Selecionar o Ato
-                                    </label>
-                                    <p-select inputId="ato" [options]="pedidoAto" optionLabel="name" fluid
-                                        filterBy="name" [checkmark]="true" [showClear]="true" placeholder="Selecionar">
-                                        <ng-template let-item #selectedItem>
-                                            <div class="flex items-center gap-2">
-
-                                                <div>{{ item.name }}</div>
-                                                -
-                                                <div> {{item.montante |currency }} </div>
-                                            </div>
-                                        </ng-template>
-                                        <ng-template let-item #item>
-                                            <div class="flex items-center gap-2">
-
-                                                <div>{{ item.name }}</div>
-                                                -
-                                                <div> {{item.montante |currency }} </div>
-                                            </div>
-                                        </ng-template>
-                                    </p-select>
-                                </div>
-                                <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="nomeRequerente"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Nome Requerente
-                                    </label>
-                                    <input formControlName="nomeRequerente" id="nomeRequerente" type="text" pInputText
-                                        fluid />
-                                </div>
-                                <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="sociedadeComercial"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Sociedade Comercial
-                                    </label>
-                                    <input formControlName="sociedadeComercial" id="sociedadeComercial" type="text"
-                                        pInputText fluid />
-                                </div>
-                                <div class="mb-6 col-span-12 md:col-span-7">
-                                    <label for="atividadeDeclarada"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Atividade Industrial declarada
-                                    </label>
-                                    <input formControlName="atividadeDeclarada" id="atividadeDeclarada" type="text"
-                                        pInputText fluid />
-                                </div>
-                                <div class="mb-6 col-span-12 md:col-span-5">
-                                    <label for="codigo"
-                                        class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                        Codigo
-                                    </label>
-                                    <input formControlName="codigo" id="codigo" type="text" pInputText fluid />
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-12 gap-4">
-                                <div class="mb-6 col-span-12 md:col-span-4 flex justify-between">
-                                    <p-button label="Emitir Fatura" icon="pi pi-file" iconPos="left"
-                                        class="w-auto mt-3" />
-                                    <p-button label="Baixar Fatura" [outlined]="true" icon="pi pi-download"
-                                        iconPos="left" class="w-auto mt-3" />
-                                </div>
-                            </div>
-
-                            <span class="text-xl font-bold mt-6 mb-3 block">
-                                Carregar Recibo
-                            </span>
-                            <div class="card">
-                                <p-fileupload name="demo1[]" (onUpload)="onUpload($event, 'advanced')"
-                                    [multiple]="false" accept="image/*" maxFileSize="1000000" mode="advanced"
-                                    url="https://www.primefaces.org/cdn/api/upload.php">
-                                    <ng-template #empty>
-                                        Arraste e largue os ficheiros aqui para carregar.
-                                    </ng-template>
-                                    <ng-template #content>
-                                        <ul *ngIf="uploadedFiles.length">
-                                            <li *ngFor="let file of uploadedFiles">{{ file.name }} - {{ file.size }}
-                                                bytes
-                                            </li>
-                                        </ul>
-                                    </ng-template>
-                                </p-fileupload>
-                            </div>
-                        </div>
-                    </form>
+                    <app-fatura-vistoria-form [listaPedidoAto]="listaPedidoAto"></app-fatura-vistoria-form>
                     <div class="flex pt-6 justify-between">
                         <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="right"
                             (onClick)="activateCallback(4)" />
-                        <p-button label="Guardar" icon="pi pi-save" iconPos="left" (onClick)="activateCallback(6)" />
+                        <p-button label="Próximo" severity="secondary" icon="pi pi-arrow-right" iconPos="right"
+                            (click)="activateCallback(6)" />
                     </div>
                 </ng-template>
             </p-step-panel>
@@ -1419,8 +921,7 @@
                                     pessoal
                                 </label>
                                 <p-selectbutton [options]="stateOptions" id="distribuicaoAgua"
-                                    formControlName="distribuicaoAgua" optionLabel="label"
-                                    optionValue="value" />
+                                    formControlName="distribuicaoAgua" optionLabel="label" optionValue="value" />
                             </div>
                             <div class="mb-6 col-span-12">
                                 <label for="redeDistribuicao"
@@ -1431,8 +932,8 @@
                                     serviços auxiliares, desde
                                     que não haja comunicação entre esta e a de água potável
                                 </label>
-                                <p-selectbutton [options]="stateOptions" id="redeDistribuicao" formControlName="redeDistribuicao"
-                                    optionLabel="label" optionValue="value" />
+                                <p-selectbutton [options]="stateOptions" id="redeDistribuicao"
+                                    formControlName="redeDistribuicao" optionLabel="label" optionValue="value" />
                             </div>
                             <div class="mb-6 col-span-12">
                                 <label for="redeEsgotos"
@@ -1568,11 +1069,11 @@
                                     Arraste e largue os ficheiros aqui para carregar.
                                 </ng-template>
                                 <ng-template #content>
-                                    <ul *ngIf="uploadedFiles.length">
+                                    <!-- <ul *ngIf="uploadedFiles.length">
                                         <li *ngFor="let file of uploadedFiles">{{ file.name }} - {{ file.size }}
                                             bytes
                                         </li>
-                                    </ul>
+                                    </ul> -->
                                 </ng-template>
                             </p-fileupload>
                         </div>
@@ -1587,11 +1088,11 @@
                                     Arraste e largue os ficheiros aqui para carregar.
                                 </ng-template>
                                 <ng-template #content>
-                                    <ul *ngIf="uploadedFiles.length">
+                                    <!-- <ul *ngIf="uploadedFiles.length">
                                         <li *ngFor="let file of uploadedFiles">{{ file.name }} - {{ file.size }}
                                             bytes
                                         </li>
-                                    </ul>
+                                    </ul> -->
                                 </ng-template>
                             </p-fileupload>
                         </div>

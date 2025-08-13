@@ -67,8 +67,7 @@
                     Categoria (Comercial/Industrial)
                 </label>
                 <p-select [appendTo]="'body'" formControlName="nome" inputId="nome" [options]="categoryOpts"
-                    optionLabel="name" optionValue="value" fluid [showClear]="true"
-                    placeholder="Selecione a direção">
+                    optionLabel="name" optionValue="value" fluid [showClear]="true" placeholder="Selecione a direção">
                 </p-select>
             </div>
             }
@@ -103,6 +102,15 @@
                     Descrição
                 </label>
                 <input formControlName="descricao" id="descricao" type="text" pInputText fluid />
+            </div>
+            <div class="col-span-12">
+                <label for="tipoRisco" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    Risco
+                </label>
+                <p-select [appendTo]="'body'" formControlName="tipoRisco" inputId="tipoRisco" [options]="nivelRiscoOpts"
+                    optionLabel="name" optionValue="value" fluid [showClear]="true"
+                    placeholder="Selecione o Nivel Risco">
+                </p-select>
             </div>
             }
             @case ('classe-atividades') {

@@ -42,6 +42,14 @@ export enum TipoPedidoCadastro {
     anual = 'ANUAL'
 }
 
+export enum TipoPedidoLicenca {
+    novo = 'NOVO',
+    alteracao = 'ALTERACAO',
+    renovacao = 'RENOVACAO',
+    instalacao = 'INSTALACAO',
+    exploracao = 'EXPLORACAO',
+}
+
 export enum TipoEstabelecimento {
     principal = 'PRINCIPAL',
     delegacao = 'DELEGACAO',
@@ -92,4 +100,9 @@ export enum TipoDocumento {
 export enum TipoAtividadeEconomica {
     tipo = 'TIPO_ATIVIDADE',
     atividadePrincipal = 'ATIVIDADE_PRINCIPAL',
+}
+
+export enum TipoPedidoVistoria {
+    previa = 'PREVIA',
+    subsequente = 'SUBSEQUENTE',
 }

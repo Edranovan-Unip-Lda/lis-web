@@ -154,3 +154,16 @@ export const canActivateQueryParams: CanActivateFn = (route: ActivatedRouteSnaps
 
     return true;
 };
+
+export const canActivateRedirectAplicante: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+    const router = inject(Router);
+    const tipo = route.queryParamMap.get('tipo');
+
+    if (tipo === 'CADASTRO') {
+        return router.parseUrl('/cadastro-route');
+    }
+    if (tipo === 'ATIVIDADE') {
+        return router.parseUrl('/atividade-route');
+    }
+    return true;
+};

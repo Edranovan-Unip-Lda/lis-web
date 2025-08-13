@@ -81,7 +81,7 @@ export class ListaComponent {
     switch (type) {
       case 'direcoes':
         this.dataList = this.route.snapshot.data['listaDirecao']._embedded.direcoes;
-         this.cols = [
+        this.cols = [
           { field: 'nome', header: 'Nome' },
         ];
         this.dataForm = this._fb.group({
@@ -91,10 +91,10 @@ export class ListaComponent {
         break;
       case 'roles':
         this.dataList = this.route.snapshot.data['listaRoles']._embedded.roles;
-         this.cols = [
+        this.cols = [
           { field: 'name', header: 'Nome' },
         ];
-         this.dataForm = this._fb.group({
+        this.dataForm = this._fb.group({
           id: [''],
           name: ['', [Validators.required, Validators.minLength(1)]],
         });
@@ -105,12 +105,14 @@ export class ListaComponent {
           { field: 'tipo', header: 'Categoria' },
           { field: 'codigo', header: 'Codigo' },
           { field: 'descricao', header: 'Descricao' },
+          { field: 'tipoRisco', header: 'Risco' },
         ];
         this.dataForm = this._fb.group({
           id: [''],
           tipo: ['', [Validators.required, Validators.minLength(1)]],
           codigo: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(2)]],
           descricao: ['', [Validators.required, Validators.minLength(1)]],
+          tipoRisco: ['', [Validators.required, Validators.minLength(1)]],
         });
         break;
       case 'classe-atividades':
@@ -180,7 +182,6 @@ export class ListaComponent {
         if (this.type === 'classe-atividades') {
           response.grupoAtividade = form.value.grupoAtividade
         }
-        console.log(response);
 
         this.dataList.push(response);
         this.addMessages(true, true);
@@ -210,7 +211,6 @@ export class ListaComponent {
     this.service.update(this.type, this.selectedData.id, formData).subscribe({
       next: response => {
         response.grupoAtividade = grupoAtividade;
-        console.log(response);
         this.dataList[this.selectedData.index] = response
         this.addMessages(true, false);
       },

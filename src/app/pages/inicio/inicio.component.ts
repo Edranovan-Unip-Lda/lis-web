@@ -58,12 +58,21 @@ export class InicioComponent {
         this.loading = false;
         this.applicationForm.reset();
 
-        this.route.navigate(['/application', response.id], {
-          queryParams: {
-            categoria: response.categoria,
-            tipo: response.tipo
-          }
-        });
+        if (response.tipo === AplicanteType.licenca) {
+          this.route.navigate(['/application/atividade', response.id], {
+            queryParams: {
+              categoria: response.categoria,
+              tipo: response.tipo
+            }
+          });
+        } else {
+          this.route.navigate(['/application', response.id], {
+            queryParams: {
+              categoria: response.categoria,
+              tipo: response.tipo
+            }
+          });
+        }
       },
       error: (error) => {
         this.visible = false;

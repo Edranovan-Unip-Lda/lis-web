@@ -57,9 +57,6 @@ export class ApplicationDetailComponent {
   tipoAtoOpts = tipoAtoOptions;
   quantoAtividadeOpts = quantoAtividadeoptions;
   categoria!: Categoria;
-  listaMunicipio: any[] = [];
-  listaPosto: any[] = [];
-  listaSuco: any[] = [];
   listaAldeia: any[] = [];
   listaGrupoAtividade: any[] = [];
   listaClasseAtividade: any[] = [];

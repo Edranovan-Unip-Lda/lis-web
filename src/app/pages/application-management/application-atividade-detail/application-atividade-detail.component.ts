@@ -1,273 +1,54 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Aplicante, Documento } from '@/core/models/entities.model';
+import { AplicanteStatus } from '@/core/models/enums';
+import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
+import { mapToGrupoAtividade, mapToIdAndNome, mapToTaxa } from '@/core/utils/global-function';
+import { DatePipe, TitleCasePipe } from '@angular/common';
+import { Component, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
-import { DatePickerModule } from 'primeng/datepicker';
+import { DatePicker } from 'primeng/datepicker';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
-import { SelectButtonModule } from 'primeng/selectbutton';
+import { SelectButton } from 'primeng/selectbutton';
 import { StepperModule } from 'primeng/stepper';
-import { TagModule } from 'primeng/tag';
-import { TextareaModule } from 'primeng/textarea';
+import { Tag } from 'primeng/tag';
+import { Textarea } from 'primeng/textarea';
+import { FaturaAtividadeFormComponent } from './fatura-atividade-form/fatura-atividade-form.component';
+import { FaturaVistoriaFormComponent } from './fatura-vistoria-form/fatura-vistoria-form.component';
+import { PedidoAtividadeFormComponent } from './pedido-atividade-form/pedido-atividade-form.component';
+import { PedidoVistoriaFormComponent } from './pedido-vistoria-form/pedido-vistoria-form.component';
 
 @Component({
   selector: 'app-application-atividade-detail',
-  imports: [CommonModule, ReactiveFormsModule, ButtonModule, StepperModule, SelectModule, InputTextModule, FileUploadModule, SelectButtonModule, TextareaModule, TagModule, DatePickerModule],
+  imports: [ReactiveFormsModule, ButtonModule, StepperModule, InputTextModule, FileUploadModule, SelectButton, Textarea, Tag, DatePicker, RouterLink, StatusSeverityPipe, DatePipe, TitleCasePipe, PedidoAtividadeFormComponent, FaturaAtividadeFormComponent, FaturaVistoriaFormComponent, PedidoVistoriaFormComponent],
   templateUrl: './application-atividade-detail.component.html',
   styleUrl: './application-atividade-detail.component.scss'
 })
 export class ApplicationAtividadeDetailComponent {
-  requestForm: FormGroup;
-  faturaForm: FormGroup;
-  vistoriaComercialRequestForm: FormGroup;
+  aplicanteData!: Aplicante;
+  
   autoVistoriaForm: FormGroup;
+  downloadLoading = false;
+  aplicanteEstado!: AplicanteStatus;
+  motivoRejeicao = '';
+  listaAldeia: any[] = [];
+  listaGrupoAtividade: any[] = [];
+  listaPedidoAto: any[] = [];
   uploadedFiles: any[] = [];
-  requestTypes: any[] = [
-    {
-      name: 'Pedido de Licenca',
-      value: 'Pedido de Licenca'
-    },
-    {
-      name: 'Pedido de Alteracao de Licenca',
-      value: 'Pedido de Alteracao de Licenca'
-    },
-    {
-      name: 'Pedido de Renovacao de Licenca',
-      value: 'Pedido de Renovacao de Licenca'
-    },
-    {
-      name: 'Licenca para Instalacao',
-      value: 'Licenca para Instalacao'
-    },
-    {
-      name: 'Licenca para Exploracao',
-      value: 'Licenca para Exploracao'
-    },
-    {
-      name: 'Licenca para Alteracao',
-      value: 'Licenca para Alteracao'
-    },
-    {
-      name: 'Renovacao de Licenca',
-      value: 'Renovacao de Licenca'
-    },
-  ];
+
+  @ViewChild(PedidoAtividadeFormComponent) child!: PedidoAtividadeFormComponent;
 
   stateOptions: any[] = [
     { label: 'SIM', value: true },
     { label: 'NAO', value: false }
   ];
 
-  pedidoAto: any[] = [
-    {
-      name: 'Licenca para exercicio da atividade comercial',
-      value: 'Licenca para exercicio da atividade comercial',
-      montante: 500
-    },
-    {
-      name: 'Renovacao da licenca de exercicio da atividade comercial',
-      value: 'Renovacao da licenca de exercicio da atividade comercial',
-      montante: 250
-    },
-    {
-      name: 'Licenca para abertura de sucursal ou delegacao',
-      value: 'Licenca para abertura de sucursal ou delegacao',
-      montante: 500
-    },
-    {
-      name: 'Vistoria previa para licenca de estabelecimento comercial',
-      value: 'Vistoria previa para licenca de estabelecimento comercial',
-      montante: 200
-    },
-    {
-      name: 'Licenca para mudanca ou alteracoes de estabelecimento comercial',
-      value: 'Licenca para mudanca ou alteracoes de estabelecimento comercial',
-      montante: 100
-    },
-    {
-      name: 'Vistoria subsequente',
-      value: 'Vistoria subsequente',
-      montante: 100
-    },
-    {
-      name: 'Inscricao no cadastro comercial',
-      value: 'Inscricao no cadastro comercial',
-      montante: 50
-    },
-    {
-      name: 'Atualizacao pontual de dados de inscricao no cadastro comercial',
-      value: 'Atualizacao pontual de dados de inscricao no cadastro comercial',
-      montante: 25
-    },
-    {
-      name: 'Alvara de Licenca da atividade comercial',
-      value: 'Alvara de Licenca da atividade comercial',
-      montante: 25
-    },
-    {
-      name: 'Certificado de inscricao no cadastro comercial',
-      value: 'Certificado de inscricao no cadastro comercial',
-      montante: 25
-    },
-  ];
-
-  tipoPedidoVistoriaOpts: any[] = [
-    {
-      name: 'Vistoria previa',
-      value: 'Vistoria previa'
-    },
-    {
-      name: 'Vistoria subsequente',
-      value: 'Vistoria subsequente'
-    }
-  ];
-
-  tipoEmpresaOpts: any[] = [
-    {
-      name: 'Microempresa',
-      value: 'Microempresa',
-    },
-    {
-      name: 'Pequena empresa',
-      value: 'Pequena empresa',
-    },
-    {
-      name: 'Media empresa',
-      value: 'Media empresa',
-    },
-    {
-      name: 'Grande empresa',
-      value: 'MicroemGrande empresapresa',
-    },
-  ];
-
-  tipoEstabelecimentoOpts: any[] = [
-    {
-      name: 'Kiosk',
-      value: 'Kiosk'
-    },
-    {
-      name: 'Loja',
-      value: 'Loja'
-    }
-  ];
-
-  nivelRiscoOpts: any[] = [
-    {
-      name: 'Medio Risco',
-      value: 'Medio Risco'
-    },
-    {
-      name: 'Alto Risco',
-      value: 'Alto Risco'
-    }
-  ];
-
-  atividadesOpts: any[] = [
-    {
-      name: 'Venda a grosso',
-      value: 'Venda a grosso'
-    },
-    {
-      name: 'Venda a retalho',
-      value: 'Venda a retalho'
-    }
-  ];
-
 
   constructor(
-    private _fb: FormBuilder
+    private _fb: FormBuilder,
+    private router: ActivatedRoute,
   ) {
-
-    this.requestForm = this._fb.group({
-      firma: [null],
-      numeroRegistoComercial: [null],
-      sede: this._fb.group({
-        rua: [null],
-        aldeia: [null],
-        suco: [null],
-        postoAdministrativo: [null],
-        municipio: [null]
-      }),
-      tipoAtividade: [null],
-      nivelRisco: [null],
-      estatutoSociedadeComercial: [null],
-      nif: [null],
-      representante: this._fb.group({
-        nome: [null],
-        nacionalidade: [null],
-        naturalidade: [null],
-        morada: this._fb.group({
-          rua: [null],
-          aldeia: [null],
-          suco: [null],
-          postoAdministrativo: [null],
-          municipio: [null]
-        }),
-        telefone: [null],
-        email: [null],
-      }),
-      gerente: this._fb.group({
-        nome: [null],
-        estadoCivil: [null],
-        nacionalidade: [null],
-        naturalidade: [null],
-        morada: this._fb.group({
-          rua: [null],
-          aldeia: [null],
-          suco: [null],
-          postoAdministrativo: [null],
-          municipio: [null]
-        }),
-        telefone: [null],
-        email: [null],
-      }),
-      planta: [null],
-      documentoPropriedade: [null],
-      documentoimovel: [null],
-      contratoArrendamento: [null],
-      planoEmergencia: [null],
-      estudoAmbiental: [null],
-      numEmpregosCriados: [null, [Validators.min(0)]],
-      numEmpregadosCriar: [null, [Validators.min(0)]],
-      reciboPagamento: [null],
-      outrosDocumentos: [null]
-    });
-
-    this.faturaForm = this._fb.group({
-      ato: [null],
-      nomeRequerente: [null],
-      sociedadeComercial: [null],
-      atividadeDeclarada: [null],
-      codigo: [null]
-    });
-
-    this.vistoriaComercialRequestForm = this._fb.group({
-      tipoPedido: [null],
-      empresa: this._fb.group({
-        nome: [null],
-        numeroRegisto: [null],
-        sede: [null],
-        nif: [null],
-        gerente: [null],
-        telefone: [null],
-        telemovel: [null],
-        email: [null],
-      }),
-      nomeEstabelecimento: [null],
-      localEstabelecimento: [null],
-      tipoEmpresa: [null],
-      tipoEstabelecimento: [null],
-      nivelRisco: [null],
-      atividade: [null],
-      tipoAtividade: [null],
-      codigoTipoAtividade: [null],
-      atividadePrincipal: [null],
-      codigoAtividadePrincipal: [null],
-      alteracoes: [null],
-      observacao: [null],
-    });
 
     this.autoVistoriaForm = this._fb.group({
       numeroProcesso: [null],
@@ -349,6 +130,20 @@ export class ApplicationAtividadeDetailComponent {
         representanteBombeiros: [null],
       })
     });
+  }
+
+  ngOnInit(): void {
+    this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
+    this.listaAldeia = mapToIdAndNome(this.router.snapshot.data['aldeiasResolver']._embedded.aldeias);
+    this.listaGrupoAtividade = mapToGrupoAtividade(this.router.snapshot.data['grupoAtividadeResolver']._embedded.grupoAtividade);
+    this.listaPedidoAto = mapToTaxa(this.router.snapshot.data['listaTaxaResolver']._embedded.taxas);
+    this.aplicanteEstado = this.aplicanteData.estado;
+  }
+
+  downloadFile(file: Documento) { }
+
+  onDataReceived(payload: string) {
+    console.log('Parent received:', payload);
   }
 
   onUpload(event: any, arg: string) {

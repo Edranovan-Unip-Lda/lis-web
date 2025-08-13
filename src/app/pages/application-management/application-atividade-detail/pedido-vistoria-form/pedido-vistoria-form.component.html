@@ -1,0 +1,220 @@
+ <form [formGroup]="vistoriaComercialRequestForm">
+     <span class="text-xl font-bold mt-6 mb-3 block">
+         PEDIDO
+     </span>
+     <div class="grid grid-cols-12 gap-4">
+         <div class="mb-6 col-span-12 md:col-span-6">
+             <label for="tipoPedido" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 Tipo
+             </label>
+             <p-select formControlName="tipoPedido" inputId="tipoPedido" [options]="tipoPedidoVistoriaOpts"
+                 optionLabel="name" fluid filterBy="name" [showClear]="true" placeholder="Select a Pedido">
+             </p-select>
+         </div>
+     </div>
+     <!-- <span class="text-xl font-bold mt-6 mb-3 block">
+         IDENTIFICACAO DA EMPRESA
+     </span> -->
+     <!-- <div formGroupName="empresa">
+         <div class="grid grid-cols-12 gap-4">
+             <div class="mb-6 col-span-12 md:col-span-6">
+                 <label for="nome" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     Nome da Empresa
+                 </label>
+                 <input formControlName="nome" id="nome" type="text" pInputText fluid />
+             </div>
+             <div class="mb-6 col-span-12 md:col-span-6">
+                 <label for="sede" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     Sede
+                 </label>
+                 <input formControlName="sede" id="sede" type="text" pInputText fluid />
+             </div>
+             <div class="mb-6 col-span-12 md:col-span-6">
+                 <label for="nif" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     NIF
+                 </label>
+                 <input formControlName="nif" id="nif" type="text" pInputText fluid />
+             </div>
+             <div class="mb-6 col-span-12 md:col-span-6">
+                 <label for="numeroRegisto" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     Nº Registo Comercial
+                 </label>
+                 <input formControlName="numeroRegisto" id="numeroRegisto" type="text" pInputText fluid />
+             </div>
+             <div class="mb-6 col-span-12 md:col-span-6">
+                 <label for="telemovel" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     Telemovel
+                 </label>
+                 <input formControlName="telemovel" id="telemovel" type="text" pInputText fluid />
+             </div>
+             <div class="mb-6 col-span-12 md:col-span-6">
+                 <label for="telefone" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     Telefone
+                 </label>
+                 <input formControlName="telefone" id="telefone" type="text" pInputText fluid />
+             </div>
+             <div class="mb-6 col-span-12 md:col-span-6">
+                 <label for="email" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     Email
+                 </label>
+                 <input formControlName="email" id="email" type="text" pInputText fluid />
+             </div>
+             <div class="mb-6 col-span-12 md:col-span-6">
+                 <label for="gerente" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     Gerente
+                 </label>
+                 <input formControlName="gerente" id="gerente" type="text" pInputText fluid />
+             </div>
+         </div>
+     </div> -->
+     <span class="text-xl font-bold mt-6 mb-3 block">
+         IDENTIFICACAO DO ESTABELECIMENTO
+     </span>
+     <div class="grid grid-cols-12 gap-4">
+         <div class="mb-6 col-span-12 md:col-span-6">
+             <label for="nomeEstabelecimento" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 Nome do estabelecimento
+             </label>
+             <input formControlName="nomeEstabelecimento" id="nomeEstabelecimento" type="text" pInputText fluid />
+         </div>
+         <div class="mb-6 col-span-12">
+             <div formGroupName="localEstabelecimento" class="grid grid-cols-12">
+                 <div class="mb-6 col-span-12">
+                     <label for="local" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         Local do Estabelecimento
+                     </label>
+                     <input formControlName="local" id="local" type="text" pInputText fluid
+                         placeholder="ex. Av. Pres. Nicolau Lobato" />
+                 </div>
+                 <div class="mb-6 col-span-12">
+                     <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+                         <div class="flex-auto">
+                             <label for="aldeia" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                 Aldeia
+                             </label>
+                             <p-select fluid formControlName="aldeia" [options]="listaAldeia" optionLabel="nome"
+                                 placeholder="Selecione a Aldeia" [filter]="true" filterBy="nome" [showClear]="true"
+                                 (onFilter)="aldeiaFilter($event)" (onpanelHide)="onPanelHide()"
+                                 (onChange)="aldeiaOnChange($event)" (onClear)="onPanelHide()">
+                             </p-select>
+                         </div>
+                         <div class="flex-auto">
+                             <label for="suco" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                 Suco
+                             </label>
+                             <input formControlName="suco" id="suco" type="text" pInputText fluid />
+                         </div>
+                         <div class="flex-auto">
+                             <label for="posto" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                 Posto Administrativo
+                             </label>
+                             <input formControlName="postoAdministrativo" id="postoAdministrativo" type="text"
+                                 pInputText fluid />
+                         </div>
+                         <div class="flex-auto">
+                             <label for="municipio" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                 Municipio
+                             </label>
+                             <input formControlName="municipio" id="municipio" type="text" pInputText fluid />
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+
+     <span class="text-xl font-bold mt-6 mb-3 block">
+         CARATERIZACAO DO ESTABELECIMENTO
+     </span>
+     <div class="grid grid-cols-12 gap-4">
+         <div class="mb-6 col-span-12 md:col-span-6">
+             <label for="tipoEmpresa" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 Tipo de Empresa
+             </label>
+             <p-select formControlName="tipoEmpresa" inputId="tipoEmpresa" [options]="tipoEmpresaOpts"
+                 optionLabel="name" fluid filterBy="name" [showClear]="true" placeholder="Select a Pedido">
+             </p-select>
+         </div>
+         <div class="mb-6 col-span-12 md:col-span-6">
+             <label for="tipoEstabelecimento" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 Tipo de estabelecimento
+             </label>
+             <p-select formControlName="tipoEstabelecimento" inputId="tipoEstabelecimento"
+                 [options]="tipoEstabelecimentoOpts" optionLabel="name" fluid filterBy="name" [showClear]="true"
+                 placeholder="Select a Pedido">
+             </p-select>
+         </div>
+     </div>
+     <span class="text-xl font-bold mt-6 mb-3 block">
+         CARATERIZACAO DA ATIVIDADE
+     </span>
+     <div class="grid grid-cols-12 gap-4">
+         <div class="mb-6 col-span-12 md:col-span-6">
+             <label for="nivelRisco" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 Nivel de Risco
+             </label>
+             <input formControlName="risco" id="risco" type="text" pInputText fluid />
+         </div>
+         <div class="mb-6 col-span-12 md:col-span-6">
+             <label for="atividade" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 Atividade
+             </label>
+             <p-select formControlName="atividade" inputId="atividade" [options]="atividadesOpts" optionLabel="name"
+                 fluid filterBy="name" [showClear]="true" placeholder="Select a Pedido">
+             </p-select>
+         </div>
+         <div class="mb-6 col-span-12 md:col-span-7">
+             <label for="grupoAtividade" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 Tipo de Atividade no Estabelecimento
+             </label>
+             <p-select formControlName="grupoAtividade" (onChange)="tipoAtividadeChange($event)"
+                 inputId="grupoAtividade" [options]="listaGrupoAtividade" optionLabel="codigo" fluid [filter]="true"
+                 filterBy="codigo,descricao" [showClear]="true" placeholder="Selecione o tipo de atividade">
+                 <ng-template let-tipo #item>
+                     <div class="flex items-center gap-2">
+                         <span>{{tipo.codigo}} </span> - <span>{{tipo.descricao}} </span>
+                     </div>
+                 </ng-template>
+             </p-select>
+         </div>
+         <div class="mb-6 col-span-12 md:col-span-5">
+             <label for="grupoAtividadeCodigo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 Descricao
+             </label>
+             <input formControlName="grupoAtividadeCodigo" id="grupoAtividadeCodigo" type="text" pInputText fluid />
+         </div>
+         <div class="mb-6 col-span-12 md:col-span-7">
+             <label for="classeAtividade" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 Atividade Principal exercida no Estabelecimento
+             </label>
+             <p-select formControlName="classeAtividade" (onChange)="atividadePrincipalChange($event)"
+                 inputId="classeAtividade" [options]="listaClasseAtividade" optionLabel="codigo" fluid [filter]="true"
+                 filterBy="codigo,descricao" [showClear]="true" placeholder="Selecione a atividade principal">
+                 <ng-template let-tipo #item>
+                     <div class="flex items-center gap-2">
+                         <span>{{tipo.codigo}} </span> - <span>{{tipo.descricao}} </span>
+                     </div>
+                 </ng-template>
+             </p-select>
+         </div>
+         <div class="mb-6 col-span-12 md:col-span-5">
+             <label for="classeAtividadeCodigo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 Descricao
+             </label>
+             <input formControlName="classeAtividadeCodigo" id="classeAtividadeCodigo" type="text" pInputText fluid />
+         </div>
+         <div class="mb-6 col-span-12">
+             <label for="alteracoes" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 Alteracoes a averbar
+             </label>
+             <input formControlName="alteracoes" id="alteracoes" type="text" pInputText fluid />
+         </div>
+         <div class="mb-6 col-span-12">
+             <label for="observacao" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 Observacao
+             </label>
+             <textarea rows="8" cols="30" variant="outlined" pTextarea formControlName="observacao" fluid></textarea>
+         </div>
+     </div>
+     <p-button (click)="submit(vistoriaComercialRequestForm)" label="Guardar" severity="success" icon="pi pi-save" />
+ </form>

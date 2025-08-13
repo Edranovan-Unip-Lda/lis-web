@@ -1,0 +1,89 @@
+ <form [formGroup]="faturaForm">
+     <div class="flex flex-col">
+         <span class="text-xl font-bold mt-6 mb-4 block">
+             Emitir Fatura
+         </span>
+         <div class="grid grid-cols-12 gap-4">
+             <div class="mb-6 col-span-12">
+                 <label for="taxas" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     Ato da taxa
+                 </label>
+                 <p-multiselect formControlName="taxas" inputId="taxas" [options]="listaPedidoAto" optionLabel="ato"
+                     optionValue="id" fluid [showClear]="true" placeholder="Selecione o ato">
+                 </p-multiselect>
+             </div>
+             <div class="mb-6 col-span-12 md:col-span-6">
+                 <label for="superficie" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     Superfície do estabelecimento comercial <span class="">(&#13217;)</span>
+                 </label>
+                 <p-inputgroup>
+                     <p-inputnumber formControlName="superficie" mode="decimal" [minFractionDigits]="2"
+                         [maxFractionDigits]="2" />
+                     <p-inputgroup-addon>
+                         <span class="text-2xl font-bold">&#13217;</span>
+                     </p-inputgroup-addon>
+                 </p-inputgroup>
+             </div>
+             <div class="mb-6 col-span-12 md:col-span-6">
+                 <label for="total" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     Total
+                 </label>
+                 <p-inputgroup>
+                     <p-inputgroup-addon>
+                         <span class="text-2xl font-bold">$</span>
+                     </p-inputgroup-addon>
+                     <p-inputnumber class="text-2xl" formControlName="total" mode="decimal" [minFractionDigits]="2"
+                         [maxFractionDigits]="2" />
+                 </p-inputgroup>
+             </div>
+
+         </div>
+         <div class="grid grid-cols-12 gap-4">
+             <div class="mb-6 col-span-12 md:col-span-4 flex justify-between">
+                 <p-button [label]="faturaId? 'Atualizar Fatura' : 'Emitir Fatura'"
+                     [icon]="faturaId? 'pi pi-sync' : 'pi pi-file'" iconPos="left" [loading]="faturaLoading"
+                     class="w-auto mt-3" [disabled]="!faturaForm.valid || disableAllForm"
+                     (click)="saveFatura(faturaForm)" />
+                 @if (faturaId) {
+                 <p-button label="Baixar Fatura" [routerLink]="['fatura-inscricao']" [outlined]="true"
+                     icon="pi pi-download" iconPos="left" class="w-auto mt-3" />
+                 }
+             </div>
+         </div>
+
+         <span class="text-xl font-bold mt-6 mb-3 block">
+             Carregar Recibo
+         </span>
+         <div class="card">
+             <p-fileupload name="file" [disabled]="uploadedFiles.length > 0" method="put"
+                 (onUpload)="onUpload($event, 'advanced')" [maxFileSize]="maxFileSize" [multiple]="false"
+                 accept="application/pdf" mode="advanced" [url]="uploadUrl()">
+                 <ng-template #empty>
+                     @if (uploadedFiles.length === 0) {
+                     Arraste e largue os ficheiros aqui para carregar.
+                     }
+                 </ng-template>
+                 <ng-template #content>
+                     @if (uploadedFiles.length > 0) {
+                     <ul>
+                         @for (file of uploadedFiles; track $index) {
+                         <li>
+                             <a class="cursor-pointer hover:underline hover:text-teal-300">
+                                 {{ file.nome }} - {{ bytesToMBs(file.tamanho) }}
+                             </a>
+                             &nbsp;
+                             <p-button (click)="downloadFile(file)" [loading]="downloadLoading" icon="pi pi-download"
+                                 [rounded]="true" [text]="true" severity="success" />
+                             &nbsp;
+                             <p-button [disabled]="disableAllForm" icon="pi pi-trash" [rounded]="true" [text]="true"
+                                 [loading]="deleteLoading" severity="danger" (click)="removeFile(file)" />
+                         </li>
+                         }
+                     </ul>
+                     }
+                 </ng-template>
+             </p-fileupload>
+         </div>
+     </div>
+ </form>
+ <p-toast position="top-right" />

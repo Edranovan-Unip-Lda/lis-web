@@ -1,4 +1,4 @@
-import { AplicanteType, CaraterizacaoEstabelecimento, Categoria, NivelRisco, QuantoAtividade, Role, Status, TipoAto, TipoDocumento, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro, TipoPropriedade } from "../models/enums";
+import { AplicanteType, CaraterizacaoEstabelecimento, Categoria, NivelRisco, QuantoAtividade, Role, Status, TipoAto, TipoDocumento, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro, TipoPedidoLicenca, TipoPedidoVistoria, TipoPropriedade } from "../models/enums";
 
 export function calculateCommercialLicenseTax(areaM2: number, T_MIN: number, T_MAX: number): number {
     if (areaM2 >= 900) {
@@ -41,6 +41,7 @@ export function mapToGrupoAtividade(array: any[]): { id: number, codigo: string,
             id: item.id,
             codigo: item.codigo,
             descricao: item.descricao,
+            tipoRisco: item.tipoRisco
         };
     });
 }
@@ -200,13 +201,52 @@ export const tipoDocumentoOptions: any[] = [
     { name: 'Carta de Condução', value: TipoDocumento.cartaConducao },
 ];
 
-// export const tipoAtividadeEconomicaOptions: any[] = [
-//     {
-//         name: 'Tipo Atividade no estabelecimento',
-//         value: TipoAtividadeEconomica.tipo
-//     },
-//     {
-//         name: 'Atividade Principal exercida no estabelecimento',
-//         value: TipoAtividadeEconomica.atividadePrincipal
-//     }
-// ];
+export const tipoPedidoAtividadeComercialOptions: any[] = [
+    {
+        name: 'Pedido de Licença',
+        value: TipoPedidoLicenca.novo
+    },
+    {
+        name: 'Pedido de Alteração de Licença',
+        value: TipoPedidoLicenca.alteracao
+    },
+    {
+        name: 'Pedido de Renovação de Licença',
+        value: TipoPedidoLicenca.renovacao
+    }
+]
+
+export const tipoPedidoAtividadeIndustrialOptions: any[] = [
+    {
+        name: 'Licença para Instalação',
+        value: TipoPedidoLicenca.instalacao
+    },
+    {
+        name: 'Licença para Exploração',
+        value: TipoPedidoLicenca.exploracao
+    },
+    {
+        name: 'Licença para Alteração',
+        value: TipoPedidoLicenca.alteracao
+    },
+    {
+        name: 'Licença para Renovação',
+        value: TipoPedidoLicenca.renovacao
+    },
+]
+
+export const stateOptions: any[] = [
+    { label: 'SIM', value: true },
+    { label: 'NAO', value: false }
+];
+
+export const tipoPedidoVistoriaOptions: any[] = [
+    {
+        name: 'Vistoria previa',
+        value: TipoPedidoVistoria.previa
+    },
+    {
+        name: 'Vistoria subsequente',
+        value: TipoPedidoVistoria.subsequente
+    }
+]

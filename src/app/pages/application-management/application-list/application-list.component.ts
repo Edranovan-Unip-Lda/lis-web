@@ -56,7 +56,8 @@ export class ApplicationListComponent {
     const user = this.authService.currentUserValue;
 
     if (user.role.name === Role.client) {
-      this.router.navigate(['/application', aplicante.id], {
+      this.router.navigate([`/application/${aplicante.tipo.toLowerCase()}`, aplicante.id], {
+      // this.router.navigate([`/application`, aplicante.id], {
         queryParams: {
           categoria: aplicante.categoria,
           tipo: aplicante.tipo
