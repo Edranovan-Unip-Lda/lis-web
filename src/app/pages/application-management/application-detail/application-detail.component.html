@@ -191,9 +191,8 @@
                                      <div class="flex items-center space-x-4">
                                          @if (aplicanteData.certificadoInscricaoCadastro) {
                                          <p-tag [value]="'EMITIDO'" [severity]="'success'" />
-                                         <p-button routerLink="/application/{{aplicanteData.id}}/certificado-inscricao"
-                                             icon="pi pi-eye" label="Pré-visualização" [raised]="true"
-                                             severity="info" />
+                                         <p-button [routerLink]="['certificado-inscricao']" icon="pi pi-eye"
+                                             label="Pré-visualização" [raised]="true" severity="info" />
                                          }@else {
                                          <p-tag value="Nao Emitido" [severity]="'warn'" icon="pi pi-times" />
                                          }
