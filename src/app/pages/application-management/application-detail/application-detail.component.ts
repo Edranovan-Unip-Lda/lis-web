@@ -337,7 +337,7 @@ export class ApplicationDetailComponent {
     }
 
     if (this.isNew) {
-      this.aplicanteService.savePedido(this.aplicanteData.id, AplicanteType.cadastro, formData).subscribe({
+      this.aplicanteService.savePedidoCadastro(this.aplicanteData.id, formData).subscribe({
         next: (response) => {
           this.addMessages(true, true);
           callback(3);
@@ -366,7 +366,7 @@ export class ApplicationDetailComponent {
         }
       });
     } else {
-      this.aplicanteService.updatePedido(this.aplicanteData.id, formData.id, AplicanteType.cadastro, formData).subscribe({
+      this.aplicanteService.updatePedidoCadastro(this.aplicanteData.id, formData.id, formData).subscribe({
         next: (response) => {
           this.addMessages(true, false);
           callback(3);

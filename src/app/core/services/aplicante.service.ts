@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, take } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AplicanteType } from '../models/enums';
-import { PedidoInscricaoCadastro } from '../models/entities.model';
+import { PedidoAtividadeLicenca, PedidoInscricaoCadastro } from '../models/entities.model';
 
 @Injectable({ providedIn: 'root' })
 export class AplicanteService {
@@ -28,12 +28,20 @@ export class AplicanteService {
         return this.http.get<any>(`${this.apiUrl}/${id}`);
     }
 
-    savePedido(aplicanteId: number, tipo: AplicanteType, formData: any): Observable<PedidoInscricaoCadastro> {
-        return this.http.post<PedidoInscricaoCadastro>(`${this.apiUrl}/${aplicanteId}/pedidos?tipo=${tipo}`, formData);
+    savePedidoCadastro(aplicanteId: number, formData: any): Observable<PedidoInscricaoCadastro> {
+        return this.http.post<PedidoInscricaoCadastro>(`${this.apiUrl}/${aplicanteId}/pedidos/cadastro`, formData);
     }
 
-    updatePedido(aplicanteId: number, pedidoId: number, tipo: AplicanteType, formData: any): Observable<PedidoInscricaoCadastro> {
-        return this.http.put<PedidoInscricaoCadastro>(`${this.apiUrl}/${aplicanteId}/pedidos/${pedidoId}?tipo=${tipo}`, formData);
+    updatePedidoCadastro(aplicanteId: number, pedidoId: number, formData: any): Observable<PedidoInscricaoCadastro> {
+        return this.http.put<PedidoInscricaoCadastro>(`${this.apiUrl}/${aplicanteId}/pedidos/cadastro/${pedidoId}}`, formData);
+    }
+
+    savePedidoAtividade(aplicanteId: number, formData: any): Observable<PedidoAtividadeLicenca> {
+        return this.http.post<PedidoAtividadeLicenca>(`${this.apiUrl}/${aplicanteId}/pedidos/atividade`, formData);
+    }
+
+    updatePedidoAtividade(aplicanteId: number, pedidoId: number, formData: any): Observable<PedidoInscricaoCadastro> {
+        return this.http.put<PedidoInscricaoCadastro>(`${this.apiUrl}/${aplicanteId}/pedidos/atividade/${pedidoId}`, formData);
     }
 
 }

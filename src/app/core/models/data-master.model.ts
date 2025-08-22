@@ -50,6 +50,7 @@ export interface GrupoAtividade extends BaseModel {
     tipo: Categoria;
     codigo: string;
     descricao: string;
+    tipoRisco: NivelRisco;
     classes: ClasseAtividade[];
 }
 

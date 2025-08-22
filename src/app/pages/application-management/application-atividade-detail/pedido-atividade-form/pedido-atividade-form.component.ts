@@ -1,21 +1,26 @@
 import { Aldeia } from '@/core/models/data-master.model';
-import { Aplicante } from '@/core/models/entities.model';
+import { Aplicante, Empresa, PedidoAtividadeLicenca } from '@/core/models/entities.model';
 import { Categoria } from '@/core/models/enums';
+import { AplicanteService } from '@/core/services/aplicante.service';
 import { DataMasterService } from '@/core/services/data-master.service';
-import { stateOptions, tipoPedidoAtividadeComercialOptions, tipoPedidoAtividadeIndustrialOptions } from '@/core/utils/global-function';
-import { Component, Input, output, signal } from '@angular/core';
+import { mapToIdAndNome, stateOptions, tipoPedidoAtividadeComercialOptions, tipoPedidoAtividadeIndustrialOptions } from '@/core/utils/global-function';
+import { Component, Input, output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 import { Select, SelectFilterEvent } from 'primeng/select';
 import { SelectButton } from 'primeng/selectbutton';
 import { Textarea } from 'primeng/textarea';
+import { Toast } from 'primeng/toast';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-pedido-atividade-form',
-  imports: [ReactiveFormsModule, Select, SelectButton, InputText, Textarea, Button],
+  imports: [ReactiveFormsModule, Select, SelectButton, InputText, Textarea, Button, Toast],
   templateUrl: './pedido-atividade-form.component.html',
-  styleUrl: './pedido-atividade-form.component.scss'
+  styleUrl: './pedido-atividade-form.component.scss',
+  providers: [MessageService]
 })
 export class PedidoAtividadeFormComponent {
   @Input() aplicanteData!: Aplicante;
@@ -28,18 +33,76 @@ export class PedidoAtividadeFormComponent {
   listaAldeiaEmpresa: any[] = [];
   listaAldeiaRepresentante: any[] = [];
   listaAldeiaGerente: any[] = [];
+  isNew = false;
+  isLoading = false;
 
   stateOpts = stateOptions;
   dataSent = output<string>();
 
   constructor(
     private _fb: FormBuilder,
-    private dataMasterService: DataMasterService
+    private dataMasterService: DataMasterService,
+    private aplicanteService: AplicanteService,
+    private messageService: MessageService
   ) { }
 
   ngOnInit(): void {
     this.initForm();
+    console.log(this.aplicanteData, this.listaGrupoAtividade);
+
     this.copyAldeiaList(this.listaAldeia);
+
+    if (this.aplicanteData.pedidoLicencaAtividade) {
+      this.mapRequestFormData(this.aplicanteData.pedidoLicencaAtividade);
+    } else {
+      this.isNew = true;
+      this.mapFormEmpresa(this.aplicanteData.empresa);
+    }
+
+  }
+
+
+  save(form: FormGroup): void {
+    this.isLoading = true;
+    this.dataSent.emit('Hello from child!');
+    let formData = this.mapFormData(form);
+
+    this.aplicanteService.savePedidoAtividade(this.aplicanteData.id, formData).subscribe({
+      next: (res) => {
+        this.requestForm.get('id')?.setValue(res.id);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.addMessages(false, true, err);
+      },
+      complete: () => {
+        this.isLoading = false;
+        this.isNew = false;
+        this.addMessages(true, true);
+      }
+    });
+  }
+
+  update(form: FormGroup): void {
+    this.isLoading = true;
+
+    let formData = this.mapFormData(form);
+
+    this.aplicanteService.updatePedidoAtividade(this.aplicanteData.id, this.aplicanteData.pedidoLicencaAtividade.id, formData).subscribe({
+      next: (res) => {
+        this.requestForm.get('id')?.setValue(res.id);
+        this.dataSent.emit('Hello from child!');
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.addMessages(false, false, err);
+      },
+      complete: () => {
+        this.isLoading = false;
+        this.isNew = false;
+        this.addMessages(true, false);
+      }
+    });
   }
 
   aldeiaOnChange(event: any, controlName: string): void {
@@ -137,13 +200,13 @@ export class PedidoAtividadeFormComponent {
     this.requestForm.get('risco')?.setValue(event.value.tipoRisco);
   }
 
-  submit(): void {
-    this.dataSent.emit('Hello from child!');
+  tipoPedidoOpts(categoria: Categoria): any[] {
+    return categoria === Categoria.comercial ? tipoPedidoAtividadeComercialOptions : tipoPedidoAtividadeIndustrialOptions;
   }
-
 
   private initForm(): void {
     this.requestForm = this._fb.group({
+      id: [null],
       tipo: [null, [Validators.required]],
       nomeEmpresa: [null],
       empresaNumeroRegistoComercial: [null],
@@ -158,35 +221,8 @@ export class PedidoAtividadeFormComponent {
       risco: new FormControl({ value: null, disabled: true }),
       estatutoSociedadeComercial: [null],
       empresaNif: [null],
-      representante: this._fb.group({
-        nome: [null],
-        nacionalidade: [null],
-        naturalidade: [null],
-        morada: this._fb.group({
-          local: [null],
-          aldeia: [null],
-          suco: new FormControl({ value: null, disabled: true }),
-          postoAdministrativo: new FormControl({ value: null, disabled: true }),
-          municipio: new FormControl({ value: null, disabled: true }),
-        }),
-        telefone: [null],
-        email: [null],
-      }),
-      gerente: this._fb.group({
-        nome: [null],
-        estadoCivil: [null],
-        nacionalidade: [null],
-        naturalidade: [null],
-        morada: this._fb.group({
-          local: [null],
-          aldeia: [null],
-          suco: new FormControl({ value: null, disabled: true }),
-          postoAdministrativo: new FormControl({ value: null, disabled: true }),
-          municipio: new FormControl({ value: null, disabled: true }),
-        }),
-        telefone: [null],
-        email: [null],
-      }),
+      representante: this.initPersonForm(),
+      gerente: this.initPersonForm(),
       planta: [null],
       documentoPropriedade: [null],
       documentoImovel: [null],
@@ -200,11 +236,7 @@ export class PedidoAtividadeFormComponent {
     });
   }
 
-  tipoPedidoOpts(categoria: Categoria): any[] {
-    return categoria === Categoria.comercial ? tipoPedidoAtividadeComercialOptions : tipoPedidoAtividadeIndustrialOptions;
-  }
-
-  copyAldeiaList(aldeias: Aldeia[]) {
+  private copyAldeiaList(aldeias: Aldeia[]) {
     const copy = () => [...aldeias];
     [
       this.originalAldeias,
@@ -214,5 +246,138 @@ export class PedidoAtividadeFormComponent {
     ] = [copy(), copy(), copy(), copy()];
   }
 
+  private mapRequestFormData(request: PedidoAtividadeLicenca) {
+    this.requestForm.patchValue({
+      ...request,
+      tipoAtividade: {
+        id: request.tipoAtividade.id,
+        codigo: request.tipoAtividade.codigo,
+        descricao: request.tipoAtividade.descricao,
+        tipoRisco: request.tipoAtividade.tipoRisco
+      }
+    });
 
+    const empresaSedeService = this.dataMasterService.getAldeiasBySuco(request.empresaSede.aldeia.suco.id);
+    const representanteService = this.dataMasterService.getAldeiasBySuco(request.representante.morada.aldeia.suco.id);
+    const gerenteService = this.dataMasterService.getAldeiasBySuco(request.gerente.morada.aldeia.suco.id);
+
+    forkJoin([empresaSedeService, representanteService, gerenteService]).subscribe({
+      next: ([empresaSedeResponse, representanteResponse, gerenteResponse]) => {
+        this.listaAldeiaEmpresa = [...mapToIdAndNome(empresaSedeResponse._embedded.aldeias), ...this.listaAldeia];
+        this.listaAldeiaRepresentante = [...mapToIdAndNome(representanteResponse._embedded.aldeias)];
+        this.listaAldeiaGerente = [...mapToIdAndNome(gerenteResponse._embedded.aldeias)];
+        console.log(this.listaAldeiaEmpresa, this.listaAldeiaRepresentante, this.listaAldeiaGerente);
+
+        this.requestForm.get('empresaSede')?.patchValue({
+          aldeia: request.empresaSede.aldeia.id,
+          suco: request.empresaSede.aldeia.suco.nome,
+          postoAdministrativo: request.empresaSede.aldeia.suco.postoAdministrativo.nome,
+          municipio: request.empresaSede.aldeia.suco.postoAdministrativo.municipio.nome
+        });
+        this.requestForm.get('representante')?.get('morada')?.patchValue({
+          aldeia: request.representante.morada.aldeia.id,
+          suco: request.representante.morada.aldeia.suco.nome,
+          postoAdministrativo: request.representante.morada.aldeia.suco.postoAdministrativo.nome,
+          municipio: request.representante.morada.aldeia.suco.postoAdministrativo.municipio.nome
+        });
+        this.requestForm.get('gerente')?.get('morada')?.patchValue({
+          aldeia: request.gerente.morada.aldeia.id,
+          suco: request.gerente.morada.aldeia.suco.nome,
+          postoAdministrativo: request.gerente.morada.aldeia.suco.postoAdministrativo.nome,
+          municipio: request.gerente.morada.aldeia.suco.postoAdministrativo.municipio.nome
+        });
+
+        console.log(this.requestForm.value);
+
+      }
+    });
+  }
+
+  private mapFormData(form: FormGroup): any {
+    return {
+      ...form.getRawValue(),
+      empresaSede: {
+        ...form.value.empresaSede,
+        aldeia: {
+          id: form.value.empresaSede.aldeia,
+        }
+      },
+      tipoAtividade: {
+        id: form.value.tipoAtividade.id
+      },
+      representante: {
+        ...form.value.representante,
+        morada: {
+          ...form.value.representante.morada,
+          aldeia: {
+            id: form.value.representante.morada.aldeia
+          }
+        }
+      },
+      gerente: {
+        ...form.value.gerente,
+        morada: {
+          ...form.value.gerente.morada,
+          aldeia: {
+            id: form.value.gerente.morada.aldeia
+          }
+        }
+      }
+    }
+  }
+
+  private mapFormEmpresa(empresa: Empresa) {
+    this.requestForm.get('nomeEmpresa')?.setValue(empresa.nome);
+    this.requestForm.get('empresaNumeroRegistoComercial')?.setValue(empresa.numeroRegistoComercial);
+    this.requestForm.get('empresaSede')?.get('local')?.setValue(empresa.sede.local);
+    this.requestForm.get('empresaNif')?.setValue(empresa.nif);
+
+    this.dataMasterService.getAldeiasBySuco(empresa.sede.aldeia.suco.id).subscribe(resp => {
+      this.listaAldeiaEmpresa = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, id: a.id }));
+      this.requestForm.get('empresaSede')?.get('aldeia')?.setValue(empresa.sede.aldeia.id);
+      this.requestForm.get('empresaSede')?.get('suco')?.setValue(empresa.sede.aldeia.suco.nome);
+      this.requestForm.get('empresaSede')?.get('postoAdministrativo')?.setValue(empresa.sede.aldeia.suco.postoAdministrativo.nome);
+      this.requestForm.get('empresaSede')?.get('municipio')?.setValue(empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome);
+    });
+  }
+
+  private initPersonForm(): FormGroup {
+    return this._fb.group({
+      id: [null],
+      nome: [null],
+      nacionalidade: [null],
+      naturalidade: [null],
+      morada: this._fb.group({
+        id: [null],
+        local: [null],
+        aldeia: [null],
+        suco: new FormControl({ value: null, disabled: true }),
+        postoAdministrativo: new FormControl({ value: null, disabled: true }),
+        municipio: new FormControl({ value: null, disabled: true }),
+      }),
+      telefone: [null],
+      email: [null],
+      // id: [null],
+      // nome: ['Mario dos Santos'],
+      // nacionalidade: ['Timorense'],
+      // naturalidade: ['Dili'],
+      // morada: this._fb.group({
+      //   id: [null],
+      //   local: ['Beco Mota'],
+      //   aldeia: [null],
+      //   suco: new FormControl({ value: null, disabled: true }),
+      //   postoAdministrativo: new FormControl({ value: null, disabled: true }),
+      //   municipio: new FormControl({ value: null, disabled: true }),
+      // }),
+      // telefone: ['78899992'],
+      // email: ['mar@mail.com'],
+    })
+  }
+
+  private addMessages(isSuccess: boolean, isNew: boolean, error?: any) {
+    const summary = isSuccess ? (isNew ? 'Dados registados com sucesso!' : 'Dados atualizados com sucesso!') : 'Error';
+    const detail = isSuccess ? (isNew ? `Os dados foram registados` : `Os dados foram actualizados`) : 'Desculpe, algo deu errado. Tente novamente ou procure o administrador do sistema para mais informações.';
+
+    this.messageService.add({ severity: isSuccess ? 'success' : 'error', summary, detail });
+  }
 }

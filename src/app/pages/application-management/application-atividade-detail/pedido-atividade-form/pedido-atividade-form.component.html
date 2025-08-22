@@ -8,8 +8,9 @@
              <label for="application" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
                  Tipo
              </label>
-             <p-select inputId="application" [options]="tipoPedidoOpts(aplicanteData.categoria)" optionLabel="name"
-                 fluid filterBy="name" [showClear]="true" placeholder="Select a Pedido">
+             <p-select formControlName="tipo" inputId="application" [options]="tipoPedidoOpts(aplicanteData.categoria)"
+                 optionLabel="name" optionValue="value" fluid filterBy="name" [showClear]="true"
+                 placeholder="Select a Pedido">
              </p-select>
          </div>
      </div>
@@ -48,8 +49,8 @@
                                  Aldeia
                              </label>
                              <p-select fluid formControlName="aldeia" [options]="listaAldeiaEmpresa" optionLabel="nome"
-                                 placeholder="Selecione a Aldeia" [filter]="true" filterBy="nome" [showClear]="true"
-                                 (onFilter)="aldeiaFilter($event)" (onpanelHide)="onPanelHide()"
+                                 optionValue="id" placeholder="Selecione a Aldeia" [filter]="true" filterBy="nome"
+                                 [showClear]="true" (onFilter)="aldeiaFilter($event)" (onpanelHide)="onPanelHide()"
                                  (onChange)="aldeiaOnChange($event, 'empresaSede')" (onClear)="onPanelHide()">
                              </p-select>
                          </div>
@@ -150,8 +151,8 @@
                                  Aldeia
                              </label>
                              <p-select fluid formControlName="aldeia" [options]="listaAldeiaRepresentante"
-                                 optionLabel="nome" placeholder="Selecione a Aldeia" [filter]="true" filterBy="nome"
-                                 [showClear]="true" (onFilter)="representanteAldeiaFilter($event)"
+                                 optionLabel="nome" optionValue="id" placeholder="Selecione a Aldeia" [filter]="true"
+                                 filterBy="nome" [showClear]="true" (onFilter)="representanteAldeiaFilter($event)"
                                  (onpanelHide)="onPanelHide()"
                                  (onChange)="aldeiaNestedOnChange($event, 'representante', 'morada')"
                                  (onClear)="onPanelHide()">
@@ -233,8 +234,9 @@
                                  Aldeia
                              </label>
                              <p-select fluid formControlName="aldeia" [options]="listaAldeiaGerente" optionLabel="nome"
-                                 placeholder="Selecione a Aldeia" [filter]="true" filterBy="nome" [showClear]="true"
-                                 (onFilter)="gerenteAldeiaFilter($event)" (onpanelHide)="onPanelHide()"
+                                 optionValue="id" placeholder="Selecione a Aldeia" [filter]="true" filterBy="nome"
+                                 [showClear]="true" (onFilter)="gerenteAldeiaFilter($event)"
+                                 (onpanelHide)="onPanelHide()"
                                  (onChange)="aldeiaNestedOnChange($event, 'gerente', 'morada')"
                                  (onClear)="onPanelHide()">
                              </p-select>
@@ -362,6 +364,8 @@
                  fluid></textarea>
          </div>
      </div>
-     <p-button (click)="submit()" label="Guardar" severity="success" icon="pi pi-save" />
+     <p-button (click)="isNew? save(requestForm): update(requestForm)" [loading]="isLoading"
+         [label]="isNew? 'Guardar' : 'Actualizar'" severity="success" [icon]="isNew? 'pi pi-save' : 'pi pi-sync'" />
  </form>
  }
+ <p-toast position="bottom-right" />

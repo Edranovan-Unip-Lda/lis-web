@@ -1,6 +1,6 @@
 import { BaseModel } from "./base";
-import { ClasseAtividade, Endereco, Role } from "./data-master.model";
-import { AplicanteStatus, AplicanteType, CaraterizacaoEstabelecimento, Categoria, FaturaStatus, NivelRisco, QuantoAtividade, TipoAto, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro } from "./enums";
+import { ClasseAtividade, Endereco, GrupoAtividade, Role } from "./data-master.model";
+import { AplicanteStatus, AplicanteType, CaraterizacaoEstabelecimento, Categoria, FaturaStatus, NivelRisco, QuantoAtividade, TipoAto, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro, TipoPedidoLicenca } from "./enums";
 
 export interface User {
     id: number;
@@ -68,7 +68,8 @@ export interface Aplicante extends BaseModel {
     numero: string;
     estado: AplicanteStatus;
     empresa: Empresa;
-    pedidoInscricaoCadastro: PedidoInscricaoCadastro
+    pedidoInscricaoCadastro: PedidoInscricaoCadastro;
+    pedidoLicencaAtividade: PedidoAtividadeLicenca;
     pedidoStatus: string;
     faturaStatus: string;
     certificadoInscricaoCadastro: CertificadoCadastro;
@@ -159,6 +160,41 @@ export interface PedidoInscricaoCadastro {
     dataEmissaoCertAnterior: string;
     observacao: string;
     fatura: Fatura;
+}
+
+export interface PedidoAtividadeLicenca extends BaseModel {
+    tipo: TipoPedidoLicenca;
+    status: string;
+    nomeEmpresa: string;
+    empresaNumeroRegistoComercial: string;
+    empresaSede: Endereco;
+    tipoAtividade: GrupoAtividade;
+    risco: NivelRisco;
+    estatutoSociedadeComercial: boolean;
+    empresaNif: string;
+    representante: Pessoa;
+    gerente: Pessoa;
+    planta: boolean;
+    documentoPropriedade: boolean;
+    documentoImovel: boolean;
+    contratoArrendamento: boolean;
+    planoEmergencia: boolean;
+    estudoAmbiental: boolean;
+    numEmpregosCriados: number;
+    numEmpregadosCriar: number;
+    reciboPagamento: boolean;
+    outrosDocumentos: boolean;
+    aplicante: Aplicante;
+    fatura: Fatura;
+}
+
+export interface Pessoa extends BaseModel {
+    nome: string;
+    nacionalidade: string;
+    naturalidade: string;
+    morada: Endereco;
+    telefone: string;
+    email: string;
 }
 
 
