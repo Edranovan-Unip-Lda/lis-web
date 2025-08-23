@@ -134,6 +134,8 @@ export class ApplicationAtividadeDetailComponent {
 
   ngOnInit(): void {
     this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
+    console.log(this.aplicanteData);
+    
     this.listaAldeia = mapToIdAndNome(this.router.snapshot.data['aldeiasResolver']._embedded.aldeias);
     this.listaGrupoAtividade = mapToGrupoAtividade(this.router.snapshot.data['grupoAtividadeResolver']._embedded.grupoAtividade);
     this.listaPedidoAto = mapToTaxa(this.router.snapshot.data['listaTaxaResolver']._embedded.taxas);

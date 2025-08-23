@@ -7,6 +7,7 @@ import { CertificatePdfComponent } from './certificate-pdf/certificate-pdf.compo
 import { FaturaComponent } from './fatura/fatura.component';
 import { PedidoInscricaoComponent } from './pedido-inscricao/pedido-inscricao.component';
 import { ApplicationAtividadeDetailComponent } from './application-atividade-detail/application-atividade-detail.component';
+import { PedidoPdfComponent } from './application-atividade-detail/pedido-pdf/pedido-pdf.component';
 
 export default [
     {
@@ -75,7 +76,15 @@ export default [
                     sociedadeComercialResolver: getSociedadeComercialResolver,
                     grupoAtividadeResolver: getAllGrupoAtividadeByTipoResolver,
                 }
-            }
+            },
+            {
+                path: ':id/pedido-licenca',
+                data: { breadcrumb: 'Pedido Atividade de Licenca' },
+                component: PedidoPdfComponent,
+                resolve: {
+                    aplicanteResolver: getAplicante,
+                }
+            },
         ]
     },
 ] as Routes;

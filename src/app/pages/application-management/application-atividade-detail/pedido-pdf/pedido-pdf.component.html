@@ -1,0 +1,393 @@
+<div class="card">
+    <div class="grid grid-cols-12 mb-4">
+        <div class="col-span-6">
+            <span class="text-2xl font-bold mb-4 mr-4">Pedido de Inscrição</span>
+            <p-button icon="pi pi-file-pdf" size="large" [raised]="true" printSectionId="myDiv" [useExistingCss]="true"
+                ngxPrint />
+        </div>
+        <div class="col-span-6 flex justify-end mb-4">
+            <p-button (click)="goBack()" icon="pi pi-chevron-circle-left" label="Voltar" severity="help" size="large"
+                [text]="true" [rounded]="true" [raised]="true" />
+        </div>
+    </div>
+    <div id="myDiv" class="bg-white text-black px-4 pt-2">
+        <header class="text-center mb-8">
+            <img alt="Coat of Arms" class="mx-auto mb-4 w-24 h-24" src="/images/rdtl.png" />
+            <h1 class="text-lg font-bold">IX GOVERNO CONSTITUCIONAL</h1>
+            <h2 class="text-lg font-bold">MINISTÉRIO DO COMÉRCIO E INDÚSTRIA</h2>
+            <hr class="my-4 border-gray-400" />
+            <h3 class="text-xl font-semibold">PEDIDO DE LICENÇA PARA EXERCÍCIO DE ATIVIDADE {{aplicanteData.categoria}}
+            </h3>
+            <p class="text-sm">Pedidu Lisensa hodi ezerse atividade {{aplicanteData.categoria.toLowerCase()}}</p>
+        </header>
+        <section class="mb-6 text-sm text-center">
+            <p>Conforme Decreto-Lei n.º 89/2023, de 20 de dezembro e Diploma Ministerial N.º <span
+                    class="inline-block w-24 border-b border-gray-400"></span>/2024, de <span
+                    class="inline-block w-48 border-b border-gray-400"></span></p>
+            <p class="italic">Tuir Dekretu-Lei n. 89/2023, loron 20 fulan dezembru</p>
+        </section>
+        <section class="mb-8 space-y-2 text-sm">
+            @if (aplicanteData.categoria === 'COMERCIAL') {
+            @switch (pedido.tipo) {
+            @case ('NOVO') {
+            <div class="flex items-center">
+                <label class="flex-grow font-bold" for="licenca">PEDIDO DE LICENÇA/<span class="italic">Pedidu
+                        lisensa</span></label>
+            </div>
+            }
+            @case ('ALTERACAO') {
+            <div class="flex items-center">
+                <label class="flex-grow font-bold" for="alteracao">PEDIDO DE ALTERAÇÃO DE LICENÇA/<span
+                        class="italic">Pedidu
+                        alterasaun lisensa</span></label>
+            </div>
+            }
+            @case ('RENOVACAO') {
+            <div class="flex items-center">
+                <label class="flex-grow font-bold" for="renovacao">PEDIDO DE RENOVAÇÃO DE LICENÇA/<span
+                        class="italic">Pedidu
+                        Renovasaun lisensa</span></label>
+            </div>
+            }
+            }
+            }
+
+        </section>
+        <div class="border-t border-b border-gray-300 py-6 space-y-6">
+            <section>
+                <h4 class="font-bold text-sm mb-4">1. REQUERENTE/<span class="italic">Rekerente</span></h4>
+                <div class="space-y-4 text-sm">
+                    <div class="flex items-center space-x-2">
+                        <span class="font-semibold w-6">a)</span>
+                        <label>Firma ou denominação social/<span class="italic">Naran ba denominasaun
+                                sosiedade</span></label>
+                        <span class="font-bold ml-6">
+                            {{pedido.nomeEmpresa}}
+                        </span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="font-semibold w-6">b)</span>
+                        <label>N.º de Registo Comercial/<span class="italic">N. Registu Komersiál</span></label>
+                        <span class="font-bold ml-6">
+                            {{pedido.empresaNif}}
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                        <div class="flex items-center col-span-1 md:col-span-3">
+                            <span class="font-semibold w-6">c)</span>
+                            <label>Sede: Rua/<span class="italic">Rua</span></label>
+                            <span class="font-bold ml-6">
+                                {{pedido.empresaSede.local}}, {{pedido.empresaSede.aldeia.nome}},
+                                {{pedido.empresaSede.aldeia.suco.nome}},
+                                {{pedido.empresaSede.aldeia.suco.postoAdministrativo.nome}},
+                                {{pedido.empresaSede.aldeia.suco.postoAdministrativo.municipio.nome}}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                        <div class="flex items-center space-x-2">
+                            <span class="font-semibold w-6">d)</span>
+                            <label>Tipo Atividade/<span class="italic">Tipu atividade</span></label>
+                            <span class="font-bold ml-6">
+                                {{pedido.tipoAtividade.codigo}} - {{pedido.tipoAtividade.descricao}}
+                            </span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <label>Nível de de risco/<span class="italic">Nivel risku</span></label>
+                            <span class="font-bold ml-6">
+                                {{pedido.risco}}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="font-semibold w-6">e)</span>
+                        <label>Estatuto da sociedade comercial/ <span class="italic">Estatutu hosi
+                                sosiedade komersiál</span></label>
+                        <span class="font-bold ml-6">
+                            {{pedido.estatutoSociedadeComercial ? 'SIM' : 'NAO'}}
+                        </span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="font-semibold w-6">f)</span>
+                        <label>NIF/NIFZ</label>
+                        <span class="font-bold ml-6">
+                            {{pedido.empresaNif}}
+                        </span>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <h4 class="font-bold text-sm mb-4">2. REPRESENTANTE/<span class="italic">Representante</span></h4>
+                <div class="space-y-4 text-sm">
+                    <div class="flex items-center">
+                        <label class="w-20">Nome/<span class="italic">Naran</span></label>
+                        <span class="font-bold ml-6">
+                            {{pedido.representante.nome}}
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex items-center">
+                            <label class="w-32">Nacionalidade/<span class="italic">Nasionalidade</span></label>
+                            <span class="font-bold ml-6">
+                                {{pedido.representante.nacionalidade}}
+                            </span>
+                        </div>
+                        <div class="flex items-center">
+                            <label class="w-32">Naturalidade/<span class="italic">Moris iha</span></label>
+                            <span class="font-bold ml-6">
+                                {{pedido.representante.naturalidade}}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+                        <div class="flex flex-row">
+                            <label>Morada/<span class="italic">Hela-iha</span></label>
+                            <span class="font-bold ml-6">
+                                {{pedido.representante.morada.local}}, {{pedido.representante.morada.aldeia.nome}},
+                                {{pedido.representante.morada.aldeia.suco.nome}},
+                                {{pedido.representante.morada.aldeia.suco.postoAdministrativo.nome}},
+                                {{pedido.representante.morada.aldeia.suco.postoAdministrativo.municipio.nome}}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex items-center">
+                            <label class="w-56">N.º de telefone de contacto/<span class="italic">N. telefone
+                                    kontaktu</span></label>
+                            <span class="font-bold ml-6">
+                                {{pedido.representante.telefone}}
+                            </span>
+                        </div>
+                        <div class="flex items-center">
+                            <label class="w-16">email/<span class="italic">email</span></label>
+                            <span class="font-bold ml-6">
+                                {{pedido.representante.email}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <h4 class="font-bold text-sm mb-4">3. IDENTIFICAÇÃO DO ADMINSTRADOR OU GERENTE/<span
+                        class="italic">Identifikasau husi Administradór ka Jerente</span></h4>
+                <div class="space-y-4 text-sm">
+                    <div class="flex items-center">
+                        <label class="w-20">Nome/<span class="italic">Naran</span></label>
+                        <span class="font-bold ml-6">
+                            {{pedido.gerente.nome}}
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex items-center">
+                            <label class="w-32">Estado civil/<span class="italic">Estadu sivíl</span></label>
+                            <span class="font-bold ml-6">
+                                <!-- {{pedido.gerente.maritalStatus}} -->
+                            </span>
+                        </div>
+                        <div class="flex items-center">
+                            <label class="w-32">Nacionalidade/<span class="italic">Nasionalidade</span></label>
+                            <span class="font-bold ml-6">
+                                {{pedido.gerente.nacionalidade}}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+                        <div class="flex flex-row">
+                            <label>Naturalidade/<span class="italic">Moris iha</span></label>
+                            <span class="font-bold ml-6">
+                                {{pedido.gerente.naturalidade}}
+                            </span>
+                        </div>
+                        <div class="flex flex-row">
+                            <label>Morada/<span class="italic">Hela-iha</span></label>
+                            <span class="font-bold ml-6">
+                                {{pedido.gerente.morada.local}}, {{pedido.gerente.morada.aldeia.nome}},
+                                {{pedido.gerente.morada.aldeia.suco.nome}},
+                                {{pedido.gerente.morada.aldeia.suco.postoAdministrativo.nome}},
+                                {{pedido.gerente.morada.aldeia.suco.postoAdministrativo.municipio.nome}}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex items-center">
+                            <label class="w-56">N.º de telefone de contacto/<span class="italic">N. telefone
+                                    kontaktu</span></label>
+                            <span class="font-bold ml-6">
+                                {{pedido.gerente.telefone}}
+                            </span>
+                        </div>
+                        <div class="flex items-center">
+                            <label class="w-16">email/<span class="italic">email</span></label>
+                            <span class="font-bold ml-6">
+                                {{pedido.gerente.email}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h4 class="font-bold text-sm mb-4">4. PLANTA DE LOCALIZAÇÃO DO ESTABELECIMENTO COMERCIAL/<span
+                        class="italic">Planta lokalizasaun husi estabelecemento komersiál</span></h4>
+                <div class="mt-4 flex items-center space-x-6">
+                    <label class="flex items-center space-x-2 pl-4">
+                        <i class="bi bi-check text-2xl"></i>
+                        <span class="font-bold">
+                            {{pedido.planta? 'SIM' : 'NAO'}}
+                        </span>
+                    </label>
+                </div>
+            </section>
+
+            <section>
+                <h4 class="font-bold text-sm mb-4">5. DOCUMENTO COMPROVATIVO DE PROPRIEDADE, POSSE DE IMÓVEL
+                    OU CONTRATO DE ARRENDAMENTO/<span class="italic">Dokumentu komprovativu propriedade nian, pose ba
+                        imóvel
+                        ka kontratu arrendamentu</span></h4>
+                <ul class="mt-4 space-y-4">
+                    <li class="ml-4">
+                        <p class="text-gray-700">• Documento comprovativo do direito de propriedade/<span
+                                class="italic">Dokumentu komprovativu direitu propriedade</span></p>
+                        <div class="mt-2 flex items-center space-x-6">
+                            <label class="flex items-center space-x-2 pl-4">
+                                <i class="bi bi-check text-2xl"></i>
+                                <span class="font-bold">
+                                    {{pedido.documentoPropriedade? 'SIM' : 'NAO'}}
+                                </span>
+                            </label>
+                        </div>
+                    </li>
+                    <li class="ml-4">
+                        <p class="text-gray-700">• Documento comprovativo de posse de imóvel/<span
+                                class="italic">Dokumentu
+                                komprovativu ba pose imóvel</span></p>
+                        <div class="mt-2 flex items-center space-x-6">
+                            <label class="flex items-center space-x-2 pl-4">
+                                <i class="bi bi-check text-2xl"></i>
+                                <span class="font-bold">
+                                    {{pedido.documentoImovel? 'SIM' : 'NAO'}}
+                                </span>
+                            </label>
+                        </div>
+                    </li>
+                    <li class="ml-4">
+                        <p class="text-gray-700">• Contrato de arrendamento/<span class="italic">Kontratu kona-ba
+                                arrendamentu ba imóvel</span></p>
+                        <div class="mt-2 flex items-center space-x-6">
+                            <label class="flex items-center space-x-2 pl-4">
+                                <i class="bi bi-check text-2xl"></i>
+                                <span class="font-bold">
+                                    {{pedido.contratoArrendamento? 'SIM' : 'NAO'}}
+                                </span>
+                            </label>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <section>
+                <h4 class="font-bold text-sm mb-4">6. PLANO DE EMEREGNCIA/<span class="italic">Planu Emerjensia</span>
+                </h4>
+                <div class="mt-2 flex items-center space-x-6">
+                    <label class="flex items-center space-x-2 pl-4">
+                        <i class="bi bi-check text-2xl"></i>
+                        <span class="font-bold">
+                            {{pedido.planoEmergencia? 'SIM' : 'NAO'}}
+                        </span>
+                    </label>
+                </div>
+            </section>
+
+            <section>
+                <h4 class="font-bold text-sm mb-4">7. ESTUDO DE IMPACTO AMBIENTAL/<span class="italic">Estudu ba impaktu
+                        ambientál</span>
+                </h4>
+                <div class="mt-2 flex items-center space-x-6">
+                    <label class="flex items-center space-x-2 pl-4">
+                        <i class="bi bi-check text-2xl"></i>
+                        <span class="font-bold">
+                            {{pedido.estudoAmbiental? 'SIM' : 'NAO'}}
+                        </span>
+                    </label>
+                </div>
+            </section>
+
+            <section>
+                <h4 class="font-bold text-sm mb-4">8. Nº DE POSTOS DE EMPREGO CRIADOS OU A CRIAR/<span class="italic">
+                        Nº empregu n´ebé mak kria ka atu kria
+                    </span>
+                </h4>
+                <div class="mt-4 space-y-4">
+                    <div class="ml-4">
+                        <label class="block text-gray-700" for="jobs_created">N.º de empregos já criados/<span
+                                class="italic">kria ona numeru ba empregu</span></label>
+                        <span class="font-bold">
+                            {{pedido.numEmpregosCriados}}
+                        </span>
+                    </div>
+                    <div class="ml-4">
+                        <label class="block text-gray-700" for="jobs_to_create">N.º de empregos a criar/<span
+                                class="italic">N. empregu atu kria</span></label>
+                        <span class="font-bold">
+                            {{pedido.numEmpregadosCriar}}
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h4 class="font-bold text-sm mb-4">9. COMPROVATIVO DO PAGAMENTO DA TAXA DE PEDIDO DE
+                    LICENÇA/<span class="italic">Komprovativu selu taxa pedidu lisensa nian</span></h4>
+                <div class="mt-4">
+                    <p class="text-gray-700">Recibo de pagamento da taxa de pedido de licença/<span
+                            class="italic">Resibu selu taxa ba lisensa nian</span></p>
+                    <div class="mt-2 flex items-center space-x-6">
+                        <label class="flex items-center space-x-2 pl-4">
+                            <i class="bi bi-check text-2xl"></i>
+                            <span class="font-bold">
+                                {{pedido.reciboPagamento? 'SIM' : 'NAO'}}
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h4 class="font-bold text-sm mb-4">10. OUTROS DOCUMENTOS/<span class="italic">Dokumentu sira
+                        seluk</span></h4>
+                <span class="font-bold">
+                    {{pedido.outrosDocumentos}}
+                </span>
+            </section>
+
+            <section>
+                <div class="flex justify-center">
+                    <label class="block text-gray-700" for="local">Local/
+                        <span class="italic">
+                            Fatin
+                        </span>
+                        <span class="font-bold mr-2">
+                            Dili,
+                        </span>
+                    </label>
+                    <label class="block text-gray-700" for="data">
+                        <span class="font-bold">
+                            {{pedido.updatedAt | date: 'dd/MM/yyyy'}}
+                        </span>
+                    </label>
+                </div>
+                <div class="mt-20 text-center">
+                    <span class="with-image">
+                        <img src="images/stamp.png" alt="Stamp" class="stamp" width="110" height="110" />
+                        <span class="text-label text-gray-600">Donald Trump</span>
+                    </span>
+                    <div class="w-80 mx-auto border-t border-gray-400 pt-2">
+                        <p class="text-gray-800">Representante/<span class="italic">Reprezentante.</span></p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+</div>

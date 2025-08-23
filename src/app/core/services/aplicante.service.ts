@@ -40,8 +40,12 @@ export class AplicanteService {
         return this.http.post<PedidoAtividadeLicenca>(`${this.apiUrl}/${aplicanteId}/pedidos/atividade`, formData);
     }
 
-    updatePedidoAtividade(aplicanteId: number, pedidoId: number, formData: any): Observable<PedidoInscricaoCadastro> {
-        return this.http.put<PedidoInscricaoCadastro>(`${this.apiUrl}/${aplicanteId}/pedidos/atividade/${pedidoId}`, formData);
+    updatePedidoAtividade(aplicanteId: number, pedidoId: number, formData: any): Observable<PedidoAtividadeLicenca> {
+        return this.http.put<PedidoAtividadeLicenca>(`${this.apiUrl}/${aplicanteId}/pedidos/atividade/${pedidoId}`, formData);
+    }
+
+    getPedidoAtividade(aplicanteId: number): Observable<PedidoAtividadeLicenca> {
+        return this.http.get<PedidoAtividadeLicenca>(`${this.apiUrl}/${aplicanteId}/pedidos/atividade`);
     }
 
 }

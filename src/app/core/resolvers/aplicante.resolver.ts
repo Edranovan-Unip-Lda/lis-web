@@ -17,3 +17,13 @@ export const getByIdResolver: ResolveFn<any> = (route: ActivatedRouteSnapshot) =
         return of(null);
     }
 }
+
+export const getPedidoAtividadeLicencaByIdResolver: ResolveFn<any> = (route: ActivatedRouteSnapshot) => {
+    const id = route.paramMap.get('id');
+    const service = inject(AplicanteService);
+    if (id) {
+        return service.getPedidoAtividade(+id);
+    } else {
+        return of(null);
+    }
+}

@@ -114,10 +114,10 @@
                                             </div>
                                         </div>
                                         <div class="flex items-center space-x-4">
-                                            @if (aplicanteData.pedidoInscricaoCadastro) {
-                                            <p-tag [value]="aplicanteData.pedidoInscricaoCadastro.status"
-                                                [severity]="aplicanteData.pedidoInscricaoCadastro.status| statusSeverity" />
-                                            <p-button [routerLink]="['pedido-inscricao']" icon="pi pi-eye"
+                                            @if (aplicanteData.pedidoLicencaAtividade) {
+                                            <p-tag [value]="aplicanteData.pedidoLicencaAtividade.status"
+                                                [severity]="aplicanteData.pedidoLicencaAtividade.status| statusSeverity" />
+                                            <p-button [routerLink]="['pedido-licenca']" icon="pi pi-eye"
                                                 label="Pré-visualização" [raised]="true" severity="info" />
                                             }
                                             @else {
