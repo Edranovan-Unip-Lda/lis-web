@@ -18,6 +18,7 @@ import { FaturaAtividadeFormComponent } from './fatura-atividade-form/fatura-ati
 import { FaturaVistoriaFormComponent } from './fatura-vistoria-form/fatura-vistoria-form.component';
 import { PedidoAtividadeFormComponent } from './pedido-atividade-form/pedido-atividade-form.component';
 import { PedidoVistoriaFormComponent } from './pedido-vistoria-form/pedido-vistoria-form.component';
+import { PedidoService } from '@/core/services/pedido.service';
 
 @Component({
   selector: 'app-application-atividade-detail',
@@ -27,7 +28,7 @@ import { PedidoVistoriaFormComponent } from './pedido-vistoria-form/pedido-visto
 })
 export class ApplicationAtividadeDetailComponent {
   aplicanteData!: Aplicante;
-  
+
   autoVistoriaForm: FormGroup;
   downloadLoading = false;
   aplicanteEstado!: AplicanteStatus;
@@ -48,6 +49,7 @@ export class ApplicationAtividadeDetailComponent {
   constructor(
     private _fb: FormBuilder,
     private router: ActivatedRoute,
+    private pedidoService: PedidoService,
   ) {
 
     this.autoVistoriaForm = this._fb.group({
@@ -134,15 +136,32 @@ export class ApplicationAtividadeDetailComponent {
 
   ngOnInit(): void {
     this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
-    console.log(this.aplicanteData);
-    
+  
     this.listaAldeia = mapToIdAndNome(this.router.snapshot.data['aldeiasResolver']._embedded.aldeias);
     this.listaGrupoAtividade = mapToGrupoAtividade(this.router.snapshot.data['grupoAtividadeResolver']._embedded.grupoAtividade);
     this.listaPedidoAto = mapToTaxa(this.router.snapshot.data['listaTaxaResolver']._embedded.taxas);
     this.aplicanteEstado = this.aplicanteData.estado;
   }
 
-  downloadFile(file: Documento) { }
+  downloadFile(file: Documento) {
+    this.downloadLoading = true;
+    this.pedidoService.downloadRecibo(this.aplicanteData.id, this.aplicanteData.pedidoLicencaAtividade.id, this.aplicanteData.pedidoLicencaAtividade.fatura.id, file.id).subscribe({
+      next: (response) => {
+        const url = window.URL.createObjectURL(response);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.nome;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: error => {
+        this.downloadLoading = false;
+      },
+      complete: () => {
+        this.downloadLoading = false;
+      }
+    });
+  }
 
   onDataReceived(payload: string) {
     console.log('Parent received:', payload);

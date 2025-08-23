@@ -174,12 +174,12 @@
                                             </div>
                                         </div>
                                         <div class="flex items-center space-x-4">
-                                            @if (aplicanteData.pedidoInscricaoCadastro
-                                            && aplicanteData.pedidoInscricaoCadastro.fatura
-                                            && aplicanteData.pedidoInscricaoCadastro.fatura.recibo
+                                            @if (aplicanteData.pedidoLicencaAtividade
+                                            && aplicanteData.pedidoLicencaAtividade.fatura
+                                            && aplicanteData.pedidoLicencaAtividade.fatura.recibo
                                             ){
                                             <p-tag [value]="'SUBMETIDO'" [severity]="'success'" />
-                                            <p-button (click)="downloadFile(uploadedFiles[0])" icon="pi pi-download"
+                                            <p-button (click)="downloadFile(aplicanteData.pedidoLicencaAtividade.fatura.recibo)" icon="pi pi-download"
                                                 label="Decarregar Recibo" [raised]="true" [loading]="downloadLoading"
                                                 severity="info" />
                                             }@else {
