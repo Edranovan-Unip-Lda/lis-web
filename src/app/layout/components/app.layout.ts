@@ -1,20 +1,22 @@
-import {Component, OnDestroy, Renderer2, ViewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {NavigationEnd, Router, RouterModule} from '@angular/router';
-import {filter, Subscription} from 'rxjs';
-import {AppTopbar} from './app.topbar';
-import {LayoutService} from '@/layout/service/layout.service';
-import {AppConfigurator} from './app.configurator';
-import {AppBreadcrumb} from './app.breadcrumb';
-import {AppSidebar} from './app.sidebar';
-import {ToastModule} from 'primeng/toast';
-import {MessageService} from 'primeng/api';
-import {AppProfileMenu} from "@/layout/components/app.profilemenu";
+import { AppProfileMenu } from "@/layout/components/app.profilemenu";
+import { LayoutService } from '@/layout/service/layout.service';
+import { CommonModule } from '@angular/common';
+import { Component, OnDestroy, Renderer2, ViewChild } from '@angular/core';
+import { Event, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterModule } from '@angular/router';
+import { NgxSpinnerComponent, NgxSpinnerService } from "ngx-spinner";
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { filter, Subscription } from 'rxjs';
+import { AppBreadcrumb } from './app.breadcrumb';
+import { AppConfigurator } from './app.configurator';
+import { AppSidebar } from './app.sidebar';
+import { AppTopbar } from './app.topbar';
+
 
 @Component({
     selector: 'app-layout',
     standalone: true,
-    imports: [CommonModule, AppTopbar, RouterModule, AppConfigurator, AppBreadcrumb, ToastModule, AppProfileMenu],
+    imports: [CommonModule, AppTopbar, RouterModule, AppConfigurator, AppBreadcrumb, ToastModule, AppProfileMenu, NgxSpinnerComponent],
     template: `
         <div class="layout-container" [ngClass]="containerClass">
             <div class="layout-content-wrapper">
@@ -25,6 +27,7 @@ import {AppProfileMenu} from "@/layout/components/app.profilemenu";
                 </div>
 
                 <div class="layout-content">
+                <ngx-spinner [template]="logo"></ngx-spinner>
                     <router-outlet></router-outlet>
                 </div>
 
@@ -48,10 +51,13 @@ export class AppLayout implements OnDestroy {
 
     @ViewChild(AppTopbar) appTopbar!: AppTopbar;
 
+    logo: string = `<img src="/images/rdtl.png" alt="logo" width="200" heigth="200" class="opacity-60">`;
+
     constructor(
         public layoutService: LayoutService,
         public renderer: Renderer2,
-        public router: Router
+        public router: Router,
+        private spinner: NgxSpinnerService,
     ) {
         this.overlayMenuOpenSubscription = this.layoutService.overlayOpen$.subscribe(() => {
             if (!this.menuOutsideClickListener) {
@@ -75,6 +81,28 @@ export class AppLayout implements OnDestroy {
 
         this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
             this.hideMenu();
+        });
+    }
+
+    ngOnInit(): void {
+        this.router.events.subscribe((event: Event) => {
+
+            switch (true) {
+                case event instanceof NavigationStart: {
+                    this.spinner.show();
+                    break;
+                }
+
+                case event instanceof NavigationEnd:
+                case event instanceof NavigationCancel:
+                case event instanceof NavigationError: {
+                    this.spinner.hide();
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
         });
     }
 
