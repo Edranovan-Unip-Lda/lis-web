@@ -1,14 +1,15 @@
- <form [formGroup]="vistoriaComercialRequestForm">
+ <form [formGroup]="vistoriaRequestForm">
      <span class="text-xl font-bold mt-6 mb-3 block">
          PEDIDO
      </span>
      <div class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="tipoPedido" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="tipoVistoria" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
                  Tipo
              </label>
-             <p-select formControlName="tipoPedido" inputId="tipoPedido" [options]="tipoPedidoVistoriaOpts"
-                 optionLabel="name" fluid filterBy="name" [showClear]="true" placeholder="Select a Pedido">
+             <p-select formControlName="tipoVistoria" inputId="tipoVistoria" [options]="tipoPedidoVistoriaOpts"
+                 optionLabel="name" optionValue="value" fluid filterBy="name" [showClear]="true"
+                 placeholder="Select a Pedido">
              </p-select>
          </div>
      </div>
@@ -93,8 +94,8 @@
                                  Aldeia
                              </label>
                              <p-select fluid formControlName="aldeia" [options]="listaAldeia" optionLabel="nome"
-                                 placeholder="Selecione a Aldeia" [filter]="true" filterBy="nome" [showClear]="true"
-                                 (onFilter)="aldeiaFilter($event)" (onpanelHide)="onPanelHide()"
+                                 optionValue="id" placeholder="Selecione a Aldeia" [filter]="true" filterBy="nome"
+                                 [showClear]="true" (onFilter)="aldeiaFilter($event)" (onpanelHide)="onPanelHide()"
                                  (onChange)="aldeiaOnChange($event)" (onClear)="onPanelHide()">
                              </p-select>
                          </div>
@@ -132,7 +133,8 @@
                  Tipo de Empresa
              </label>
              <p-select formControlName="tipoEmpresa" inputId="tipoEmpresa" [options]="tipoEmpresaOpts"
-                 optionLabel="name" fluid filterBy="name" [showClear]="true" placeholder="Select a Pedido">
+                 optionLabel="name" optionValue="value" fluid filterBy="name" [showClear]="true"
+                 placeholder="Select a Pedido">
              </p-select>
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
@@ -140,8 +142,8 @@
                  Tipo de estabelecimento
              </label>
              <p-select formControlName="tipoEstabelecimento" inputId="tipoEstabelecimento"
-                 [options]="tipoEstabelecimentoOpts" optionLabel="name" fluid filterBy="name" [showClear]="true"
-                 placeholder="Select a Pedido">
+                 [options]="tipoEstabelecimentoOpts" optionLabel="name" optionValue="value" fluid filterBy="name"
+                 [showClear]="true" placeholder="Select a Pedido">
              </p-select>
          </div>
      </div>
@@ -150,7 +152,7 @@
      </span>
      <div class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="nivelRisco" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="risco" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
                  Nivel de Risco
              </label>
              <input formControlName="risco" id="risco" type="text" pInputText fluid />
@@ -160,7 +162,7 @@
                  Atividade
              </label>
              <p-select formControlName="atividade" inputId="atividade" [options]="atividadesOpts" optionLabel="name"
-                 fluid filterBy="name" [showClear]="true" placeholder="Select a Pedido">
+                 fluid filterBy="name" optionValue="value" [showClear]="true" placeholder="Select a Pedido">
              </p-select>
          </div>
          <div class="mb-6 col-span-12 md:col-span-7">
@@ -216,5 +218,7 @@
              <textarea rows="8" cols="30" variant="outlined" pTextarea formControlName="observacao" fluid></textarea>
          </div>
      </div>
-     <p-button (click)="submit(vistoriaComercialRequestForm)" label="Guardar" severity="success" icon="pi pi-save" />
+     <p-button (click)="submit(vistoriaRequestForm)" [label]="pedido? 'Actualizar' : 'Guardar'" severity="success"
+         [icon]="pedido? 'pi pi-sync' : 'pi pi-save'" />
  </form>
+ <p-toast position="bottom-right" />

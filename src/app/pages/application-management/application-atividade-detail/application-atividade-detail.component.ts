@@ -1,4 +1,4 @@
-import { Aplicante, Documento } from '@/core/models/entities.model';
+import { Aplicante, Documento, PedidoVistoria } from '@/core/models/entities.model';
 import { AplicanteStatus } from '@/core/models/enums';
 import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
 import { mapToGrupoAtividade, mapToIdAndNome, mapToTaxa } from '@/core/utils/global-function';
@@ -37,6 +37,7 @@ export class ApplicationAtividadeDetailComponent {
   listaGrupoAtividade: any[] = [];
   listaPedidoAto: any[] = [];
   uploadedFiles: any[] = [];
+  pedidoVistoria!: PedidoVistoria | undefined;
 
   @ViewChild(PedidoAtividadeFormComponent) child!: PedidoAtividadeFormComponent;
 
@@ -136,11 +137,13 @@ export class ApplicationAtividadeDetailComponent {
 
   ngOnInit(): void {
     this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
-  
+
     this.listaAldeia = mapToIdAndNome(this.router.snapshot.data['aldeiasResolver']._embedded.aldeias);
     this.listaGrupoAtividade = mapToGrupoAtividade(this.router.snapshot.data['grupoAtividadeResolver']._embedded.grupoAtividade);
     this.listaPedidoAto = mapToTaxa(this.router.snapshot.data['listaTaxaResolver']._embedded.taxas);
     this.aplicanteEstado = this.aplicanteData.estado;
+
+    this.pedidoVistoria = this.aplicanteData.pedidoVistorias.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
   }
 
   downloadFile(file: Documento) {

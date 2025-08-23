@@ -1,6 +1,6 @@
 import { BaseModel } from "./base";
 import { ClasseAtividade, Endereco, GrupoAtividade, Role } from "./data-master.model";
-import { AplicanteStatus, AplicanteType, CaraterizacaoEstabelecimento, Categoria, FaturaStatus, NivelRisco, QuantoAtividade, TipoAto, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro, TipoPedidoLicenca } from "./enums";
+import { AplicanteStatus, AplicanteType, CaraterizacaoEstabelecimento, Categoria, FaturaStatus, NivelRisco, QuantoAtividade, TipoAto, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro, TipoPedidoLicenca, TipoPedidoVistoria } from "./enums";
 
 export interface User {
     id: number;
@@ -74,6 +74,7 @@ export interface Aplicante extends BaseModel {
     faturaStatus: string;
     certificadoInscricaoCadastro: CertificadoCadastro;
     historicoStatus: HistoricoEstadoAplicante[];
+    pedidoVistorias: PedidoVistoria[];
 }
 
 export interface CertificadoCadastro extends BaseModel {
@@ -238,4 +239,31 @@ export interface HistoricoEstadoAplicante extends BaseModel {
     descricao: string;
     alteradoPor: string;
     dataAlteracao: Date;
+}
+
+export interface PedidoVistoria extends BaseModel {
+    tipoVistoria: TipoPedidoVistoria;
+    status: string;
+
+    nomeEmpresa: string;
+    empresaNif: string;
+    empresaGerente: string;
+    empresaNumeroRegistoComercial: string;
+    empresaEmail: string;
+    empresaTelefone: string;
+    empresaTelemovel: string;
+    empresaSede: Endereco;
+
+    nomeEstabelecimento: string;
+    localEstabelecimento: Endereco;
+
+    tipoEmpresa: TipoEmpresa;
+    tipoEstabelecimento: CaraterizacaoEstabelecimento;
+    risco: NivelRisco;
+    atividade: TipoAto;
+    classeAtividade: ClasseAtividade;
+    tipoAtividade: QuantoAtividade;
+    alteracoes: string;
+    observacao: string;
+    fatura: Fatura;
 }

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, take } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AplicanteType } from '../models/enums';
-import { PedidoAtividadeLicenca, PedidoInscricaoCadastro } from '../models/entities.model';
+import { PedidoAtividadeLicenca, PedidoInscricaoCadastro, PedidoVistoria } from '../models/entities.model';
 
 @Injectable({ providedIn: 'root' })
 export class AplicanteService {
@@ -46,6 +46,14 @@ export class AplicanteService {
 
     getPedidoAtividade(aplicanteId: number): Observable<PedidoAtividadeLicenca> {
         return this.http.get<PedidoAtividadeLicenca>(`${this.apiUrl}/${aplicanteId}/pedidos/atividade`);
+    }
+
+    savePedidoVistoria(aplicanteId: number, formData: any): Observable<PedidoVistoria> {
+        return this.http.post<PedidoVistoria>(`${this.apiUrl}/${aplicanteId}/pedidos/vistoria`, formData);
+    }
+
+    updatePedidoVistoria(aplicanteId: number, pedidoId: number, formData: any): Observable<PedidoVistoria> {
+        return this.http.put<PedidoVistoria>(`${this.apiUrl}/${aplicanteId}/pedidos/vistoria/${pedidoId}`, formData);
     }
 
 }

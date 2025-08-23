@@ -240,10 +240,25 @@ export const stateOptions: any[] = [
     { label: 'NAO', value: false }
 ];
 
-export const tipoPedidoVistoriaOptions: any[] = [
+export const tipoPedidoVistoriaComercialOptions: any[] = [
     {
         name: 'Vistoria previa',
         value: TipoPedidoVistoria.previa
+    },
+    {
+        name: 'Vistoria subsequente',
+        value: TipoPedidoVistoria.subsequente
+    }
+]
+
+export const tipoPedidoVistoriaIndustrialOptions: any[] = [
+    {
+        name: 'Vistoria inicial para a instalação',
+        value: TipoPedidoVistoria.inicial
+    },
+    {
+        name: 'Vistoria para exploração',
+        value: TipoPedidoVistoria.exploracao
     },
     {
         name: 'Vistoria subsequente',

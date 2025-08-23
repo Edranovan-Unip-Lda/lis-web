@@ -105,4 +105,6 @@ export enum TipoAtividadeEconomica {
 export enum TipoPedidoVistoria {
     previa = 'PREVIA',
     subsequente = 'SUBSEQUENTE',
+    inicial = 'INICIAL',
+    exploracao = 'EXPLORACAO',
 }
