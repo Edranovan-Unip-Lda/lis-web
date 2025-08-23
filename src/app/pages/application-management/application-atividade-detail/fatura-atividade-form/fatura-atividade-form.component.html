@@ -42,10 +42,9 @@
              <div class="mb-6 col-span-12 md:col-span-4 flex justify-between">
                  <p-button [label]="faturaId? 'Atualizar Fatura' : 'Emitir Fatura'"
                      [icon]="faturaId? 'pi pi-sync' : 'pi pi-file'" iconPos="left" [loading]="faturaLoading"
-                     class="w-auto mt-3" [disabled]="!faturaForm.valid || disableAllForm"
-                     (click)="saveFatura(faturaForm)" />
+                     class="w-auto mt-3" [disabled]="!faturaForm.valid" (click)="submitFatura(faturaForm)" />
                  @if (faturaId) {
-                 <p-button label="Baixar Fatura" [routerLink]="['fatura-inscricao']" [outlined]="true"
+                 <p-button label="Baixar Fatura" [routerLink]="['fatura-atividade']" [outlined]="true"
                      icon="pi pi-download" iconPos="left" class="w-auto mt-3" />
                  }
              </div>

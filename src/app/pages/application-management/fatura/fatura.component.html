@@ -68,20 +68,30 @@
             <div class="mb-2 flex gap-2">
                 <span class="w-1/4 text-label text-gray-600">Atividade comercial declarada:</span>
                 <span class="flex-1 text-value text-black">
+                    @if(aplicanteData.pedidoInscricaoCadastro) {
                     {{aplicanteData.pedidoInscricaoCadastro.classeAtividade.descricao}}
+                    }@else{
+                    {{aplicanteData.pedidoLicencaAtividade.tipoAtividade.descricao}}
+                    }
+
+
                 </span>
 
                 <span class="w-1/4 text-label text-gray-600">Código:</span>
                 <span class="flex-1 text-value text-black">
+                    @if(aplicanteData.pedidoInscricaoCadastro) {
                     {{aplicanteData.pedidoInscricaoCadastro.classeAtividade.codigo}}
+                    }@else{
+                    {{aplicanteData.pedidoLicencaAtividade.tipoAtividade.codigo}}
+                    }
                 </span>
             </div>
 
             <div class="mb-2 flex gap-2">
                 <span class="w-1/4 text-label text-gray-600">Superfície:</span>
-                    <span class="flex-1 text-value text-black">
-                        {{fatura.superficie}} &#13217;
-                    </span>
+                <span class="flex-1 text-value text-black">
+                    {{fatura.superficie}} &#13217;
+                </span>
             </div>
 
         </div>

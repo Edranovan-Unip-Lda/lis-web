@@ -1,4 +1,4 @@
-import { Aplicante, Documento } from '@/core/models/entities.model';
+import { Aplicante, Documento, Fatura } from '@/core/models/entities.model';
 import { AuthenticationService } from '@/core/services';
 import { PedidoService } from '@/core/services/pedido.service';
 import { calculateCommercialLicenseTax } from '@/core/utils/global-function';
@@ -35,6 +35,7 @@ export class FaturaAtividadeFormComponent {
   maxFileSize = 20 * 1024 * 1024;
   pedidoId!: number;
   faturaId!: number;
+  loading = false;
 
 
   constructor(
@@ -46,26 +47,102 @@ export class FaturaAtividadeFormComponent {
 
   ngOnInit(): void {
     this.initForm();
+    console.log(this.aplicanteData);
+
+    this.pedidoId = this.aplicanteData.pedidoLicencaAtividade.id;
+
+    if (this.aplicanteData.pedidoLicencaAtividade.fatura) {
+      this.faturaId = this.aplicanteData.pedidoLicencaAtividade.fatura.id;
+      this.mapEditFatura(this.aplicanteData.pedidoLicencaAtividade.fatura);
+    }
 
     this.enableSuperficieFormControl();
     this.superficieOnChange();
+
+    console.log(this.listaPedidoAto);
+
   }
 
-  saveFatura(form: FormGroup) {
+  submitFatura(form: FormGroup) {
+    this.loading = true;
+    let formData: any = {
+      ...form.getRawValue(),
+      pedidoLicencaAtividade: {
+        id: this.pedidoId
+      },
+      nomeEmpresa: this.aplicanteData.empresa.nome,
+      nivelRisco: this.aplicanteData.pedidoLicencaAtividade.risco,
+      nif: this.aplicanteData.empresa.nif,
+      sociedadeComercial: this.aplicanteData.empresa.sociedadeComercial.nome,
+      sede: `${this.aplicanteData.empresa.sede.local},
+       ${this.aplicanteData.empresa.sede.aldeia.nome}
+       ${this.aplicanteData.empresa.sede.aldeia.suco.nome}
+       ${this.aplicanteData.empresa.sede.aldeia.suco.postoAdministrativo.nome}
+       ${this.aplicanteData.empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome}`
+    }
+
+    formData.taxas = this.listaPedidoAto.filter(item => formData.taxas.includes(item.id));
+
+    if (this.pedidoId && this.faturaId) {
+      formData.id = this.faturaId;
+      this.pedidoService.updateFaturaPedidoLicenca(this.pedidoId, this.faturaId, formData).subscribe({
+        next: (response) => {
+          this.faturaId = response.id;
+          this.aplicanteData.pedidoInscricaoCadastro.fatura = response;
+          this.addMessages(true, false);
+        },
+        error: error => {
+          this.addMessages(false, true, error);
+          this.faturaLoading = false;
+        },
+        complete: () => {
+          this.faturaLoading = false;
+          // this.closeDialog();
+        }
+      });
+    } else {
+      this.pedidoService.saveFaturaPedidoLicenca(this.pedidoId, formData).subscribe({
+        next: (response) => {
+          this.faturaId = response.id;
+          this.aplicanteData.pedidoLicencaAtividade.fatura = response;
+          this.addMessages(true, true);
+          this.updateUploadUrl();
+        },
+        error: error => {
+          this.addMessages(false, true, error);
+          this.loading = false;
+        },
+        complete: () => {
+          this.loading = false;
+          // this.closeDialog();
+        }
+      });
+    }
+  }
+
+  updateFatura(form: FormGroup) {
+    let formData = {
+      ...form.value,
+      pedidoLicencaAtividade: {
+        id: this.pedidoId
+      }
+    }
+
+    console.log(formData);
 
   }
 
 
   onUpload(event: any, arg: string) {
-    for (const file of event.files) {
-      this.uploadedFiles.push(file);
+    if (event.originalEvent.body) {
+      this.uploadedFiles.push(event.originalEvent.body)
+      this.aplicanteData.pedidoLicencaAtividade.fatura.recibo = event.originalEvent.body
     }
-
-    // this.messageService.add({
-    //   severity: 'info',
-    //   summary: 'Success',
-    //   detail: 'File Uploaded'
-    // });
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Sucesso',
+      detail: 'Arquivo carregado com sucesso!'
+    });
   }
 
   updateUploadUrl() {
@@ -105,36 +182,56 @@ export class FaturaAtividadeFormComponent {
   }
 
   removeFile(file: Documento) {
-    // this.deleteLoading = true;
-    // this.pedidoService.deleteRecibo(this.aplicanteData.id, this.pedidoId, this.faturaId, file.id).subscribe({
-    //   next: () => {
-    //     this.uploadedFiles.pop();
-    //     this.aplicanteData.pedidoInscricaoCadastro.fatura.recibo = null;
+    this.deleteLoading = true;
+    this.pedidoService.deleteRecibo(this.aplicanteData.id, this.pedidoId, this.faturaId, file.id).subscribe({
+      next: () => {
+        this.uploadedFiles.pop();
+        this.aplicanteData.pedidoLicencaAtividade.fatura.recibo = null;
 
-    //     this.messageService.add({
-    //       severity: 'info',
-    //       summary: 'Success',
-    //       detail: 'Arquivo excluído com sucesso!'
-    //     });
-    //   },
-    //   error: error => {
-    //     this.deleteLoading = false;
-    //     this.messageService.add({
-    //       severity: 'error',
-    //       summary: 'Erro',
-    //       detail: 'Falha no exclusão do arquivo!'
-    //     });
-    //   },
-    //   complete: () => {
-    //     this.deleteLoading = false;
-    //   }
-    // });
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Success',
+          detail: 'Arquivo excluído com sucesso!'
+        });
+      },
+      error: error => {
+        this.deleteLoading = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Falha no exclusão do arquivo!'
+        });
+      },
+      complete: () => {
+        this.deleteLoading = false;
+      }
+    });
   }
 
   bytesToMBs(value: number): string {
     if (!value && value !== 0) return '';
     const mb = value / (1024 * 1024);
     return `${mb.toFixed(2)} MB`;
+  }
+
+  private mapEditFatura(fatura: Fatura) {
+
+    // Enable superficie form control in edit mode
+    this.faturaForm.get('superficie')?.enable();
+    this.faturaForm.get('superficie')?.addValidators([Validators.required])
+
+    this.enableSuperficieFormControl();
+
+    this.faturaForm.patchValue(fatura);
+    this.faturaForm.patchValue({
+      taxas: fatura.taxas.map(t => t.id),
+    });
+
+    if (fatura.recibo) {
+      this.uploadedFiles.push(fatura.recibo);
+    }
+
+    this.updateUploadUrl();
   }
 
   private enableSuperficieFormControl() {
@@ -193,13 +290,15 @@ export class FaturaAtividadeFormComponent {
     this.faturaForm = this._fb.group({
       id: [null],
       taxas: [null, [Validators.required]],
-      nomeEmpresa: [null, [Validators.required]],
-      sociedadeComercial: [null, [Validators.required]],
-      nif: [null, [Validators.required]],
-      sede: [null, [Validators.required]],
-      nivelRisco: [null, [Validators.required]],
       superficie: new FormControl({ value: null, disabled: true, }),
       total: new FormControl({ value: null, disabled: true, }, [Validators.required]),
     });
+  }
+
+  private addMessages(isSuccess: boolean, isNew: boolean, error?: any) {
+    const summary = isSuccess ? (isNew ? 'Dados registados com sucesso!' : 'Dados atualizados com sucesso!') : 'Error';
+    const detail = isSuccess ? (isNew ? `Os dados foram registados` : `Os dados foram actualizados`) : 'Desculpe, algo deu errado. Tente novamente ou procure o administrador do sistema para mais informações.';
+
+    this.messageService.add({ severity: isSuccess ? 'success' : 'error', summary, detail });
   }
 }

@@ -29,4 +29,14 @@ export class PedidoService {
         return this.http.delete(`${environment.apiUrl}/aplicantes/${aplicanteId}/pedidos/${pedidoId}/faturas/${faturaId}/recibos/${reciboId}`);
     }
 
+    // Pedido Licenca de Atividade
+
+    saveFaturaPedidoLicenca(pedidoId: number, formData: any): Observable<Fatura> {
+        return this.http.post<Fatura>(`${this.apiUrl}-atividade/${pedidoId}/faturas`, formData);
+    }
+
+    updateFaturaPedidoLicenca(id: number, faturaId: number, formData: any): Observable<Fatura> {
+        return this.http.put<Fatura>(`${this.apiUrl}-atividade/${id}/faturas/${faturaId}`, formData);
+    }
+
 }

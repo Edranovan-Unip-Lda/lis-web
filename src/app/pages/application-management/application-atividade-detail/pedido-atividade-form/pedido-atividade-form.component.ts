@@ -106,8 +106,10 @@ export class PedidoAtividadeFormComponent {
   }
 
   aldeiaOnChange(event: any, controlName: string): void {
-    if (event.value.id) {
-      const selectedItem = event.value.id;
+    console.log(event.value);
+    
+    if (event.value) {
+      const selectedItem = event.value;
 
       this.dataMasterService.getAldeiaById(selectedItem).subscribe({
         next: (aldeia: Aldeia) => {
@@ -119,7 +121,7 @@ export class PedidoAtividadeFormComponent {
         }
       });
     } else {
-      this.requestForm.get('sede')?.patchValue({
+      this.requestForm.get('empresaSede')?.patchValue({
         municipio: null,
         postoAdministrativo: null,
         suco: null
@@ -128,8 +130,8 @@ export class PedidoAtividadeFormComponent {
   }
 
   aldeiaNestedOnChange(event: any, parentControlName: string, childControlName: string): void {
-    if (event.value.id) {
-      const selectedItem = event.value.id;
+    if (event.value) {
+      const selectedItem = event.value;
 
       this.dataMasterService.getAldeiaById(selectedItem).subscribe({
         next: (aldeia: Aldeia) => {

@@ -26,7 +26,7 @@ export class FaturaComponent {
 
   ngOnInit() {
     this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
-    this.fatura = this.aplicanteData.pedidoInscricaoCadastro.fatura;
+    this.fatura = this.aplicanteData.pedidoInscricaoCadastro ? this.aplicanteData.pedidoInscricaoCadastro.fatura : this.aplicanteData.pedidoLicencaAtividade.fatura;
     console.log(this.fatura);
 
     this.seletedNivelRisco = this.nivelRiscoOpts.find(item => item.value === this.fatura.nivelRisco).name;

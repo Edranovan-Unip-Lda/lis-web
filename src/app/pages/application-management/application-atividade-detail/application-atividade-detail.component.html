@@ -143,10 +143,10 @@
                                             </div>
                                         </div>
                                         <div class="flex items-center space-x-4">
-                                            @if (aplicanteData.pedidoInscricaoCadastro &&
-                                            aplicanteData.pedidoInscricaoCadastro.fatura) {
-                                            <p-tag [value]="aplicanteData.pedidoInscricaoCadastro.fatura.status"
-                                                [severity]="aplicanteData.pedidoInscricaoCadastro.fatura.status| statusSeverity" />
+                                            @if (aplicanteData.pedidoLicencaAtividade &&
+                                            aplicanteData.pedidoLicencaAtividade.fatura) {
+                                            <p-tag [value]="aplicanteData.pedidoLicencaAtividade.fatura.status"
+                                                [severity]="aplicanteData.pedidoLicencaAtividade.fatura.status| statusSeverity" />
                                             <p-button [routerLink]="['fatura-inscricao']" icon="pi pi-eye"
                                                 label="Pré-visualização" [raised]="true" severity="info" />
                                             }@else {
@@ -374,7 +374,8 @@
             <!-- Fatura Pedido de Licenca -->
             <p-step-panel [value]="3">
                 <ng-template #content let-activateCallback="activateCallback">
-                    <app-fatura-atividade-form [listaPedidoAto]="listaPedidoAto"></app-fatura-atividade-form>
+                    <app-fatura-atividade-form [aplicanteData]="aplicanteData" [listaPedidoAto]="listaPedidoAto">
+                    </app-fatura-atividade-form>
                     <div class="flex pt-6 justify-between">
                         <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="right"
                             (onClick)="activateCallback(2)" />

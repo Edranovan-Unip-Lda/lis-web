@@ -85,6 +85,14 @@ export default [
                     aplicanteResolver: getAplicante,
                 }
             },
+            {
+                path: ':id/fatura-atividade',
+                data: { breadcrumb: 'Fatura PDF' },
+                component: FaturaComponent,
+                resolve: {
+                    aplicanteResolver: getAplicante,
+                }
+            },
         ]
     },
 ] as Routes;
