@@ -47,7 +47,6 @@ export class FaturaAtividadeFormComponent {
 
   ngOnInit(): void {
     this.initForm();
-    console.log(this.aplicanteData);
 
     this.pedidoId = this.aplicanteData.pedidoLicencaAtividade.id;
 
@@ -119,19 +118,6 @@ export class FaturaAtividadeFormComponent {
       });
     }
   }
-
-  updateFatura(form: FormGroup) {
-    let formData = {
-      ...form.value,
-      pedidoLicencaAtividade: {
-        id: this.pedidoId
-      }
-    }
-
-    console.log(formData);
-
-  }
-
 
   onUpload(event: any, arg: string) {
     if (event.originalEvent.body) {

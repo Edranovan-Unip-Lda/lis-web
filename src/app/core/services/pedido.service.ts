@@ -39,4 +39,12 @@ export class PedidoService {
         return this.http.put<Fatura>(`${this.apiUrl}-atividade/${id}/faturas/${faturaId}`, formData);
     }
 
+    saveFaturaPedidoVistoria(pedidoId: number, formData: any): Observable<Fatura> {
+        return this.http.post<Fatura>(`${this.apiUrl}-vistoria/${pedidoId}/faturas`, formData);
+    }
+
+    updateFaturaPedidoVistoria(id: number, faturaId: number, formData: any): Observable<Fatura> {
+        return this.http.put<Fatura>(`${this.apiUrl}-vistoria/${id}/faturas/${faturaId}`, formData);
+    }
+
 }

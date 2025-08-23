@@ -45,7 +45,7 @@ export default [
             },
             {
                 path: ':id/fatura-inscricao',
-                data: { breadcrumb: 'Fatura PDF' },
+                data: { breadcrumb: 'Fatura PDF', tipo: 'CADASTRO', },
                 component: FaturaComponent,
                 resolve: {
                     aplicanteResolver: getAplicante,
@@ -87,7 +87,29 @@ export default [
             },
             {
                 path: ':id/fatura-atividade',
-                data: { breadcrumb: 'Fatura PDF' },
+                data: { breadcrumb: 'Fatura PDF', tipo: 'ATIVIDADE', },
+                component: FaturaComponent,
+                resolve: {
+                    aplicanteResolver: getAplicante,
+                }
+            },
+              {
+                path: ':id/pedido-vistoria',
+                data: { 
+                    breadcrumb: 'Pedido Vistoria para Licenca de Atividade',
+                    
+                },
+                component: PedidoPdfComponent,
+                resolve: {
+                    aplicanteResolver: getAplicante,
+                }
+            },
+            {
+                path: ':id/fatura-vistoria',
+                data: { 
+                    breadcrumb: 'Fatura PDF',
+                    tipo: 'VISTORIA',
+                 },
                 component: FaturaComponent,
                 resolve: {
                     aplicanteResolver: getAplicante,
