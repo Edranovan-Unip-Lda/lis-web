@@ -1,0 +1,620 @@
+@if (autoVistoria) {
+<div class="card">
+    <div class="grid grid-cols-12 mb-4">
+        <div class="col-span-6">
+            <span class="text-2xl font-bold mb-4 mr-4">Auto de Vistoria</span>
+            <p-button icon="pi pi-file-pdf" size="large" [raised]="true" printSectionId="myDiv" [useExistingCss]="true"
+                ngxPrint />
+        </div>
+        <div class="col-span-6 flex justify-end mb-4">
+            <p-button (click)="goBack()" icon="pi pi-chevron-circle-left" label="Voltar" severity="help" size="large"
+                [text]="true" [rounded]="true" [raised]="true" />
+        </div>
+    </div>
+    <div id="myDiv" class="bg-white text-black font-bold px-4 pt-2">
+        <!-- Logo -->
+        <div class="flex justify-center mb-1">
+            <img src="images/rdtl.png" alt="Logo" width="80px" height="80px" class="object-contain" />
+        </div>
+
+        <!-- Header -->
+        @if (aplicanteData.categoria === 'INDUSTRIAL') {
+        <div class="text-center mb-4">
+            <h1 class="font-semibold uppercase text-title">Ministério do Comércio e Indústria</h1>
+            <h2 class="font-medium text-title">Direção-Geral da Indústria</h2>
+            <h3 class="font-bold text-title mt-2">Inscrição no Cadastro Industrial</h3>
+            <div class="text-xs text-gray-500 mt-1">(Decreto-Lei n.º 90/2023, de 27 de dezembro)</div>
+        </div>
+        }@else {
+        <div class="text-center mb-4">
+            <h1 class="font-semibold text-title uppercase">Ministério do Comércio e Indústria</h1>
+            <h2 class="font-medium text-title">Direção-Geral da Comércio</h2>
+            <h3 class="font-bold text-title mt-2">
+                AUTO DE VISTORIA
+            </h3>
+            <div class="text-xs text-gray-500 mt-1">(Decreto-Lei n.º 89/2023, de 20 de dezembro)</div>
+        </div>
+        }
+        <div class="flex justify-center my-1">
+            <span class="font-bold text-xl">
+                PROCESSO Nº {{autoVistoria.numeroProcesso}}
+            </span>
+        </div>
+
+        <section class="mt-8">
+            <div class="grid grid-cols-3 gap-y-2">
+                <div class="col-span-1">
+                    <span class="text-label text-gray-600">Data:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.updatedAt | date: 'dd/MM/yyyy'}}
+                    </span>
+                </div>
+                <div class="col-span-2">
+                    <span class="text-label text-gray-600">Hora:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.updatedAt | date: 'HH:mm:ss'}}
+                    </span>
+                </div>
+                <div class="col-span-3">
+                    <span class="text-label text-gray-600">Local:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.local.local}},
+                        {{autoVistoria.local.aldeia.nome}},
+                        {{autoVistoria.local.aldeia.suco.nome}},
+                        {{autoVistoria.local.aldeia.suco.postoAdministrativo.nome}},
+                        {{autoVistoria.local.aldeia.suco.postoAdministrativo.municipio.nome}},
+                    </span>
+                </div>
+                <div class="col-span-3">
+                    <span class="text-label text-gray-600">Funcionário que elabora:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.funcionario.firstName}} {{autoVistoria.funcionario.lastName}}
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- REQUERENTE -->
+        <section class="mt-8">
+            <h3 class="text-center font-bold border-b border-gray-200 mb-3">
+                REQUERENTE
+            </h3>
+            <div class="grid grid-cols-3 gap-y-2">
+                <div class="col-span-3">
+                    <span class="text-label text-gray-600">Denominação social:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.requerente.denominacaoSocial}}
+                    </span>
+                </div>
+                <div class="col-span-3">
+                    <span class="text-label text-gray-600">Nº de Registo Comercial:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.requerente.numeroRegistoComercial}}
+                    </span>
+                </div>
+                <div class="col-span-3">
+                    <span class="text-label text-gray-600">Sede:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.requerente.sede.local}},
+                        {{autoVistoria.requerente.sede.aldeia.nome}},
+                        {{autoVistoria.requerente.sede.aldeia.suco.nome}},
+                        {{autoVistoria.requerente.sede.aldeia.suco.postoAdministrativo.nome}},
+                        {{autoVistoria.requerente.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
+                    </span>
+                </div>
+                <div class="col-span-3">
+                    <span class="text-label text-gray-600">NIF:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.requerente.nif}}
+                    </span>
+                </div>
+                <div class="col-span-3">
+                    <span class="text-label text-gray-600">Nome do Administrados ou Gerente:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.requerente.gerente}}
+                    </span>
+                </div>
+                <div class="col-span-3">
+                    <span class="text-label text-gray-600">Telefone/Telemovel:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.requerente.telefone}}
+                    </span>
+                </div>
+                <div class="col-span-3">
+                    <span class="text-label text-gray-600">Email:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.requerente.email}}
+                    </span>
+                </div>
+                <div class="col-span-3">
+                    <span class="text-label text-gray-600">Classificação de Atividade:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.requerente.classeAtividade.grupoAtividade.codigo}} -
+                        {{autoVistoria.requerente.classeAtividade.grupoAtividade.descricao}}
+                    </span>
+                </div>
+                <div class="col-span-3">
+                    <span class="text-label text-gray-600">Tipo de Atividade:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.requerente.classeAtividade.codigo}} -
+                        {{autoVistoria.requerente.classeAtividade.descricao}}
+                    </span>
+                </div>
+                <div class="col-span-3">
+                    <span class="text-label text-gray-600">Nome do representante do requerente:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.requerente.gerente}}
+                    </span>
+                </div>
+                <div class="col-span-2">
+                    <span class="text-label text-gray-600">Filho de:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.requerente.pai}}
+                    </span>
+                </div>
+                <div class="col-span-1">
+                    <span class="text-label text-gray-600">e de:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.requerente.mae}}
+                    </span>
+                </div>
+                <div class="col-span-2">
+                    <span class="text-label text-gray-600">Data de Nascimento:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.requerente.dataNascimento | date: 'dd/MM/yyyy'}}
+                    </span>
+                </div>
+                <div class="col-span-1">
+                    <span class="text-label text-gray-600">Estado Civil:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.requerente.estadoCivil}}
+                    </span>
+                </div>
+                <div class="col-span-3">
+                    <span class="text-label text-gray-600">Nacionalidade:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.requerente.nacionalidade}}
+                    </span>
+                </div>
+                <div class="col-span-3">
+                    <span class="text-label text-gray-600">Natural de:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.requerente.naturalidade}}
+                    </span>
+                </div>
+                <div class="col-span-2">
+                    <span class="text-label text-gray-600">Posto Administrativo:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.requerente.postoAdministrativo.nome}}
+                    </span>
+                </div>
+                <div class="col-span-1">
+                    <span class="text-label text-gray-600">Municipio ou Região:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.requerente.postoAdministrativo.municipio.nome}}
+                    </span>
+                </div>
+                <div class="col-span-2">
+                    <span class="text-label text-gray-600">Tipo de Documento de Identificação:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.requerente.tipoDocumento}}
+                    </span>
+                </div>
+                <div class="col-span-1">
+                    <span class="text-label text-gray-600">Nº de Documento de Identificação:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.requerente.numeroDocumento}}
+                    </span>
+                </div>
+                <div class="col-span-3">
+                    <span class="text-label text-gray-600">Residência:</span>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.requerente.residencia.local}},
+                        {{autoVistoria.requerente.residencia.aldeia.nome}},
+                        {{autoVistoria.requerente.residencia.aldeia.suco.nome}},
+                        {{autoVistoria.requerente.residencia.aldeia.suco.postoAdministrativo.nome}},
+                        {{autoVistoria.requerente.residencia.aldeia.suco.postoAdministrativo.municipio.nome}}
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <section class="mt-8">
+            <h3 class="text-center font-bold border-b border-gray-200 mb-3">
+                PARTICIPANTES
+            </h3>
+            <div class="grid grid-cols-3 gap-y-2">
+                @for (item of autoVistoria.membrosEquipaVistoria; track $index) {
+                <div class="col-span-2">
+                    <span class="text-label text-gray-600">
+                        {{getAreaRepresentanteLabel(item.areaRepresentante).name}}
+                    </span>
+                    <span class="text-value font-bold">
+                        {{item.nome}}
+                    </span>
+                </div>
+                <div class="col-span-1">
+                    <span class="text-label text-gray-600">
+                        Cargo
+                    </span>
+                    <span class="text-value font-bold">
+                        {{item.cargo}}
+                    </span>
+                </div>
+                }
+            </div>
+        </section>
+
+        <section class="mt-8">
+            <h3 class="text-center font-bold border-b border-gray-200 mb-3">
+                DILIGÊNCIA de VISTORIA
+            </h3>
+            <p class="mb-6 leading-relaxed text-gray-600">
+                Na data, hora e local acima referidos, F (<span class="font-italic">nome do
+                    atuante</span>)
+                <span class="text-value text-black font-bold">
+                    {{autoVistoria.nomeAtuante}}
+                </span>
+                ,
+                estando presentes os demais participantes acima indicados, dei início à vistoria
+                prevista no artigo 12.º do Decreto-Lei n.º 89/2023, de 20 de dezembro, exigida para
+                efeitos de emissão da licença destinada ao exercício da atividade comercial.
+            </p>
+
+            <p class="mb-6 leading-relaxed">
+                O ato de vistoria incidiu sobre as condicoes tecnicas e sanitarias dos estabelecimentos
+                comerciais, confirme o Anexo IV do diploma mencionado, a saber
+            </p>
+            <span class="text-lg font-bold mt-6 mb-3 block">
+                I - Escolha do local de implantacao
+            </span>
+            <div class="grid grid-cols-12 gap-4">
+                <div class="mb-6 col-span-12 md:col-span-8">
+                    <label for="legislacaoUrbanistica" class="font-medium text-surface-900 mb-2 block">
+                        1. A escolha do local deve staisfazer as exigencias da legislacao urbanistica, tendo
+                        em
+                        conta especialmente os planos urbanisticos existentes ou as indicacoes dadas pelas
+                        autoridades locais competentes
+                    </label>
+                </div>
+            </div>
+            <span class="text-md font-bold mt-6 mb-3 block">
+                2. O terreno escholhido tendo em conta as facilidades:
+            </span>
+            <div class="grid grid-cols-12 gap-4 pl-4">
+                <div class="mb-6 col-span-12">
+                    <label for="accessoEstrada" class="font-medium text-surface-900  mb-2 block">
+                        a) De acesso por estrada:
+                    </label>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.accessoEstrada | booleanPipe}}
+                    </span>
+                </div>
+                <div class="mb-6 col-span-12">
+                    <label for="escoamentoAguas" class="font-medium text-surface-900 mb-2 block">
+                        b) De escoamento de aguas residuais, as quais devem obedecer a regulamentacao
+                        adotada
+                        ou a adotar relativa ao sanemento publico
+                    </label>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.escoamentoAguas | booleanPipe}}
+                    </span>
+                </div>
+                <div class="mb-6 col-span-12">
+                    <label for="alimentacaoEnergia" class="font-medium text-surface-900  mb-2 block">
+                        c) De execucao de um ramal de alimentacao de energia eletrica em media tensao (alta
+                        tensao)
+                    </label>
+                    {{autoVistoria.alimentacaoEnergia | booleanPipe}}
+                </div>
+            </div>
+            <span class="text-lg font-bold mt-6 mb-3 block">
+                II - Instalacoes
+            </span>
+            <span class="text-md font-bold mt-6 mb-3 block">
+                1.&nbsp;&nbsp;Obrigatorias:
+            </span>
+            <span class="text-md font-bold mt-6 mb-3 block">
+                a)&nbsp;&nbsp;Instalacoes sanitarias de utilizacao comum dotadas de agua corrente
+            </span>
+            <div class="grid grid-cols-12 gap-4 pl-4">
+                <div class="mb-6 col-span-12">
+                    <label for="seperadosSexo" class="font-medium text-surface-900  mb-2 block">
+                        i.&nbsp;&nbsp; Separados por sexo
+                    </label>
+                    {{autoVistoria.seperadosSexo | booleanPipe}}
+                </div>
+                <div class="mb-6 col-span-12">
+                    <label for="lavatoriosComEspelho" class="font-medium text-surface-900  mb-2 block">
+                        ii.&nbsp;&nbsp; Dispor de lavatorios com espelho:
+                    </label>
+                    {{autoVistoria.lavatoriosComEspelho | booleanPipe}}
+                </div>
+                <div class="mb-6 col-span-12">
+                    <label for="comunicacaoVentilacao" class="font-medium text-surface-900  mb-2 block">
+                        iii.&nbsp;&nbsp;Comunicacao direta para o exterior ou serem adotadas de dispositivos
+                        ventilacao
+                        artificial com continua renovacao do ar adequados a sua dimensao:
+                    </label>
+                    {{autoVistoria.comunicacaoVentilacao | booleanPipe}}
+                </div>
+                <div class="mb-6 col-span-12">
+                    <label for="esgotoAguas" class="font-medium text-surface-900  mb-2 block">
+                        iv.&nbsp;&nbsp; Ligadas a uma rede interna de esgotos que conduzzam as aguas
+                        residuais a sistemas
+                        adequados ao seu escoamento, nomeadamente atraves da rede publica ou, se esta nao
+                        existir, de um sistema de recolha e tratamento adequado ao volume e natureza dessas
+                        aguas:
+                    </label>
+                    {{autoVistoria.esgotoAguas | booleanPipe}}
+                </div>
+                <div class="mb-6 col-span-12">
+                    <label for="paredesPavimentos" class="font-medium text-surface-900  mb-2 block">
+                        vi.&nbsp;&nbsp; As paredes, pavimentos e tetos das instalacoes sanitarias devem ser
+                        revestidas de
+                        materiais resistentes, impermeaveis, nao inflamaveis e de facil limpeza:
+                    </label>
+                    {{autoVistoria.paredesPavimentos | booleanPipe}}
+                </div>
+                <div class="mb-6 col-span-12">
+                    <label for="zonasDestinadas" class="font-medium text-surface-900  mb-2 block">
+                        vii.&nbsp;&nbsp;Nao podem situar-se junto das zonas destinadas a preparar e cozinhar
+                        alimentos ou a
+                        tomar refeicoes
+                    </label>
+                    {{autoVistoria.zonasDestinadas | booleanPipe}}
+                </div>
+            </div>
+            <div class="grid grid-cols-12 gap-4">
+                <div class="mb-6 col-span-12">
+                    <label for="instalacoesFrigorificas" class="font-medium text-surface-900  mb-2 block">
+                        b)&nbsp;&nbsp;Instalacoes sanitarias de utilizacao comum dotadas de agua corrente
+                    </label>
+                    {{autoVistoria.instalacoesFrigorificas | booleanPipe}}
+                </div>
+                <div class="mb-6 col-span-12">
+                    <label for="sectoresLimpos" class="font-medium text-surface-900  mb-2 block">
+                        c)&nbsp;&nbsp;Separação de sectores limpos e sujos
+                    </label>
+                    {{autoVistoria.sectoresLimpos | booleanPipe}}
+                </div>
+                <div class="mb-6 col-span-12">
+                    <label for="pisosParedes" class="font-medium text-surface-900  mb-2 block">
+                        d)&nbsp;&nbsp;Pisos e paredes - os edifícios devem ser providos de dispositivos de
+                        proteção
+                        contra insetos e roedores e
+                        concebidos de modo a permitir uma aplicação fácil das normas de higienização, e para
+                        esse efeito
+                    </label>
+                    {{autoVistoria.pisosParedes | booleanPipe}}
+                </div>
+            </div>
+            <div class="grid grid-cols-12 gap-4 pl-4">
+                <div class="mb-6 col-span-12">
+                    <label for="pisosResistentes" class="font-medium text-surface-900  mb-2 block">
+                        i.&nbsp;&nbsp;Os pisos devem ser resistentes, perfeitamente estanques,
+                        antiderrapantes e
+                        com inclinações da ordem
+                        dos 3 % e rede de esgotos apropriada para escoamento de líquido
+                    </label>
+                    {{autoVistoria.pisosResistentes | booleanPipe}}
+                </div>
+                <div class="mb-6 col-span-12">
+                    <label for="paredesInteriores" class="font-medium text-surface-900  mb-2 block">
+                        ii.&nbsp;&nbsp;As paredes interiores e o piso devem possuir um revestimento lavável;
+                    </label>
+                    {{autoVistoria.paredesInteriores | booleanPipe}}
+                </div>
+                <div class="mb-6 col-span-12">
+                    <label for="paredes3metros" class="font-medium text-surface-900  mb-2 block">
+                        iii.&nbsp;&nbsp;As paredes vem possuir até 3 metros de altura e um revestimento
+                        resistente
+                        ao choque, impermeáveis,
+                        liso e imputrescível
+                    </label>
+                    {{autoVistoria.paredes3metros| booleanPipe}}
+                </div>
+                <div class="mb-6 col-span-12">
+                    <label for="unioesParedes" class="font-medium text-surface-900  mb-2 block">
+                        iv.&nbsp;&nbsp;As uniões das paredes com os tetos e os pisos devem ser
+                        arredondadas.
+                    </label>
+                    {{autoVistoria.unioesParedes | booleanPipe}}
+                </div>
+            </div>
+            <div class="grid grid-cols-12 gap-4">
+                <div class="mb-6 col-span-12">
+                    <label for="ventilacoesNecessarias" class="font-medium text-surface-900  mb-2 block">
+                        e)&nbsp;&nbsp;Em todos os locais deve ser assegurada a ventilação necessária
+                    </label>
+                    {{autoVistoria.ventilacoesNecessarias | booleanPipe}}
+                </div>
+                <div class="mb-6 col-span-12">
+                    <label for="iluminacao" class="font-medium text-surface-900  mb-2 block">
+                        f)&nbsp;&nbsp;A iluminação, natural ou artificial, deve ser adequada às
+                        características de cada local
+                    </label>
+                    {{autoVistoria.iluminacao | booleanPipe}}
+                </div>
+                <div class="mb-6 col-span-12">
+                    <label for="aguaPotavel" class="font-medium text-surface-900  mb-2 block">
+                        g)&nbsp;&nbsp;O estabelecimento deve ser provido de uma rede de água potável sob
+                        pressão, fria e/ou quente, em
+                        quantidade suficiente para cobrir as suas necessidades
+                    </label>
+                    {{autoVistoria.aguaPotavel | booleanPipe}}
+                </div>
+                <div class="mb-6 col-span-12">
+                    <label for="distribuicaoAgua" class="font-medium text-surface-900  mb-2 block">
+                        h)&nbsp;&nbsp;A rede de distribuição de águas deve ter o número necessário de
+                        dispositivos de saída de água para
+                        assegurar a limpeza e lavagem em todas as suas atividades, incluindo a higiene do
+                        pessoal
+                    </label>
+                    {{autoVistoria.distribuicaoAgua | booleanPipe}}
+                </div>
+                <div class="mb-6 col-span-12">
+                    <label for="redeDistribuicao" class="font-medium text-surface-900  mb-2 block">
+                        i)&nbsp;&nbsp;Pode existir uma rede de distribuição, devidamente sinalizada, de água
+                        não potável para geradores de
+                        vapor, instalações comerciais frigoríficas, bocas de incêndio, jardinagem e outros
+                        serviços auxiliares, desde
+                        que não haja comunicação entre esta e a de água potável
+                    </label>
+                    {{autoVistoria.redeDistribuicao | booleanPipe}}
+                </div>
+                <div class="mb-6 col-span-12">
+                    <label for="redeEsgotos" class="font-medium text-surface-900  mb-2 block">
+                        j)&nbsp;&nbsp;A rede de esgotos, fossas ou tanques sépticos tem de permitir a fácil
+                        observação, limpeza e desinfeção e
+                        possuir válvulas sifonadas grelhas de proteção e caixas de recolha de gorduras;
+                    </label>
+                    {{autoVistoria.redeEsgotos | booleanPipe}}
+                </div>
+                <div class="mb-6 col-span-12">
+                    <label for="equipamentoUtensilios" class="font-medium text-surface-900  mb-2 block">
+                        k)&nbsp;&nbsp;Todo o equipamento e utensílios devem ser em material inalterável e de
+                        fácil limpeza e desinfeção.
+                    </label>
+                    {{autoVistoria.equipamentoUtensilios | booleanPipe}}
+                </div>
+                <div class="mb-6 col-span-12">
+                    <label for="equipamentoPrimeirosSocorros" class="font-medium text-surface-900  mb-2 block">
+                        l)&nbsp;&nbsp;Equipados com equipamento de primeiros socorros
+                    </label>
+                    {{autoVistoria.equipamentoPrimeirosSocorros | booleanPipe}}
+                </div>
+                <div class="mb-6 col-span-12">
+                    <label for="recipientesLixo" class="font-medium text-surface-900  mb-2 block">
+                        m)&nbsp;&nbsp;Dispor de recipientes para o lixo, com tampa, colocados em locais de
+                        fácil acesso e devidamente
+                        sinalizados.
+                    </label>
+                    {{autoVistoria.recipientesLixo | booleanPipe}}
+                </div>
+                <div class="mb-6 col-span-12">
+                    <label for="limpezaDiaria" class="font-medium text-surface-900  mb-2 block">
+                        n)&nbsp;&nbsp;A limpeza e desinfeção diária dos contentores é obrigatória e o lixo e
+                        demais resíduos devem ser
+                        removidos diariamente para local adequado de forma a serem transportados pelos
+                        serviços públicos de
+                        recolha de lixo:
+                    </label>
+                    {{autoVistoria.limpezaDiaria | booleanPipe}}
+                </div>
+            </div>
+            <div class="mb-12 col-span-12">
+                <label for="descreverIrregularidades" class="font-medium text-surface-900  mb-2 block">
+                    Verificou-se que (descrever as irregularidades e/ou omissões)
+                </label>
+                <span class="text-value font-bold">
+                    {{autoVistoria.descreverIrregularidades}}
+                </span>
+            </div>
+            <h3 class="text-center font-bold border-b border-gray-200 mb-3">
+                CONCLUSÃO
+            </h3>
+            <span class="text-md font-bold mt-6 mb-3 block">
+                A Equipa de Vistoria, deliberando, considera o estabelecimento comercial:
+            </span>
+            <div class="grid grid-cols-12 gap-4 mb-12">
+                <div class="mb-6 col-span-12">
+                    <label for="aptoAberto" class="font-medium text-surface-900  mb-2 block">
+                        Apto para ser aberto ao público
+                    </label>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.aptoAberto | booleanPipe}}
+                    </span>
+                </div>
+                <div class="mb-6 col-span-12">
+                    <label for="comDeficiencias" class="font-medium text-surface-900  mb-2 block">
+                        Com deficiências e recomendou a sua superação
+                    </label>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.comDeficiencias | booleanPipe}}
+                    </span>
+                </div>
+            </div>
+            <h3 class="text-center font-bold border-b border-gray-200 mb-3">
+                (CASO APLICAVEL)
+            </h3>
+            <div class="grid grid-cols-12 gap-4 mb-12">
+                <div class="col-span-12">
+                    <label for="recomendacoes" class="font-medium text-gray-600 mb-2 block">
+                        Face à(s) irregularidade(s) e omissão(ões) detetadas, tendo em vista o seu
+                        suprimento, foram emitidas as
+                        seguintes recomendações:
+                    </label>
+                    <span class="text-value font-bold">
+                        {{autoVistoria.recomendacoes}}
+                    </span>
+                </div>
+            </div>
+            <div class="grid grid-cols-12 gap-4 text-justify">
+                <div class="mb-6 col-span-12 text-gray-600 font-normal">
+                    <p class="leading-relaxed">
+                        Considerando a complexidade das deficiências a regularizar é concedido o prazo de
+                        <span class="text-value font-bold text-black">
+                            {{autoVistoria.prazo}}
+                        </span>
+                        dias, a fim
+                        do requerente proceder, querendo, à sua regularização.
+                    </p>
+                    <p class="leading-relaxed">
+                        A não observação das recomendações apresentadas importa, em consequência, o
+                        indeferimento do requerido no processo.
+                    </p>
+                    <p class="leading-relaxed">
+                        Neste ato o requerente foi notificado que, decorrido o prazo concedido sem que as
+                        deficiências e/ou omissões
+                        tenham sido corrigidas ou supridas, o pedido de licenciamento é indeferido, sem
+                        direito a qualquer reembolso
+                        pelo pagamento de taxas ou impressos.
+                    </p>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="mt-8">
+            <h3 class="text-center font-bold border-b border-gray-200 mb-3">
+                NOTIFICAÇÃO
+            </h3>
+
+            <p class="text-gray-600 font-normal text-justify">
+                Neste ato o requerente foi notificado que decorrido o prazo concedido sem que as deficiências e/ou
+                omissões tenham sido
+                corrigidas ou supridas, o pedido de licenciamento é indeferido, sem direito a qualquer reembolso pelo
+                pagamento de taxas
+                ou impressos.
+            </p>
+        </section>
+
+        <section class="mt-8">
+            <h3 class="text-center font-bold border-b border-gray-200 mb-3">
+                FECHO DO AUTO
+            </h3>
+            <p class="text-gray-600 font-normal text-justify">
+                Para constar, lavrou-se o presente auto que foi por mim elaborado e integralmente revisto, o qual, lido
+                e
+                achado conforme, vai ser devidamente assinado, fazendo-se entrega ao requerente de uma cópia.
+            </p>
+            <h4 class="text-center my-4">
+                Os membros da Equipa de vistoria
+            </h4>
+            <div class="grid-cols-1 flex justify-center">
+                @for (item of autoVistoria.membrosEquipaVistoria; track $index) {
+                <div class="col-span-1 text-center mb-3">
+                    <span class="text-label text-gray-600">
+                        {{getAreaRepresentanteLabel(item.areaRepresentante).name}}
+                    </span>
+                    <p class="font-bold pt-4">
+                        {{item.nome}}
+                    </p>
+                </div>
+                }
+            </div>
+        </section>
+    </div>
+</div>
+}

@@ -2,7 +2,7 @@ import { Aplicante, Documento, Fatura } from '@/core/models/entities.model';
 import { AuthenticationService } from '@/core/services';
 import { PedidoService } from '@/core/services/pedido.service';
 import { calculateCommercialLicenseTax } from '@/core/utils/global-function';
-import { Component, Input, signal } from '@angular/core';
+import { Component, Input, output, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -36,6 +36,7 @@ export class FaturaAtividadeFormComponent {
   pedidoId!: number;
   faturaId!: number;
   loading = false;
+  dataSent = output<any>();
 
 
   constructor(
@@ -57,9 +58,6 @@ export class FaturaAtividadeFormComponent {
 
     this.enableSuperficieFormControl();
     this.superficieOnChange();
-
-    console.log(this.listaPedidoAto);
-
   }
 
   submitFatura(form: FormGroup) {
@@ -86,8 +84,6 @@ export class FaturaAtividadeFormComponent {
       formData.id = this.faturaId;
       this.pedidoService.updateFaturaPedidoLicenca(this.pedidoId, this.faturaId, formData).subscribe({
         next: (response) => {
-          this.faturaId = response.id;
-          this.aplicanteData.pedidoInscricaoCadastro.fatura = response;
           this.addMessages(true, false);
         },
         error: error => {
@@ -103,7 +99,7 @@ export class FaturaAtividadeFormComponent {
       this.pedidoService.saveFaturaPedidoLicenca(this.pedidoId, formData).subscribe({
         next: (response) => {
           this.faturaId = response.id;
-          this.aplicanteData.pedidoLicencaAtividade.fatura = response;
+          this.dataSent.emit(response);
           this.addMessages(true, true);
           this.updateUploadUrl();
         },

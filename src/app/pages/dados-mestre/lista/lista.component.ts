@@ -1,6 +1,6 @@
-import { Categoria, TipoAtividadeEconomica } from '@/core/models/enums';
+import { Categoria } from '@/core/models/enums';
 import { DataMasterService } from '@/core/services/data-master.service';
-import { applicationTypesOptions, categoryTpesOptions, mapToAtividadeEconomica, mapToIdAndName, nivelRiscoOptions, roleOptions } from '@/core/utils/global-function';
+import { applicationTypesOptions, categoryTpesOptions, mapToAtividadeEconomica, nivelRiscoOptions, roleOptions } from '@/core/utils/global-function';
 import { CurrencyPipe, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';

@@ -1,0 +1,737 @@
+ <p-toast position="bottom-right" />
+ <div class="card">
+     <form [formGroup]="autoVistoriaForm">
+         <div class="grid grid-cols-12 gap-4">
+             <div class="mb-6 col-span-12">
+                 <label for="numeroProcesso" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     Nº Processo
+                 </label>
+                 <input formControlName="numeroProcesso" id="numeroProcesso" type="text" pInputText fluid />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <label for="dataHora" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     Data e Hora
+                 </label>
+                 <p-datepicker formControlName="dataHora" [showTime]="true" appendTo="body" [showButtonBar]="true"
+                     fluid />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <div formGroupName="local" class="grid grid-cols-12">
+                     <div class="mb-6 col-span-12">
+                         <label for="local" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                             Local
+                         </label>
+                         <input formControlName="local" id="local" type="text" pInputText fluid />
+                     </div>
+                     <div class="mb-6 col-span-12">
+                         <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+                             <div class="flex-auto">
+                                 <label for="aldeia"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Aldeia
+                                 </label>
+                                 <p-select fluid formControlName="aldeia" [options]="listaAldeia" optionLabel="nome"
+                                     optionValue="id" placeholder="Selecione a Aldeia" [filter]="true" filterBy="nome"
+                                     [showClear]="true" (onFilter)="aldeiaFilter($event)" (onpanelHide)="onPanelHide()"
+                                     (onChange)="aldeiaOnChange($event, 'local')" (onClear)="onPanelHide()">
+                                 </p-select>
+                             </div>
+                             <div class="flex-auto">
+                                 <label for="suco" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Suco
+                                 </label>
+                                 <input formControlName="suco" id="suco" type="text" [disabled]="true" pInputText
+                                     fluid />
+                             </div>
+                             <div class="flex-auto">
+                                 <label for="postoAdministrativo"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Posto Administrativo
+                                 </label>
+                                 <input formControlName="postoAdministrativo" id="postoAdministrativo" type="text"
+                                     pInputText [disabled]="true" fluid />
+                             </div>
+                             <div class="flex-auto">
+                                 <label for="municipio"
+                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     Municipio
+                                 </label>
+                                 <input formControlName="municipio" id="municipio" type="text" pInputText fluid />
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+
+         </div>
+         <span class="text-xl font-bold mt-6 mb-3 block text-center">
+             REQUERENTE
+         </span>
+         <div formGroupName="requerente">
+             <div class="grid grid-cols-12 gap-4">
+                 <div class="mb-6 col-span-12 md:col-span-6">
+                     <label for="denominacaoSocial" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         Denominacao Social
+                     </label>
+                     <input formControlName="denominacaoSocial" id="denominacaoSocial" type="text" pInputText fluid />
+                 </div>
+                 <div class="mb-6 col-span-12 md:col-span-6">
+                     <label for="numeroRegistoComercial" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         Nº de Registo Comercial
+                     </label>
+                     <input formControlName="numeroRegistoComercial" id="numeroRegistoComercial" type="text" pInputText fluid />
+                 </div>
+                 <div class="mb-6 col-span-12">
+                     <div formGroupName="sede" class="grid grid-cols-12">
+                         <div class="mb-6 col-span-12">
+                             <label for="local" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                 Local do Estabelecimento
+                             </label>
+                             <input formControlName="local" id="local" type="text" pInputText fluid
+                                 placeholder="ex. Av. Pres. Nicolau Lobato" />
+                         </div>
+                         <div class="mb-6 col-span-12">
+                             <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+                                 <div class="flex-auto">
+                                     <label for="aldeia"
+                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         Aldeia
+                                     </label>
+                                     <p-select fluid formControlName="aldeia" [options]="listaAldeiaRequerente"
+                                         optionLabel="nome" optionValue="id" placeholder="Selecione a Aldeia"
+                                         [filter]="true" filterBy="nome" [showClear]="true"
+                                         (onFilter)="aldeiaFilter($event, 'requerente', 'sede')"
+                                         (onpanelHide)="onPanelHide()"
+                                         (onChange)="aldeiaNestedOnChange($event, 'requerente', 'sede')"
+                                         (onClear)="onPanelHide()">
+                                     </p-select>
+                                 </div>
+                                 <div class="flex-auto">
+                                     <label for="suco"
+                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         Suco
+                                     </label>
+                                     <input formControlName="suco" id="suco" type="text" pInputText fluid />
+                                 </div>
+                                 <div class="flex-auto">
+                                     <label for="postoAdministrativo"
+                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         Posto Administrativo
+                                     </label>
+                                     <input formControlName="postoAdministrativo" id="postoAdministrativo" type="text"
+                                         pInputText fluid />
+                                 </div>
+                                 <div class="flex-auto">
+                                     <label for="municipio"
+                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         Municipio
+                                     </label>
+                                     <input formControlName="municipio" id="municipio" type="text" pInputText fluid />
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+                 <div class="mb-6 col-span-12 md:col-span-6">
+                     <label for="nif" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         NIF
+                     </label>
+                     <input formControlName="nif" id="nif" type="text" pInputText fluid />
+                 </div>
+                 <div class="mb-6 col-span-12 md:col-span-6">
+                     <label for="gerente" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         Gerente
+                     </label>
+                     <input formControlName="gerente" id="gerente" type="text" pInputText fluid />
+                 </div>
+                 <div class="mb-6 col-span-12 md:col-span-6">
+                     <label for="telefone" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         Telefone
+                     </label>
+                     <input formControlName="telefone" id="telefone" type="text" pInputText fluid />
+                 </div>
+                 <div class="mb-6 col-span-12 md:col-span-6">
+                     <label for="email" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         Email
+                     </label>
+                     <input formControlName="email" id="email" type="text" pInputText fluid />
+                 </div>
+                 <div class="mb-6 col-span-12 md:col-span-6">
+                     <label for="classeAtividade" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         Classificacao Atividade
+                     </label>
+                     <p-select fluid formControlName="classeAtividade" [options]="listaClassificacaoAtividade"
+                         (onChange)="classeAtividadeChange($event)" optionLabel="codigo"
+                         placeholder="Selecione a Classificacao Atividade" [showClear]="true">
+                         <ng-template let-tipo #item>
+                             <div class="flex items-center gap-2">
+                                 <span>{{tipo.codigo}} </span> - <span>{{tipo.descricao}} </span>
+                             </div>
+                         </ng-template>
+                     </p-select>
+                 </div>
+                 <div class="mb-6 col-span-12 md:col-span-6">
+                     <label for="classeAtividadeCodigo"
+                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         Descricao
+                     </label>
+                     <input formControlName="classeAtividadeCodigo" id="classeAtividadeCodigo" type="text" pInputText
+                         fluid />
+                 </div>
+                 <div class="mb-6 col-span-12">
+                     <label for="nomeRepresentante" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         Nome Representante
+                     </label>
+                     <input formControlName="nomeRepresentante" id="nomeRepresentante" type="text" pInputText fluid />
+                 </div>
+                 <div class="mb-6 col-span-12 md:col-span-6">
+                     <label for="pai" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         Pai
+                     </label>
+                     <input formControlName="pai" id="pai" type="text" pInputText fluid />
+                 </div>
+                 <div class="mb-6 col-span-12 md:col-span-6">
+                     <label for="mae" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         Mae
+                     </label>
+                     <input formControlName="mae" id="mae" type="text" pInputText fluid />
+                 </div>
+                 <div class="mb-6 col-span-12 md:col-span-6">
+                     <label for="dataNascimento" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         Data Nascimento
+                     </label>
+                     <p-datepicker formControlName="dataNascimento" id="dataNascimento" appendTo="body"
+                         [showButtonBar]="true" fluid />
+                 </div>
+                 <div class="mb-6 col-span-12 md:col-span-6">
+                     <label for="estadoCivil" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         Estado Civil
+                     </label>
+                     <input formControlName="estadoCivil" id="estadoCivil" type="text" pInputText fluid />
+                 </div>
+                  <div class="mb-6 col-span-12">
+                     <label for="nacionalidade" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         Nacionalidade
+                     </label>
+                     <input formControlName="nacionalidade" id="nacionalidade" type="text" pInputText fluid />
+                 </div>
+                 <div class="mb-6 col-span-12">
+                     <label for="natural" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         Natural de
+                     </label>
+                     <input formControlName="natural" id="natural" type="text" pInputText fluid />
+                 </div>
+                 <div class="mb-6 col-span-12 md:col-span-6">
+                     <label for="postoAdministrativo"
+                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         Posto Administrativo
+                     </label>
+                     <p-select fluid formControlName="postoAdministrativo" [options]="listaPostoAdministrativo"
+                         (onChange)="postoChange($event)" (onFilter)="postoFilter($event)" optionLabel="nome" [filter]="true"
+                         optionValue="id" placeholder="Selecione o Posto" [showClear]="true">
+                     </p-select>
+                 </div>
+                 <div class="mb-6 col-span-12 md:col-span-6">
+                     <label for="municipio" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         Municipio
+                     </label>
+                     <input formControlName="municipio" id="municipio" type="text" pInputText fluid />
+                 </div>
+                 <div class="mb-6 col-span-12 md:col-span-6">
+                     <label for="tipoDocumento" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         Tipo de Documento de Identificação
+                     </label>
+                     <p-select fluid formControlName="tipoDocumento" id="tipoDocumento" [options]="tipoDocumentoOpts"
+                         optionLabel="name" optionValue="value" placeholder="Selecione o Tipo de Documento"
+                         [filter]=" true" filterBy="nome" [showClear]="true">
+                     </p-select>
+                 </div>
+                 <div class="mb-6 col-span-12 md:col-span-6">
+                     <label for="numeroDocumento" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         Nº Documento de Identificacao
+                     </label>
+                     <input formControlName="numeroDocumento" id="numeroDocumento" type="text" pInputText fluid />
+                 </div>
+                 <div class="mb-6 col-span-12">
+                     <div formGroupName="residencia" class="grid grid-cols-12">
+                         <div class="mb-6 col-span-12">
+                             <label for="local" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                 Local do Estabelecimento
+                             </label>
+                             <input formControlName="local" id="local" type="text" pInputText fluid
+                                 placeholder="ex. Av. Pres. Nicolau Lobato" />
+                         </div>
+                         <div class="mb-6 col-span-12">
+                             <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+                                 <div class="flex-auto">
+                                     <label for="aldeia"
+                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         Aldeia
+                                     </label>
+                                     <p-select fluid formControlName="aldeia" [options]="listaAldeiaResidencia"
+                                         optionLabel="nome" optionValue="id" placeholder="Selecione a Aldeia"
+                                         [filter]="true" filterBy="nome" [showClear]="true"
+                                         (onFilter)="aldeiaFilter($event, 'requerente', 'residencia')"
+                                         (onpanelHide)="onPanelHide()"
+                                         (onChange)="aldeiaNestedOnChange($event, 'requerente', 'residencia')"
+                                         (onClear)="onPanelHide()">
+                                     </p-select>
+                                 </div>
+                                 <div class="flex-auto">
+                                     <label for="suco"
+                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         Suco
+                                     </label>
+                                     <input formControlName="suco" id="suco" type="text" pInputText fluid />
+                                 </div>
+                                 <div class="flex-auto">
+                                     <label for="postoAdministrativo"
+                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         Posto Administrativo
+                                     </label>
+                                     <input formControlName="postoAdministrativo" id="postoAdministrativo" type="text"
+                                         pInputText fluid />
+                                 </div>
+                                 <div class="flex-auto">
+                                     <label for="municipio"
+                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         Municipio
+                                     </label>
+                                     <input formControlName="municipio" id="municipio" type="text" pInputText fluid />
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+         <span class="text-xl font-bold mt-6 mb-3 block text-center">
+             PARTICIPANTES
+         </span>
+         <div formArrayName="membrosEquipaVistoria">
+             @for (membro of membrosEquipaVistoria.controls; track membro; let i = $index) {
+             <div class="grid grid-cols-12 gap-4 mt-6" [formGroupName]="i">
+                 <div class="mb-6 col-span-12">
+                     <label for="nome" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         Nome
+                     </label>
+                     <input formControlName="nome" id="nome" type="text" pInputText fluid />
+                 </div>
+                 <div class="mb-6 col-span-12 md:col-span-7">
+                     <label for="instituicao" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         Instituicao
+                     </label>
+                     <p-select fluid formControlName="areaRepresentante" [options]="tipoAreaRepresentanteOpts"
+                         optionLabel="name" optionValue="value" placeholder="Selecione a Area Representante"
+                         [filter]=" true" filterBy="nome" [showClear]="true">
+                     </p-select>
+                 </div>
+                 <div class="mb-6 col-span-12 md:col-span-5">
+                     <label for="cargo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         Cargo
+                     </label>
+                     <input formControlName="cargo" id="cargo" type="text" pInputText fluid />
+                 </div>
+             </div>
+             <p-button label="Remover Participante" icon="pi pi-minus" (click)="removeParticipanteForm(i)"
+                 severity="danger" [disabled]="membrosEquipaVistoria.length <= 1"></p-button>
+             }
+             <div class=" mt-6">
+                 <p-button label="Adicionar Participante" icon="pi pi-plus" (click)="addParticipanteForm()"
+                     [disabled]="membrosEquipaVistoria.length >= 5" severity="success" class="mt-2">
+                 </p-button>
+             </div>
+         </div>
+         <span class="text-xl font-bold mt-6 mb-3 block text-center">
+             DILIGENCIA DE VISTORIA
+         </span>
+         <div class="grid grid-cols-12 gap-4">
+             <div class="mb-6 col-span-12">
+                 <p class="mb-6 leading-relaxed">
+                     Na data, hora e local acima referidos, F (<span class="font-italic">nome do
+                         atuante</span>)
+                     <input formControlName="nomeAtuante" id="funcionario" type="text" pInputText variant="filled"
+                         placeholder="Digite o nome do atuante" />
+                     ,
+                     estando presentes os demais participantes acima indicados, dei início à vistoria
+                     prevista no artigo 12.º do Decreto-Lei n.º 89/2023, de 20 de dezembro, exigida para
+                     efeitos de emissão da licença destinada ao exercício da atividade comercial.
+                 </p>
+             </div>
+         </div>
+         <p class="mb-6 leading-relaxed">
+             O ato de vistoria incidiu sobre as condicoes tecnicas e sanitarias dos estabelecimentos
+             comerciais, confirme o Anexo IV do diploma mencionado, a saber
+         </p>
+         <span class="text-lg font-bold mt-6 mb-3 block">
+             I - Escolha do local de implantacao
+         </span>
+         <div class="grid grid-cols-12 gap-4">
+             <div class="mb-6 col-span-12 md:col-span-8">
+                 <label for="legislacaoUrbanistica" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     1. A escolha do local deve staisfazer as exigencias da legislacao urbanistica, tendo
+                     em
+                     conta especialmente os planos urbanisticos existentes ou as indicacoes dadas pelas
+                     autoridades locais competentes
+                 </label>
+                 <p-selectbutton [options]="stateOptions" formControlName="legislacaoUrbanistica" optionLabel="label"
+                     optionValue="value" />
+             </div>
+         </div>
+         <span class="text-md font-bold mt-6 mb-3 block">
+             2. O terreno escholhido tendo em conta as facilidades:
+         </span>
+         <div class="grid grid-cols-12 gap-4 pl-4">
+             <div class="mb-6 col-span-12">
+                 <label for="accessoEstrada" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     a) De acesso por estrada:
+                 </label>
+                 <p-selectbutton [options]="stateOptions" formControlName="accessoEstrada" optionLabel="label"
+                     optionValue="value" />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <label for="escoamentoAguas" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     b) De escoamento de aguas residuais, as quais devem obedecer a regulamentacao
+                     adotada
+                     ou a adotar relativa ao sanemento publico
+                 </label>
+                 <p-selectbutton [options]="stateOptions" formControlName="escoamentoAguas" optionLabel="label"
+                     optionValue="value" />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <label for="alimentacaoEnergia" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     c) De execucao de um ramal de alimentacao de energia eletrica em media tensao (alta
+                     tensao)
+                 </label>
+                 <p-selectbutton [options]="stateOptions" formControlName="alimentacaoEnergia" optionLabel="label"
+                     optionValue="value" />
+             </div>
+         </div>
+         <span class="text-lg font-bold mt-6 mb-3 block">
+             II - Instalacoes
+         </span>
+         <span class="text-md font-bold mt-6 mb-3 block">
+             1.&nbsp;&nbsp;Obrigatorias:
+         </span>
+         <span class="text-md font-bold mt-6 mb-3 block">
+             a)&nbsp;&nbsp;Instalacoes sanitarias de utilizacao comum dotadas de agua corrente
+         </span>
+         <div class="grid grid-cols-12 gap-4 pl-4">
+             <div class="mb-6 col-span-12">
+                 <label for="seperadosSexo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     i.&nbsp;&nbsp; Separados por sexo
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="seperadosSexo" formControlName="seperadosSexo"
+                     optionLabel="label" optionValue="value" />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <label for="lavatoriosComEspelho" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     ii.&nbsp;&nbsp; Dispor de lavatorios com espelho:
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="lavatoriosComEspelho"
+                     formControlName="lavatoriosComEspelho" optionLabel="label" optionValue="value" />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <label for="comunicacaoVentilacao" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     iii.&nbsp;&nbsp;Comunicacao direta para o exterior ou serem adotadas de dispositivos
+                     ventilacao
+                     artificial com continua renovacao do ar adequados a sua dimensao:
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="comunicacaoVentilacao"
+                     formControlName="comunicacaoVentilacao" optionLabel="label" optionValue="value" />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <label for="esgotoAguas" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     iv.&nbsp;&nbsp; Ligadas a uma rede interna de esgotos que conduzzam as aguas
+                     residuais a sistemas
+                     adequados ao seu escoamento, nomeadamente atraves da rede publica ou, se esta nao
+                     existir, de um sistema de recolha e tratamento adequado ao volume e natureza dessas
+                     aguas:
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="esgotoAguas" formControlName="esgotoAguas"
+                     optionLabel="label" optionValue="value" />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <label for="paredesPavimentos" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     vi.&nbsp;&nbsp; As paredes, pavimentos e tetos das instalacoes sanitarias devem ser
+                     revestidas de
+                     materiais resistentes, impermeaveis, nao inflamaveis e de facil limpeza:
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="paredesPavimentos" formControlName="paredesPavimentos"
+                     optionLabel="label" optionValue="value" />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <label for="zonasDestinadas" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     vii.&nbsp;&nbsp;Nao podem situar-se junto das zonas destinadas a preparar e cozinhar
+                     alimentos ou a
+                     tomar refeicoes
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="zonasDestinadas" formControlName="zonasDestinadas"
+                     optionLabel="label" optionValue="value" />
+             </div>
+         </div>
+         <div class="grid grid-cols-12 gap-4">
+             <div class="mb-6 col-span-12">
+                 <label for="instalacoesFrigorificas"
+                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     b)&nbsp;&nbsp;Instalacoes sanitarias de utilizacao comum dotadas de agua corrente
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="instalacoesFrigorificas"
+                     formControlName="instalacoesFrigorificas" optionLabel="label" optionValue="value" />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <label for="sectoresLimpos" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     c)&nbsp;&nbsp;Separação de sectores limpos e sujos
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="sectoresLimpos" formControlName="sectoresLimpos"
+                     optionLabel="label" optionValue="value" />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <label for="pisosParedes" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     d)&nbsp;&nbsp;Pisos e paredes - os edifícios devem ser providos de dispositivos de
+                     proteção
+                     contra insetos e roedores e
+                     concebidos de modo a permitir uma aplicação fácil das normas de higienização, e para
+                     esse efeito
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="pisosParedes" formControlName="pisosParedes"
+                     optionLabel="label" optionValue="value" />
+             </div>
+         </div>
+         <div class="grid grid-cols-12 gap-4 pl-4">
+             <div class="mb-6 col-span-12">
+                 <label for="pisosResistentes" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     i.&nbsp;&nbsp;Os pisos devem ser resistentes, perfeitamente estanques,
+                     antiderrapantes e
+                     com inclinações da ordem
+                     dos 3 % e rede de esgotos apropriada para escoamento de líquido
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="pisosResistentes" formControlName="pisosResistentes"
+                     optionLabel="label" optionValue="value" />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <label for="paredesInteriores" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     ii.&nbsp;&nbsp;As paredes interiores e o piso devem possuir um revestimento lavável;
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="paredesInteriores" formControlName="paredesInteriores"
+                     optionLabel="label" optionValue="value" />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <label for="paredes3metros" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     iii.&nbsp;&nbsp;As paredes vem possuir até 3 metros de altura e um revestimento
+                     resistente
+                     ao choque, impermeáveis,
+                     liso e imputrescível
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="paredes3metros" formControlName="paredes3metros"
+                     optionLabel="label" optionValue="value" />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <label for="unioesParedes" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     iv.&nbsp;&nbsp;As uniões das paredes com os tetos e os pisos devem ser
+                     arredondadas.
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="unioesParedes" formControlName="unioesParedes"
+                     optionLabel="label" optionValue="value" />
+             </div>
+         </div>
+         <div class="grid grid-cols-12 gap-4">
+             <div class="mb-6 col-span-12">
+                 <label for="ventilacoesNecessarias"
+                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     e)&nbsp;&nbsp;Em todos os locais deve ser assegurada a ventilação necessária
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="ventilacoesNecessarias"
+                     formControlName="ventilacoesNecessarias" optionLabel="label" optionValue="value" />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <label for="iluminacao" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     f)&nbsp;&nbsp;A iluminação, natural ou artificial, deve ser adequada às
+                     características de cada local
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="iluminacao" formControlName="iluminacao"
+                     optionLabel="label" optionValue="value" />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <label for="aguaPotavel" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     g)&nbsp;&nbsp;O estabelecimento deve ser provido de uma rede de água potável sob
+                     pressão, fria e/ou quente, em
+                     quantidade suficiente para cobrir as suas necessidades
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="aguaPotavel" formControlName="aguaPotavel"
+                     optionLabel="label" optionValue="value" />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <label for="distribuicaoAgua" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     h)&nbsp;&nbsp;A rede de distribuição de águas deve ter o número necessário de
+                     dispositivos de saída de água para
+                     assegurar a limpeza e lavagem em todas as suas atividades, incluindo a higiene do
+                     pessoal
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="distribuicaoAgua" formControlName="distribuicaoAgua"
+                     optionLabel="label" optionValue="value" />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <label for="redeDistribuicao" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     i)&nbsp;&nbsp;Pode existir uma rede de distribuição, devidamente sinalizada, de água
+                     não potável para geradores de
+                     vapor, instalações comerciais frigoríficas, bocas de incêndio, jardinagem e outros
+                     serviços auxiliares, desde
+                     que não haja comunicação entre esta e a de água potável
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="redeDistribuicao" formControlName="redeDistribuicao"
+                     optionLabel="label" optionValue="value" />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <label for="redeEsgotos" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     j)&nbsp;&nbsp;A rede de esgotos, fossas ou tanques sépticos tem de permitir a fácil
+                     observação, limpeza e desinfeção e
+                     possuir válvulas sifonadas grelhas de proteção e caixas de recolha de gorduras;
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="redeEsgotos" formControlName="redeEsgotos"
+                     optionLabel="label" optionValue="value" />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <label for="equipamentoUtensilios" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     k)&nbsp;&nbsp;Todo o equipamento e utensílios devem ser em material inalterável e de
+                     fácil limpeza e desinfeção.
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="equipamentoUtensilios"
+                     formControlName="equipamentoUtensilios" optionLabel="label" optionValue="value" />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <label for="equipamentoPrimeirosSocorros"
+                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     l)&nbsp;&nbsp;Equipados com equipamento de primeiros socorros
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="equipamentoPrimeirosSocorros"
+                     formControlName="equipamentoPrimeirosSocorros" optionLabel="label" optionValue="value" />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <label for="recipientesLixo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     m)&nbsp;&nbsp;Dispor de recipientes para o lixo, com tampa, colocados em locais de
+                     fácil acesso e devidamente
+                     sinalizados.
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="recipientesLixo" formControlName="recipientesLixo"
+                     optionLabel="label" optionValue="value" />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <label for="limpezaDiaria" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     n)&nbsp;&nbsp;A limpeza e desinfeção diária dos contentores é obrigatória e o lixo e
+                     demais resíduos devem ser
+                     removidos diariamente para local adequado de forma a serem transportados pelos
+                     serviços públicos de
+                     recolha de lixo:
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="limpezaDiaria" formControlName="limpezaDiaria"
+                     optionLabel="label" optionValue="value" />
+             </div>
+         </div>
+         <div class="mb-12 col-span-12">
+             <label for="descreverIrregularidades" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 Verificou-se que (descrever as irregularidades e/ou omissões)
+             </label>
+             <textarea id="descreverIrregularidades" rows="5" cols="30" variant="outlined" pTextarea
+                 formControlName="descreverIrregularidades" fluid></textarea>
+         </div>
+         <span class="text-xl font-bold mb-3 block text-center">
+             CONCLUSÃO
+         </span>
+         <span class="text-md font-bold mt-6 mb-3 block">
+             A Equipa de Vistoria, deliberando, considera o estabelecimento comercial:
+         </span>
+         <div class="grid grid-cols-12 gap-4 mb-12">
+             <div class="mb-6 col-span-12">
+                 <label for="aptoAberto" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     Apto para ser aberto ao público
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="aptoAberto" formControlName="aptoAberto"
+                     optionLabel="label" optionValue="value" />
+             </div>
+             <div class="mb-6 col-span-12">
+                 <label for="comDeficiencias" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     Com deficiências e recomendou a sua superação
+                 </label>
+                 <p-selectbutton [options]="stateOptions" id="comDeficiencias" formControlName="comDeficiencias"
+                     optionLabel="label" optionValue="value" />
+             </div>
+         </div>
+         <span class="text-xl font-bold mb-3 block text-center">
+             (CASO APLICAVEL)
+         </span>
+         <div class="grid grid-cols-12 gap-4 mb-12">
+             <div class="mb-12 col-span-12">
+                 <label for="recomendacoes" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     Face à(s) irregularidade(s) e omissão(ões) detetadas, tendo em vista o seu
+                     suprimento, foram emitidas as
+                     seguintes recomendações:
+                 </label>
+                 <textarea id="recomendacoes" rows="5" cols="30" variant="outlined" pTextarea
+                     formControlName="recomendacoes" fluid></textarea>
+             </div>
+         </div>
+         <div class="grid grid-cols-12 gap-4">
+             <div class="mb-6 col-span-12">
+                 <p class="leading-relaxed">
+                     Considerando a complexidade das deficiências a regularizar é concedido o prazo de
+                     <input formControlName="prazo" id="prazo" type="text" pInputText variant="filled"
+                         placeholder="Digite o prazo" />
+                     dias, a fim
+                     do requerente proceder, querendo, à sua regularização.
+                 </p>
+                 <p class="leading-relaxed">
+                     A não observação das recomendações apresentadas importa, em consequência, o
+                     indeferimento do requerido no processo.
+                 </p>
+                 <p class="leading-relaxed">
+                     Neste ato o requerente foi notificado que, decorrido o prazo concedido sem que as
+                     deficiências e/ou omissões
+                     tenham sido corrigidas ou supridas, o pedido de licenciamento é indeferido, sem
+                     direito a qualquer reembolso
+                     pelo pagamento de taxas ou impressos.
+                 </p>
+             </div>
+         </div>
+         <span class="text-xl font-bold mb-3 block text-center">
+             PROVAS
+         </span>
+         <div class="mb-3">
+             <span class="text-md font-bold">
+                 DOCUMENTAL
+             </span>
+         </div>
+         <p-fileupload name="files" [disabled]="uploadedFiles.length > 0" method="post"
+             (onUpload)="onUpload($event, 'advanced')" [maxFileSize]="maxFileSize" [multiple]="true"
+             accept="application/pdf" mode="advanced" [url]="uploadUrl()">
+             <ng-template #empty>
+                 @if (uploadedFiles.length === 0) {
+                 Arraste e largue os ficheiros aqui para carregar.
+                 }
+             </ng-template>
+             <ng-template #content>
+                 @if (uploadedFiles.length > 0) {
+                 <ul>
+                     @for (item of uploadedFiles; track $index) {
+                     <li>
+                         <a class="cursor-pointer hover:underline hover:text-teal-300">
+                             {{ item.nome }} - {{ bytesToMBs(item.tamanho) }}
+                         </a>
+                         &nbsp;
+                         <p-button (click)="downloadFile(item)" [loading]="downloadLoading" icon="pi pi-download"
+                             [rounded]="true" [text]="true" severity="success" />
+                         &nbsp;
+                         <p-button icon="pi pi-trash" [rounded]="true" [text]="true" [loading]="deleteLoading"
+                             severity="danger" (click)="removeFile(item)" />
+                     </li>
+                     }
+                 </ul>
+                 }
+             </ng-template>
+         </p-fileupload>
+         <div class="flex justify-content-end mt-6 mb-6">
+             <p-button label="Guardar" icon="pi pi-save" (click)="save(autoVistoriaForm)" [loading]="loading"
+                 [disabled]="!autoVistoriaForm.valid" severity="success" />
+         </div>
+     </form>
+ </div>

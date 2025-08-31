@@ -119,7 +119,7 @@ export const model_admin: MenuItem[] = [
     {
         label: 'Dados Mestre',
         items: [
-             {
+            {
                 label: 'Funções (Roles)',
                 icon: 'bi bi-fw bi-person-lock',
                 routerLink: ['dados-mestre/roles']
@@ -134,7 +134,7 @@ export const model_admin: MenuItem[] = [
                 icon: 'bi bi-fw bi-building',
                 routerLink: ['dados-mestre/sociedade-comercial']
             },
-             {
+            {
                 label: 'Direção',
                 icon: 'bi bi-fw bi-diagram-2',
                 routerLink: ['dados-mestre/direcao']
@@ -195,6 +195,115 @@ export const model_admin: MenuItem[] = [
 ];
 
 export const model_manager: MenuItem[] = [
+    {
+        label: 'Varanda',
+        icon: 'pi pi-home',
+        items: [
+            {
+                label: 'Painél',
+                icon: 'pi pi-fw pi-gauge',
+                routerLink: ['/dashboard']
+            }
+        ]
+    },
+    {
+        label: 'Empresa',
+        icon: 'bi bi-fw bi-building-fill',
+        items: [
+            {
+                label: 'Lista',
+                icon: 'pi pi-fw pi-list',
+                routerLink: ['empresa/list']
+
+            },
+        ]
+    },
+    {
+        label: 'Aplicantes',
+        icon: 'pi pi-fw pi-briefcase',
+        items: [
+            {
+                label: 'Atribuido',
+                icon: 'bi bi-fw bi-briefcase',
+                routerLink: ['gestor/application/task']
+            },
+            {
+                label: 'Lista',
+                icon: 'pi pi-fw pi-list',
+                routerLink: ['gestor/application/list']
+            },
+        ]
+    },
+    {
+        label: 'Licenças e Certificados',
+        items: [
+            {
+                label: 'Certificados de Inscricao no Cadastro',
+                icon: 'bi bi-fw bi-journal-text',
+                items: [
+                    {
+                        label: 'Comercio',
+                        icon: 'bi bi-fw bi-bag',
+                        routerLink: ['licencas-certificados/certificados/comercio']
+                    },
+                    {
+                        label: 'Industria',
+                        icon: 'bi bi-fw bi-buildings',
+                        routerLink: ['licencas-certificados/certificados/industria']
+
+                    }
+                ]
+            },
+            {
+                label: 'Alvara de Licenca para Exercicio da Atividade',
+                icon: 'bi bi-fw bi-journal-medical',
+                items: [
+                    {
+                        label: 'Comercio',
+                        icon: 'bi bi-fw bi-bag',
+                        routerLink: ['licencas-certificados/licencas/comercio']
+                    },
+                    {
+                        label: 'Industria',
+                        icon: 'bi bi-fw bi-buildings',
+                        routerLink: ['licencas-certificados/licencas/industria']
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        label: 'Utilizador',
+        icon: 'pi pi-fw pi-user',
+        items: [
+            {
+                label: 'Lista',
+                icon: 'pi pi-fw pi-list',
+                routerLink: ['utilizador/list']
+            },
+            {
+                label: 'Criar',
+                icon: 'pi pi-fw pi-plus',
+                routerLink: ['utilizador/create']
+            }
+        ]
+    },
+    {
+        label: 'Historicos',
+        items: [
+            {
+                label: 'Atividades',
+                icon: 'bi bi-fw bi-activity'
+            },
+            {
+                label: 'Autenticacao',
+                icon: 'bi bi-fw bi-unlock'
+            }
+        ]
+    }
+];
+
+export const model_staff: MenuItem[] = [
     {
         label: 'Varanda',
         icon: 'pi pi-home',

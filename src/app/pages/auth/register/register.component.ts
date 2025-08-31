@@ -1,4 +1,4 @@
-import { Aldeia } from '@/core/models/data-master.model';
+import { Aldeia, Role } from '@/core/models/data-master.model';
 import { TipoPropriedade } from '@/core/models/enums';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { EmpresaService } from '@/core/services/empresa.service';
@@ -22,7 +22,6 @@ import { Ripple } from 'primeng/ripple';
 import { Select, SelectFilterEvent } from 'primeng/select';
 import { StepperModule } from 'primeng/stepper';
 import { Tooltip } from 'primeng/tooltip';
-import { distinctUntilChanged } from 'rxjs';
 
 
 interface Notification {
@@ -57,6 +56,7 @@ export class Register {
     tipoProriedadeOpts = tipoPropriedadeOptions;
     tipoDocumentoOpts = tipoDocumentoOptions;
     showAddBtnAcionistas = false;
+    selectedRole!: Role;
 
     constructor(
         private _fb: FormBuilder,
@@ -88,7 +88,6 @@ export class Register {
         });
 
         this.aldeias = this.route.snapshot.data['aldeiasResolver']._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
-        console.log(this.route.snapshot.data['listaSociedadeComercial']);
 
         this.listaSociedadeComercial = this.route.snapshot.data['listaSociedadeComercial']._embedded.sociedadeComercial.map((s: any) => ({ nome: s.nome, value: s.id }));
         this.originalAldeias = [...this.aldeias];
@@ -143,6 +142,17 @@ export class Register {
 
             }
         });
+
+        console.log(
+            this.route.snapshot.data['roleListResolver']
+        );
+
+        const roles: any[] = this.route.snapshot.data['roleListResolver']._embedded.roles;
+        this.selectedRole = roles.find(r => r.name === 'ROLE_CLIENT')!;
+
+        console.log(this.selectedRole);
+
+
     }
 
 
@@ -200,6 +210,7 @@ export class Register {
             formData.utilizador.firstName = firstName;
             formData.utilizador.lastName = rest.join(' ');
             formData.utilizador.username = form.value.utilizador.email.split('@')[0] + new Date().getUTCMilliseconds().toString();
+            formData.utilizador.role = this.selectedRole
             console.log(formData);
 
             this.empresaService.save(formData).subscribe({

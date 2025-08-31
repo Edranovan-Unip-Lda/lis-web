@@ -33,7 +33,7 @@ export class PedidoVistoriaFormComponent {
   tipoPedidoVistoriaOpts: any = [];
   listaClasseAtividade: any[] = [];
   originalAldeias: any = [];
-  dataSent = output<string>();
+  dataSent = output<any>();
   loading = false;
   pedido: PedidoVistoria | undefined;
 
@@ -88,7 +88,6 @@ export class PedidoVistoriaFormComponent {
           this.vistoriaRequestForm.get('id')?.setValue(resp.id);
           this.addMessages(true, true);
           this.loading = false;
-          // this.dataSent.emit(resp);
         },
         error: error => {
           console.error(error);
@@ -105,7 +104,7 @@ export class PedidoVistoriaFormComponent {
           this.pedido = response;
           this.addMessages(true, true);
           this.loading = false;
-          // this.dataSent.emit(resp);
+          this.dataSent.emit(response);
         },
         error: error => {
           console.error(error);

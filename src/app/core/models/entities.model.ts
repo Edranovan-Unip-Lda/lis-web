@@ -1,6 +1,6 @@
 import { BaseModel } from "./base";
-import { ClasseAtividade, Endereco, GrupoAtividade, Role } from "./data-master.model";
-import { AplicanteStatus, AplicanteType, CaraterizacaoEstabelecimento, Categoria, FaturaStatus, NivelRisco, QuantoAtividade, TipoAto, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro, TipoPedidoLicenca, TipoPedidoVistoria } from "./enums";
+import { ClasseAtividade, Endereco, GrupoAtividade, PostoAdministrativo, Role } from "./data-master.model";
+import { AplicanteStatus, AplicanteType, AreaRepresentante, CaraterizacaoEstabelecimento, Categoria, FaturaStatus, NivelRisco, QuantoAtividade, TipoAto, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro, TipoPedidoLicenca, TipoPedidoVistoria } from "./enums";
 
 export interface User {
     id: number;
@@ -28,39 +28,39 @@ export interface Empresa extends BaseModel {
     sociedadeComercial: SociedadeComercial;
 }
 
-export interface Requerente {
-    denominacaoSocial: string | null;
-    numeroRegisto: string | null;
-    sede: string | null;
-    nif: string | null;
-    gerente: string | null;
-    telefone: string | null;
-    email: string | null;
-    classificacaoAtividade: string | null;
-    nomeRepresentante: string | null;
-    pai: string | null;
-    mae: string | null;
-    dataNascimento: string | null;
-    estadoCivil: string | null;
-    natural: string | null;
-    postoAdministrativo: string | null;
-    municipio: string | null;
-    documentacaoIdentificacao: string | null;
-    residencia: string | null;
-}
+// export interface Requerente {
+//     denominacaoSocial: string | null;
+//     numeroRegisto: string | null;
+//     sede: string | null;
+//     nif: string | null;
+//     gerente: string | null;
+//     telefone: string | null;
+//     email: string | null;
+//     classificacaoAtividade: string | null;
+//     nomeRepresentante: string | null;
+//     pai: string | null;
+//     mae: string | null;
+//     dataNascimento: string | null;
+//     estadoCivil: string | null;
+//     natural: string | null;
+//     postoAdministrativo: string | null;
+//     municipio: string | null;
+//     documentacaoIdentificacao: string | null;
+//     residencia: string | null;
+// }
 
-export interface Participantes {
-    representanteComercio: string | null;
-    cargoComercio: string | null;
-    representanteAutoridadeLocal: string | null;
-    cargoAutoridadeLocal: string | null;
-    representanteSaude: string | null;
-    cargoSaude: string | null;
-    representanteTrabalho: string | null;
-    cargoTrabalho: string | null;
-    representanteBombeiros: string | null;
-    cargoBombeiros: string | null;
-}
+// export interface Participantes {
+//     representanteComercio: string | null;
+//     cargoComercio: string | null;
+//     representanteAutoridadeLocal: string | null;
+//     cargoAutoridadeLocal: string | null;
+//     representanteSaude: string | null;
+//     cargoSaude: string | null;
+//     representanteTrabalho: string | null;
+//     cargoTrabalho: string | null;
+//     representanteBombeiros: string | null;
+//     cargoBombeiros: string | null;
+// }
 
 export interface Aplicante extends BaseModel {
     tipo: AplicanteType;
@@ -75,6 +75,8 @@ export interface Aplicante extends BaseModel {
     certificadoInscricaoCadastro: CertificadoCadastro;
     historicoStatus: HistoricoEstadoAplicante[];
     pedidoVistorias: PedidoVistoria[];
+    autoVistoria: AutoVistoria;
+    certificadoLicencaAtividade: CertificadoLicencaAtividade;
 }
 
 export interface CertificadoCadastro extends BaseModel {
@@ -87,48 +89,61 @@ export interface CertificadoCadastro extends BaseModel {
     nomeDiretorGeral: string;
 }
 
-export interface VistoriaComercialRequestForm {
-    numeroProcesso: string | null;
-    dataHora: string | null;
-    local: string | null;
-    funcionario: string | null;
-    requerente: Requerente;
-    participantes: Participantes;
-    nomeAtuante: string | null;
-    legislacaoUrbanistica: boolean | null;
-    accessoEstrada: boolean | null;
-    escoamentoAguas: boolean | null;
-    alimentacaoEnergia: boolean | null;
-    seperadosSexo: boolean | null;
-    lavatoriosComEspelho: boolean | null;
-    comunicacaoVentilacao: boolean | null;
-    esgotoAguas: boolean | null;
-    paredesPavimentos: boolean | null;
-    zonasDestinadas: boolean | null;
-    instalacoesFrigorificas: boolean | null;
-    sectoresLimpos: boolean | null;
-    pisosParedes: boolean | null;
-    pisosResistentes: boolean | null;
-    paredesInteriores: boolean | null;
-    paredes3metros: boolean | null;
-    unioesParedes: boolean | null;
-    ventilacoesNecessarias: boolean | null;
-    iluminacao: boolean | null;
-    aguaPotavel: boolean | null;
-    distribuicaoAguaNaoPotavel: boolean | null;
-    redeEsgotos: boolean | null;
-    equipamentoUtensilios: boolean | null;
-    equipamentoPrimeirosSocorros: boolean | null;
-    recipientesLixo: boolean | null;
-    limpezaDiaria: boolean | null;
-    descreverIrregularidades: string | null;
-    aptoAberto: boolean | null;
-    comDeficiencias: boolean | null;
-    recomendacoes: string | null;
-    prazo: string | null;
-    documental: boolean | null;
-    membrosEquipaVistoria: Participantes;
+export interface CertificadoLicencaAtividade extends BaseModel {
+    sociedadeComercial: string;
+    numeroRegistoComercial: string;
+    nif: string;
+    sede: Endereco;
+    nivelRisco: NivelRisco;
+    atividade: string;
+    atividadeCodigo: string;
+    dataValidade: string;
+    dataEmissao: string;
+    nomeDiretorGeral: string;
 }
+
+// export interface VistoriaComercialRequestForm {
+//     numeroProcesso: string | null;
+//     dataHora: string | null;
+//     local: string | null;
+//     funcionario: string | null;
+//     requerente: Requerente;
+//     participantes: Participantes;
+//     nomeAtuante: string | null;
+//     legislacaoUrbanistica: boolean | null;
+//     accessoEstrada: boolean | null;
+//     escoamentoAguas: boolean | null;
+//     alimentacaoEnergia: boolean | null;
+//     seperadosSexo: boolean | null;
+//     lavatoriosComEspelho: boolean | null;
+//     comunicacaoVentilacao: boolean | null;
+//     esgotoAguas: boolean | null;
+//     paredesPavimentos: boolean | null;
+//     zonasDestinadas: boolean | null;
+//     instalacoesFrigorificas: boolean | null;
+//     sectoresLimpos: boolean | null;
+//     pisosParedes: boolean | null;
+//     pisosResistentes: boolean | null;
+//     paredesInteriores: boolean | null;
+//     paredes3metros: boolean | null;
+//     unioesParedes: boolean | null;
+//     ventilacoesNecessarias: boolean | null;
+//     iluminacao: boolean | null;
+//     aguaPotavel: boolean | null;
+//     distribuicaoAguaNaoPotavel: boolean | null;
+//     redeEsgotos: boolean | null;
+//     equipamentoUtensilios: boolean | null;
+//     equipamentoPrimeirosSocorros: boolean | null;
+//     recipientesLixo: boolean | null;
+//     limpezaDiaria: boolean | null;
+//     descreverIrregularidades: string | null;
+//     aptoAberto: boolean | null;
+//     comDeficiencias: boolean | null;
+//     recomendacoes: string | null;
+//     prazo: string | null;
+//     documental: boolean | null;
+//     membrosEquipaVistoria: Participantes;
+// }
 
 
 export interface PedidoInscricaoCadastro {
@@ -266,4 +281,76 @@ export interface PedidoVistoria extends BaseModel {
     alteracoes: string;
     observacao: string;
     fatura: Fatura;
+}
+
+export interface AutoVistoria extends BaseModel {
+    numeroProcesso: string;
+    local: Endereco;
+    requerente: RequerenteAutoVistoria;
+    membrosEquipaVistoria: Participante[];
+    nomeAtuante: string;
+    legislacaoUrbanistica: boolean;
+    accessoEstrada: boolean;
+    escoamentoAguas: boolean;
+    alimentacaoEnergia: boolean;
+    seperadosSexo: boolean;
+    lavatoriosComEspelho: boolean;
+    sanitasAutomaticaAgua: boolean;
+    comunicacaoVentilacao: boolean;
+    esgotoAguas: boolean;
+    paredesPavimentos: boolean;
+    zonasDestinadas: boolean;
+    instalacoesFrigorificas: boolean;
+    sectoresLimpos: boolean;
+    pisosParedes: boolean;
+    pisosResistentes: boolean;
+    paredesInteriores: boolean;
+    paredes3metros: boolean;
+    unioesParedes: boolean;
+    ventilacoesNecessarias: boolean;
+    iluminacao: boolean;
+    aguaPotavel: boolean;
+    distribuicaoAgua: boolean;
+    redeDistribuicao: boolean;
+    redeEsgotos: boolean;
+    equipamentoUtensilios: boolean;
+    equipamentoPrimeirosSocorros: boolean;
+    recipientesLixo: boolean;
+    limpezaDiaria: boolean;
+    descreverIrregularidades: string;
+    aptoAberto: boolean;
+    comDeficiencias: boolean;
+    recomendacoes: string;
+    prazo: number;
+    documentos: Documento[];
+    funcionario: User;
+}
+
+export interface RequerenteAutoVistoria extends BaseModel {
+    denominacaoSocial: string;
+    numeroRegistoComercial: string;
+    sede: Endereco;
+    nif: string;
+    gerente: string;
+    telefone: string;
+    email: string;
+    classeAtividade: ClasseAtividade;
+    nomeRepresentante: string;
+    pai: string;
+    mae: string;
+    dataNascimento: string;
+    estadoCivil: string;
+    naturalidade: string;
+    nacionalidade: string;
+    postoAdministrativo: PostoAdministrativo;
+    regiao: string;
+    tipoDocumento: string;
+    numeroDocumento: string;
+    residencia: Endereco;
+}
+
+export interface Participante extends BaseModel {
+    nome: string;
+    areaRepresentante: AreaRepresentante;
+    cargo: string;
 }

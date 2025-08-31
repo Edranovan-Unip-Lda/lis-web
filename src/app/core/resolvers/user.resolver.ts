@@ -2,6 +2,7 @@ import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, ResolveFn, Router } from "@angular/router";
 import { EMPTY, of } from "rxjs";
 import { AuthenticationService, UserService } from "../services";
+import { Role } from "../models/enums";
 
 /**
  * Resolves a page of users.
@@ -57,11 +58,21 @@ export const getTokenActivationResolver: ResolveFn<any> = (route: ActivatedRoute
 
 export const getPageAplicanteByUsernameResolver: ResolveFn<any> = () => {
     const authService = inject(AuthenticationService);
-    const username = authService.currentUserValue.username;
+    const user = authService.currentUserValue;
 
     const service = inject(UserService);
-    if (authService.currentUserValue.username) {
-        return service.getPaginationAssignedAplicante(username);
+    
+    if (user.username) {
+        switch (user.role.name) {
+            case Role.admin:
+            case Role.manager:
+                return service.getPaginationAssignedAplicante(user.username);
+            case Role.staff:
+                return service.getPaginationAtribuidoAplicante(user.username);
+            default:
+                return of(null);
+        }
+
     } else {
         return of(null);
     }

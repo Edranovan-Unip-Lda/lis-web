@@ -1,36 +1,37 @@
 import { Aplicante, Documento, PedidoVistoria } from '@/core/models/entities.model';
-import { AplicanteStatus } from '@/core/models/enums';
+import { AplicanteStatus, Role } from '@/core/models/enums';
 import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
+import { AuthenticationService } from '@/core/services';
+import { EmpresaService } from '@/core/services/empresa.service';
+import { PedidoService } from '@/core/services/pedido.service';
 import { mapToGrupoAtividade, mapToIdAndNome, mapToTaxa } from '@/core/utils/global-function';
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { DatePicker } from 'primeng/datepicker';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectButton } from 'primeng/selectbutton';
 import { StepperModule } from 'primeng/stepper';
 import { Tag } from 'primeng/tag';
-import { Textarea } from 'primeng/textarea';
 import { FaturaAtividadeFormComponent } from './fatura-atividade-form/fatura-atividade-form.component';
 import { FaturaVistoriaFormComponent } from './fatura-vistoria-form/fatura-vistoria-form.component';
 import { PedidoAtividadeFormComponent } from './pedido-atividade-form/pedido-atividade-form.component';
 import { PedidoVistoriaFormComponent } from './pedido-vistoria-form/pedido-vistoria-form.component';
-import { PedidoService } from '@/core/services/pedido.service';
 
 @Component({
   selector: 'app-application-atividade-detail',
-  imports: [ReactiveFormsModule, ButtonModule, StepperModule, InputTextModule, FileUploadModule, SelectButton, Textarea, Tag, DatePicker, RouterLink, StatusSeverityPipe, DatePipe, TitleCasePipe, PedidoAtividadeFormComponent, FaturaAtividadeFormComponent, FaturaVistoriaFormComponent, PedidoVistoriaFormComponent],
+  imports: [ReactiveFormsModule, ButtonModule, StepperModule, InputTextModule, FileUploadModule, Tag, RouterLink, StatusSeverityPipe, DatePipe, TitleCasePipe, PedidoAtividadeFormComponent, FaturaAtividadeFormComponent, FaturaVistoriaFormComponent, PedidoVistoriaFormComponent],
   templateUrl: './application-atividade-detail.component.html',
-  styleUrl: './application-atividade-detail.component.scss'
+  styleUrl: './application-atividade-detail.component.scss',
+  providers: [MessageService]
 })
 export class ApplicationAtividadeDetailComponent {
   aplicanteData!: Aplicante;
 
-  autoVistoriaForm: FormGroup;
   downloadLoading = false;
+  loading = false;
   aplicanteEstado!: AplicanteStatus;
   motivoRejeicao = '';
   listaAldeia: any[] = [];
@@ -38,6 +39,9 @@ export class ApplicationAtividadeDetailComponent {
   listaPedidoAto: any[] = [];
   uploadedFiles: any[] = [];
   pedidoVistoria!: PedidoVistoria | undefined;
+  isManager = false;
+  isStaff = false;
+  isClient = false;
 
   @ViewChild(PedidoAtividadeFormComponent) child!: PedidoAtividadeFormComponent;
 
@@ -51,88 +55,11 @@ export class ApplicationAtividadeDetailComponent {
     private _fb: FormBuilder,
     private router: ActivatedRoute,
     private pedidoService: PedidoService,
+    private empresaService: EmpresaService,
+    private messageService: MessageService,
+    private authService: AuthenticationService
   ) {
 
-    this.autoVistoriaForm = this._fb.group({
-      numeroProcesso: [null],
-      dataHora: [null],
-      local: [null],
-      funcionario: [null],
-      requerente: this._fb.group({
-        denominacaoSocial: [null],
-        numeroRegisto: [null],
-        sede: [null],
-        nif: [null],
-        gerente: [null],
-        telefone: [null],
-        email: [null],
-        classificacaoAtividade: [null],
-        nomeRepresentante: [null],
-        pai: [null],
-        mae: [null],
-        dataNascimento: [null],
-        estadoCivil: [null],
-        natural: [null],
-        postoAdministrativo: [null],
-        municipio: [null],
-        documentacaoIdentificacao: [null],
-        residencia: [null],
-      }),
-      participantes: this._fb.group({
-        representanteComercio: [null],
-        cargoComercio: [null],
-        representanteAutoridadeLocal: [null],
-        cargoAutoridadeLocal: [null],
-        representanteSaude: [null],
-        cargoSaude: [null],
-        representanteTrabalho: [null],
-        cargoTrabalho: [null],
-        representanteBombeiros: [null],
-        cargoBombeiros: [null],
-      }),
-      nomeAtuante: [null],
-      legislacaoUrbanistica: [null],
-      accessoEstrada: [null],
-      escoamentoAguas: [null],
-      alimentacaoEnergia: [null],
-      seperadosSexo: [null],
-      lavatoriosComEspelho: [null],
-      sanitasAutomaticaAgua: [null],
-      comunicacaoVentilacao: [null],
-      esgotoAguas: [null],
-      paredesPavimentos: [null],
-      zonasDestinadas: [null],
-      instalacoesFrigorificas: [null],
-      sectoresLimpos: [null],
-      pisosParedes: [null],
-      pisosResistentes: [null],
-      paredesInteriores: [null],
-      paredes3metros: [null],
-      unioesParedes: [null],
-      ventilacoesNecessarias: [null],
-      iluminacao: [null],
-      aguaPotavel: [null],
-      distribuicaoAgua: [null],
-      redeDistribuicao: [null],
-      redeEsgotos: [null],
-      equipamentoUtensilios: [null],
-      equipamentoPrimeirosSocorros: [null],
-      recipientesLixo: [null],
-      limpezaDiaria: [null],
-      descreverIrregularidades: [null],
-      aptoAberto: [null],
-      comDeficiencias: [null],
-      recomendacoes: [null],
-      prazo: [null],
-      documental: [null],
-      membrosEquipaVistoria: this._fb.group({
-        representanteComercio: [null],
-        representanteAutoridadeLocal: [null],
-        representanteSaude: [null],
-        representanteTrabalho: [null],
-        representanteBombeiros: [null],
-      })
-    });
   }
 
   ngOnInit(): void {
@@ -144,6 +71,52 @@ export class ApplicationAtividadeDetailComponent {
     this.aplicanteEstado = this.aplicanteData.estado;
 
     this.pedidoVistoria = this.aplicanteData.pedidoVistorias.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
+
+    switch (this.authService.currentRole.name) {
+      case Role.manager:
+        this.isManager = true;
+        break;
+      case Role.staff:
+        this.isStaff = true;
+        break;
+      case Role.client:
+        this.isClient = true;
+        break;
+    }
+
+  }
+
+
+  submitAplicante(callback: any) {
+    this.loading = true;
+
+    const formData = {
+      id: this.aplicanteData.id,
+      tipo: this.aplicanteData.tipo,
+      categoria: this.aplicanteData.categoria,
+      numero: this.aplicanteData.numero,
+      estado: AplicanteStatus.submetido
+    }
+
+    this.empresaService.submitAplicanteByEmpresaIdAndAplicanteId(this.aplicanteData.empresa.id, this.aplicanteData.id, formData).subscribe({
+      next: response => {
+        this.aplicanteEstado = response.estado;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: 'O Aplicante foi submetida com sucesso!'
+        });
+        // this.disabledForms(AplicanteStatus.submetido);
+        callback(1);
+      },
+      error: err => {
+        this.loading = false;
+        this.addMessages(false, true, err);
+      },
+      complete: () => {
+        this.loading = false;
+      }
+    });
   }
 
   downloadFile(file: Documento) {
@@ -170,15 +143,38 @@ export class ApplicationAtividadeDetailComponent {
     console.log('Parent received:', payload);
   }
 
-  onUpload(event: any, arg: string) {
-    for (const file of event.files) {
-      this.uploadedFiles.push(file);
-    }
-
-    // this.messageService.add({
-    //   severity: 'info',
-    //   summary: 'Success',
-    //   detail: 'File Uploaded'
-    // });
+  onPedidoLicencaReceived(payload: any) {
+    this.aplicanteData.pedidoLicencaAtividade = payload;
   }
+
+  onFaturaPedidoReceived(payload: any) {
+    this.aplicanteData.pedidoLicencaAtividade.fatura = payload;
+  }
+
+  onPedidoVistoriaReceived(payload: any) {
+    this.aplicanteData.pedidoVistorias = [...this.aplicanteData.pedidoVistorias, payload];
+    this.pedidoVistoria = payload;
+  }
+
+  onPedidoVistoriaFaturaReceived(payload: any) {
+    this.aplicanteData.pedidoVistorias = this.aplicanteData.pedidoVistorias.map(item => {
+      if (item.id === payload.pedidoVistoriaId) {
+        item.fatura = payload.fatura;
+      }
+      return item;
+    });
+  }
+
+  isSubmitted(aplicanteData: Aplicante): boolean {
+    return aplicanteData.estado !== 'SUBMETIDO' && aplicanteData.estado !== 'REVISAO' && aplicanteData.estado !==
+      'APROVADO'
+  }
+
+  private addMessages(isSuccess: boolean, isNew: boolean, error?: any) {
+    const summary = isSuccess ? (isNew ? 'Dados registados com sucesso!' : 'Dados atualizados com sucesso!') : 'Error';
+    const detail = isSuccess ? (isNew ? `Os dados foram registados` : `Os dados foram actualizados`) : 'Desculpe, algo deu errado. Tente novamente ou procure o administrador do sistema para mais informações.';
+
+    this.messageService.add({ severity: isSuccess ? 'success' : 'error', summary, detail });
+  }
+
 }

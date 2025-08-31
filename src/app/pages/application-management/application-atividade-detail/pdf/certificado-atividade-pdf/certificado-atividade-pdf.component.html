@@ -1,0 +1,93 @@
+<div class="card">
+    <div class="grid grid-cols-12 mb-4">
+        <div class="col-span-6">
+            <span class="text-2xl font-bold mb-4 mr-4">Certificado de Inscrição no Cadastro</span>
+            <p-button icon="pi pi-file-pdf" size="large" [raised]="true" printSectionId="myDiv" [useExistingCss]="true"
+                ngxPrint />
+        </div>
+        <div class="col-span-6 flex justify-end mb-4">
+            <p-button (click)="goBack()" icon="pi pi-chevron-circle-left" label="Voltar" severity="help" size="large"
+                [text]="true" [rounded]="true" [outlined]="true" [raised]="true" />
+        </div>
+    </div>
+
+    <div id="myDiv">
+        <div class="w-full h-full bg-white border-4 border-red-600 rounded p-2">
+            <div class="h-fit border-4 border-yellow-500 px-8">
+                <div class="flex justify-between p-8">
+                    <img src="/images/rdtl.png" alt="Logo" class="h-16 w-16 object-contain" />
+                    <img src="/images/rdtl.png" alt="Logo" class="h-16 w-16 object-contain" />
+                </div>
+                <div class="flex justify-center">
+                    <div class="text-center my-4">
+                        <div class="mt-4 font-extrabold text-5xl text-sky-600 tracking-wide">ALVARÁ DE LICENÇA</div>
+                        <div class="text-3xl font-semibold text-sky-600">
+                            PARA EXERCÍCIO DA ATIVIDADE
+                            {{aplicanteData.categoria | titlecase}}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-6 text-black">
+                    <div class="col-span-6 text-xl my-4">
+                        N.º <span class="font-bold">{{aplicanteData.numero}}</span>
+                    </div>
+                    <div class="col-span-6 text-xl my-4">
+                        Sociedade Comercial <span
+                            class="font-bold">{{aplicanteData.pedidoLicencaAtividade.nomeEmpresa}}</span>
+                    </div>
+                    <div class="col-span-6 text-xl my-4">
+                        Nº Registo Comercial <span
+                            class="font-bold">{{aplicanteData.pedidoLicencaAtividade.empresaNumeroRegistoComercial}}</span>
+                    </div>
+                    <div class="col-span-6 text-xl my-4">
+                        NIF: <span class="font-bold">{{aplicanteData.pedidoLicencaAtividade.empresaNif}}</span>
+                    </div>
+                    <div class="col-span-6 text-xl my-4">
+                        Sede em: <span class="font-bold">
+                            {{aplicanteData.pedidoLicencaAtividade.empresaSede.local}},
+                            {{aplicanteData.pedidoLicencaAtividade.empresaSede.aldeia.nome}},
+                            {{aplicanteData.pedidoLicencaAtividade.empresaSede.aldeia.suco.nome}},
+                            {{aplicanteData.pedidoLicencaAtividade.empresaSede.aldeia.suco.postoAdministrativo.nome}},
+                            {{aplicanteData.pedidoLicencaAtividade.empresaSede.aldeia.suco.postoAdministrativo.municipio.nome}}
+                        </span>
+                    </div>
+                    <div class="col-span-6 text-xl my-4">
+                        Nível de risco: <span class="font-bold">{{aplicanteData.pedidoLicencaAtividade.risco}}</span>
+                    </div>
+                    <div class="col-span-3 text-xl my-4">
+                        Atividade comercial declarada <span
+                            class="font-bold">{{aplicanteData.pedidoLicencaAtividade.tipoAtividade.descricao}}</span>
+                    </div>
+                    <div class="col-span-3 text-xl my-4">
+                        Código: <span
+                            class="font-bold">{{aplicanteData.pedidoLicencaAtividade.tipoAtividade.codigo}}</span>
+                    </div>
+                    <div class="col-span-6 text-xl my-4">
+                        Data de Emissão: <span
+                            class="font-bold">{{aplicanteData.certificadoLicencaAtividade.updatedAt | date:'dd MMMM yyyy': 'pt'}}</span>
+                    </div>
+                    <div class="col-span-6 text-xl my-4">
+                        Validade até <span class="font-bold">{{dataValido | date:'dd MMMM yyyy': 'pt'}}</span>
+                    </div>
+                </div>
+                 <div class="flex items-center bottom-0">
+                    <div class="flex-1 flex justify-center">
+                        <!-- Centered content -->
+                        <div>
+                            <div class="mt-8 mb-2 text-center">O Diretor-Geral do Comércio</div>
+                            <span class="with-image">
+                                <img src="images/stamp.png" alt="Stamp" class="stamp" width="110" height="110" />
+                                <span class="text-label text-gray-600">Donald Trump</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="flex justify-end">
+                        <!-- Right-aligned content -->
+                        <img src="images/qrcode.png" alt="Qrcode" class="qrcode" width="110" height="110" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

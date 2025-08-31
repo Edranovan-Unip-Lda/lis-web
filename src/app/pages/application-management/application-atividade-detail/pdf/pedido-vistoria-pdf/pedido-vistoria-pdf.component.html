@@ -1,0 +1,247 @@
+@if (pedido) {
+<div class="card">
+    <div class="grid grid-cols-12 mb-4">
+        <div class="col-span-6">
+            <span class="text-2xl font-bold mb-4 mr-4">Pedido de Vistoria</span>
+            <p-button icon="pi pi-file-pdf" size="large" [raised]="true" printSectionId="myDiv" [useExistingCss]="true"
+                ngxPrint />
+        </div>
+        <div class="col-span-6 flex justify-end mb-4">
+            <p-button (click)="goBack()" icon="pi pi-chevron-circle-left" label="Voltar" severity="help" size="large"
+                [text]="true" [rounded]="true" [raised]="true" />
+        </div>
+    </div>
+    <div id="myDiv" class="bg-white text-black px-4 pt-2">
+        <!-- Logo -->
+        <div class="flex justify-center mb-1">
+            <img src="images/rdtl.png" alt="Logo" width="80px" height="80px" class="object-contain" />
+        </div>
+
+        <!-- Header -->
+        @if (aplicanteData.categoria === 'INDUSTRIAL') {
+        <div class="text-center mb-4">
+            <h1 class="font-semibold uppercase text-title">Ministério do Comércio e Indústria</h1>
+            <h2 class="font-medium text-title">Direção-Geral da Indústria</h2>
+            <h3 class="font-bold text-title mt-2">Inscrição no Cadastro Industrial</h3>
+            <div class="text-xs text-gray-500 mt-1">(Decreto-Lei n.º 90/2023, de 27 de dezembro)</div>
+        </div>
+        }@else {
+        <div class="text-center mb-4">
+            <h1 class="font-semibold text-title uppercase">Ministério do Comércio e Indústria</h1>
+            <h2 class="font-medium text-title">Direção-Geral da Comércio</h2>
+            <h3 class="font-bold text-title mt-2">PEDIDO DE VISTORIA PARA LICENCA DE EXERCICIO DE ATIVIDADE COMERCIAL
+            </h3>
+            <div class="text-xs text-gray-500 mt-1">(Decreto-Lei n.º 89/2023, de 20 de dezembro)</div>
+        </div>
+        }
+
+        <!-- PEDIDO -->
+        <div class="mb-6">
+            <label class="block font-semibold mb-1 text-gray-700 text-label">PEDIDO</label>
+            <div class="flex gap-6 flex-wrap">
+                <span
+                    class="inline-flex items-center px-2 py-1 rounded border border-gray-300 bg-gray-100 text-black text-value">
+                    ✓ {{ this.pedido.tipoVistoria }}
+                </span>
+            </div>
+        </div>
+
+        <!-- Identificação da Empresa -->
+        <div class="mb-6">
+            <h4 class="font-semibold mb-2 border-b border-gray-200 pb-1 text-gray-700 text-label">Identificação da
+                Empresa</h4>
+
+            <div class="mb-2 flex gap-2">
+                <span class="w-1/4 text-label text-gray-600">Nome da Empresa:</span>
+                <span class="flex-1 text-value text-black">{{aplicanteData.empresa.nome}}</span>
+            </div>
+
+            <div class="mb-2 flex gap-2">
+                <span class="w-1/4 text-label text-gray-600">Sede:</span>
+                <span class="flex-1 text-value text-black">
+                    {{aplicanteData.empresa.sede.local}} -
+                    {{aplicanteData.empresa.sede.aldeia.nome}},
+                    {{aplicanteData.empresa.sede.aldeia.suco.nome}},
+                    {{aplicanteData.empresa.sede.aldeia.suco.postoAdministrativo.nome}},
+                    {{aplicanteData.empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
+                </span>
+            </div>
+
+            <div class="mb-2 flex gap-4">
+                <div class="mb-2 flex gap-2">
+                    <span class="w-1/4 text-label text-gray-600">NIF:</span>
+                    <span class="w-1/3 text-value text-black">{{aplicanteData.empresa.nif}}</span>
+                </div>
+
+                <div class="mb-2 flex gap-2 grow">
+                    <span class="text-label text-gray-600">N.º de Registo Comercial:</span>
+                    <span class="w-1/3 text-value text-black">{{aplicanteData.empresa.numeroRegistoComercial}}</span>
+                </div>
+            </div>
+
+            <div class="mb-2 flex gap-4">
+                <div class="mb-2 flex gap-2">
+                    <span class="w-1/2 text-label text-gray-600">Telemóvel:</span>
+                    <span class="w-1/3 text-value text-black">{{aplicanteData.empresa.telemovel}}</span>
+                </div>
+
+                <div class="mb-2 flex gap-2">
+                    <span class="w-1/2 text-label text-gray-600">Telefone:</span>
+                    <span class="w-1/3 text-value text-black">{{aplicanteData.empresa.telefone}}</span>
+                </div>
+            </div>
+
+            <div class="mb-2 flex gap-2">
+                <span class="text-label text-gray-600">Email:</span>
+                <span class="w-1/4 text-value text-black">{{pedido.empresaEmail}}</span>
+            </div>
+
+            <div class="mb-2 flex gap-2">
+                <span class="w-1/4 text-label text-gray-600">Identificação do administrador/gerente:</span>
+                <span class="flex-1 text-value text-black">{{aplicanteData.empresa.gerente}}</span>
+            </div>
+        </div>
+
+        <!-- Identificação do Estabelecimento -->
+        <div class="mb-6">
+            <h4 class="font-semibold mb-2 border-b border-gray-200 pb-1 text-gray-700 text-label">Identificação do
+                Estabelecimento</h4>
+
+            <div class="mb-2 flex gap-2">
+                <span class="w-1/4 text-label text-gray-600">Nome do estabelecimento:</span>
+                <span class="flex-1 text-value text-black">{{pedido.nomeEstabelecimento}}</span>
+            </div>
+
+            <div class="mb-2 flex gap-2">
+                <span class="w-1/4 text-label text-gray-600">Local do estabelecimento:</span>
+                <span class="flex-1 text-value text-black">
+                    {{pedido.localEstabelecimento.local}} -
+                    {{pedido.localEstabelecimento.aldeia.nome}}
+                    {{pedido.localEstabelecimento.aldeia.suco.nome}}
+                    {{pedido.localEstabelecimento.aldeia.suco.postoAdministrativo.nome}}
+                    {{pedido.localEstabelecimento.aldeia.suco.postoAdministrativo.municipio.nome}}
+                </span>
+            </div>
+
+            @if (aplicanteData.categoria === 'INDUSTRIAL') {
+            <div class="mb-2 flex items-center gap-2">
+                <span class="w-1/4 text-label text-gray-600">Tipo de Empresa:</span>
+                <span
+                    class="text-label inline-flex items-center px-2 py-1 rounded border border-gray-300 bg-gray-100 text-black text-value">
+                    ✓ {{selectedTipoEmpresa}}
+                </span>
+            </div>
+            }@else {
+            <div class="mb-2 flex items-center gap-2">
+                <span class="w-1/4 text-label text-gray-600">Tipo do Estabelecimento:</span>
+                <span
+                    class="text-label inline-flex items-center px-2 py-1 rounded border border-gray-300 bg-gray-100 text-black text-value">
+                    ✓ {{selectedTipoEstabelecimento}}
+                </span>
+            </div>
+            }
+        </div>
+
+        <div class="mb-8">
+            <h4 class="font-semibold mb-2 border-b border-gray-200 pb-1 text-gray-700 text-label">
+                Caraterizacão do Estabelecimento
+            </h4>
+            <div class="mb-2 flex items-center gap-2">
+                <span class="w-1/4 text-label text-gray-600">Tipo de Empresa:</span>
+                <span
+                    class="text-label inline-flex items-center px-2 py-1 rounded border border-gray-300 bg-gray-100 text-black text-value">
+                    ✓ {{selectedTipoEmpresa}}
+                </span>
+            </div>
+
+            <div class="mb-2 flex items-center gap-2">
+                <span class="w-1/4 text-label text-gray-600">Tipo de Estabelecimento:</span>
+                <span
+                    class="text-label inline-flex items-center px-2 py-1 rounded border border-gray-300 bg-gray-100 text-black text-value">
+                    ✓ {{selectedTipoEstabelecimento}}
+                </span>
+            </div>
+        </div>
+
+        <!-- Caracterização da Atividade -->
+        <div class="mb-8">
+            <h4 class="font-semibold mb-2 border-b border-gray-200 pb-1 text-gray-700 text-label">Caracterização da
+                Atividade</h4>
+
+            <div class="mb-2 flex items-center gap-2">
+                <span class="w-1/4 text-label text-gray-600">Nível de Risco:</span>
+                <span
+                    class="text-label inline-flex items-center px-2 py-1 rounded border border-gray-300 bg-gray-100 text-black text-value">
+                    ✓ {{seletedNivelRisco}}
+                </span>
+            </div>
+
+            <div class="mb-2 flex items-center gap-2">
+                <span class="w-1/4 text-label text-gray-600">Atividade:</span>
+                <span
+                    class="text-label inline-flex items-center px-2 py-1 rounded border border-gray-300 bg-gray-100 text-black text-value">
+                    ✓ {{selectedAtividade}}
+                </span>
+            </div>
+            
+            <div class="mb-2 flex gap-2 items-center">
+                <span class="w-1/4 text-label text-gray-600">Tipo de atividade no estabelecimento:</span>
+                <span class="flex-1 text-value text-black">{{pedido.classeAtividade.grupoAtividade.descricao}}</span>
+                <span class="text-label text-gray-600 ml-2">Código</span>
+                <span class="text-value text-black">{{pedido.classeAtividade.grupoAtividade.codigo}}</span>
+            </div>
+
+            <div class="mb-2 flex gap-2 items-center">
+                <span class=" text-label text-gray-600">Atividade principal exercida no estabelecimento:</span>
+                <span class="flex-1 text-value text-black">{{pedido.classeAtividade.descricao}}</span>
+                <span class="text-label text-gray-600 ml-2">Código</span>
+                <span class="text-value text-black">{{pedido.classeAtividade.codigo}}</span>
+            </div>
+
+            <div class="mb-2 flex gap-2">
+                <span class="w-1/4 text-label text-gray-600">Alterações a averbar:</span>
+                <span class="flex-1 text-value text-black">{{pedido.alteracoes}}</span>
+            </div>
+
+            <!-- @if (pedido.dataEmissaoCertAnterior) {
+            <div class="mb-2 flex gap-2">
+                <span class="w-1/4 text-label text-gray-600">Data de emissão do certificado anterior, se
+                    aplicável:</span>
+                <span
+                    class="flex-1 text-value text-black">{{pedido.dataEmissaoCertAnterior | date:'dd MMM yyyy'}}</span>
+            </div>
+            } -->
+
+            <div class="mb-2 flex gap-2">
+                <span class="block text-label text-gray-600">OBS:</span>
+                <span class="w-full text-value text-black block">{{pedido.observacao}}</span>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="my-8 flex flex-col items-center gap-4">
+            <div>
+                <span class="text-label text-gray-600">Data:</span>
+                <span class="w-12 inline-block border-b border-gray-300 text-center text-value text-black">
+                    {{aplicanteData.updatedAt | date:'dd'}}
+                </span>
+                <span>de</span>
+                <span class="w-24 inline-block border-b border-gray-300 text-center text-value text-black">
+                    {{aplicanteData.updatedAt | date:'MMM'}}
+                </span>
+                <span>de</span>
+                <span class="w-20 inline-block border-b border-gray-300 text-center text-value text-black">
+                    {{aplicanteData.updatedAt | date:'yyyy'}}
+                </span>
+            </div>
+            <span class="text-label text-gray-600">Assinatura</span>
+            <span class="with-image">
+                <img src="images/stamp.png" alt="Stamp" class="stamp" width="110" height="110" />
+                <span class="text-label text-gray-600">Donald Trump</span>
+            </span>
+            <div class="flex-1"></div>
+            <span class="w-72 inline-block border-b border-black text-center text-value text-black"></span>
+        </div>
+    </div>
+</div>
+}

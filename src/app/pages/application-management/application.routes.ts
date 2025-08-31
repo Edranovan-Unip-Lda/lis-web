@@ -1,13 +1,15 @@
 import { getAllAldeiasResolver, getAllGrupoAtividadeByTipoResolver, getSociedadeComercialResolver, getTaxaByCategoriaAndTipoResolver } from '@/core/resolvers/data-master.resolver';
 import { getAplicante, getPageAplicanteOrByEmpresaIdResolver } from '@/core/resolvers/empresa.resolver';
 import { Routes } from '@angular/router';
+import { ApplicationAtividadeDetailComponent } from './application-atividade-detail/application-atividade-detail.component';
+import { AutoVistoriaPdfComponent } from './application-atividade-detail/pdf/auto-vistoria-pdf/auto-vistoria-pdf.component';
+import { CertificadoAtividadePdfComponent } from './application-atividade-detail/pdf/certificado-atividade-pdf/certificado-atividade-pdf.component';
+import { PedidoPdfComponent } from './application-atividade-detail/pdf/pedido-pdf/pedido-pdf.component';
 import { ApplicationDetailComponent } from './application-detail/application-detail.component';
 import { ApplicationListComponent } from './application-list/application-list.component';
 import { CertificatePdfComponent } from './certificate-pdf/certificate-pdf.component';
 import { FaturaComponent } from './fatura/fatura.component';
 import { PedidoInscricaoComponent } from './pedido-inscricao/pedido-inscricao.component';
-import { ApplicationAtividadeDetailComponent } from './application-atividade-detail/application-atividade-detail.component';
-import { PedidoPdfComponent } from './application-atividade-detail/pedido-pdf/pedido-pdf.component';
 
 export default [
     {
@@ -93,11 +95,11 @@ export default [
                     aplicanteResolver: getAplicante,
                 }
             },
-              {
+            {
                 path: ':id/pedido-vistoria',
-                data: { 
+                data: {
                     breadcrumb: 'Pedido Vistoria para Licenca de Atividade',
-                    
+
                 },
                 component: PedidoPdfComponent,
                 resolve: {
@@ -106,11 +108,29 @@ export default [
             },
             {
                 path: ':id/fatura-vistoria',
-                data: { 
+                data: {
                     breadcrumb: 'Fatura PDF',
                     tipo: 'VISTORIA',
-                 },
+                },
                 component: FaturaComponent,
+                resolve: {
+                    aplicanteResolver: getAplicante,
+                }
+            },
+            {
+                path: ':id/auto-vistoria',
+                data: {
+                    breadcrumb: 'Auto Vistoria',
+                },
+                component: AutoVistoriaPdfComponent,
+                resolve: {
+                    aplicanteResolver: getAplicante,
+                }
+            },
+            {
+                path: ':id/certificado-atividade',
+                data: { breadcrumb: 'Certificado PDF' },
+                component: CertificadoAtividadePdfComponent,
                 resolve: {
                     aplicanteResolver: getAplicante,
                 }

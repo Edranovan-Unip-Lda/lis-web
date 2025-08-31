@@ -20,7 +20,9 @@ export enum AplicanteStatus {
     emCurso = 'EM_CURSO',
     submetido = 'SUBMETIDO',
     rejeitado = 'REJEITADO',
-    aprovado = 'APROVADO'
+    aprovado = 'APROVADO',
+    atribuido = 'ATRIBUIDO',
+    revisao = 'REVISAO',
 }
 
 export enum Categoria {
@@ -107,4 +109,14 @@ export enum TipoPedidoVistoria {
     subsequente = 'SUBSEQUENTE',
     inicial = 'INICIAL',
     exploracao = 'EXPLORACAO',
+}
+
+export enum AreaRepresentante {
+    comercio = 'COMERCIO',
+    autoridadeLocal = 'AUTORIDADE_LOCAL',
+    saude = 'SAUDE',
+    trabalho = 'TRABALHO',
+    bombeiros = 'BOMBEIROS',
+    mop = 'MOP',
+    anla = 'ANLA'
 }

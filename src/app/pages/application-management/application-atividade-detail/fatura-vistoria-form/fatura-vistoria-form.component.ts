@@ -3,7 +3,7 @@ import { AplicanteStatus } from '@/core/models/enums';
 import { AuthenticationService } from '@/core/services';
 import { PedidoService } from '@/core/services/pedido.service';
 import { calculateCommercialLicenseTax } from '@/core/utils/global-function';
-import { Component, Input, signal } from '@angular/core';
+import { Component, Input, output, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -38,6 +38,7 @@ export class FaturaVistoriaFormComponent {
   faturaId!: number;
   pedidoVistoria: PedidoVistoria | undefined;
   loading = false;
+  dataSent = output<any>();
 
   constructor(
     private _fb: FormBuilder,
@@ -108,6 +109,7 @@ export class FaturaVistoriaFormComponent {
           this.faturaId = response.id;
           this.addMessages(true, true);
           this.updateUploadUrl();
+          this.dataSent.emit(response);
         },
         error: error => {
           this.addMessages(false, true, error);

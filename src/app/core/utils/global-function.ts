@@ -1,4 +1,5 @@
-import { AplicanteType, CaraterizacaoEstabelecimento, Categoria, NivelRisco, QuantoAtividade, Role, Status, TipoAto, TipoDocumento, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro, TipoPedidoLicenca, TipoPedidoVistoria, TipoPropriedade } from "../models/enums";
+import { ValueChangeEvent } from "@angular/forms";
+import { AplicanteType, AreaRepresentante, CaraterizacaoEstabelecimento, Categoria, NivelRisco, QuantoAtividade, Role, Status, TipoAto, TipoDocumento, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro, TipoPedidoLicenca, TipoPedidoVistoria, TipoPropriedade } from "../models/enums";
 
 export function calculateCommercialLicenseTax(areaM2: number, T_MIN: number, T_MAX: number): number {
     if (areaM2 >= 900) {
@@ -80,6 +81,7 @@ export const roleOptions: any[] = [
     { name: 'Administrador', value: Role.admin },
     { name: 'Gestor', value: Role.manager },
     { name: 'Funcionário', value: Role.staff },
+    { name: 'Empresa', value: Role.client },
 ];
 
 export const nivelRiscoOptions: any[] = [
@@ -263,5 +265,39 @@ export const tipoPedidoVistoriaIndustrialOptions: any[] = [
     {
         name: 'Vistoria subsequente',
         value: TipoPedidoVistoria.subsequente
+    }
+];
+
+export const tipoAreaRepresentanteComercial: any[] = [
+    {
+        name: 'Representante do departamento governamental responsável pela área do Comércio',
+        value: AreaRepresentante.comercio
+    },
+    {
+        name: 'Representante da autoridade administrativa local',
+        value: AreaRepresentante.autoridadeLocal
+    },
+    {
+        name: 'Representante do órgão local da saúde',
+        value: AreaRepresentante.saude
+    },
+    {
+        name: 'Representante da entidade com competências inspetivas do departamento governamental responsável pela área do Trabalho',
+        value: AreaRepresentante.trabalho
+    },
+    {
+        name: 'Representante do serviço de bombeiros',
+        value: AreaRepresentante.bombeiros
+    },
+];
+
+export const tipoAreaRepresentanteIndustrial: any[] = [
+    {
+        name: 'Representante do Ministéio Obras Pública',
+        value: AreaRepresentante.mop
+    },
+    {
+        name: 'Representante da Autoridade Nacional Licenciamento Ambiental',
+        value: AreaRepresentante.anla
     }
 ]

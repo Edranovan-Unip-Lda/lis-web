@@ -1,15 +1,16 @@
-import { Aplicante, User } from '@/core/models/entities.model';
-import { AplicanteStatus } from '@/core/models/enums';
+import { Aplicante, PedidoVistoria, User } from '@/core/models/entities.model';
+import { AplicanteStatus, Role } from '@/core/models/enums';
 import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService, UserService } from '@/core/services';
 import { PedidoService } from '@/core/services/pedido.service';
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
-import { Form, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
+import { Select } from 'primeng/select';
 import { Tag } from 'primeng/tag';
 import { Textarea } from 'primeng/textarea';
 import { Toast } from 'primeng/toast';
@@ -17,7 +18,7 @@ import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-summary',
-  imports: [Tag, StatusSeverityPipe, DatePipe, Button, RouterLink, Toast, ConfirmDialog, Textarea, ReactiveFormsModule, TitleCasePipe],
+  imports: [Tag, StatusSeverityPipe, DatePipe, Button, RouterLink, Toast, ConfirmDialog, Textarea, Textarea, ReactiveFormsModule, TitleCasePipe, Select],
   templateUrl: './summary.component.html',
   styleUrl: './summary.component.scss',
   providers: [MessageService, ConfirmationService, Textarea]
@@ -29,6 +30,10 @@ export class SummaryComponent {
   user!: User;
   form!: FormGroup;
   descricao: FormControl = new FormControl('', [Validators.required, Validators.minLength(2)]);
+  pedidoVistoria!: PedidoVistoria | undefined;
+  userList: User[] = [];
+  selectedFuncionario = new FormControl(null, [Validators.required]);
+  notes = new FormControl(null, [Validators.required]);
 
   constructor(
     private router: ActivatedRoute,
@@ -44,10 +49,40 @@ export class SummaryComponent {
   ngOnInit(): void {
     this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
     this.user = this.authService.currentUserValue;
+    this.userList = this.router.snapshot.data['userPageResolver'].content;
+    this.userList = this.userList.filter(item => item.role.name === Role.staff);
 
     this.form = this._fb.group({
       description: [null, [Validators.required, Validators.minLength(2)]],
     });
+
+    this.pedidoVistoria = this.aplicanteData.pedidoVistorias.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
+  }
+
+  atribuir(): void {
+    let username = this.authService.currentUserValue.username;
+    console.log(username, this.selectedFuncionario.value, this.notes.value);
+
+    if (this.selectedFuncionario.value && this.notes.value) {
+      this.userService.atribuirAplicante(username, this.aplicanteData.id, this.selectedFuncionario.value, this.notes.value).subscribe({
+        next: response => {
+          this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Aplicante atribuido com sucesso', life: 3000, key: 'tr' });
+          this.aplicanteData = response;
+          this.route.navigate(['gestor/application', this.aplicanteData.id],
+            {
+              queryParams: {
+                categoria: this.aplicanteData.categoria,
+                tipo: this.aplicanteData.tipo
+              }
+            }
+          );
+        },
+        error: () => {
+          this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao atribuir o aplicante', life: 3000, key: 'tr' });
+        }
+      });
+    }
+
 
   }
 
@@ -129,14 +164,14 @@ export class SummaryComponent {
     });
   }
 
-  downloadFile() {
+  downloadFile(aplicanteId: number, pedidoId: number, faturaId: number, reciboId: number) {
     this.downloadLoading = true;
-    this.pedidoService.downloadRecibo(this.aplicanteData.id, this.aplicanteData.pedidoInscricaoCadastro.id, this.aplicanteData.pedidoInscricaoCadastro.fatura.id, this.aplicanteData.pedidoInscricaoCadastro.fatura.recibo?.id!).subscribe({
+    this.pedidoService.downloadRecibo(aplicanteId, pedidoId, faturaId, reciboId).subscribe({
       next: (response) => {
         const url = window.URL.createObjectURL(response);
         const a = document.createElement('a');
         a.href = url;
-        a.download = this.aplicanteData.pedidoInscricaoCadastro.fatura.recibo?.nome ?? 'recibo.pdf';
+        a.download = 'recibo.pdf';
         a.click();
         window.URL.revokeObjectURL(url);
         this.messageService.add({

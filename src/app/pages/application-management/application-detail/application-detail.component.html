@@ -7,8 +7,10 @@
      <p-stepper [value]="1" class="basis-[50rem]" [linear]="!(pedidoId)">
          <p-step-list>
              <p-step [value]="1">Detalho da Aplicação</p-step>
+             @if (isSubmitted(aplicanteData)) {
              <p-step [value]="2">Pedido</p-step>
              <p-step [value]="3">Fatura-Recibo</p-step>
+             }
          </p-step-list>
          <p-step-panels>
              <p-step-panel [value]="1">
@@ -203,10 +205,12 @@
                          </div>
 
                      </div>
+                     @if (isSubmitted(aplicanteData)) {
                      <div class="flex pt-6 justify-end">
                          <p-button label="Continuar" icon="pi pi-arrow-right" iconPos="right"
                              (onClick)="activateCallback(2)" />
                      </div>
+                     }
                  </ng-template>
              </p-step-panel>
 
@@ -231,105 +235,6 @@
                                  </p-select>
                              </div>
                          </div>
-                         <!-- <span class="text-xl font-bold mt-6 mb-3 block">
-                             IDENTIFICACAO DA EMPRESA
-                         </span> -->
-                         <!-- <div class="grid grid-cols-12 gap-4">
-                             <div class="mb-6 col-span-12">
-                                 <label for="nomeEmpresa"
-                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                     Nome da Empresa
-                                 </label>
-                                 <input formControlName="nomeEmpresa" id="nomeEmpresa" type="text" pInputText fluid />
-                             </div>
-                             <div class="mb-6 col-span-12">
-                                 <div formGroupName="sede" class="grid grid-cols-12">
-                                     <div class="mb-6 col-span-12">
-                                         <label for="local"
-                                             class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                             Sede
-                                         </label>
-                                         <input formControlName="local" id="local" type="text" pInputText fluid />
-                                     </div>
-                                     <div class="mb-6 col-span-12">
-                                         <div class="flex flex-col sm:flex-row sm:items-center gap-6">
-                                             <div class="flex-auto">
-                                                 <label for="aldeia"
-                                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                                     Aldeia
-                                                 </label>
-                                                 <p-select fluid formControlName="aldeia" [options]="listaAldeia"
-                                                     optionLabel="nome" placeholder="Selecione a Aldeia" [filter]="true"
-                                                     filterBy="nome" [showClear]="true"
-                                                     (onFilter)="aldeiaFilter($event)" (onpanelHide)="onPanelHide()"
-                                                     (onChange)="aldeiaOnChange($event)" (onClear)="onPanelHide()">
-                                                 </p-select>
-                                             </div>
-                                             <div class="flex-auto">
-                                                 <label for="suco"
-                                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                                     Suco
-                                                 </label>
-                                                 <input formControlName="suco" id="suco" type="text" pInputText fluid />
-                                             </div>
-                                             <div class="flex-auto">
-                                                 <label for="posto"
-                                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                                     Posto Administrativo
-                                                 </label>
-                                                 <input formControlName="postoAdministrativo" id="postoAdministrativo"
-                                                     type="text" pInputText fluid />
-                                             </div>
-                                             <div class="flex-auto">
-                                                 <label for="municipio"
-                                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                                     Municipio
-                                                 </label>
-                                                 <input formControlName="municipio" id="municipio" type="text"
-                                                     pInputText fluid />
-                                             </div>
-                                         </div>
-                                     </div>
-                                 </div>
-
-                             </div>
-                             <div class="mb-6 col-span-12 md:col-span-6">
-                                 <label for="nif" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                     NIF
-                                 </label>
-                                 <input formControlName="nif" id="nif" type="text" pInputText fluid />
-                             </div>
-                             <div class="mb-6 col-span-12 md:col-span-6">
-                                 <label for="numeruRegisto"
-                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                     Nº Registo {{categoria | titlecase}}
-                                 </label>
-                                 <input formControlName="numeroRegistoComercial" id="numeruRegisto" type="text"
-                                     pInputText fluid />
-                             </div>
-                             <div class="mb-6 col-span-12 md:col-span-6">
-                                 <label for="telemovel"
-                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                     Telemovel
-                                 </label>
-                                 <input formControlName="telemovel" id="telemovel" type="text" pInputText fluid />
-                             </div>
-
-                             <div class="mb-6 col-span-12 md:col-span-6">
-                                 <label for="telefone"
-                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                     Telefone
-                                 </label>
-                                 <input formControlName="telefone" id="telefone" type="text" pInputText fluid />
-                             </div>
-                             <div class="mb-6 col-span-12">
-                                 <label for="gerente"
-                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                     Gerente
-                                 </label>
-                                 <input formControlName="gerente" id="gerente" type="text" pInputText fluid />
-                             </div>
-                         </div> -->
                          <span class="text-xl font-bold mt-6 mb-3 block">
                              IDENTIFICACAO DO ESTABELECIMENTO
                          </span>
@@ -342,14 +247,6 @@
                                  <input formControlName="nomeEstabelecimento" id="nomeEstabelecimento" type="text"
                                      pInputText fluid />
                              </div>
-                             <!-- <div class="mb-6 col-span-12 md:col-span-6">
-                                 <label for="localEstabelecimento"
-                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                     Local do Estabelecimento
-                                 </label>
-                                 <input formControlName="localEstabelecimento" id="localEstabelecimento" type="text"
-                                     pInputText fluid />
-                             </div> -->
                              <div class="mb-6 col-span-12">
                                  <div formGroupName="localEstabelecimento" class="grid grid-cols-12">
                                      <div class="mb-6 col-span-12">
@@ -607,51 +504,6 @@
                                              [minFractionDigits]="2" [maxFractionDigits]="2" />
                                      </p-inputgroup>
                                  </div>
-                                 <!-- 
-                                 <div class="mb-6 col-span-12 md:col-span-6">
-                                     <label for="nomeEmpresa"
-                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                         Nome Requerente
-                                     </label>
-                                     <input formControlName="nomeEmpresa" id="nomeEmpresa" type="text" pInputText
-                                         fluid />
-                                 </div>
-                                 <div class="mb-6 col-span-12 md:col-span-6">
-                                     <label for="sociedadeComercial"
-                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                         Sociedade Comercial
-                                     </label>
-                                     <p-select formControlName="sociedadeComercial" inputId="sociedadeComercial"
-                                         [options]="listaSociedadeComercial" optionLabel="nome" optionValue="nome" fluid
-                                         [showClear]="true" placeholder="Selecione a sociedade comercial">
-                                     </p-select>
-                                 </div>
-                                 <div class="mb-6 col-span-12 md:col-span-7">
-                                     <label for="atividadeDeclarada"
-                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                         Atividade {{categoria|titlecase}} declarada
-                                     </label>
-                                     <p-select formControlName="atividadeDeclarada"
-                                         (onChange)="atividadeDeclaradaChange($event)" inputId="atividadeDeclarada"
-                                         [options]="listaAtividadeEconomicaAtividade" optionLabel="codigo"
-                                         optionValue="id" fluid [filter]="true" filterBy="codigo,descricao"
-                                         [showClear]="true" placeholder="Selecione a atividade">
-                                         <ng-template let-tipo #item>
-                                             <div class="flex items-center gap-2">
-                                                 <span>{{tipo.codigo}} </span> - <span>{{tipo.descricao}} </span>
-                                             </div>
-                                         </ng-template>
-                                     </p-select>
-
-                                 </div>
-                                 <div class="mb-6 col-span-12 md:col-span-5">
-                                     <label for="descricao"
-                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
-                                         Descricao
-                                     </label>
-                                     <input formControlName="descricao" id="descricao" type="text" pInputText fluid />
-                                 </div> -->
-
                              </div>
                              <div class="grid grid-cols-12 gap-4">
                                  <div class="mb-6 col-span-12 md:col-span-4 flex justify-between">

@@ -1,16 +1,16 @@
+import { getAllAldeiasResolver, getRolesResolver, getSociedadeComercialResolver } from '@/core/resolvers/data-master.resolver';
+import { getTokenActivationResolver } from '@/core/resolvers/user.resolver';
 import { validateGuard } from '@/core/security/route.guard';
 import { Routes } from '@angular/router';
 import { AccessDenied } from './accessdenied';
+import { ActivationComponent } from './activation/activation.component';
+import { AuthLayoutComponent } from './auth-layout/auth-layout.component';
 import { Error } from './error';
 import { ForgotPassword } from './forgotpassword';
 import { LockScreen } from './lockscreen';
 import { Login } from './login/login';
 import { Register } from './register/register.component';
 import { Verification } from './verification/verification';
-import { ActivationComponent } from './activation/activation.component';
-import { getTokenActivationResolver } from '@/core/resolvers/user.resolver';
-import { getAllAldeiasResolver, getMunicipiosResolver, getSociedadeComercialResolver } from '@/core/resolvers/data-master.resolver';
-import { AuthLayoutComponent } from './auth-layout/auth-layout.component';
 
 export default [
     {
@@ -31,6 +31,7 @@ export default [
                 resolve: {
                     aldeiasResolver: getAllAldeiasResolver,
                     listaSociedadeComercial: getSociedadeComercialResolver,
+                    roleListResolver: getRolesResolver,
                 }
             },
             {

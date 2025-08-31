@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { AppMenuitem } from './app.menuitem';
 import { AuthenticationService } from '@/core/services';
 import { Role } from '@/core/models/enums';
-import { model_admin, model_client, model_manager } from './menuitem';
+import { model_admin, model_client, model_manager, model_staff } from './menuitem';
 
 @Component({
     selector: '[app-menu]',
@@ -38,6 +38,9 @@ export class AppMenu {
                 break;
             case Role.manager:
                 this.model = model_manager;
+                break;
+            case Role.staff:
+                this.model = model_staff;
                 break;
             case Role.client:
                 this.model = model_client;

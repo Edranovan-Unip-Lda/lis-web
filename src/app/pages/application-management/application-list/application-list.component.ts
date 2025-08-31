@@ -3,7 +3,7 @@ import { Role } from '@/core/models/enums';
 import { StatusIconPipe, StatusSeverityPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService } from '@/core/services';
 import { EmpresaService } from '@/core/services/empresa.service';
-import { DatePipe, TitleCasePipe, UpperCasePipe } from '@angular/common';
+import { DatePipe, UpperCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -44,6 +44,8 @@ export class ApplicationListComponent {
   ) {
     this.currentRole = this.authService.currentRole.name;
 
+    console.log(this.route.snapshot.data['applicationPage']);
+    
     this.applications = this.route.snapshot.data['applicationPage'].content;
     this.totalData = this.route.snapshot.data['applicationPage'].totalElements;
   }
@@ -74,6 +76,8 @@ export class ApplicationListComponent {
           }
         });
       } else {
+        console.log('test', aplicante.id, aplicante.categoria, aplicante.tipo);
+        
         this.router.navigate(['/gestor/application/task', aplicante.id], {
           queryParams: {
             categoria: aplicante.categoria,
@@ -82,12 +86,12 @@ export class ApplicationListComponent {
         });
       }
 
-      this.router.navigate(['/gestor/application', aplicante.id], {
-        queryParams: {
-          categoria: aplicante.categoria,
-          tipo: aplicante.tipo
-        }
-      });
+      // this.router.navigate(['/gestor/application', aplicante.id], {
+      //   queryParams: {
+      //     categoria: aplicante.categoria,
+      //     tipo: aplicante.tipo
+      //   }
+      // });
     }
 
   }

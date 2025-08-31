@@ -91,6 +91,14 @@ export class DataMasterService {
         return this.http.get<any>(`${this.apiUrl}/aldeias/${id}?projection=withSuco`).pipe(take(1));
     }
 
+    searchPostosByNome(nome: string): Observable<any> {
+        let params = new HttpParams()
+            .set('nome', nome)
+            .set('projection', 'withMunicipio');
+        return this.http.get<any>(`${this.apiUrl}/postos/search/findByNomeContainingIgnoreCase`, { params }).pipe(take(1));
+    }
+
+
     searchAldeiasByNome(nome: string): Observable<any> {
         let params = new HttpParams()
             .set('nome', nome)

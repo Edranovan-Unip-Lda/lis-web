@@ -14,6 +14,8 @@ export class StatusIconPipe implements PipeTransform {
         expirado: 'bi bi-fw bi-ban',
         EM_CURSO: 'bi bi-fw bi-hourglass-split',
         REJEITADO: 'bi bi-fw bi-ban',
+        REVISAO: 'bi bi-fw bi-chat-text',
+        APROVADO: 'bi bi-fw bi-check2-circle',
     };
 
     transform(status: string): string {
@@ -43,9 +45,21 @@ export class StatusSeverityPipe implements PipeTransform {
         SUBMETIDO: 'success',
         EMITIDA: 'success',
         REJEITADO: 'danger',
+        REVISAO: 'warn',
+        APROVADO: 'success',
     };
 
     transform(status: string): Severity {
         return this.statusSeverityMap[status] || 'info';
+    }
+}
+
+@Pipe({
+    name: 'booleanPipe',
+    standalone: true,
+})
+export class BooleanPipe implements PipeTransform {
+    transform(value: boolean) {
+        return value ? 'SIM' : 'NÃO'
     }
 }

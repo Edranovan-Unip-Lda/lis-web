@@ -37,7 +37,7 @@ export class PedidoAtividadeFormComponent {
   isLoading = false;
 
   stateOpts = stateOptions;
-  dataSent = output<string>();
+  dataSent = output<any>();
 
   constructor(
     private _fb: FormBuilder,
@@ -64,12 +64,12 @@ export class PedidoAtividadeFormComponent {
 
   save(form: FormGroup): void {
     this.isLoading = true;
-    this.dataSent.emit('Hello from child!');
     let formData = this.mapFormData(form);
 
     this.aplicanteService.savePedidoAtividade(this.aplicanteData.id, formData).subscribe({
       next: (res) => {
         this.requestForm.get('id')?.setValue(res.id);
+        this.dataSent.emit(res);
       },
       error: (err) => {
         this.isLoading = false;
@@ -91,7 +91,6 @@ export class PedidoAtividadeFormComponent {
     this.aplicanteService.updatePedidoAtividade(this.aplicanteData.id, this.aplicanteData.pedidoLicencaAtividade.id, formData).subscribe({
       next: (res) => {
         this.requestForm.get('id')?.setValue(res.id);
-        this.dataSent.emit('Hello from child!');
       },
       error: (err) => {
         this.isLoading = false;
@@ -345,34 +344,34 @@ export class PedidoAtividadeFormComponent {
 
   private initPersonForm(): FormGroup {
     return this._fb.group({
-      id: [null],
-      nome: [null],
-      nacionalidade: [null],
-      naturalidade: [null],
-      morada: this._fb.group({
-        id: [null],
-        local: [null],
-        aldeia: [null],
-        suco: new FormControl({ value: null, disabled: true }),
-        postoAdministrativo: new FormControl({ value: null, disabled: true }),
-        municipio: new FormControl({ value: null, disabled: true }),
-      }),
-      telefone: [null],
-      email: [null],
       // id: [null],
-      // nome: ['Mario dos Santos'],
-      // nacionalidade: ['Timorense'],
-      // naturalidade: ['Dili'],
+      // nome: [null],
+      // nacionalidade: [null],
+      // naturalidade: [null],
       // morada: this._fb.group({
       //   id: [null],
-      //   local: ['Beco Mota'],
+      //   local: [null],
       //   aldeia: [null],
       //   suco: new FormControl({ value: null, disabled: true }),
       //   postoAdministrativo: new FormControl({ value: null, disabled: true }),
       //   municipio: new FormControl({ value: null, disabled: true }),
       // }),
-      // telefone: ['78899992'],
-      // email: ['mar@mail.com'],
+      // telefone: [null],
+      // email: [null],
+      id: [null],
+      nome: ['Mario dos Santos'],
+      nacionalidade: ['Timorense'],
+      naturalidade: ['Dili'],
+      morada: this._fb.group({
+        id: [null],
+        local: ['Beco Mota'],
+        aldeia: [null],
+        suco: new FormControl({ value: null, disabled: true }),
+        postoAdministrativo: new FormControl({ value: null, disabled: true }),
+        municipio: new FormControl({ value: null, disabled: true }),
+      }),
+      telefone: ['78899992'],
+      email: ['mar@mail.com'],
     })
   }
 

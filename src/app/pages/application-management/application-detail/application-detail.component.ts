@@ -544,8 +544,8 @@ export class ApplicationDetailComponent {
   private initForm(): void {
     this.requestForm = this._fb.group({
       id: [null],
-      tipoPedidoCadastro: [null],
-      nomeEstabelecimento: [null],
+      tipoPedidoCadastro: [null, [Validators.required]],
+      nomeEstabelecimento: [null, [Validators.required]],
       localEstabelecimento: this._fb.group({
         id: [null],
         local: [null, [Validators.required]],
@@ -671,6 +671,11 @@ export class ApplicationDetailComponent {
     }
 
     return total;
+  }
+
+  isSubmitted(aplicanteData: Aplicante): boolean {
+    return aplicanteData.estado !== 'SUBMETIDO' && aplicanteData.estado !==
+      'APROVADO'
   }
 
   private addMessages(isSuccess: boolean, isNew: boolean, error?: any) {

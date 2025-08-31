@@ -63,10 +63,48 @@
             </div>
         </div>
     </div>
+    @if (aplicanteData.estado === 'SUBMETIDO' && aplicanteData.tipo === 'ATIVIDADE') {
+    <div class="bg-[#26262B] p-6 rounded-lg mb-8">
+        <h2 class="text-xl font-semibold text-white mb-4">
+            Atribuir Aplicante
+        </h2>
+
+        <div class="mb-6">
+            <label for="application" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                Funcionário(a)
+            </label>
+            <p-select [formControl]="selectedFuncionario" inputId="application" [options]="userList"
+                [optionLabel]="'firstName'" optionValue="username" fluid [showClear]="true"
+                placeholder="Selecione o Funcionário(a)">
+                <ng-template #selectedItem let-selectedOption>
+                    <div class="flex items-center gap-2">
+                        {{selectedOption.firstName}} {{selectedOption.lastName}}
+                    </div>
+                </ng-template>
+                <ng-template let-item #item>
+                    <div class="flex items-center gap-2">
+                        {{item.firstName}} {{item.lastName}}
+                    </div>
+                </ng-template>
+            </p-select>
+        </div>
+        <div class="mb-6">
+            <label for="notes" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                Notas
+            </label>
+            <textarea [formControl]="notes" inputId="notes" rows="5" cols="30" pTextarea fluid></textarea>
+        </div>
+        <p-button [disabled]="!selectedFuncionario.valid" (click)="atribuir()" icon="pi pi-check-circle"
+            label="Atribuir o Aplicante" [raised]="true" severity="success" />
+    </div>
+
+    }
+
     <div class="bg-[#26262B] p-6 rounded-lg mb-8">
         <h2 class="text-xl font-semibold text-white mb-6">
             Etapas do Aplicante
         </h2>
+        @if (aplicanteData.tipo === 'CADASTRO') {
         <div class="space-y-6">
             <div
                 class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
@@ -125,8 +163,10 @@
                 </div>
                 <div class="flex items-center space-x-4">
                     <p-tag [value]="'SUBMETIDO'" [severity]="'success'" />
-                    <p-button (click)="downloadFile()" icon="pi pi-download" label="Decarregar Recibo" [raised]="true"
-                        [loading]="downloadLoading" severity="info" />
+                    <p-button
+                        (click)="downloadFile(aplicanteData.id, aplicanteData.pedidoInscricaoCadastro.id, aplicanteData.pedidoInscricaoCadastro.fatura.id, aplicanteData.pedidoInscricaoCadastro.fatura.recibo?.id!)"
+                        icon="pi pi-download" label="Decarregar Recibo" [raised]="true" [loading]="downloadLoading"
+                        severity="info" />
                 </div>
             </div>
             <div
@@ -153,6 +193,264 @@
                 </div>
             </div>
         </div>
+        }@else {
+        <div class="space-y-6">
+            <div class="bg-[#3A3A41] rounded-lg">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4">
+                    <div class="flex items-center mb-4 sm:mb-0">
+                        <div
+                            class="flex items-center justify-center h-12 w-12 rounded-full bg-blue-500 text-white mr-4">
+                            <i class="bi bi-file-text text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-white">
+                                Formulário do Pedido de Licença para Exercício de Atividade
+                                {{aplicanteData.categoria |titlecase}}
+                            </h3>
+                            <p class="text-sm text-gray-400">
+                                Detalhes do Pedido de Licença para Exercício de Atividade
+                                {{aplicanteData.categoria |titlecase}}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        @if (aplicanteData.pedidoLicencaAtividade) {
+                        <p-tag [value]="aplicanteData.pedidoLicencaAtividade.status"
+                            [severity]="aplicanteData.pedidoLicencaAtividade.status| statusSeverity" />
+                        <p-button routerLink="/gestor/application/{{aplicanteData.id}}/pedido-atividade"
+                            icon="pi pi-eye" label="Pré-visualização" [raised]="true" severity="info" />
+                        }
+                        @else {
+                        <p-tag value="Em curso" [severity]="'info'" icon="pi pi-clock" />
+                        }
+                    </div>
+                </div>
+                <div class="border-t border-gray-600 mx-4"></div>
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4">
+                    <div class="flex items-center mb-4 sm:mb-0">
+                        <div
+                            class="flex items-center justify-center h-12 w-12 rounded-full bg-green-500 text-white mr-4">
+                            <i class="bi bi-credit-card text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-white">
+                                Fatura
+                            </h3>
+                            <p class="text-sm text-gray-400">Informação da Fatura do Pedido de
+                                Licença
+                                para Exercício de Atividade</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        @if (aplicanteData.pedidoLicencaAtividade &&
+                        aplicanteData.pedidoLicencaAtividade.fatura) {
+                        <p-tag [value]="aplicanteData.pedidoLicencaAtividade.fatura.status"
+                            [severity]="aplicanteData.pedidoLicencaAtividade.fatura.status| statusSeverity" />
+                        <p-button routerLink="/gestor/application/{{aplicanteData.id}}/fatura-atividade"
+                            icon="pi pi-eye" label="Pré-visualização" [raised]="true" severity="info" />
+                        }@else {
+                        <p-tag value="Não Emitida" [severity]="'secondary'" icon="pi pi-ban" />
+                        }
+
+                    </div>
+                </div>
+                <div class="border-t border-gray-600 mx-4"></div>
+                <div
+                    class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                    <div class="flex items-center mb-4 sm:mb-0">
+                        <div
+                            class="flex items-center justify-center h-12 w-12 rounded-full bg-zinc-500 text-white mr-4">
+                            <i class="bi bi-receipt text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-white">
+                                Recibo
+                            </h3>
+                            <p class="text-sm text-gray-400">
+                                Informação do Recibo da Fatura do Pedido de Licença
+                                para Exercício de Atividade
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        @if (aplicanteData.pedidoLicencaAtividade
+                        && aplicanteData.pedidoLicencaAtividade.fatura
+                        && aplicanteData.pedidoLicencaAtividade.fatura.recibo
+                        ){
+                        <p-tag [value]="'SUBMETIDO'" [severity]="'success'" />
+                        <p-button
+                            (click)="downloadFile(aplicanteData.id, aplicanteData.pedidoLicencaAtividade.id, aplicanteData.pedidoLicencaAtividade.fatura.id, aplicanteData.pedidoLicencaAtividade.fatura.recibo.id)"
+                            icon="pi pi-download" label="Decarregar Recibo" [raised]="true" [loading]="downloadLoading"
+                            severity="info" />
+                        }@else {
+                        <p-tag value="Não Submetida" [severity]="'secondary'" icon="pi pi-ban" />
+                        }
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-[#3A3A41] rounded-lg">
+                <div
+                    class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                    <div class="flex items-center mb-4 sm:mb-0">
+                        <div
+                            class="flex items-center justify-center h-12 w-12 rounded-full bg-amber-500 text-white mr-4">
+                            <i class="bi bi-file-text text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-white">
+                                Formulário do Pedido de Vistoria para Licença de Exercício de
+                                Atividade
+                                {{aplicanteData.categoria |titlecase}}
+                            </h3>
+                            <p class="text-sm text-gray-400">
+                                Detalhes do Pedido de Vistoria
+                                {{aplicanteData.categoria |titlecase}}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        @if (pedidoVistoria) {
+                        <p-tag [value]="pedidoVistoria.status" [severity]="pedidoVistoria.status| statusSeverity" />
+                        <p-button routerLink="/gestor/application/{{aplicanteData.id}}/pedido-vistoria" icon="pi pi-eye"
+                            label="Pré-visualização" [raised]="true" severity="info" />
+                        }
+                        @else {
+                        <p-tag value="Em curso" [severity]="'info'" icon="pi pi-clock" />
+                        }
+
+                    </div>
+                </div>
+                <div class="border-t border-gray-600 mx-4"></div>
+                <div
+                    class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                    <div class="flex items-center mb-4 sm:mb-0">
+                        <div
+                            class="flex items-center justify-center h-12 w-12 rounded-full bg-green-500 text-white mr-4">
+                            <i class="bi bi-credit-card text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-white">
+                                Fatura
+                            </h3>
+                            <p class="text-sm text-gray-400">Informação da Fatura do Pedido de
+                                Vistoria
+                                para Licença de Exercício de Atividade
+                                {{aplicanteData.categoria |titlecase}}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        @if (pedidoVistoria &&
+                        pedidoVistoria.fatura) {
+                        <p-tag [value]="pedidoVistoria.fatura.status"
+                            [severity]="pedidoVistoria.fatura.status| statusSeverity" />
+                        <p-button routerLink="/gestor/application/{{aplicanteData.id}}/fatura-vistoria" icon="pi pi-eye"
+                            label="Pré-visualização" [raised]="true" severity="info" />
+                        }@else {
+                        <p-tag value="Não Emitida" [severity]="'secondary'" icon="pi pi-ban" />
+                        }
+
+                    </div>
+                </div>
+                <div class="border-t border-gray-600 mx-4"></div>
+                <div
+                    class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                    <div class="flex items-center mb-4 sm:mb-0">
+                        <div
+                            class="flex items-center justify-center h-12 w-12 rounded-full bg-zinc-500 text-white mr-4">
+                            <i class="bi bi-receipt text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-white">
+                                Recibo
+                            </h3>
+                            <p class="text-sm text-gray-400">
+                                Informação do Recibo da Fatura do Pedido de Vistoria
+                                para Licença de Exercício de Atividade
+                                {{aplicanteData.categoria |titlecase}}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        @if (pedidoVistoria
+                        && pedidoVistoria.fatura
+                        && pedidoVistoria.fatura.recibo
+                        ){
+                        <p-tag [value]="'SUBMETIDO'" [severity]="'success'" />
+                        <p-button
+                            (click)="downloadFile(aplicanteData.id, pedidoVistoria.id, pedidoVistoria.fatura.id, pedidoVistoria.fatura.recibo.id)"
+                            icon="pi pi-download" label="Decarregar Recibo" [raised]="true" [loading]="downloadLoading"
+                            severity="info" />
+                        }@else {
+                        <p-tag value="Não Submetida" [severity]="'secondary'" icon="pi pi-ban" />
+                        }
+
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                <div class="flex items-center mb-4 sm:mb-0">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-cyan-500 text-white mr-4">
+                        <i class="bi bi-list-check text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-white">
+                            Formulário de Auto Vistoria
+                            {{aplicanteData.categoria |titlecase}}
+                        </h3>
+                        <p class="text-sm text-gray-400">
+                            Detalhes do Auto Vistoria
+                            {{aplicanteData.categoria |titlecase}}
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    @if (aplicanteData.autoVistoria) {
+                    <p-tag [value]="'SUBMETIDO'" [severity]="'SUBMETIDO'| statusSeverity" />
+                    <p-button routerLink="/gestor/application/{{aplicanteData.id}}/auto-vistoria" icon="pi pi-eye"
+                        label="Pré-visualização" [raised]="true" severity="info" />
+                    }
+                    @else {
+                    @if (aplicanteData.estado === 'ATRIBUIDO') {
+                    <p-button [routerLink]="['auto-vistoria']" icon="pi pi-pencil" label="Preencher" [raised]="true"
+                        severity="warn" />
+                    }@else {
+                    <p-tag value="Em curso" [severity]="'info'" icon="pi pi-clock" />
+                    }
+                    }
+
+                </div>
+            </div>
+            <div
+                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                <div class="flex items-center mb-4 sm:mb-0">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-purple-500 text-white mr-4">
+                        <i class="bi bi-award text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-white">Certificado</h3>
+                        <p class="text-sm text-gray-400">
+                            Alvará de Licença para Exercício da Atividade
+                            {{aplicanteData.categoria |titlecase}}.
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    @if (aplicanteData.certificadoLicencaAtividade) {
+                    <p-tag [value]="'EMITIDO'" [severity]="'success'" />
+                    <p-button routerLink="/gestor/application/{{aplicanteData.id}}/certificado-atividade" icon="pi pi-eye"
+                        label="Pré-visualização" [raised]="true" severity="info" />
+                    }@else {
+                    <p-tag value="Nao Emitido" [severity]="'warn'" icon="pi pi-times" />
+                    }
+
+                </div>
+            </div>
+        </div>
+        }
     </div>
     <div class="bg-[#26262B] p-6 rounded-lg mb-8">
         <h2 class="text-xl font-semibold text-white mb-6">Histórico do Aplicante</h2>
@@ -226,7 +524,8 @@
             </div>
         </div>
     </div>
-    @if (aplicanteData.estado === 'SUBMETIDO') {
+    @if ((aplicanteData.estado === 'SUBMETIDO' && aplicanteData.tipo === 'CADASTRO') || (aplicanteData.estado ===
+    'REVISAO' && aplicanteData.tipo === 'ATIVIDADE')) {
     <div class="mt-10 flex justify-end space-x-4">
         <p-button (click)="cancelar($event)" icon="pi pi-times" label="Rejeitar o Aplicante" [raised]="true"
             severity="danger" />

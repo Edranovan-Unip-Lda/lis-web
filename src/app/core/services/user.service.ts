@@ -83,5 +83,22 @@ export class UserService {
     return this.http.patch<any>(`${this.apiUrl}/${username}/aplicantes/${aplicanteId}`, form);
   }
 
+  getPaginationAtribuidoAplicante(username: string, page?: number, size?: number): Observable<any> {
+    let params = new HttpParams();
+    if (page && size) {
+      params.append('page', page)
+      params.append('size', size);
+      return this.http.get<any>(`${this.apiUrl}/${username}/aplicantes/atribuidos`, { params }).pipe(take(1));
+    } else {
+      return this.http.get<any>(`${this.apiUrl}/${username}/aplicantes/atribuidos`, { params }).pipe(take(1));
+    }
+  }
+
+  atribuirAplicante(username: string, aplicanteId: number, staffUsername: string, note: string): Observable<any> {
+    let params = new HttpParams();
+    params.append('staffUsername', staffUsername);
+    params.append('notes', note);
+    return this.http.patch<any>(`${this.apiUrl}/${username}/aplicantes/atribuidos/${aplicanteId}?staffUsername=${staffUsername}&notes=${note}`, { params }).pipe(take(1));
+  }
 
 }

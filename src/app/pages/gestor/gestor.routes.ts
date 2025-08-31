@@ -1,10 +1,15 @@
 import { getByIdResolver, getPageResolver } from "@/core/resolvers/aplicante.resolver";
-import { getAllAldeiasResolver, getAllGrupoAtividadeByTipoResolver, getSociedadeComercialResolver, getTaxaByCategoriaAndTipoResolver } from "@/core/resolvers/data-master.resolver";
-import { getAssignedAplicanteByIdResolver, getPageAplicanteByUsernameResolver } from "@/core/resolvers/user.resolver";
+import { getAllAldeiasResolver, getAllGrupoAtividadeByTipoResolver, getPageClasseAtividadeResolver, getPostosResolver, getSociedadeComercialResolver, getTaxaByCategoriaAndTipoResolver } from "@/core/resolvers/data-master.resolver";
+import { getAssignedAplicanteByIdResolver, getPageAplicanteByUsernameResolver, getPageUserResolver } from "@/core/resolvers/user.resolver";
 import { Routes } from "@angular/router";
+import { AutoVistoriaComponent } from "../application-management/application-atividade-detail/auto-vistoria/auto-vistoria.component";
+import { PedidoPdfComponent } from "../application-management/application-atividade-detail/pdf/pedido-pdf/pedido-pdf.component";
+import { PedidoVistoriaPdfComponent } from "../application-management/application-atividade-detail/pdf/pedido-vistoria-pdf/pedido-vistoria-pdf.component";
 import { CertificatePdfComponent } from "../application-management/certificate-pdf/certificate-pdf.component";
 import { FaturaComponent } from "../application-management/fatura/fatura.component";
 import { PedidoInscricaoComponent } from "../application-management/pedido-inscricao/pedido-inscricao.component";
+import { AutoVistoriaPdfComponent } from "../application-management/application-atividade-detail/pdf/auto-vistoria-pdf/auto-vistoria-pdf.component";
+import { CertificadoAtividadePdfComponent } from "../application-management/application-atividade-detail/pdf/certificado-atividade-pdf/certificado-atividade-pdf.component";
 
 export default [
     {
@@ -41,9 +46,23 @@ export default [
                             aldeiasResolver: getAllAldeiasResolver,
                             sociedadeComercialResolver: getSociedadeComercialResolver,
                             grupoAtividadeResolver: getAllGrupoAtividadeByTipoResolver,
+                            userPageResolver: getPageUserResolver
 
                         }
                     },
+                    {
+                        path: ':id/auto-vistoria',
+                        data: {
+                            breadcrumb: 'Auto Vistoria',
+                        },
+                        component: AutoVistoriaComponent,
+                        resolve: {
+                            aplicanteResolver: getAssignedAplicanteByIdResolver,
+                            listaAldeiasResolver: getAllAldeiasResolver,
+                            listaClasseAtividadeResolver: getPageClasseAtividadeResolver,
+                            listaPostoAdministrativoResolver: getPostosResolver,
+                        }
+                    }
                 ]
             },
             {
@@ -68,9 +87,11 @@ export default [
                     aldeiasResolver: getAllAldeiasResolver,
                     sociedadeComercialResolver: getSociedadeComercialResolver,
                     grupoAtividadeResolver: getAllGrupoAtividadeByTipoResolver,
+                    userPageResolver: getPageUserResolver
 
                 }
             },
+            // Inscricao de Cadastro
             {
                 path: ':id/pedido-inscricao',
                 data: { breadcrumb: 'Pré-Visualização do Pedido Inscricao' },
@@ -94,7 +115,64 @@ export default [
                 resolve: {
                     aplicanteResolver: getByIdResolver,
                 }
-            }
+            },
+            // Atividade de Licenca
+            {
+                path: ':id/pedido-atividade',
+                data: { breadcrumb: 'Pedido Atividade de Licenca' },
+                component: PedidoPdfComponent,
+                resolve: {
+                    aplicanteResolver: getByIdResolver,
+                }
+            },
+            {
+                path: ':id/fatura-atividade',
+                data: { breadcrumb: 'Pré-Visualização da Fatura', tipo: 'ATIVIDADE', },
+                component: FaturaComponent,
+                resolve: {
+                    aplicanteResolver: getByIdResolver,
+                }
+            },
+            {
+                path: ':id/pedido-vistoria',
+                data: {
+                    breadcrumb: 'Pedido Vistoria para Licenca de Atividade',
+
+                },
+                component: PedidoVistoriaPdfComponent,
+                resolve: {
+                    aplicanteResolver: getByIdResolver,
+                }
+            },
+            {
+                path: ':id/auto-vistoria',
+                data: {
+                    breadcrumb: 'Auto Vistoria',
+                },
+                component: AutoVistoriaPdfComponent,
+                resolve: {
+                    aplicanteResolver: getByIdResolver,
+                }
+            },
+            {
+                path: ':id/fatura-vistoria',
+                data: {
+                    breadcrumb: 'Pré-Visualização da Fatura',
+                    tipo: 'VISTORIA',
+                },
+                component: FaturaComponent,
+                resolve: {
+                    aplicanteResolver: getByIdResolver,
+                }
+            },
+            {
+                path: ':id/certificado-atividade',
+                data: { breadcrumb: 'Certificado PDF' },
+                component: CertificadoAtividadePdfComponent,
+                resolve: {
+                    aplicanteResolver: getByIdResolver,
+                }
+            },
         ]
 
     },
