@@ -29,13 +29,13 @@ import { forkJoin } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Component({
-  selector: 'app-application-detail',
+  selector: 'app-application-cadastro-detail',
   imports: [ReactiveFormsModule, Button, StepperModule, Select, InputText, FileUpload, Tag, StatusSeverityPipe, DatePipe, Toast, TitleCasePipe, RouterLink, InputNumber, InputGroup, InputGroupAddon, MultiSelect, DatePicker],
-  templateUrl: './application-detail.component.html',
-  styleUrl: './application-detail.component.scss',
+  templateUrl: './application-cadastro-detail.component.html',
+  styleUrl: './application-cadastro-detail.component.scss',
   providers: [MessageService]
 })
-export class ApplicationDetailComponent {
+export class ApplicationCadastroDetailComponent {
   aplicanteData!: Aplicante;
   faturaForm!: FormGroup;
   aplicanteLoading = false;

@@ -5,11 +5,11 @@ import { ApplicationAtividadeDetailComponent } from './application-atividade-det
 import { AutoVistoriaPdfComponent } from './application-atividade-detail/pdf/auto-vistoria-pdf/auto-vistoria-pdf.component';
 import { CertificadoAtividadePdfComponent } from './application-atividade-detail/pdf/certificado-atividade-pdf/certificado-atividade-pdf.component';
 import { PedidoPdfComponent } from './application-atividade-detail/pdf/pedido-pdf/pedido-pdf.component';
-import { ApplicationDetailComponent } from './application-detail/application-detail.component';
-import { ApplicationListComponent } from './application-list/application-list.component';
-import { CertificatePdfComponent } from './certificate-pdf/certificate-pdf.component';
-import { FaturaComponent } from './fatura/fatura.component';
-import { PedidoInscricaoComponent } from './pedido-inscricao/pedido-inscricao.component';
+import { ApplicationCadastroDetailComponent } from './application-cadastro-detail/application-cadastro-detail.component';
+import { ApplicationListComponent } from './application-cadastro-detail/application-list/application-list.component';
+import { CertificatePdfComponent } from './application-cadastro-detail/certificate-pdf/certificate-pdf.component';
+import { FaturaComponent } from './application-cadastro-detail/fatura/fatura.component';
+import { PedidoInscricaoComponent } from './application-cadastro-detail/pedido-inscricao/pedido-inscricao.component';
 
 export default [
     {
@@ -27,7 +27,7 @@ export default [
             {
                 path: ':id',
                 data: { breadcrumb: 'Detail' },
-                component: ApplicationDetailComponent,
+                component: ApplicationCadastroDetailComponent,
                 resolve: {
                     aplicanteResolver: getAplicante,
                     listaTaxaResolver: getTaxaByCategoriaAndTipoResolver,

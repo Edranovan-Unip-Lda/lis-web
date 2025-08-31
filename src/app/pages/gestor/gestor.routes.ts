@@ -5,9 +5,9 @@ import { Routes } from "@angular/router";
 import { AutoVistoriaComponent } from "../application-management/application-atividade-detail/auto-vistoria/auto-vistoria.component";
 import { PedidoPdfComponent } from "../application-management/application-atividade-detail/pdf/pedido-pdf/pedido-pdf.component";
 import { PedidoVistoriaPdfComponent } from "../application-management/application-atividade-detail/pdf/pedido-vistoria-pdf/pedido-vistoria-pdf.component";
-import { CertificatePdfComponent } from "../application-management/certificate-pdf/certificate-pdf.component";
-import { FaturaComponent } from "../application-management/fatura/fatura.component";
-import { PedidoInscricaoComponent } from "../application-management/pedido-inscricao/pedido-inscricao.component";
+import { CertificatePdfComponent } from "../application-management/application-cadastro-detail/certificate-pdf/certificate-pdf.component";
+import { FaturaComponent } from "../application-management/application-cadastro-detail/fatura/fatura.component";
+import { PedidoInscricaoComponent } from "../application-management/application-cadastro-detail/pedido-inscricao/pedido-inscricao.component";
 import { AutoVistoriaPdfComponent } from "../application-management/application-atividade-detail/pdf/auto-vistoria-pdf/auto-vistoria-pdf.component";
 import { CertificadoAtividadePdfComponent } from "../application-management/application-atividade-detail/pdf/certificado-atividade-pdf/certificado-atividade-pdf.component";
 
@@ -29,7 +29,7 @@ export default [
                         data: {
                             breadcrumb: 'List',
                         },
-                        loadComponent: () => import('@/pages/application-management/application-list/application-list.component').then((c) => c.ApplicationListComponent),
+                        loadComponent: () => import('@/pages/application-management/application-cadastro-detail/application-list/application-list.component').then((c) => c.ApplicationListComponent),
                         resolve: {
                             applicationPage: getPageAplicanteByUsernameResolver
                         },
@@ -70,7 +70,7 @@ export default [
                 data: {
                     breadcrumb: 'Lista',
                 },
-                loadComponent: () => import('@/pages/application-management/application-list/application-list.component').then((c) => c.ApplicationListComponent),
+                loadComponent: () => import('@/pages/application-management/application-cadastro-detail/application-list/application-list.component').then((c) => c.ApplicationListComponent),
                 resolve: {
                     applicationPage: getPageResolver
                 }
