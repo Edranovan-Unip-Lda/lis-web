@@ -1,4 +1,4 @@
-import { Aplicante, PedidoVistoria, User } from '@/core/models/entities.model';
+import { Aplicante, AutoVistoria, PedidoVistoria, User } from '@/core/models/entities.model';
 import { AplicanteStatus, Role } from '@/core/models/enums';
 import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService, UserService } from '@/core/services';
@@ -31,9 +31,11 @@ export class SummaryComponent {
   form!: FormGroup;
   descricao: FormControl = new FormControl('', [Validators.required, Validators.minLength(2)]);
   pedidoVistoria!: PedidoVistoria | undefined;
+  autoVistoria!: AutoVistoria | undefined;
   userList: User[] = [];
   selectedFuncionario = new FormControl(null, [Validators.required]);
   notes = new FormControl(null, [Validators.required]);
+
 
   constructor(
     private router: ActivatedRoute,
@@ -56,18 +58,17 @@ export class SummaryComponent {
       description: [null, [Validators.required, Validators.minLength(2)]],
     });
 
-    this.pedidoVistoria = this.aplicanteData.pedidoVistorias.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
+    this.checkedForms(this.aplicanteData);
   }
 
   atribuir(): void {
     let username = this.authService.currentUserValue.username;
-    console.log(username, this.selectedFuncionario.value, this.notes.value);
 
     if (this.selectedFuncionario.value && this.notes.value) {
       this.userService.atribuirAplicante(username, this.aplicanteData.id, this.selectedFuncionario.value, this.notes.value).subscribe({
         next: response => {
           this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Aplicante atribuido com sucesso', life: 3000, key: 'tr' });
-          this.aplicanteData = response;
+          // this.aplicanteData = response;
           this.route.navigate(['gestor/application', this.aplicanteData.id],
             {
               queryParams: {
@@ -195,4 +196,21 @@ export class SummaryComponent {
     });
   }
 
+  private checkedForms(aplicante: Aplicante) {
+    if (aplicante.pedidoLicencaAtividade) {
+      this.pedidoVistoria = this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
+      if (aplicante.pedidoLicencaAtividade.fatura && aplicante.pedidoLicencaAtividade.fatura.recibo) {
+      }
+      if (aplicante.pedidoLicencaAtividade.listaPedidoVistoria && aplicante.pedidoLicencaAtividade.listaPedidoVistoria.length > 0) {
+        const pedidoVistoria = aplicante.pedidoLicencaAtividade.listaPedidoVistoria.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
+        if (pedidoVistoria && pedidoVistoria.fatura && pedidoVistoria.fatura.recibo) {
+          console.log('TESTE');
+          console.log(pedidoVistoria.listaAutoVistoria);
+          
+          // Will Fix this Later
+          this.autoVistoria = pedidoVistoria.listaAutoVistoria[0];
+        }
+      }
+    }
+  }
 }

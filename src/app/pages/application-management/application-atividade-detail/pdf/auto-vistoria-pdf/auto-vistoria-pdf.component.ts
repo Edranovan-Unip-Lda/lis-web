@@ -1,5 +1,5 @@
 import { Aplicante, AutoVistoria } from '@/core/models/entities.model';
-import { AreaRepresentante, Categoria } from '@/core/models/enums';
+import { AplicanteStatus, AreaRepresentante, Categoria } from '@/core/models/enums';
 import { BooleanPipe } from '@/core/pipes/custom.pipe';
 import { tipoAreaRepresentanteComercial, tipoAreaRepresentanteIndustrial } from '@/core/utils/global-function';
 import { DatePipe, Location } from '@angular/common';
@@ -27,8 +27,11 @@ export class AutoVistoriaPdfComponent implements OnInit {
 
   ngOnInit(): void {
     this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
-    this.autoVistoria = this.aplicanteData.autoVistoria;
-    console.log(this.autoVistoria);
+    let pedidoVistoria = this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria.find(item => item.status === AplicanteStatus.submetido);
+
+    if (pedidoVistoria) {
+      this.autoVistoria = pedidoVistoria.listaAutoVistoria[0];
+    }
 
     switch (this.aplicanteData.categoria) {
       case Categoria.comercial:

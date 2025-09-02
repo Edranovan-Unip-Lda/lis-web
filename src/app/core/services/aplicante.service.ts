@@ -48,16 +48,8 @@ export class AplicanteService {
         return this.http.get<PedidoAtividadeLicenca>(`${this.apiUrl}/${aplicanteId}/pedidos/atividade`);
     }
 
-    savePedidoVistoria(aplicanteId: number, formData: any): Observable<PedidoVistoria> {
-        return this.http.post<PedidoVistoria>(`${this.apiUrl}/${aplicanteId}/pedidos/vistoria`, formData);
-    }
-
-    updatePedidoVistoria(aplicanteId: number, pedidoId: number, formData: any): Observable<PedidoVistoria> {
-        return this.http.put<PedidoVistoria>(`${this.apiUrl}/${aplicanteId}/pedidos/vistoria/${pedidoId}`, formData);
-    }
-
-    saveAutoVistoria(aplicanteId: number, formData: any): Observable<any> {
-        return this.http.post<any>(`${this.apiUrl}/${aplicanteId}/auto-vistorias`, formData);
-    }
+    // saveAutoVistoria(aplicanteId: number, formData: any): Observable<any> {
+    //     return this.http.post<any>(`${this.apiUrl}/${aplicanteId}/auto-vistorias`, formData);
+    // }
 
 }

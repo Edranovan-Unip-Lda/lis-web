@@ -30,9 +30,7 @@ export class AppMenu {
     constructor(
         private authService: AuthenticationService
     ) {
-        console.log(authService.currentUserValue);
-
-        switch (authService.currentRole.name) {
+        switch (this.authService.currentRole.name) {
             case Role.admin:
                 this.model = model_admin;
                 break;

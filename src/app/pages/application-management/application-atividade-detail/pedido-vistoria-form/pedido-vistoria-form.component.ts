@@ -1,9 +1,9 @@
 import { Aldeia } from '@/core/models/data-master.model';
 import { Aplicante, PedidoVistoria } from '@/core/models/entities.model';
 import { AplicanteStatus, Categoria } from '@/core/models/enums';
-import { AplicanteService } from '@/core/services/aplicante.service';
 import { DataMasterService } from '@/core/services/data-master.service';
-import { caraterizacaEstabelecimentoOptions, mapToAtividadeEconomica, mapToGrupoAtividade, mapToIdAndNome, nivelRiscoOptions, tipoAtoOptions, tipoEmpresaOptions, tipoPedidoAtividadeComercialOptions, tipoPedidoVistoriaComercialOptions, tipoPedidoVistoriaIndustrialOptions } from '@/core/utils/global-function';
+import { PedidoService } from '@/core/services/pedido.service';
+import { caraterizacaEstabelecimentoOptions, mapToAtividadeEconomica, mapToGrupoAtividade, mapToIdAndNome, nivelRiscoOptions, tipoAtoOptions, tipoEmpresaOptions, tipoPedidoVistoriaComercialOptions, tipoPedidoVistoriaIndustrialOptions } from '@/core/utils/global-function';
 import { Component, Input, output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -42,12 +42,15 @@ export class PedidoVistoriaFormComponent {
     private _fb: FormBuilder,
     private route: ActivatedRoute,
     private dataMasterService: DataMasterService,
-    private aplicanteService: AplicanteService,
+    private pedidoService: PedidoService,
     private messageService: MessageService
   ) { }
 
   ngOnInit(): void {
     this.initForm();
+
+    console.log(this.aplicanteData.pedidoLicencaAtividade.id);
+    
 
     if (this.aplicanteData.categoria == Categoria.comercial) {
       this.tipoPedidoVistoriaOpts = tipoPedidoVistoriaComercialOptions;
@@ -55,11 +58,9 @@ export class PedidoVistoriaFormComponent {
       this.tipoPedidoVistoriaOpts = tipoPedidoVistoriaIndustrialOptions;
     }
 
-    this.pedido = this.aplicanteData.pedidoVistorias.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
+    this.pedido = this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
 
     if (this.pedido) {
-      console.log(this.listaGrupoAtividade);
-
       this.mapPedidoForm(this.pedido);
     }
 
@@ -83,7 +84,7 @@ export class PedidoVistoriaFormComponent {
     }
 
     if (this.pedido) {
-      this.aplicanteService.updatePedidoVistoria(this.aplicanteData.id, this.pedido.id, formData).subscribe({
+      this.pedidoService.updatePedidoVistoria(this.aplicanteData.id, this.pedido.id, formData).subscribe({
         next: (resp: any) => {
           this.vistoriaRequestForm.get('id')?.setValue(resp.id);
           this.addMessages(true, true);
@@ -98,7 +99,7 @@ export class PedidoVistoriaFormComponent {
         }
       });
     } else {
-      this.aplicanteService.savePedidoVistoria(this.aplicanteData.id, formData).subscribe({
+      this.pedidoService.savePedidoVistoria(this.aplicanteData.pedidoLicencaAtividade.id, formData).subscribe({
         next: response => {
           this.vistoriaRequestForm.get('id')?.setValue(response.id);
           this.pedido = response;

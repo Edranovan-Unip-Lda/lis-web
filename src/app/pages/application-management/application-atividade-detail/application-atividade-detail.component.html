@@ -3,7 +3,7 @@
         Candidatura para o Pedido de Licenca para Exercicio de Atividade {{aplicanteData.categoria | titlecase}}
     </span>
 
-    <p-stepper [value]="1" class="basis-[50rem]" [linear]="true">
+    <p-stepper [value]="1" class="basis-[50rem]" [linear]="false">
         <p-step-list>
             <p-step [value]="1">Detalho da Aplicação</p-step>
             @if (isSubmitted(aplicanteData)) {
@@ -134,7 +134,7 @@
                                             </div>
                                             <div>
                                                 <h3 class="text-lg font-semibold text-white">
-                                                    Fatura
+                                                    Fatura 1
                                                 </h3>
                                                 <p class="text-sm text-gray-400">Informação da Fatura do Pedido de
                                                     Licença
@@ -146,7 +146,7 @@
                                             aplicanteData.pedidoLicencaAtividade.fatura) {
                                             <p-tag [value]="aplicanteData.pedidoLicencaAtividade.fatura.status"
                                                 [severity]="aplicanteData.pedidoLicencaAtividade.fatura.status| statusSeverity" />
-                                            <p-button [routerLink]="['fatura-inscricao']" icon="pi pi-eye"
+                                            <p-button [routerLink]="['fatura-atividade']" icon="pi pi-eye"
                                                 label="Pré-visualização" [raised]="true" severity="info" />
                                             }@else {
                                             <p-tag value="Não Emitida" [severity]="'secondary'" icon="pi pi-ban" />
@@ -214,7 +214,7 @@
                                             @if (pedidoVistoria) {
                                             <p-tag [value]="pedidoVistoria.status"
                                                 [severity]="pedidoVistoria.status| statusSeverity" />
-                                            <p-button [routerLink]="['pedido-inscricao']" icon="pi pi-eye"
+                                            <p-button [routerLink]="['pedido-vistoria']" icon="pi pi-eye"
                                                 label="Pré-visualização" [raised]="true" severity="info" />
                                             }
                                             @else {
@@ -279,9 +279,9 @@
                                             && pedidoVistoria.fatura.recibo
                                             ){
                                             <p-tag [value]="'SUBMETIDO'" [severity]="'success'" />
-                                            <p-button (click)="downloadFile(uploadedFiles[0])" icon="pi pi-download"
-                                                label="Decarregar Recibo" [raised]="true" [loading]="downloadLoading"
-                                                severity="info" />
+                                            <p-button (click)="downloadFile(pedidoVistoria.fatura.recibo)"
+                                                icon="pi pi-download" label="Decarregar Recibo" [raised]="true"
+                                                [loading]="downloadLoading" severity="info" />
                                             }@else {
                                             <p-tag value="Não Submetida" [severity]="'secondary'" icon="pi pi-ban" />
                                             }
@@ -309,7 +309,9 @@
                                         </div>
                                     </div>
                                     <div class="flex items-center space-x-4">
-                                        @if (aplicanteData.autoVistoria) {
+                                        <!-- Will be fix -->
+                                        @if (autoVistoria)
+                                        {
                                         <p-tag [value]="'SUBMETIDO'" [severity]="'SUBMETIDO'" />
                                         <p-button [routerLink]="['auto-vistoria']" icon="pi pi-eye"
                                             label="Pré-visualização" [raised]="true" severity="info" />
@@ -335,7 +337,8 @@
                                         </div>
                                     </div>
                                     <div class="flex items-center space-x-4">
-                                        @if (aplicanteData.certificadoLicencaAtividade) {
+                                        @if (aplicanteData.pedidoLicencaAtividade &&
+                                        aplicanteData.pedidoLicencaAtividade.certificadoLicencaAtividade) {
                                         <p-tag [value]="'EMITIDO'" [severity]="'success'" />
                                         <p-button [routerLink]="['certificado-atividade']" icon="pi pi-eye"
                                             label="Pré-visualização" [raised]="true" severity="info" />
@@ -367,8 +370,8 @@
                     <div class="flex pt-6 justify-between">
                         <p-button label="Back" severity="secondary" icon="pi pi-arrow-left"
                             (click)="activateCallback(1)" />
-                        <p-button label="Próximo" severity="secondary" icon="pi pi-arrow-right" iconPos="right"
-                            (click)="activateCallback(3)" />
+                        <p-button [disabled]="disabledPedidoLicencaNextBtn" label="Próximo" severity="secondary"
+                            icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(3)" />
                     </div>
                 </ng-template>
             </p-step-panel>
@@ -382,8 +385,8 @@
                     <div class="flex pt-6 justify-between">
                         <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="right"
                             (onClick)="activateCallback(2)" />
-                        <p-button label="Próximo" severity="secondary" icon="pi pi-arrow-right" iconPos="right"
-                            (click)="activateCallback(4)" />
+                        <p-button [disabled]="disabledFaturaLicencaNextBtn" label="Próximo" severity="secondary"
+                            icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(4)" />
                     </div>
                 </ng-template>
             </p-step-panel>
@@ -397,8 +400,8 @@
                     <div class="flex pt-6 justify-between">
                         <p-button label="Back" severity="secondary" icon="pi pi-arrow-left"
                             (onClick)="activateCallback(3)" />
-                        <p-button label="Próximo" severity="secondary" icon="pi pi-arrow-right" iconPos="right"
-                            (click)="activateCallback(5)" />
+                        <p-button [disabled]="disabledPedidoVistoriaNextBtn" label="Próximo" severity="secondary"
+                            icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(5)" />
                     </div>
                 </ng-template>
             </p-step-panel>
@@ -414,7 +417,7 @@
                             (onClick)="activateCallback(4)" />
                         @if (isClient && aplicanteData.estado !== 'SUBMETIDO') {
                         <p-button (click)="submitAplicante(activateCallback)" [loading]="loading" label="Submeter"
-                            icon="pi pi-save" iconPos="left" />
+                            [disabled]="disabledFaturaVistoriaNextBtn" icon="pi pi-save" iconPos="left" />
                         }
                         @if (isManager || isStaff) {
                         <p-button label="Próximo" severity="secondary" [disabled]="aplicanteData.estado !== 'SUBMETIDO'"

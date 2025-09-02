@@ -36,7 +36,8 @@ export class FaturaVistoriaFormComponent {
   maxFileSize = 20 * 1024 * 1024;
   pedidoId!: number;
   faturaId!: number;
-  pedidoVistoria: PedidoVistoria | undefined;
+  fatura!: Fatura;
+  pedidoVistoria!: PedidoVistoria;
   loading = false;
   dataSent = output<any>();
 
@@ -50,13 +51,14 @@ export class FaturaVistoriaFormComponent {
   ngOnInit(): void {
     this.initForm();
 
-    if (this.aplicanteData.pedidoVistorias.length > 0) {
+    if (this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria.length > 0) {
 
-      this.pedidoVistoria = this.aplicanteData.pedidoVistorias.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
+      this.pedidoVistoria = this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado)!;
       if (this.pedidoVistoria) {
         this.pedidoId = this.pedidoVistoria.id;
         if (this.pedidoVistoria.fatura) {
           this.faturaId = this.pedidoVistoria.fatura.id;
+          this.fatura = this.pedidoVistoria.fatura;
           this.mapEditFatura(this.pedidoVistoria.fatura);
         }
       }
@@ -109,7 +111,7 @@ export class FaturaVistoriaFormComponent {
           this.faturaId = response.id;
           this.addMessages(true, true);
           this.updateUploadUrl();
-          this.dataSent.emit(response);
+
         },
         error: error => {
           this.addMessages(false, true, error);
@@ -126,7 +128,9 @@ export class FaturaVistoriaFormComponent {
   onUpload(event: any, arg: string) {
     if (event.originalEvent.body) {
       this.uploadedFiles.push(event.originalEvent.body)
-      this.aplicanteData.pedidoLicencaAtividade.fatura.recibo = event.originalEvent.body
+      this.pedidoVistoria.fatura.recibo = event.originalEvent.body;
+      this.fatura = this.pedidoVistoria.fatura;
+      this.dataSent.emit(this.fatura);
     }
     this.messageService.add({
       severity: 'info',
@@ -176,6 +180,9 @@ export class FaturaVistoriaFormComponent {
     this.pedidoService.deleteRecibo(this.aplicanteData.id, this.pedidoId, this.faturaId, file.id).subscribe({
       next: () => {
         this.uploadedFiles.pop();
+        this.pedidoVistoria.fatura.recibo = null;
+        this.fatura.recibo = null;
+        this.dataSent.emit(this.fatura);
 
         this.messageService.add({
           severity: 'info',

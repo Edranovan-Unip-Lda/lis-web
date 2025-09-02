@@ -33,7 +33,7 @@ export class PedidoVistoriaPdfComponent {
 
   ngOnInit(): void {
     this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
-    this.pedido = this.aplicanteData.pedidoVistorias.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
+    // this.pedido = this.aplicanteData.pedidoVistorias.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
 
     if (this.pedido) {
       this.seletedNivelRisco = this.nivelRiscoOpts.find(item => item.value === this.pedido?.risco).name;

@@ -1,9 +1,10 @@
 import { Aldeia } from '@/core/models/data-master.model';
-import { Documento } from '@/core/models/entities.model';
-import { Categoria } from '@/core/models/enums';
-import { AplicanteService, AuthenticationService, DataMasterService } from '@/core/services';
+import { Aplicante, Documento, PedidoVistoria } from '@/core/models/entities.model';
+import { AplicanteStatus, Categoria } from '@/core/models/enums';
+import { AuthenticationService, DataMasterService } from '@/core/services';
+import { PedidoService } from '@/core/services/pedido.service';
 import { stateOptions, tipoAreaRepresentanteComercial, tipoAreaRepresentanteIndustrial, tipoDocumentoOptions } from '@/core/utils/global-function';
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, Input, OnInit, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -26,6 +27,8 @@ import { environment } from 'src/environments/environment';
 })
 export class AutoVistoriaComponent implements OnInit {
   autoVistoriaForm!: FormGroup;
+  aplicante!: Aplicante;
+  pedidoVistoria!: PedidoVistoria;
   stateOptions = stateOptions;
   uploadedFiles: any[] = [];
   listaClassificacaoAtividade: any[] = [];
@@ -50,13 +53,15 @@ export class AutoVistoriaComponent implements OnInit {
     private dataMasterService: DataMasterService,
     private authService: AuthenticationService,
     private messageService: MessageService,
-    private aplicanteService: AplicanteService,
+    private pedidoService: PedidoService,
   ) { }
 
   ngOnInit(): void {
     this.initForm();
 
-    this.categoria = this.route.snapshot.data['aplicanteResolver'].categoria;
+    this.aplicante = this.route.snapshot.data['aplicanteResolver'];
+    this.categoria = this.aplicante.categoria;
+    this.pedidoVistoria = this.aplicante.pedidoLicencaAtividade.listaPedidoVistoria.find(p => p.status === AplicanteStatus.submetido)!;
 
     this.listaClassificacaoAtividade = this.route.snapshot.data['listaClasseAtividadeResolver']._embedded.classeAtividade;
 
@@ -114,9 +119,7 @@ export class AutoVistoriaComponent implements OnInit {
       };
       formValue.documentos = this.uploadedFiles;
 
-      console.log(formValue);
-
-      this.aplicanteService.saveAutoVistoria(this.route.snapshot.data['aplicanteResolver'].id, formValue).subscribe({
+      this.pedidoService.saveAutoVistoria(this.pedidoVistoria.id, formValue).subscribe({
         next: response => {
           this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Auto Vistoria submetida com sucesso', life: 3000, key: 'tr' });
           this.autoVistoriaForm.disable();

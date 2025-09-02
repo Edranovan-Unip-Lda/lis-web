@@ -27,9 +27,6 @@ export const canActivateByRole: CanActivateChildFn = (
 
     const allowedRoles: any[] = childRoute.data['role'];
 
-    console.log(allowedRoles, user.role.name);
-
-
     if (!allowedRoles || allowedRoles.length === 0) {
         // role not authorised so redirect to home page
         location.back();

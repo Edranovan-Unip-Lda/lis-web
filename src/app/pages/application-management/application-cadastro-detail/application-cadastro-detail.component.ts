@@ -166,47 +166,6 @@ export class ApplicationCadastroDetailComponent {
     }
   }
 
-  // private mapNewPedido(empresa: Empresa): void {
-  //   const municipio = empresa.sede.aldeia.suco.postoAdministrativo.municipio;
-  //   const postoAdministrativo = {
-  //     id: empresa.sede.aldeia.suco.postoAdministrativo.id,
-  //     nome: empresa.sede.aldeia.suco.postoAdministrativo.nome
-  //   };
-  //   const suco = {
-  //     id: empresa.sede.aldeia.suco.id,
-  //     nome: empresa.sede.aldeia.suco.nome
-  //   };
-  //   const aldeia = {
-  //     id: empresa.sede.aldeia.id,
-  //     nome: empresa.sede.aldeia.nome
-  //   };
-
-  //   this.requestForm.patchValue({
-  //     nomeEmpresa: empresa.nome,
-  //     nif: empresa.nif,
-  //     numeroRegistoComercial: empresa?.numeroRegistoComercial,
-  //     telemovel: empresa.telemovel,
-  //     telefone: empresa.telefone,
-  //     email: empresa.utilizador.email,
-  //     gerente: empresa.gerente,
-  //   });
-
-  //   this.dataMasterService.getAldeiasBySuco(empresa.sede.aldeia.suco.id).subscribe({
-  //     next: (response) => {
-  //       this.listaAldeia = [...mapToIdAndNome(response._embedded.aldeias), ...this.listaAldeia];
-  //       this.requestForm.patchValue({
-  //         sede: {
-  //           local: empresa.sede.local,
-  //           aldeia: aldeia,
-  //           suco: suco.nome,
-  //           postoAdministrativo: postoAdministrativo.nome,
-  //           municipio: municipio.nome
-  //         }
-  //       });
-  //     }
-  //   });
-  // }
-
   mapEditPedido(pedido: PedidoInscricaoCadastro): void {
     this.requestForm.patchValue(pedido);
 

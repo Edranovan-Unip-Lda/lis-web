@@ -48,7 +48,6 @@ export class PedidoAtividadeFormComponent {
 
   ngOnInit(): void {
     this.initForm();
-    console.log(this.aplicanteData, this.listaGrupoAtividade);
 
     this.copyAldeiaList(this.listaAldeia);
 

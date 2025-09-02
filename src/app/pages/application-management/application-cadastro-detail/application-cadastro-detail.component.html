@@ -191,7 +191,7 @@
                                          </div>
                                      </div>
                                      <div class="flex items-center space-x-4">
-                                         @if (aplicanteData.certificadoInscricaoCadastro) {
+                                         @if (aplicanteData.pedidoInscricaoCadastro.certificadoInscricaoCadastro) {
                                          <p-tag [value]="'EMITIDO'" [severity]="'success'" />
                                          <p-button [routerLink]="['certificado-inscricao']" icon="pi pi-eye"
                                              label="Pré-visualização" [raised]="true" severity="info" />

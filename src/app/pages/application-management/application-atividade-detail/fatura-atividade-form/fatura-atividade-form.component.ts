@@ -37,6 +37,7 @@ export class FaturaAtividadeFormComponent {
   faturaId!: number;
   loading = false;
   dataSent = output<any>();
+  fatura!: Fatura;
 
 
   constructor(
@@ -52,8 +53,9 @@ export class FaturaAtividadeFormComponent {
     this.pedidoId = this.aplicanteData.pedidoLicencaAtividade.id;
 
     if (this.aplicanteData.pedidoLicencaAtividade.fatura) {
-      this.faturaId = this.aplicanteData.pedidoLicencaAtividade.fatura.id;
-      this.mapEditFatura(this.aplicanteData.pedidoLicencaAtividade.fatura);
+      this.fatura = this.aplicanteData.pedidoLicencaAtividade.fatura;
+      this.faturaId = this.fatura.id;
+      this.mapEditFatura(this.fatura);
     }
 
     this.enableSuperficieFormControl();
@@ -99,7 +101,7 @@ export class FaturaAtividadeFormComponent {
       this.pedidoService.saveFaturaPedidoLicenca(this.pedidoId, formData).subscribe({
         next: (response) => {
           this.faturaId = response.id;
-          this.dataSent.emit(response);
+          this.fatura = response;
           this.addMessages(true, true);
           this.updateUploadUrl();
         },
@@ -118,7 +120,9 @@ export class FaturaAtividadeFormComponent {
   onUpload(event: any, arg: string) {
     if (event.originalEvent.body) {
       this.uploadedFiles.push(event.originalEvent.body)
-      this.aplicanteData.pedidoLicencaAtividade.fatura.recibo = event.originalEvent.body
+      this.aplicanteData.pedidoLicencaAtividade.fatura.recibo = event.originalEvent.body;
+      this.fatura.recibo = event.originalEvent.body;
+      this.dataSent.emit(this.fatura);
     }
     this.messageService.add({
       severity: 'info',
@@ -169,6 +173,8 @@ export class FaturaAtividadeFormComponent {
       next: () => {
         this.uploadedFiles.pop();
         this.aplicanteData.pedidoLicencaAtividade.fatura.recibo = null;
+        this.fatura.recibo = null;
+        this.dataSent.emit(this.fatura);
 
         this.messageService.add({
           severity: 'info',

@@ -10,6 +10,8 @@ import { FaturaComponent } from "../application-management/application-cadastro-
 import { PedidoInscricaoComponent } from "../application-management/application-cadastro-detail/pedido-inscricao/pedido-inscricao.component";
 import { AutoVistoriaPdfComponent } from "../application-management/application-atividade-detail/pdf/auto-vistoria-pdf/auto-vistoria-pdf.component";
 import { CertificadoAtividadePdfComponent } from "../application-management/application-atividade-detail/pdf/certificado-atividade-pdf/certificado-atividade-pdf.component";
+import { canActivateByRole } from "@/core/security/route.guard";
+import { Role } from "@/core/models/enums";
 
 export default [
     {
@@ -54,7 +56,9 @@ export default [
                         path: ':id/auto-vistoria',
                         data: {
                             breadcrumb: 'Auto Vistoria',
+                            role: [Role.staff]
                         },
+                        canActivate: [canActivateByRole],
                         component: AutoVistoriaComponent,
                         resolve: {
                             aplicanteResolver: getAssignedAplicanteByIdResolver,

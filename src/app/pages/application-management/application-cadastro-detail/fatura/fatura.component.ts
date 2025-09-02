@@ -39,7 +39,10 @@ export class FaturaComponent {
         this.fatura = this.aplicanteData.pedidoLicencaAtividade.fatura
         break;
       case 'VISTORIA':
-        this.fatura = this.aplicanteData.pedidoVistorias.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado)?.fatura;
+        let pedidoVistoria = this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
+        if (pedidoVistoria) {
+          this.fatura = pedidoVistoria.fatura;
+        }
         break;
     }
     this.seletedNivelRisco = this.nivelRiscoOpts.find(item => item.value === this.fatura?.nivelRisco).name;

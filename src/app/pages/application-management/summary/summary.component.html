@@ -182,7 +182,7 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    @if (aplicanteData.certificadoInscricaoCadastro) {
+                    @if (aplicanteData.pedidoInscricaoCadastro.certificadoInscricaoCadastro) {
                     <p-tag [value]="'EMITIDO'" [severity]="'success'" />
                     <p-button routerLink="/gestor/application/{{aplicanteData.id}}/certificado-inscricao"
                         icon="pi pi-eye" label="Pré-visualização" [raised]="true" severity="info" />
@@ -408,13 +408,13 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    @if (aplicanteData.autoVistoria) {
+                    @if (autoVistoria) {
                     <p-tag [value]="'SUBMETIDO'" [severity]="'SUBMETIDO'| statusSeverity" />
                     <p-button routerLink="/gestor/application/{{aplicanteData.id}}/auto-vistoria" icon="pi pi-eye"
                         label="Pré-visualização" [raised]="true" severity="info" />
                     }
                     @else {
-                    @if (aplicanteData.estado === 'ATRIBUIDO') {
+                    @if (aplicanteData.estado === 'ATRIBUIDO' && user.role.name === 'ROLE_STAFF') {
                     <p-button [routerLink]="['auto-vistoria']" icon="pi pi-pencil" label="Preencher" [raised]="true"
                         severity="warn" />
                     }@else {
@@ -439,10 +439,10 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    @if (aplicanteData.certificadoLicencaAtividade) {
+                    @if (aplicanteData.pedidoLicencaAtividade.certificadoLicencaAtividade) {
                     <p-tag [value]="'EMITIDO'" [severity]="'success'" />
-                    <p-button routerLink="/gestor/application/{{aplicanteData.id}}/certificado-atividade" icon="pi pi-eye"
-                        label="Pré-visualização" [raised]="true" severity="info" />
+                    <p-button routerLink="/gestor/application/{{aplicanteData.id}}/certificado-atividade"
+                        icon="pi pi-eye" label="Pré-visualização" [raised]="true" severity="info" />
                     }@else {
                     <p-tag value="Nao Emitido" [severity]="'warn'" icon="pi pi-times" />
                     }
@@ -473,6 +473,21 @@
                         </p>
                     </div>
                     }
+                    @case ('REVISAO') {
+                    <div
+                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-yellow-500 ring-4 ring-[#2D3748]">
+                        <i class="bi bi-search"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="font-semibold text-white">Aplicante em Revisão</p>
+                        <p class="text-sm text-gray-400">Alterado pelo: <span class="font-medium text-gray-300">
+                                {{item.alteradoPor}}
+                            </span></p>
+                        <p class="text-xs text-gray-500 mt-1">
+                            {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                        </p>
+                    </div>
+                    }
                     @case ('APROVADO') {
                     <div
                         class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-green-500 ring-4 ring-[#2D3748]">
@@ -486,14 +501,29 @@
                         </p>
                     </div>
                     }
-                    @case ('SUBMETIDO') {
+                    @case ('ATRIBUIDO') {
                     <div
                         class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-blue-500 ring-4 ring-[#2D3748]">
                         <i class="bi bi-person"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-white">Aplicante Atribuído ao Revisor</p>
-                        <p class="text-sm text-gray-400">Atribuído ao: <span class="font-medium text-gray-300">
+                        <p class="font-semibold text-white">Aplicante Atribuído ao Funcionário</p>
+                        <p class="text-sm text-gray-400">Alterado pelo: <span class="font-medium text-gray-300">
+                                {{item.alteradoPor}}
+                            </span></p>
+                        <p class="text-xs text-gray-500 mt-1">
+                            {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                        </p>
+                    </div>
+                    }
+                    @case ('SUBMETIDO') {
+                    <div
+                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-emerald-500 ring-4 ring-[#2D3748]">
+                        <i class="bi bi-send-check"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="font-semibold text-white">Aplicante foi Submetido</p>
+                        <p class="text-sm text-gray-400">Alterado pelo: <span class="font-medium text-gray-300">
                                 {{item.alteradoPor}}
                             </span></p>
                         <p class="text-xs text-gray-500 mt-1">
@@ -556,20 +586,6 @@
                 </p-button>
             </div>
         </div>
-        <!-- <div [formGroup]="form"
-            class="flex flex-col items-start w-full gap-4 border-b border-surface-200 dark:border-surface-700">
-            <label for="description">
-                Motivo de Rejeicao
-            </label>
-            <textarea rows="5" cols="30" id="description" pTextarea [formControl]="descricao"></textarea>
-        </div>
-        <div>
-            <p-button type="button" [outlined]="true" severity="secondary" icon="pi pi-times" label="Cancel"
-                (click)="onReject()"></p-button>
-            <p-button [disabled]="!descricao.valid" type="button" icon="pi pi-check" label="Confirmar"
-                (onClick)="onAccept()">
-            </p-button>
-        </div> -->
     </ng-template>
 </p-confirmdialog>
 <p-confirmdialog key="cancelar">
@@ -595,20 +611,6 @@
                 </p-button>
             </div>
         </div>
-        <!-- <div [formGroup]="form"
-            class="flex flex-col items-start w-full gap-4 border-b border-surface-200 dark:border-surface-700">
-            <label for="description">
-                Motivo de Rejeicao
-            </label>
-            <textarea rows="5" cols="30" id="description" pTextarea [formControl]="descricao"></textarea>
-        </div>
-        <div>
-            <p-button type="button" [outlined]="true" severity="secondary" icon="pi pi-times" label="Cancel"
-                (click)="onReject()"></p-button>
-            <p-button [disabled]="!descricao.valid" type="button" icon="pi pi-check" label="Confirmar"
-                (onClick)="onAccept()">
-            </p-button>
-        </div> -->
     </ng-template>
 </p-confirmdialog>
 <p-toast position="top-right" key="tr" />

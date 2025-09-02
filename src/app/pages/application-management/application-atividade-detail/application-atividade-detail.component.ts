@@ -1,4 +1,4 @@
-import { Aplicante, Documento, PedidoVistoria } from '@/core/models/entities.model';
+import { Aplicante, AutoVistoria, Documento, Fatura, PedidoVistoria } from '@/core/models/entities.model';
 import { AplicanteStatus, Role } from '@/core/models/enums';
 import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService } from '@/core/services';
@@ -39,9 +39,14 @@ export class ApplicationAtividadeDetailComponent {
   listaPedidoAto: any[] = [];
   uploadedFiles: any[] = [];
   pedidoVistoria!: PedidoVistoria | undefined;
+  autoVistoria!: AutoVistoria | undefined;
   isManager = false;
   isStaff = false;
   isClient = false;
+  disabledPedidoLicencaNextBtn = true;
+  disabledFaturaLicencaNextBtn = true;
+  disabledPedidoVistoriaNextBtn = true;
+  disabledFaturaVistoriaNextBtn = true;
 
   @ViewChild(PedidoAtividadeFormComponent) child!: PedidoAtividadeFormComponent;
 
@@ -70,7 +75,7 @@ export class ApplicationAtividadeDetailComponent {
     this.listaPedidoAto = mapToTaxa(this.router.snapshot.data['listaTaxaResolver']._embedded.taxas);
     this.aplicanteEstado = this.aplicanteData.estado;
 
-    this.pedidoVistoria = this.aplicanteData.pedidoVistorias.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
+    this.checkedForms(this.aplicanteData);
 
     switch (this.authService.currentRole.name) {
       case Role.manager:
@@ -139,35 +144,57 @@ export class ApplicationAtividadeDetailComponent {
     });
   }
 
-  onDataReceived(payload: string) {
-    console.log('Parent received:', payload);
-  }
-
   onPedidoLicencaReceived(payload: any) {
     this.aplicanteData.pedidoLicencaAtividade = payload;
+    this.disabledPedidoLicencaNextBtn = false;
   }
 
-  onFaturaPedidoReceived(payload: any) {
+  onFaturaPedidoReceived(payload: Fatura) {
     this.aplicanteData.pedidoLicencaAtividade.fatura = payload;
+    if (payload && payload.recibo) {
+      this.disabledFaturaLicencaNextBtn = false;
+    } else {
+      this.disabledFaturaLicencaNextBtn = true;
+    }
   }
 
   onPedidoVistoriaReceived(payload: any) {
-    this.aplicanteData.pedidoVistorias = [...this.aplicanteData.pedidoVistorias, payload];
+    this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria = [...this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria, payload];
     this.pedidoVistoria = payload;
+    this.disabledPedidoVistoriaNextBtn = false;
   }
 
   onPedidoVistoriaFaturaReceived(payload: any) {
-    this.aplicanteData.pedidoVistorias = this.aplicanteData.pedidoVistorias.map(item => {
-      if (item.id === payload.pedidoVistoriaId) {
-        item.fatura = payload.fatura;
-      }
-      return item;
-    });
+    console.log(this.pedidoVistoria && this.pedidoVistoria.fatura.recibo);
+    
+    if (this.pedidoVistoria && this.pedidoVistoria.fatura.recibo) {
+      this.pedidoVistoria.fatura = payload;
+      this.disabledFaturaVistoriaNextBtn = false;
+    } else {
+      this.disabledFaturaVistoriaNextBtn = true;
+    }
   }
 
   isSubmitted(aplicanteData: Aplicante): boolean {
     return aplicanteData.estado !== 'SUBMETIDO' && aplicanteData.estado !== 'REVISAO' && aplicanteData.estado !==
       'APROVADO'
+  }
+
+  private checkedForms(aplicante: Aplicante) {
+    if (aplicante.pedidoLicencaAtividade) {
+      this.pedidoVistoria = this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
+      this.disabledPedidoLicencaNextBtn = false;
+      if (aplicante.pedidoLicencaAtividade.fatura && aplicante.pedidoLicencaAtividade.fatura.recibo) {
+        this.disabledFaturaLicencaNextBtn = false;
+      }
+      if (aplicante.pedidoLicencaAtividade.listaPedidoVistoria && aplicante.pedidoLicencaAtividade.listaPedidoVistoria.length > 0) {
+        this.disabledPedidoVistoriaNextBtn = false;
+        const pedidoVistoria = aplicante.pedidoLicencaAtividade.listaPedidoVistoria.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
+        if (pedidoVistoria && pedidoVistoria.fatura && pedidoVistoria.fatura.recibo) {
+          this.disabledFaturaVistoriaNextBtn = false;
+        }
+      }
+    }
   }
 
   private addMessages(isSuccess: boolean, isNew: boolean, error?: any) {

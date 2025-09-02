@@ -46,18 +46,19 @@ import { StyleClassModule } from 'primeng/styleclass';
                         </div>
                     </div>
                 </li>
-
-                <li class="profile-item topbar-item">
-                    <button pButton pRipple type="button" icon="pi pi-bell" class="text-surface-500 dark:text-surface-400 flex-shrink-0" severity="secondary" text rounded></button>
-                </li>
-
-                <li class="profile-item topbar-item">
+                 <li class="profile-item topbar-item">
                     <button pButton pRipple type="button" icon="pi pi-comment" class="relative text-surface-500 dark:text-surface-400 flex-shrink-0" severity="secondary" text rounded></button>
                 </li>
 
                 <li class="ml-4">
                     <button pButton pRipple type="button" icon="pi pi-palette" class="flex-shrink-0 config-button" text rounded (click)="onConfigButtonClick()"></button>
-                </li>-->
+                </li>
+
+                -->
+
+                <li class="profile-item topbar-item">
+                    <button pButton pRipple type="button" icon="pi pi-bell" class="text-surface-500 dark:text-surface-400 flex-shrink-0" severity="secondary" text rounded></button>
+                </li>
 
                 <li class="profile-item topbar-item">
                    
