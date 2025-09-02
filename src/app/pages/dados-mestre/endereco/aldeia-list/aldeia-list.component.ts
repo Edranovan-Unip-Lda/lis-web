@@ -165,7 +165,6 @@ export class AldeiaListComponent {
     this.service.update(this.type, this.selectedData.id, form.value).subscribe({
       next: response => {
         response.suco = suco;
-        console.log(response, suco);
         
         this.dataList[this.selectedData.index] = response
         this.addMessages(true, false);

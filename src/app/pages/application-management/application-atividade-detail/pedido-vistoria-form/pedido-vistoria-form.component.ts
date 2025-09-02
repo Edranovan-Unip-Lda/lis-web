@@ -49,9 +49,6 @@ export class PedidoVistoriaFormComponent {
   ngOnInit(): void {
     this.initForm();
 
-    console.log(this.aplicanteData.pedidoLicencaAtividade.id);
-    
-
     if (this.aplicanteData.categoria == Categoria.comercial) {
       this.tipoPedidoVistoriaOpts = tipoPedidoVistoriaComercialOptions;
     } else {

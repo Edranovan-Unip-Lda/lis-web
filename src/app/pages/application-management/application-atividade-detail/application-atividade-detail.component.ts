@@ -165,8 +165,6 @@ export class ApplicationAtividadeDetailComponent {
   }
 
   onPedidoVistoriaFaturaReceived(payload: any) {
-    console.log(this.pedidoVistoria && this.pedidoVistoria.fatura.recibo);
-    
     if (this.pedidoVistoria && this.pedidoVistoria.fatura.recibo) {
       this.pedidoVistoria.fatura = payload;
       this.disabledFaturaVistoriaNextBtn = false;

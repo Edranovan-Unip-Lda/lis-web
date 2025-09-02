@@ -1,4 +1,4 @@
- <p-toast position="bottom-right" />
+ <p-toast position="bottom-center" />
  <div class="card">
      <span class="text-sur  face-900 dark:text-surface-0 text-2xl font-bold mb-6 block">
          Candidatura para o Pedido Inscricacao no Cadastro {{categoria | titlecase}}
@@ -191,7 +191,8 @@
                                          </div>
                                      </div>
                                      <div class="flex items-center space-x-4">
-                                         @if (aplicanteData.pedidoInscricaoCadastro && aplicanteData.pedidoInscricaoCadastro.certificadoInscricaoCadastro) {
+                                         @if (aplicanteData.pedidoInscricaoCadastro &&
+                                         aplicanteData.pedidoInscricaoCadastro.certificadoInscricaoCadastro) {
                                          <p-tag [value]="'EMITIDO'" [severity]="'success'" />
                                          <p-button [routerLink]="['certificado-inscricao']" icon="pi pi-eye"
                                              label="Pré-visualização" [raised]="true" severity="info" />
@@ -519,6 +520,7 @@
                                  </div>
                              </div>
 
+                             @if (faturaId) {
                              <span class="text-xl font-bold mt-6 mb-3 block">
                                  Carregar Recibo
                              </span>
@@ -554,6 +556,7 @@
                                      </ng-template>
                                  </p-fileupload>
                              </div>
+                             }
                          </div>
                      </form>
                      <div class="flex pt-6 justify-between">

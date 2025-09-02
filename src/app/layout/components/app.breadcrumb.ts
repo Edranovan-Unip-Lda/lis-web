@@ -93,7 +93,6 @@ export class AppBreadcrumb {
         }));
         setTimeout(() => {
             this.searchInput.nativeElement?.focus();
-            console.log(this.searchInput);
         }, 250);
     }
 

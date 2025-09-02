@@ -104,8 +104,6 @@ export class PedidoAtividadeFormComponent {
   }
 
   aldeiaOnChange(event: any, controlName: string): void {
-    console.log(event.value);
-    
     if (event.value) {
       const selectedItem = event.value;
 
@@ -266,7 +264,6 @@ export class PedidoAtividadeFormComponent {
         this.listaAldeiaEmpresa = [...mapToIdAndNome(empresaSedeResponse._embedded.aldeias), ...this.listaAldeia];
         this.listaAldeiaRepresentante = [...mapToIdAndNome(representanteResponse._embedded.aldeias)];
         this.listaAldeiaGerente = [...mapToIdAndNome(gerenteResponse._embedded.aldeias)];
-        console.log(this.listaAldeiaEmpresa, this.listaAldeiaRepresentante, this.listaAldeiaGerente);
 
         this.requestForm.get('empresaSede')?.patchValue({
           aldeia: request.empresaSede.aldeia.id,
@@ -286,9 +283,6 @@ export class PedidoAtividadeFormComponent {
           postoAdministrativo: request.gerente.morada.aldeia.suco.postoAdministrativo.nome,
           municipio: request.gerente.morada.aldeia.suco.postoAdministrativo.municipio.nome
         });
-
-        console.log(this.requestForm.value);
-
       }
     });
   }

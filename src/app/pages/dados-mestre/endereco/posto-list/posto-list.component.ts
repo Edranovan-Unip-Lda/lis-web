@@ -85,7 +85,6 @@ export class PostoListComponent {
 
     this.service.save(this.type, form.value).subscribe({
       next: response => {
-        console.log(response);
         response.municipio = form.value.municipio;
         this.dataList.push(response);
         this.addMessages(true, true);
@@ -172,8 +171,6 @@ export class PostoListComponent {
     this.dataIsFetching = true;
     this.service.getPostos(page, size).subscribe({
       next: response => {
-        console.log(response);
-
         this.dataList = response._embedded.postos;
         this.totalData = response.page.totalElements;
         this.dataIsFetching = false;
@@ -182,7 +179,6 @@ export class PostoListComponent {
   }
 
   onPageChange(event: any): void {
-    console.log(event);
     this.dataIsFetching = true;
     this.page = event.page;
     this.size = event.rows;

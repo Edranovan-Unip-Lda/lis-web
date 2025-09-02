@@ -47,7 +47,6 @@ export class ApplicationFormComponent {
   }
 
   create(form: FormGroup) {
-    console.log(form.value);
     switch (form.value.applicationType.value) {
       case 'Inscrição no Cadastro':
         this.route.navigateByUrl('/application/cadastro/1')

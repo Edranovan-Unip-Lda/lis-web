@@ -98,8 +98,6 @@ export class SucoListComponent {
   municipioSelectOnChange(event: any): void {
     this.service.getPostosByMunicipio(event.value.id).subscribe({
       next: response => {
-        console.log(response);
-
         this.postoList = mapToIdAndNome(response._embedded.postos);
       }
     });
@@ -111,7 +109,6 @@ export class SucoListComponent {
 
     this.service.save(this.type, form.value).subscribe({
       next: response => {
-        console.log(response);
         response.postoAdministrativo = form.value.postoAdministrativo;
         this.dataList.push(response);
         this.addMessages(true, true);

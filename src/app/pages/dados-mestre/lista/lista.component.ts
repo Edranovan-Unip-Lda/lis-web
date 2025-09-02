@@ -58,7 +58,6 @@ export class ListaComponent {
 
     this.dataForm.get('tipo')?.valueChanges.subscribe((value) => {
       if (value) {
-        console.log("Value " + value);
         this.getGrupoAtividadesByTipo(value);
       } else {
         // this.dataForm.get('codigo')?.reset();
@@ -313,7 +312,6 @@ export class ListaComponent {
     this.isNew = false;
     this.dataForm.patchValue(formEditData);
     this.selectedData = data;
-    console.log(this.selectedData);
 
     this.selectedData.index = index;
   }

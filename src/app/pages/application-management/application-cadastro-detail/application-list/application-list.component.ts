@@ -44,8 +44,6 @@ export class ApplicationListComponent {
   ) {
     this.currentRole = this.authService.currentRole.name;
 
-    console.log(this.route.snapshot.data['applicationPage']);
-    
     this.applications = this.route.snapshot.data['applicationPage'].content;
     this.totalData = this.route.snapshot.data['applicationPage'].totalElements;
   }
@@ -66,8 +64,6 @@ export class ApplicationListComponent {
         }
       });
     } else {
-      console.log(aplicante.estado);
-
       if (aplicante.estado === 'APROVADO') {
         this.router.navigate(['/gestor/application', aplicante.id], {
           queryParams: {
@@ -76,8 +72,6 @@ export class ApplicationListComponent {
           }
         });
       } else {
-        console.log('test', aplicante.id, aplicante.categoria, aplicante.tipo);
-        
         this.router.navigate(['/gestor/application/task', aplicante.id], {
           queryParams: {
             categoria: aplicante.categoria,
@@ -86,12 +80,6 @@ export class ApplicationListComponent {
         });
       }
 
-      // this.router.navigate(['/gestor/application', aplicante.id], {
-      //   queryParams: {
-      //     categoria: aplicante.categoria,
-      //     tipo: aplicante.tipo
-      //   }
-      // });
     }
 
   }

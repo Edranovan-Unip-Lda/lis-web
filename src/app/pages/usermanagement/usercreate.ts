@@ -49,7 +49,6 @@ export class UserCreate {
         this.initForm();
 
         this.userData = this.route.snapshot.data['userData'];
-        console.log(this.route.snapshot.data['direcaoList']);
 
         this.direcaoList = mapToIdAndNome(this.route.snapshot.data['direcaoList']._embedded.direcoes);
 
@@ -95,7 +94,6 @@ export class UserCreate {
             this.userService.save(formData).subscribe({
                 next: (response) => {
                     this.loading = false;
-                    console.log(response);
                     this.addMessage(true, `User created successfully and verification link sent to ${response.email}`);
                     this.userForm.reset();
                 },
@@ -125,7 +123,6 @@ export class UserCreate {
             this.userService.update(this.username, formData).subscribe({
                 next: (response) => {
                     this.loading = false;
-                    console.log(response);
                     this.addMessage(true, 'User updated successfully');
                 },
                 error: (error) => {

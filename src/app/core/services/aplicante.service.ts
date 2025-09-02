@@ -33,7 +33,7 @@ export class AplicanteService {
     }
 
     updatePedidoCadastro(aplicanteId: number, pedidoId: number, formData: any): Observable<PedidoInscricaoCadastro> {
-        return this.http.put<PedidoInscricaoCadastro>(`${this.apiUrl}/${aplicanteId}/pedidos/cadastro/${pedidoId}}`, formData);
+        return this.http.put<PedidoInscricaoCadastro>(`${this.apiUrl}/${aplicanteId}/pedidos/cadastro/${pedidoId}`, formData);
     }
 
     savePedidoAtividade(aplicanteId: number, formData: any): Observable<PedidoAtividadeLicenca> {
@@ -47,9 +47,4 @@ export class AplicanteService {
     getPedidoAtividade(aplicanteId: number): Observable<PedidoAtividadeLicenca> {
         return this.http.get<PedidoAtividadeLicenca>(`${this.apiUrl}/${aplicanteId}/pedidos/atividade`);
     }
-
-    // saveAutoVistoria(aplicanteId: number, formData: any): Observable<any> {
-    //     return this.http.post<any>(`${this.apiUrl}/${aplicanteId}/auto-vistorias`, formData);
-    // }
-
 }

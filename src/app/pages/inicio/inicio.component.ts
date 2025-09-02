@@ -48,12 +48,9 @@ export class InicioComponent {
       categoria: form.value.categoria.value,
       empresa: this.empresa
     };
-    console.log(formData);
-    console.log(formData.tipo);
 
     this.empresaService.createAplicante(this.empresa.id, formData).subscribe({
       next: (response) => {
-        console.log('Aplicante criado com sucesso:', response);
         this.visible = false;
         this.loading = false;
         this.applicationForm.reset();

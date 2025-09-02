@@ -143,16 +143,8 @@ export class Register {
             }
         });
 
-        console.log(
-            this.route.snapshot.data['roleListResolver']
-        );
-
         const roles: any[] = this.route.snapshot.data['roleListResolver']._embedded.roles;
         this.selectedRole = roles.find(r => r.name === 'ROLE_CLIENT')!;
-
-        console.log(this.selectedRole);
-
-
     }
 
 
@@ -211,7 +203,6 @@ export class Register {
             formData.utilizador.lastName = rest.join(' ');
             formData.utilizador.username = form.value.utilizador.email.split('@')[0] + new Date().getUTCMilliseconds().toString();
             formData.utilizador.role = this.selectedRole
-            console.log(formData);
 
             this.empresaService.save(formData).subscribe({
                 next: (response) => {

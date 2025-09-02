@@ -204,9 +204,6 @@ export class SummaryComponent {
       if (aplicante.pedidoLicencaAtividade.listaPedidoVistoria && aplicante.pedidoLicencaAtividade.listaPedidoVistoria.length > 0) {
         const pedidoVistoria = aplicante.pedidoLicencaAtividade.listaPedidoVistoria.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
         if (pedidoVistoria && pedidoVistoria.fatura && pedidoVistoria.fatura.recibo) {
-          console.log('TESTE');
-          console.log(pedidoVistoria.listaAutoVistoria);
-          
           // Will Fix this Later
           this.autoVistoria = pedidoVistoria.listaAutoVistoria[0];
         }
