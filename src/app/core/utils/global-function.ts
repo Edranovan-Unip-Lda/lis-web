@@ -299,5 +299,25 @@ export const tipoAreaRepresentanteIndustrial: any[] = [
     {
         name: 'Representante da Autoridade Nacional Licenciamento Ambiental',
         value: AreaRepresentante.anla
-    }
+    },
+    {
+        name: 'Representante do departamento governamental responsável pela área do Comércio',
+        value: AreaRepresentante.comercio
+    },
+    {
+        name: 'Representante da autoridade administrativa local',
+        value: AreaRepresentante.autoridadeLocal
+    },
+    {
+        name: 'Representante do órgão local da saúde',
+        value: AreaRepresentante.saude
+    },
+    {
+        name: 'Representante da entidade com competências inspetivas do departamento governamental responsável pela área do Trabalho',
+        value: AreaRepresentante.trabalho
+    },
+    {
+        name: 'Representante do serviço de bombeiros',
+        value: AreaRepresentante.bombeiros
+    },
 ]

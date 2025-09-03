@@ -67,7 +67,7 @@ import { StyleClassModule } from 'primeng/styleclass';
                 <li class="profile-item topbar-item">
                    <div pStyleClass="@next" enterFromClass="!hidden" enterActiveClass="animate-scalein" leaveToClass="!hidden" leaveActiveClass="animate-fadeout" [hideOnOutsideClick]="true" class="flex justify-around cursor-pointer hover:text-emerald-500">
                     <span class="mr-4">
-                        {{user.firstname}} {{user.lastName}}
+                        {{user.firstName}} {{user.lastName}}
                     </span>
                     <a>
                         <img class="rounded-full" src="/images/avatar-m-1.jpg" />

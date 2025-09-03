@@ -273,22 +273,6 @@ export const model_manager: MenuItem[] = [
         ]
     },
     {
-        label: 'Utilizador',
-        icon: 'pi pi-fw pi-user',
-        items: [
-            {
-                label: 'Lista',
-                icon: 'pi pi-fw pi-list',
-                routerLink: ['utilizador/list']
-            },
-            {
-                label: 'Criar',
-                icon: 'pi pi-fw pi-plus',
-                routerLink: ['utilizador/create']
-            }
-        ]
-    },
-    {
         label: 'Historicos',
         items: [
             {
