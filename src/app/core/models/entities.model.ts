@@ -14,6 +14,12 @@ export interface User {
     status: string;
     oneTimePassword: string;
     updatedAt: Date;
+    direcao: Direcao;
+}
+
+export interface Direcao extends BaseModel {
+    nome: Categoria;
+    codigo: string;
 }
 
 export interface Empresa extends BaseModel {

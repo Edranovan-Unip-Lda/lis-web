@@ -14,6 +14,35 @@ export const getPageUserResolver: ResolveFn<any> = () => {
     return service.getPagination();
 }
 
+export const getUsersByDirecaoId: ResolveFn<any> = () => {
+    const service = inject(UserService);
+    const authService = inject(AuthenticationService);
+    const user = authService.currentUserValue;
+    if (user && user.direcao) {
+        return service.getByDirecaoId(user.direcao.id);
+    } else {
+        return of(null);
+    }
+}
+
+/**
+ * Resolves the list of users by direcao ID and role ID.
+ *
+ * @param route - The route snapshot.
+ *
+ * @returns A promise of the list of users.
+ */
+export const getUsersByDirecaoIdAndRole_Staff: ResolveFn<any> = (route: ActivatedRouteSnapshot) => {
+    const service = inject(UserService);
+    const authService = inject(AuthenticationService);
+    const user = authService.currentUserValue;
+    if (user && user.direcao && user.role) {
+        return service.getByDirecaoIdAndRoleName(user.direcao.id, Role.staff);
+    } else {
+        return of(null);
+    }
+}
+
 /**
  * Resolves the user by username.
  *
@@ -61,7 +90,7 @@ export const getPageAplicanteByUsernameResolver: ResolveFn<any> = () => {
     const user = authService.currentUserValue;
 
     const service = inject(UserService);
-    
+
     if (user.username) {
         switch (user.role.name) {
             case Role.admin:

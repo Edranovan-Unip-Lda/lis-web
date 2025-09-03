@@ -159,13 +159,16 @@ export class ApplicationAtividadeDetailComponent {
   }
 
   onPedidoVistoriaReceived(payload: any) {
+    if (!this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria) {
+      this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria = [];
+    }
     this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria = [...this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria, payload];
     this.pedidoVistoria = payload;
     this.disabledPedidoVistoriaNextBtn = false;
   }
 
   onPedidoVistoriaFaturaReceived(payload: any) {
-    if (this.pedidoVistoria && this.pedidoVistoria.fatura.recibo) {
+    if (this.pedidoVistoria) {
       this.pedidoVistoria.fatura = payload;
       this.disabledFaturaVistoriaNextBtn = false;
     } else {

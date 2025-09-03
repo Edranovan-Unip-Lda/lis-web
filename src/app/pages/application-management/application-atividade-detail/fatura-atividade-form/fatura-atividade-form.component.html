@@ -49,7 +49,7 @@
                  }
              </div>
          </div>
-
+         @if (faturaId) {
          <span class="text-xl font-bold mt-6 mb-3 block">
              Carregar Recibo
          </span>
@@ -83,6 +83,7 @@
                  </ng-template>
              </p-fileupload>
          </div>
+         }
      </div>
  </form>
  <p-toast position="top-right" />

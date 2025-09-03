@@ -51,8 +51,10 @@ export class SummaryComponent {
   ngOnInit(): void {
     this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
     this.user = this.authService.currentUserValue;
-    this.userList = this.router.snapshot.data['userPageResolver'].content;
-    this.userList = this.userList.filter(item => item.role.name === Role.staff);
+
+    if (this.router.snapshot.data['userRoleStaffResolver']) {
+      this.userList = this.router.snapshot.data['userRoleStaffResolver']._embedded.users;
+    }
 
     this.form = this._fb.group({
       description: [null, [Validators.required, Validators.minLength(2)]],

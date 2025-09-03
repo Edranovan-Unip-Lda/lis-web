@@ -3,7 +3,7 @@
         Candidatura para o Pedido de Licenca para Exercicio de Atividade {{aplicanteData.categoria | titlecase}}
     </span>
 
-    <p-stepper [value]="1" class="basis-[50rem]" [linear]="false">
+    <p-stepper [value]="1" class="basis-[50rem]" [linear]="true">
         <p-step-list>
             <p-step [value]="1">Detalho da Aplicação</p-step>
             @if (isSubmitted(aplicanteData)) {

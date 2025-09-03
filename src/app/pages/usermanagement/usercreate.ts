@@ -61,6 +61,13 @@ export class UserCreate {
             this.userData.password = ''; // Do not show password in edit form
 
             this.userForm.patchValue(this.userData);
+
+            if (this.userData.role.name === Role.manager || this.userData.role.name === Role.staff) {
+                this.showCategoria = true;
+                this.userForm.get('direcao')?.setValue(this.userData.direcao.id);
+                this.userForm.get('direcao')?.setValidators(Validators.required);
+            }
+
             this.userForm.patchValue({
                 role: this.userData.role.name
             });

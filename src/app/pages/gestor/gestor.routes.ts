@@ -1,6 +1,6 @@
 import { getByIdResolver, getPageResolver } from "@/core/resolvers/aplicante.resolver";
 import { getAllAldeiasResolver, getAllGrupoAtividadeByTipoResolver, getPageClasseAtividadeResolver, getPostosResolver, getSociedadeComercialResolver, getTaxaByCategoriaAndTipoResolver } from "@/core/resolvers/data-master.resolver";
-import { getAssignedAplicanteByIdResolver, getPageAplicanteByUsernameResolver, getPageUserResolver } from "@/core/resolvers/user.resolver";
+import { getAssignedAplicanteByIdResolver, getPageAplicanteByUsernameResolver, getPageUserResolver, getUsersByDirecaoId, getUsersByDirecaoIdAndRole_Staff } from "@/core/resolvers/user.resolver";
 import { Routes } from "@angular/router";
 import { AutoVistoriaComponent } from "../application-management/application-atividade-detail/auto-vistoria/auto-vistoria.component";
 import { PedidoPdfComponent } from "../application-management/application-atividade-detail/pdf/pedido-pdf/pedido-pdf.component";
@@ -48,7 +48,7 @@ export default [
                             aldeiasResolver: getAllAldeiasResolver,
                             sociedadeComercialResolver: getSociedadeComercialResolver,
                             grupoAtividadeResolver: getAllGrupoAtividadeByTipoResolver,
-                            userPageResolver: getPageUserResolver
+                            userRoleStaffResolver: getUsersByDirecaoIdAndRole_Staff
 
                         }
                     },

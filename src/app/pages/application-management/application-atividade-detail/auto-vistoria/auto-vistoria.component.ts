@@ -4,7 +4,7 @@ import { AplicanteStatus, Categoria } from '@/core/models/enums';
 import { AuthenticationService, DataMasterService } from '@/core/services';
 import { PedidoService } from '@/core/services/pedido.service';
 import { stateOptions, tipoAreaRepresentanteComercial, tipoAreaRepresentanteIndustrial, tipoDocumentoOptions } from '@/core/utils/global-function';
-import { Component, Input, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';

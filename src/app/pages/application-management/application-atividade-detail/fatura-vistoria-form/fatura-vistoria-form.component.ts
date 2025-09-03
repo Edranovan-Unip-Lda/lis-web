@@ -111,6 +111,8 @@ export class FaturaVistoriaFormComponent {
           this.faturaId = response.id;
           this.addMessages(true, true);
           this.updateUploadUrl();
+          this.pedidoVistoria.fatura = response;
+          this.fatura = response;
 
         },
         error: error => {
@@ -129,7 +131,7 @@ export class FaturaVistoriaFormComponent {
     if (event.originalEvent.body) {
       this.uploadedFiles.push(event.originalEvent.body)
       this.pedidoVistoria.fatura.recibo = event.originalEvent.body;
-      this.fatura = this.pedidoVistoria.fatura;
+      this.fatura.recibo = event.originalEvent.body;
       this.dataSent.emit(this.fatura);
     }
     this.messageService.add({

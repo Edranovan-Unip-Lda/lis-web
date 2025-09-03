@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, take } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { User } from '../models/entities.model';
+import { Role } from '../models/enums';
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +43,19 @@ export class UserService {
     } else {
       return this.http.get<any>(this.apiUrl, { params }).pipe(take(1));
     }
+  }
+
+  getByDirecaoId(direcaoId: number): Observable<any> {
+    let params = new HttpParams();
+    params = params.append('direcaoId', direcaoId);
+    return this.http.get<any>(`${environment.url}/data/users/search/byDirecao`, { params }).pipe(take(1));
+  }
+
+  getByDirecaoIdAndRoleName(direcaoId: number, roleName: Role): Observable<any> {
+    let params = new HttpParams();
+    params = params.append('direcaoId', direcaoId);
+    params = params.append('roleName', roleName);
+    return this.http.get<any>(`${environment.url}/data/users/search/byDirecaoAndRole`, { params }).pipe(take(1));
   }
 
   /**

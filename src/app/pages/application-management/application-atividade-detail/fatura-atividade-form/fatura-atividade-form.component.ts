@@ -104,6 +104,8 @@ export class FaturaAtividadeFormComponent {
           this.fatura = response;
           this.addMessages(true, true);
           this.updateUploadUrl();
+          this.aplicanteData.pedidoLicencaAtividade.fatura = response;
+          this.fatura = response;
         },
         error: error => {
           this.addMessages(false, true, error);

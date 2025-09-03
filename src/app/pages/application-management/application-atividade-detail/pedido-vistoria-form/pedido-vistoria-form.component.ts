@@ -55,7 +55,10 @@ export class PedidoVistoriaFormComponent {
       this.tipoPedidoVistoriaOpts = tipoPedidoVistoriaIndustrialOptions;
     }
 
-    this.pedido = this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
+    if (this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria) {
+      this.pedido = this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
+    }
+
 
     if (this.pedido) {
       this.mapPedidoForm(this.pedido);
