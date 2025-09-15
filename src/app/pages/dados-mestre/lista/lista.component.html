@@ -57,7 +57,7 @@
 
 @if (showDialog) {
 <p-dialog #dg header="{{isNew?'New':'Edit'}} {{type.replace('-',' ')|titlecase}}" [modal]="true" [position]="'top'"
-    [(visible)]="showDialog" [style]="{ 'min-width': '30rem' }">
+    [(visible)]="showDialog" [style]="{ 'min-width': '30rem' }" [closeOnEscape]="false" [closable]="false">
     <form [formGroup]="dataForm">
         <div class="grid grid-cols-12 gap-4">
             @switch (type) {

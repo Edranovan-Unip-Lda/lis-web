@@ -207,7 +207,7 @@ export class SummaryComponent {
         const pedidoVistoria = aplicante.pedidoLicencaAtividade.listaPedidoVistoria.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
         if (pedidoVistoria && pedidoVistoria.fatura && pedidoVistoria.fatura.recibo) {
           // Will Fix this Later
-          this.autoVistoria = pedidoVistoria.listaAutoVistoria[0];
+          this.autoVistoria = pedidoVistoria.autoVistoria;
         }
       }
     }

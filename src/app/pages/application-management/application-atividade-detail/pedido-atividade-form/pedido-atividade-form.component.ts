@@ -1,23 +1,26 @@
 import { Aldeia } from '@/core/models/data-master.model';
-import { Aplicante, Empresa, PedidoAtividadeLicenca } from '@/core/models/entities.model';
+import { Aplicante, Documento, Empresa, PedidoAtividadeLicenca } from '@/core/models/entities.model';
 import { Categoria } from '@/core/models/enums';
+import { AuthenticationService } from '@/core/services';
 import { AplicanteService } from '@/core/services/aplicante.service';
 import { DataMasterService } from '@/core/services/data-master.service';
-import { mapToIdAndNome, stateOptions, tipoPedidoAtividadeComercialOptions, tipoPedidoAtividadeIndustrialOptions } from '@/core/utils/global-function';
-import { Component, Input, output } from '@angular/core';
+import { DocumentosService } from '@/core/services/documentos.service';
+import { mapToIdAndNome, maxFileSizeUpload, stateOptions, tipoPedidoAtividadeComercialOptions, tipoPedidoAtividadeIndustrialOptions } from '@/core/utils/global-function';
+import { Component, Input, output, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
+import { FileUpload } from 'primeng/fileupload';
 import { InputText } from 'primeng/inputtext';
 import { Select, SelectFilterEvent } from 'primeng/select';
 import { SelectButton } from 'primeng/selectbutton';
-import { Textarea } from 'primeng/textarea';
 import { Toast } from 'primeng/toast';
 import { forkJoin } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-pedido-atividade-form',
-  imports: [ReactiveFormsModule, Select, SelectButton, InputText, Textarea, Button, Toast],
+  imports: [ReactiveFormsModule, Select, SelectButton, InputText, Button, Toast, FileUpload],
   templateUrl: './pedido-atividade-form.component.html',
   styleUrl: './pedido-atividade-form.component.scss',
   providers: [MessageService]
@@ -35,6 +38,11 @@ export class PedidoAtividadeFormComponent {
   listaAldeiaGerente: any[] = [];
   isNew = false;
   isLoading = false;
+  uploadedDocs: any[] = [];
+  uploadURLDocs = signal(`${environment.apiUrl}/documentos`);
+  maxFileSize = maxFileSizeUpload;
+  loadingDownloadButtons = new Set<number>();
+  loadingRemoveButtons = new Set<number>();
 
   stateOpts = stateOptions;
   dataSent = output<any>();
@@ -43,7 +51,9 @@ export class PedidoAtividadeFormComponent {
     private _fb: FormBuilder,
     private dataMasterService: DataMasterService,
     private aplicanteService: AplicanteService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private documentoService: DocumentosService,
+    private authService: AuthenticationService,
   ) { }
 
   ngOnInit(): void {
@@ -58,6 +68,7 @@ export class PedidoAtividadeFormComponent {
       this.mapFormEmpresa(this.aplicanteData.empresa);
     }
 
+    this.uploadURLDocs.set(`${environment.apiUrl}/documentos/${this.authService.currentUserValue.username}/upload`);
   }
 
 
@@ -202,6 +213,81 @@ export class PedidoAtividadeFormComponent {
     return categoria === Categoria.comercial ? tipoPedidoAtividadeComercialOptions : tipoPedidoAtividadeIndustrialOptions;
   }
 
+  onUploadDocs(event: any) {
+    if (event.originalEvent.body) {
+      this.uploadedDocs = [...this.uploadedDocs, ...event.originalEvent.body];
+    }
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Sucesso',
+      detail: 'Arquivos carregado com sucesso!'
+    });
+  }
+
+  downloadDoc(id: number): void {
+    this.loadingDownloadButtons.add(id);
+    this.documentoService.downloadById(id).subscribe({
+      next: (response) => {
+        const url = window.URL.createObjectURL(response);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'documento.pdf';
+        a.click();
+        window.URL.revokeObjectURL(url);
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Sucesso',
+          detail: 'Arquivo descarregado com sucesso!'
+        });
+      },
+      error: error => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Falha no download do arquivo!'
+        });
+      },
+      complete: () => {
+        this.loadingDownloadButtons.delete(id);
+      }
+    });
+  }
+
+  removeDoc(file: Documento) {
+    this.loadingRemoveButtons.add(file.id);
+    const index = this.uploadedDocs.indexOf(file);
+    if (index !== -1) {
+      if (!file.id) {
+        this.uploadedDocs.splice(index, 1);
+        return;
+      }
+      this.documentoService.deleteById(file.id).subscribe({
+        next: () => {
+          this.uploadedDocs.splice(index, 1);
+          this.messageService.add({
+            severity: 'info',
+            summary: 'Sucesso',
+            detail: 'Arquivo foi removido com sucesso!'
+          });
+        },
+        error: error => {
+          this.loadingRemoveButtons.delete(file.id);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Falha no removero arquivo!'
+          });
+        },
+      });
+    }
+  }
+
+  bytesToMBs(value: number): string {
+    if (!value && value !== 0) return '';
+    const mb = value / (1024 * 1024);
+    return `${mb.toFixed(2)} MB`;
+  }
+
   private initForm(): void {
     this.requestForm = this._fb.group({
       id: [null],
@@ -254,7 +340,7 @@ export class PedidoAtividadeFormComponent {
         tipoRisco: request.tipoAtividade.tipoRisco
       }
     });
-
+    this.uploadedDocs = [...request.documentos];
     const empresaSedeService = this.dataMasterService.getAldeiasBySuco(request.empresaSede.aldeia.suco.id);
     const representanteService = this.dataMasterService.getAldeiasBySuco(request.representante.morada.aldeia.suco.id);
     const gerenteService = this.dataMasterService.getAldeiasBySuco(request.gerente.morada.aldeia.suco.id);
@@ -316,7 +402,8 @@ export class PedidoAtividadeFormComponent {
             id: form.value.gerente.morada.aldeia
           }
         }
-      }
+      },
+      documentos: this.uploadedDocs
     }
   }
 

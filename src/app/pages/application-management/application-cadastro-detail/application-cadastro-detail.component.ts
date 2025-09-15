@@ -5,9 +5,10 @@ import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService } from '@/core/services';
 import { AplicanteService } from '@/core/services/aplicante.service';
 import { DataMasterService } from '@/core/services/data-master.service';
+import { DocumentosService } from '@/core/services/documentos.service';
 import { EmpresaService } from '@/core/services/empresa.service';
 import { PedidoService } from '@/core/services/pedido.service';
-import { calculateCommercialLicenseTax, caraterizacaEstabelecimentoOptions, mapToAtividadeEconomica, mapToGrupoAtividade, mapToIdAndNome, mapToTaxa, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEmpresaOptions, tipoEstabelecimentoOptions, tipoPedidoCadastroOptions } from '@/core/utils/global-function';
+import { calculateCommercialLicenseTax, caraterizacaEstabelecimentoOptions, mapToAtividadeEconomica, mapToGrupoAtividade, mapToIdAndNome, mapToTaxa, maxFileSizeUpload, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEmpresaOptions, tipoEstabelecimentoOptions, tipoPedidoCadastroOptions } from '@/core/utils/global-function';
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -21,7 +22,7 @@ import { InputGroupAddon } from 'primeng/inputgroupaddon';
 import { InputNumber } from 'primeng/inputnumber';
 import { InputText } from 'primeng/inputtext';
 import { MultiSelect } from 'primeng/multiselect';
-import { Select, SelectFilterEvent } from 'primeng/select';
+import { Select, SelectChangeEvent, SelectFilterEvent } from 'primeng/select';
 import { StepperModule } from 'primeng/stepper';
 import { Tag } from 'primeng/tag';
 import { Toast } from 'primeng/toast';
@@ -65,9 +66,10 @@ export class ApplicationCadastroDetailComponent {
   originalAldeias: any = [];
 
   uploadedFiles: any[] = [];
-  // uploadUrl = `${environment.apiUrl}/aplicantes`;
+  uploadedDocs: any[] = [];
   uploadUrl = signal(`${environment.apiUrl}/aplicantes`);
-  maxFileSize = 20 * 1024 * 1024;
+  uploadURLDocs = signal(`${environment.apiUrl}/documentos`);
+  maxFileSize = maxFileSizeUpload;
   downloadLoading = false;
   deleteLoading = false;
 
@@ -84,6 +86,7 @@ export class ApplicationCadastroDetailComponent {
     private pedidoService: PedidoService,
     private authService: AuthenticationService,
     private empresaService: EmpresaService,
+    private documentoService: DocumentosService,
   ) {
   }
 
@@ -105,8 +108,7 @@ export class ApplicationCadastroDetailComponent {
     this.disabledForms(this.aplicanteData.estado);
 
     this.listaPedidoAto = mapToTaxa(this.router.snapshot.data['listaTaxaResolver']._embedded.taxas);
-    this.listaGrupoAtividade = mapToGrupoAtividade(this.router.snapshot.data['grupoAtividadeResolver']._embedded.grupoAtividade)
-
+    this.listaGrupoAtividade = mapToGrupoAtividade(this.router.snapshot.data['grupoAtividadeResolver']._embedded.grupoAtividade);
 
     this.mapNewFatura(this.aplicanteData);
 
@@ -138,14 +140,15 @@ export class ApplicationCadastroDetailComponent {
 
     this.enableSuperficieFormControl();
     this.superficieOnChange();
+    this.uploadURLDocs.set(`${environment.apiUrl}/documentos/${this.authService.currentUserValue.username}/upload`);
   }
 
   pedidoCadstroOnChange(event: any): void {
     event.value.value === TipoPedidoCadastro.inicial ? this.showDataEmissaoCertAnterior = true : this.showDataEmissaoCertAnterior = false;
   }
 
-  aldeiaOnChange(event: any): void {
-    if (event.value.id) {
+  aldeiaOnChange(event: SelectChangeEvent): void {
+    if (event.value) {
       const selectedItem = event.value.id;
 
       this.dataMasterService.getAldeiaById(selectedItem).subscribe({
@@ -168,6 +171,7 @@ export class ApplicationCadastroDetailComponent {
 
   mapEditPedido(pedido: PedidoInscricaoCadastro): void {
     this.requestForm.patchValue(pedido);
+    this.uploadedDocs = pedido.documentos;
 
     this.requestForm.patchValue({
       tipoPedidoCadastro: this.tipoPedidoOpts.find(item => item.value === pedido.tipoPedidoCadastro),
@@ -180,7 +184,8 @@ export class ApplicationCadastroDetailComponent {
       grupoAtividade: {
         id: pedido.classeAtividade.grupoAtividade.id,
         codigo: pedido.classeAtividade.grupoAtividade.codigo,
-        descricao: pedido.classeAtividade.grupoAtividade.descricao
+        descricao: pedido.classeAtividade.grupoAtividade.descricao,
+        tipoRisco: pedido.classeAtividade.grupoAtividade.tipoRisco
       },
       grupoAtividadeCodigo: pedido.classeAtividade.grupoAtividade.descricao,
     });
@@ -286,6 +291,7 @@ export class ApplicationCadastroDetailComponent {
     formData.tipoPedidoCadastro = form.value.tipoPedidoCadastro.value;
     formData.caraterizacaoEstabelecimento = form.value.caraterizacaoEstabelecimento.value;
     formData.risco = form.getRawValue().risco;
+    formData.documentos = this.uploadedDocs;
 
     if (this.aplicanteData.categoria === Categoria.comercial) {
       formData.tipoEstabelecimento = form.value.tipoEstabelecimento.value;
@@ -411,6 +417,17 @@ export class ApplicationCadastroDetailComponent {
     this.listaAldeia = [...this.originalAldeias];
   }
 
+  onUploadDocs(event: any) {
+    if (event.originalEvent.body) {
+      this.uploadedDocs = [...this.uploadedDocs, ...event.originalEvent.body];
+    }
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Sucesso',
+      detail: 'Arquivos carregado com sucesso!'
+    });
+  }
+
   onUpload(event: any, arg: string) {
     if (event.originalEvent.body) {
       this.uploadedFiles.push(event.originalEvent.body)
@@ -441,7 +458,7 @@ export class ApplicationCadastroDetailComponent {
         window.URL.revokeObjectURL(url);
         this.messageService.add({
           severity: 'info',
-          summary: 'Success',
+          summary: 'Sucesso',
           detail: 'Arquivo descarregado com sucesso!'
         });
       },
@@ -457,6 +474,64 @@ export class ApplicationCadastroDetailComponent {
         this.downloadLoading = false;
       }
     });
+  }
+
+  downloadDoc(id: number): void {
+    this.downloadLoading = true;
+    this.documentoService.downloadById(id).subscribe({
+      next: (response) => {
+        const url = window.URL.createObjectURL(response);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'documento.pdf';
+        a.click();
+        window.URL.revokeObjectURL(url);
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Sucesso',
+          detail: 'Arquivo descarregado com sucesso!'
+        });
+      },
+      error: error => {
+        this.downloadLoading = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Falha no download do arquivo!'
+        });
+      },
+      complete: () => {
+        this.downloadLoading = false;
+      }
+    });
+  }
+
+  removeDoc(file: Documento) {
+    const index = this.uploadedDocs.indexOf(file);
+    if (index !== -1) {
+      if (!file.id) {
+        this.uploadedDocs.splice(index, 1);
+        return;
+      }
+      this.documentoService.deleteById(file.id).subscribe({
+        next: () => {
+          this.uploadedDocs.splice(index, 1);
+          this.messageService.add({
+            severity: 'info',
+            summary: 'Sucesso',
+            detail: 'Arquivo foi removido com sucesso!'
+          });
+        },
+        error: error => {
+          this.downloadLoading = false;
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Falha no removero arquivo!'
+          });
+        },
+      });
+    }
   }
 
   removeFile(file: Documento) {
@@ -526,6 +601,7 @@ export class ApplicationCadastroDetailComponent {
       alteracoes: [null],
       dataEmissaoCertAnterior: [null],
       observacao: [null],
+      documentos: [null],
     });
 
     this.faturaForm = this._fb.group({

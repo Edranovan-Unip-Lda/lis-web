@@ -81,6 +81,8 @@ export class UserCreate {
             }
         } else {
             this.roleList = mapToIdAndName(this.route.snapshot.data['roleList']._embedded.roles || []).filter(item => item.name !== Role.client);
+            console.log(this.roleList);
+            
         }
     }
 
@@ -121,12 +123,6 @@ export class UserCreate {
             formData.role = this.roleList.find(item => item.name === formData.role);
             formData.username = this.username;
 
-            if (formData.direcao) {
-                formData.direcao = {
-                    id: formData.direcao
-                }
-            }
-
             this.userService.update(this.username, formData).subscribe({
                 next: (response) => {
                     this.loading = false;
@@ -154,7 +150,7 @@ export class UserCreate {
     }
 
     roleOnChange(event: any) {
-        if (event.value === Role.manager || event.value === Role.staff) {
+        if (event.value !== Role.client && event.value !== Role.admin) {
             this.showCategoria = true;
             this.userForm.get('direcao')?.setValidators(Validators.required);
         } else {

@@ -445,6 +445,44 @@
                                  </label>
                                  <input formControlName="observacao" id="observacao" type="text" pInputText fluid />
                              </div>
+
+                             <div class="mb-6 col-span-12">
+                                 <div class="mb-3">
+                                     <span class="text-md font-bold">
+                                         Documentos
+                                     </span>
+                                 </div>
+                                 <p-fileupload name="files" [disabled]="!requestForm.valid" method="post"
+                                     (onUpload)="onUploadDocs($event)" [maxFileSize]="maxFileSize" [multiple]="true"
+                                     accept="application/pdf" mode="advanced" [url]="uploadURLDocs()">
+                                     <ng-template #empty>
+                                         @if (uploadedDocs.length === 0) {
+                                         Arraste e largue os ficheiros aqui para carregar.
+                                         }
+                                     </ng-template>
+                                     <ng-template #content>
+                                         @if (uploadedDocs.length > 0) {
+                                         <ul>
+                                             @for (item of uploadedDocs; track $index) {
+                                             <li>
+                                                 <a class="cursor-pointer hover:underline hover:text-teal-300">
+                                                     {{ item.nome }} - {{ bytesToMBs(item.tamanho) }}
+                                                 </a>
+                                                 &nbsp;
+                                                 <p-button (click)="downloadDoc(item.id)" [loading]="downloadLoading"
+                                                     icon="pi pi-download" [rounded]="true" [text]="true"
+                                                     severity="success" />
+                                                 &nbsp;
+                                                 <p-button icon="pi pi-trash" [disabled]="disableAllForm" [rounded]="true" [text]="true"
+                                                     [loading]="deleteLoading" severity="danger"
+                                                     (click)="removeDoc(item)" />
+                                             </li>
+                                             }
+                                         </ul>
+                                         }
+                                     </ng-template>
+                                 </p-fileupload>
+                             </div>
                          </div>
                      </form>
                      <p-button [label]="isNew? 'Guardar': 'Atualizar'" [disabled]="!requestForm.valid"

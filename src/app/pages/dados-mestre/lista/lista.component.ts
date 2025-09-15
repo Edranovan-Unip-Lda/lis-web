@@ -108,10 +108,10 @@ export class ListaComponent {
         ];
         this.dataForm = this._fb.group({
           id: [''],
-          tipo: ['', [Validators.required, Validators.minLength(1)]],
-          codigo: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(2)]],
-          descricao: ['', [Validators.required, Validators.minLength(1)]],
-          tipoRisco: ['', [Validators.required, Validators.minLength(1)]],
+          tipo: [null, [Validators.required, Validators.minLength(1)]],
+          codigo: [null, [Validators.required, Validators.minLength(2), Validators.maxLength(2)]],
+          descricao: [null, [Validators.required, Validators.minLength(1)]],
+          tipoRisco: [null, [Validators.required, Validators.minLength(1)]],
         });
         break;
       case 'classe-atividades':
@@ -316,7 +316,9 @@ export class ListaComponent {
     this.selectedData.index = index;
   }
 
-  closeDialog(): void {
+  closeDialog($event?: any): void {
+    console.log(event);
+    
     this.showDialog = false;
     this.dataForm.reset();
   }

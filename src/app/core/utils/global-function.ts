@@ -1,5 +1,6 @@
-import { ValueChangeEvent } from "@angular/forms";
 import { AplicanteType, AreaRepresentante, CaraterizacaoEstabelecimento, Categoria, NivelRisco, QuantoAtividade, Role, Status, TipoAto, TipoDocumento, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro, TipoPedidoLicenca, TipoPedidoVistoria, TipoPropriedade } from "../models/enums";
+
+export const maxFileSizeUpload = 20 * 1024 * 1024;
 
 export function calculateCommercialLicenseTax(areaM2: number, T_MIN: number, T_MAX: number): number {
     if (areaM2 >= 900) {
@@ -79,7 +80,8 @@ export const statusOptions: any[] = [
 
 export const roleOptions: any[] = [
     { name: 'Administrador', value: Role.admin },
-    { name: 'Gestor', value: Role.manager },
+    { name: 'Diretor', value: Role.manager },
+    { name: 'Xefe Departamento', value: Role.chief },
     { name: 'Funcionário', value: Role.staff },
     { name: 'Empresa', value: Role.client },
 ];

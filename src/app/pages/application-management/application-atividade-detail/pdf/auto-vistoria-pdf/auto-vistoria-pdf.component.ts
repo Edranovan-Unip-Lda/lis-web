@@ -30,7 +30,7 @@ export class AutoVistoriaPdfComponent implements OnInit {
     let pedidoVistoria = this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria.find(item => item.status === AplicanteStatus.submetido);
 
     if (pedidoVistoria) {
-      this.autoVistoria = pedidoVistoria.listaAutoVistoria[0];
+      this.autoVistoria = pedidoVistoria.autoVistoria;
     }
 
     switch (this.aplicanteData.categoria) {

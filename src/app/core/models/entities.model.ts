@@ -101,6 +101,7 @@ export interface PedidoInscricaoCadastro {
     alteracoes: string;
     dataEmissaoCertAnterior: string;
     observacao: string;
+    documentos: Documento[];
     fatura: Fatura;
     certificadoInscricaoCadastro: CertificadoCadastro;
 }
@@ -127,6 +128,7 @@ export interface PedidoAtividadeLicenca extends BaseModel {
     numEmpregadosCriar: number;
     reciboPagamento: boolean;
     outrosDocumentos: boolean;
+    documentos: Documento[];
     aplicante: Aplicante;
     fatura: Fatura;
     listaPedidoVistoria: PedidoVistoria[];
@@ -211,7 +213,8 @@ export interface PedidoVistoria extends BaseModel {
     alteracoes: string;
     observacao: string;
     fatura: Fatura;
-    listaAutoVistoria: AutoVistoria[];
+    // listaAutoVistoria: AutoVistoria[];
+    autoVistoria: AutoVistoria;
 }
 
 export interface AutoVistoria extends BaseModel {
