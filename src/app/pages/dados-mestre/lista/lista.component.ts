@@ -317,8 +317,6 @@ export class ListaComponent {
   }
 
   closeDialog($event?: any): void {
-    console.log(event);
-    
     this.showDialog = false;
     this.dataForm.reset();
   }

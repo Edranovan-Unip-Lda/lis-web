@@ -19,6 +19,7 @@ export class FaturaComponent {
   fatura!: Fatura | undefined;
   seletedNivelRisco!: string;
   nivelRiscoOpts = nivelRiscoOptions;
+  type = 'CADASTRO';
 
   constructor(
     private router: ActivatedRoute,
@@ -36,13 +37,15 @@ export class FaturaComponent {
         this.fatura = this.aplicanteData.pedidoInscricaoCadastro.fatura;
         break;
       case 'ATIVIDADE':
-        this.fatura = this.aplicanteData.pedidoLicencaAtividade.fatura
+        this.fatura = this.aplicanteData.pedidoLicencaAtividade.fatura;
+        this.type = 'ATIVIDADE';
         break;
       case 'VISTORIA':
         let pedidoVistoria = this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
         if (pedidoVistoria) {
           this.fatura = pedidoVistoria.fatura;
         }
+        this.type = 'VISTORIA';
         break;
     }
     this.seletedNivelRisco = this.nivelRiscoOpts.find(item => item.value === this.fatura?.nivelRisco).name;

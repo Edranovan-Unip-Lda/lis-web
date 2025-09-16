@@ -74,8 +74,8 @@
                              <p-button (click)="downloadFile(file)" [loading]="downloadLoading" icon="pi pi-download"
                                  [rounded]="true" [text]="true" severity="success" />
                              &nbsp;
-                             <p-button [disabled]="disableAllForm" icon="pi pi-trash" [rounded]="true" [text]="true"
-                                 [loading]="deleteLoading" severity="danger" (click)="removeFile(file)" />
+                             <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
+                                 [loading]="deleteLoading" severity="danger" (click)="removeFile(file)" [disabled]="disabledForm" />
                          </li>
                          }
                      </ul>

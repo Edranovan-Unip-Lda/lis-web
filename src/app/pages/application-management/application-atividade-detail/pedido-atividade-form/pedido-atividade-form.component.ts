@@ -32,6 +32,8 @@ export class PedidoAtividadeFormComponent {
   tipoPedidoAtividadeIndustrialOpts = tipoPedidoAtividadeIndustrialOptions;
   @Input() listaAldeia: any[] = [];
   @Input() listaGrupoAtividade: any[] = [];
+  @Input() disabledForm!: boolean;
+  @Input() disabledAllForm!: boolean;
   originalAldeias: any[] = [];
   listaAldeiaEmpresa: any[] = [];
   listaAldeiaRepresentante: any[] = [];
@@ -63,12 +65,14 @@ export class PedidoAtividadeFormComponent {
 
     if (this.aplicanteData.pedidoLicencaAtividade) {
       this.mapRequestFormData(this.aplicanteData.pedidoLicencaAtividade);
+      this.disabledForm ? this.requestForm.disable() : this.requestForm.enable();
     } else {
       this.isNew = true;
       this.mapFormEmpresa(this.aplicanteData.empresa);
     }
 
     this.uploadURLDocs.set(`${environment.apiUrl}/documentos/${this.authService.currentUserValue.username}/upload`);
+    this.disabledAllForm ? this.requestForm.disable() : this.requestForm.enable();
   }
 
 

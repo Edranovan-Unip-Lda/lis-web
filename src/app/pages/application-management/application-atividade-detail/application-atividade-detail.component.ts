@@ -33,7 +33,7 @@ export class ApplicationAtividadeDetailComponent {
   downloadLoading = false;
   loading = false;
   aplicanteEstado!: AplicanteStatus;
-  motivoRejeicao = '';
+  motivoRejeicao!: string | null;
   listaAldeia: any[] = [];
   listaGrupoAtividade: any[] = [];
   listaPedidoAto: any[] = [];
@@ -47,6 +47,8 @@ export class ApplicationAtividadeDetailComponent {
   disabledFaturaLicencaNextBtn = true;
   disabledPedidoVistoriaNextBtn = true;
   disabledFaturaVistoriaNextBtn = true;
+  disabledPedidoLicencaAndFatura = false;
+  disabledAllForm = false;
 
   @ViewChild(PedidoAtividadeFormComponent) child!: PedidoAtividadeFormComponent;
 
@@ -89,6 +91,25 @@ export class ApplicationAtividadeDetailComponent {
         break;
     }
 
+    // Disabled Pedido and Fatura Licenca if the Aplicante was rejected
+    if (this.aplicanteData.estado === AplicanteStatus.rejeitado &&
+      this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria.every(item => item.status === AplicanteStatus.rejeitado)) {
+      this.disabledPedidoLicencaAndFatura = true;
+    }
+
+    // Get Motivo rejeicao from the latest status (Historico)
+    if (this.aplicanteData.estado === AplicanteStatus.rejeitado) {
+      const latest = this.aplicanteData.historicoStatus
+        .reduce((max, curr) => new Date(curr.createdAt) > new Date(max.createdAt) ? curr : max);
+
+      this.motivoRejeicao = latest?.status === AplicanteStatus.rejeitado
+        ? latest.descricao
+        : null;
+    }
+
+    if (this.aplicanteData.estado === AplicanteStatus.emCurso || this.aplicanteData.estado === AplicanteStatus.rejeitado) {
+      this.disabledAllForm = true;
+    }
   }
 
 
@@ -177,8 +198,10 @@ export class ApplicationAtividadeDetailComponent {
   }
 
   isSubmitted(aplicanteData: Aplicante): boolean {
-    return aplicanteData.estado !== 'SUBMETIDO' && aplicanteData.estado !== 'REVISAO' && aplicanteData.estado !==
-      'APROVADO'
+    return aplicanteData.estado !== AplicanteStatus.submetido &&
+      aplicanteData.estado !== AplicanteStatus.revisao &&
+      aplicanteData.estado !== AplicanteStatus.aprovado &&
+      aplicanteData.estado !== AplicanteStatus.atribuido
   }
 
   private checkedForms(aplicante: Aplicante) {

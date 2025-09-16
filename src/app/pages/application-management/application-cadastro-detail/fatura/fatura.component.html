@@ -1,15 +1,26 @@
 @if (fatura) {
 <div class="card">
     <div class="grid grid-cols-12 mb-4">
-        <div class="col-span-6">
-            <span class="text-2xl font-bold mr-4">fatura de Inscrição</span>
-            <p-button icon="pi pi-file-pdf" size="large" [raised]="true" printSectionId="myDiv" [useExistingCss]="true"
-                ngxPrint />
+        <div class="col-span-8">
+            @switch (type) {
+            @case ('CADASTRO') {
+            <span class="text-2xl font-bold mr-4">Fatura do Pedido Inscriçãono Cadastro</span>
+            }
+            @case ('ATIVIDADE') {
+            <span class="text-2xl font-bold mr-4">Fatura do Pedido de Licença para Exercício de Atividade</span>
+            }
+            @case ('VISTORIA') {
+            <span class="text-2xl font-bold mr-4"> Fatura do Pedido de Vistoria para Licença de Exercício de
+                Atividade</span>
+            }
+            }
         </div>
-        <div class="col-span-6 flex justify-end mb-4">
+        <div class="col-span-4 flex justify-end mb-4">
             <p-button (click)="goBack()" icon="pi pi-chevron-circle-left" label="Voltar" severity="help" size="large"
                 [text]="true" [rounded]="true" [raised]="true" />
         </div>
+        <p-button icon="pi pi-file-pdf" size="large" [raised]="true" printSectionId="myDiv" [useExistingCss]="true"
+            ngxPrint />
     </div>
     <div id="myDiv" class="bg-white text-black px-4 pt-2">
         <!-- Logo -->

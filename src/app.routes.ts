@@ -49,7 +49,7 @@ export const appRoutes: Routes = [
                 path: 'gestor',
                 data: {
                     breadcrumb: 'Gestor',
-                    role: [Role.manager, Role.staff]
+                    role: [Role.manager, Role.chief, Role.staff]
                 },
                 canActivate: [canActivateByRole],
                 loadChildren: () => import('@/pages/gestor/gestor.routes')

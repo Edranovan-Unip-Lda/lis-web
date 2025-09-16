@@ -95,6 +95,7 @@ export const getPageAplicanteByUsernameResolver: ResolveFn<any> = () => {
         switch (user.role.name) {
             case Role.admin:
             case Role.manager:
+            case Role.chief:
                 return service.getPaginationAssignedAplicante(user.username);
             case Role.staff:
                 return service.getPaginationAtribuidoAplicante(user.username);

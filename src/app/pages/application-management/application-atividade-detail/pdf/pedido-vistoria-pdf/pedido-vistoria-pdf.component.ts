@@ -1,6 +1,6 @@
-import { Aplicante, PedidoAtividadeLicenca, PedidoVistoria } from '@/core/models/entities.model';
-import { AplicanteStatus, Categoria, NivelRisco, QuantoAtividade, TipoAto, TipoEmpresa, TipoEstabelecimento } from '@/core/models/enums';
-import { caraterizacaEstabelecimentoOptions, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEmpresaOptions, tipoEstabelecimentoOptions } from '@/core/utils/global-function';
+import { Aplicante, PedidoVistoria } from '@/core/models/entities.model';
+import { AplicanteStatus, NivelRisco, TipoAto, TipoEmpresa, TipoEstabelecimento } from '@/core/models/enums';
+import { caraterizacaEstabelecimentoOptions, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEmpresaOptions } from '@/core/utils/global-function';
 import { DatePipe, Location } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -34,6 +34,7 @@ export class PedidoVistoriaPdfComponent {
   ngOnInit(): void {
     this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
     // this.pedido = this.aplicanteData.pedidoVistorias.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
+    this.pedido = this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
 
     if (this.pedido) {
       this.seletedNivelRisco = this.nivelRiscoOpts.find(item => item.value === this.pedido?.risco).name;

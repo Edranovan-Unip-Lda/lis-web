@@ -365,7 +365,8 @@
             <p-step-panel [value]="2">
                 <ng-template #content let-activateCallback="activateCallback">
                     <app-pedido-atividade-form [aplicanteData]="aplicanteData" [listaAldeia]="listaAldeia"
-                        [listaGrupoAtividade]="listaGrupoAtividade" (dataSent)="onPedidoLicencaReceived($event)">
+                        [listaGrupoAtividade]="listaGrupoAtividade" (dataSent)="onPedidoLicencaReceived($event)"
+                        [disabledForm]="disabledPedidoLicencaAndFatura">
                     </app-pedido-atividade-form>
                     <div class="flex pt-6 justify-between">
                         <p-button label="Back" severity="secondary" icon="pi pi-arrow-left"
@@ -380,7 +381,7 @@
             <p-step-panel [value]="3">
                 <ng-template #content let-activateCallback="activateCallback">
                     <app-fatura-atividade-form [aplicanteData]="aplicanteData" [listaPedidoAto]="listaPedidoAto"
-                        (dataSent)="onFaturaPedidoReceived($event)">
+                        (dataSent)="onFaturaPedidoReceived($event)" [disabledForm]="disabledPedidoLicencaAndFatura">
                     </app-fatura-atividade-form>
                     <div class="flex pt-6 justify-between">
                         <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="right"

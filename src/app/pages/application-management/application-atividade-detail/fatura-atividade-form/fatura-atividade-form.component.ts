@@ -31,13 +31,14 @@ export class FaturaAtividadeFormComponent {
   uploadUrl = signal(`${environment.apiUrl}/aplicantes`);
   deleteLoading = false;
   faturaLoading = false;
-  disableAllForm = false;
   maxFileSize = 20 * 1024 * 1024;
   pedidoId!: number;
   faturaId!: number;
   loading = false;
   dataSent = output<any>();
   fatura!: Fatura;
+  @Input() disabledForm!: boolean;
+  @Input() disabledAllForm!: boolean;
 
 
   constructor(
@@ -60,6 +61,9 @@ export class FaturaAtividadeFormComponent {
 
     this.enableSuperficieFormControl();
     this.superficieOnChange();
+
+    this.disabledForm ? this.faturaForm.disable() : this.faturaForm.enable();
+    this.disabledAllForm ? this.faturaForm.disable() : this.faturaForm.enable();
   }
 
   submitFatura(form: FormGroup) {

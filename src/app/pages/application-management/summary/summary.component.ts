@@ -1,5 +1,5 @@
 import { Aplicante, AutoVistoria, PedidoVistoria, User } from '@/core/models/entities.model';
-import { AplicanteStatus, Role } from '@/core/models/enums';
+import { AplicanteStatus, AplicanteType, Role } from '@/core/models/enums';
 import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService, UserService } from '@/core/services';
 import { PedidoService } from '@/core/services/pedido.service';
@@ -196,6 +196,27 @@ export class SummaryComponent {
         this.downloadLoading = false;
       }
     });
+  }
+
+  showApprovalActions(aplicante: Aplicante): boolean {
+    const estado = aplicante?.estado;
+    const tipo = aplicante?.tipo;
+    const role = this.user?.role.name;
+
+    const validEstadoTipo =
+      (estado === AplicanteStatus.submetido && tipo === AplicanteType.cadastro) ||
+      (estado === AplicanteStatus.revisao && tipo === AplicanteType.licenca);
+
+    return validEstadoTipo && role === Role.manager;
+  }
+
+  showDispatchActions(aplicante: Aplicante): boolean {
+    const estado = aplicante?.estado;
+    const tipo = aplicante?.tipo;
+    const role = this.user?.role.name;
+
+    const validEstadoTipo = estado === AplicanteStatus.submetido && tipo === AplicanteType.licenca;
+    return validEstadoTipo && role === Role.chief;
   }
 
   private checkedForms(aplicante: Aplicante) {

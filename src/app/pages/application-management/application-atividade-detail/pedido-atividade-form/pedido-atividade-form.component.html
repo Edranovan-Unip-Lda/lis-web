@@ -361,7 +361,8 @@
                  OUTROS DOCUMENTOS
              </label>
              <p-fileupload name="files" method="post" (onUpload)="onUploadDocs($event)" [maxFileSize]="maxFileSize"
-                 [multiple]="true" accept="application/pdf" mode="advanced" [url]="uploadURLDocs()">
+                 [multiple]="true" accept="application/pdf" mode="advanced" [url]="uploadURLDocs()"
+                 [disabled]="disabledForm">
                  <ng-template #empty>
                      @if (uploadedDocs.length === 0) {
                      Arraste e largue os ficheiros aqui para carregar.
@@ -381,7 +382,7 @@
                              &nbsp;
                              <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
                                  [loading]="loadingRemoveButtons.has(item.id)" severity="danger"
-                                 (click)="removeDoc(item)" />
+                                 [disabled]="disabledForm" (click)="removeDoc(item)" />
                          </li>
                          }
                      </ul>
@@ -390,9 +391,9 @@
              </p-fileupload>
          </div>
      </div>
-     <p-button [disabled]="!requestForm.valid"
-         (click)="isNew? save(requestForm): update(requestForm)" [loading]="isLoading"
-         [label]="isNew? 'Guardar' : 'Actualizar'" severity="success" [icon]="isNew? 'pi pi-save' : 'pi pi-sync'" />
+     <p-button [disabled]="!requestForm.valid" (click)="isNew? save(requestForm): update(requestForm)"
+         [loading]="isLoading" [label]="isNew? 'Guardar' : 'Actualizar'" severity="success"
+         [icon]="isNew? 'pi pi-save' : 'pi pi-sync'" />
  </form>
  }
  <p-toast position="bottom-center" />

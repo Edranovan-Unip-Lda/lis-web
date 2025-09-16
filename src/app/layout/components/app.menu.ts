@@ -35,6 +35,7 @@ export class AppMenu {
                 this.model = model_admin;
                 break;
             case Role.manager:
+            case Role.chief:
                 this.model = model_manager;
                 break;
             case Role.staff:

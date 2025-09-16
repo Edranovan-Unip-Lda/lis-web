@@ -63,7 +63,7 @@
             </div>
         </div>
     </div>
-    @if (aplicanteData.estado === 'SUBMETIDO' && aplicanteData.tipo === 'ATIVIDADE') {
+    @if (showDispatchActions(aplicanteData)) {
     <div class="bg-[#26262B] p-6 rounded-lg mb-8">
         <h2 class="text-xl font-semibold text-white mb-4">
             Atribuir Aplicante
@@ -467,7 +467,12 @@
                     </div>
                     <div class="ml-4">
                         <p class="font-semibold text-white">Aplicante Criado</p>
-                        <p class="text-sm text-gray-400">Aplicante criado</p>
+                        <p class="text-sm text-gray-400">
+                            Aplicante criado pelo:
+                            <span class="font-medium text-gray-300">
+                                {{item.alteradoPor}}
+                            </span>
+                        </p>
                         <p class="text-xs text-gray-500 mt-1">
                             {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                         </p>
@@ -537,8 +542,8 @@
                         <i class="bi bi-ban"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-white">Application Rejected by Reviewer</p>
-                        <p class="text-sm text-gray-400">Assigned to: <span class="font-medium text-gray-300">
+                        <p class="font-semibold text-white">Aplicante foi Rejeitado</p>
+                        <p class="text-sm text-gray-400">Alterado pelo: <span class="font-medium text-gray-300">
                                 {{item.alteradoPor}}
                             </span></p>
                         <p class="text-xs text-gray-500 mt-1">
@@ -554,8 +559,7 @@
             </div>
         </div>
     </div>
-    @if ((aplicanteData.estado === 'SUBMETIDO' && aplicanteData.tipo === 'CADASTRO') || (aplicanteData.estado ===
-    'REVISAO' && aplicanteData.tipo === 'ATIVIDADE')) {
+    @if (showApprovalActions(aplicanteData)) {
     <div class="mt-10 flex justify-end space-x-4">
         <p-button (click)="cancelar($event)" icon="pi pi-times" label="Rejeitar o Aplicante" [raised]="true"
             severity="danger" />
