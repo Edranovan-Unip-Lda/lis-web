@@ -216,6 +216,7 @@ export class ApplicationAtividadeDetailComponent {
         const pedidoVistoria = aplicante.pedidoLicencaAtividade.listaPedidoVistoria.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
         if (pedidoVistoria && pedidoVistoria.fatura && pedidoVistoria.fatura.recibo) {
           this.disabledFaturaVistoriaNextBtn = false;
+          this.autoVistoria = pedidoVistoria.autoVistoria;
         }
       }
     }

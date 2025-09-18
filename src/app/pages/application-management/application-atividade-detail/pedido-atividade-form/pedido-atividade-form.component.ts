@@ -43,8 +43,8 @@ export class PedidoAtividadeFormComponent {
   uploadedDocs: any[] = [];
   uploadURLDocs = signal(`${environment.apiUrl}/documentos`);
   maxFileSize = maxFileSizeUpload;
-  loadingDownloadButtons = new Set<number>();
-  loadingRemoveButtons = new Set<number>();
+  loadingDownloadButtons = new Set<string>();
+  loadingRemoveButtons = new Set<string>();
 
   stateOpts = stateOptions;
   dataSent = output<any>();
@@ -228,9 +228,9 @@ export class PedidoAtividadeFormComponent {
     });
   }
 
-  downloadDoc(id: number): void {
-    this.loadingDownloadButtons.add(id);
-    this.documentoService.downloadById(id).subscribe({
+  downloadDoc(file: Documento): void {
+    this.loadingDownloadButtons.add(file.nome);
+    this.documentoService.downloadById(file.id).subscribe({
       next: (response) => {
         const url = window.URL.createObjectURL(response);
         const a = document.createElement('a');
@@ -252,13 +252,13 @@ export class PedidoAtividadeFormComponent {
         });
       },
       complete: () => {
-        this.loadingDownloadButtons.delete(id);
+        this.loadingDownloadButtons.delete(file.nome);
       }
     });
   }
 
   removeDoc(file: Documento) {
-    this.loadingRemoveButtons.add(file.id);
+    this.loadingRemoveButtons.add(file.nome);
     const index = this.uploadedDocs.indexOf(file);
     if (index !== -1) {
       if (!file.id) {
@@ -275,7 +275,7 @@ export class PedidoAtividadeFormComponent {
           });
         },
         error: error => {
-          this.loadingRemoveButtons.delete(file.id);
+          this.loadingRemoveButtons.delete(file.nome);
           this.messageService.add({
             severity: 'error',
             summary: 'Erro',

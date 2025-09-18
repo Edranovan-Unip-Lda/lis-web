@@ -3,7 +3,7 @@ import { Aplicante, PedidoVistoria } from '@/core/models/entities.model';
 import { AplicanteStatus, Categoria } from '@/core/models/enums';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { PedidoService } from '@/core/services/pedido.service';
-import { caraterizacaEstabelecimentoOptions, mapToAtividadeEconomica, mapToGrupoAtividade, mapToIdAndNome, nivelRiscoOptions, tipoAtoOptions, tipoEmpresaOptions, tipoPedidoVistoriaComercialOptions, tipoPedidoVistoriaIndustrialOptions } from '@/core/utils/global-function';
+import { caraterizacaEstabelecimentoOptions, mapToAtividadeEconomica, mapToGrupoAtividade, mapToIdAndNome, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEmpresaOptions, tipoPedidoVistoriaComercialOptions, tipoPedidoVistoriaIndustrialOptions } from '@/core/utils/global-function';
 import { Component, Input, output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -36,6 +36,7 @@ export class PedidoVistoriaFormComponent {
   dataSent = output<any>();
   loading = false;
   pedido: PedidoVistoria | undefined;
+  categoria!: string;
 
 
   constructor(
@@ -51,8 +52,13 @@ export class PedidoVistoriaFormComponent {
 
     if (this.aplicanteData.categoria == Categoria.comercial) {
       this.tipoPedidoVistoriaOpts = tipoPedidoVistoriaComercialOptions;
+      this.categoria = Categoria.comercial;
+      this.vistoriaRequestForm.get('atividade')?.setValidators(Validators.required);
     } else {
       this.tipoPedidoVistoriaOpts = tipoPedidoVistoriaIndustrialOptions;
+      this.categoria = Categoria.industrial;
+      this.atividadesOpts = quantoAtividadeoptions;
+      this.vistoriaRequestForm.get('tipoAtividade')?.setValidators(Validators.required);
     }
 
     if (this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria) {
@@ -245,7 +251,8 @@ export class PedidoVistoriaFormComponent {
       tipoEmpresa: [null],
       tipoEstabelecimento: [null],
       risco: new FormControl({ value: null, disabled: true }),
-      atividade: [null, Validators.required],
+      atividade: [null],
+      tipoAtividade: [null],
       grupoAtividade: [null, Validators.required],
       grupoAtividadeCodigo: new FormControl({ value: null, disabled: true }),
       classeAtividade: [null, Validators.required],

@@ -21,8 +21,12 @@
         @if (aplicanteData.categoria === 'INDUSTRIAL') {
         <div class="text-center mb-4">
             <h1 class="font-semibold uppercase text-title">Ministério do Comércio e Indústria</h1>
-            <h2 class="font-medium text-title">Direção-Geral da Indústria</h2>
-            <h3 class="font-bold text-title mt-2">Inscrição no Cadastro Industrial</h3>
+            @if (categoria === 'COMERCIAL') {
+            <h2 class="font-medium text-title">Direção-Geral da Comércio</h2>
+            }@else {
+            <h2 class="font-medium text-title">Direção-Geral da Indústria </h2>
+            }
+            <h3 class="font-bold text-title mt-2 uppercase">Auto de Vistoria</h3>
             <div class="text-xs text-gray-500 mt-1">(Decreto-Lei n.º 90/2023, de 27 de dezembro)</div>
         </div>
         }@else {
@@ -602,13 +606,13 @@
             <h4 class="text-center my-4">
                 Os membros da Equipa de vistoria
             </h4>
-            <div class="grid-cols-1 flex justify-center">
+            <div class="flex flex-col item-center">
                 @for (item of autoVistoria.membrosEquipaVistoria; track $index) {
-                <div class="col-span-1 text-center mb-3">
+                <div class="text-center mb-12">
                     <span class="text-label text-gray-600">
                         {{getAreaRepresentanteLabel(item.areaRepresentante).name}}
                     </span>
-                    <p class="font-bold pt-4">
+                    <p class="font-bold pt-4 mt-8">
                         {{item.nome}}
                     </p>
                 </div>

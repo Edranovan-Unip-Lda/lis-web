@@ -18,6 +18,7 @@ export class AutoVistoriaPdfComponent implements OnInit {
   aplicanteData!: Aplicante;
   autoVistoria!: AutoVistoria;
   tipoAreaRepresentanteOpts: any[] = [];
+  categoria!: Categoria | string;
 
   constructor(
     private router: ActivatedRoute,
@@ -36,9 +37,11 @@ export class AutoVistoriaPdfComponent implements OnInit {
     switch (this.aplicanteData.categoria) {
       case Categoria.comercial:
         this.tipoAreaRepresentanteOpts = tipoAreaRepresentanteComercial;
+        this.categoria = Categoria.comercial;
         break;
       case Categoria.industrial:
         this.tipoAreaRepresentanteOpts = tipoAreaRepresentanteIndustrial;
+        this.categoria = Categoria.industrial;
         break;
     }
   }

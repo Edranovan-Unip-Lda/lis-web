@@ -2,6 +2,7 @@ import { Aldeia } from '@/core/models/data-master.model';
 import { Aplicante, Documento, PedidoVistoria } from '@/core/models/entities.model';
 import { AplicanteStatus, Categoria } from '@/core/models/enums';
 import { AuthenticationService, DataMasterService } from '@/core/services';
+import { DocumentosService } from '@/core/services/documentos.service';
 import { PedidoService } from '@/core/services/pedido.service';
 import { stateOptions, tipoAreaRepresentanteComercial, tipoAreaRepresentanteIndustrial, tipoDocumentoOptions } from '@/core/utils/global-function';
 import { Component, OnInit, signal } from '@angular/core';
@@ -46,6 +47,9 @@ export class AutoVistoriaComponent implements OnInit {
   uploadUrl = signal(`${environment.apiUrl}/documentos`);
   maxFileSize = 20 * 1024 * 1024; // 20 MB
   loading = false;
+  loadingDownloadButtons = new Set<string>();
+  loadingRemoveButtons = new Set<string>();
+  maxLengthParticipantes = 5;
 
   constructor(
     private _fb: FormBuilder,
@@ -54,6 +58,7 @@ export class AutoVistoriaComponent implements OnInit {
     private authService: AuthenticationService,
     private messageService: MessageService,
     private pedidoService: PedidoService,
+    private documentoService: DocumentosService,
   ) { }
 
   ngOnInit(): void {
@@ -76,9 +81,11 @@ export class AutoVistoriaComponent implements OnInit {
     switch (this.categoria) {
       case Categoria.comercial:
         this.tipoAreaRepresentanteOpts = tipoAreaRepresentanteComercial;
+        this.maxLengthParticipantes = 5;
         break;
       case Categoria.industrial:
         this.tipoAreaRepresentanteOpts = tipoAreaRepresentanteIndustrial;
+        this.maxLengthParticipantes = 7;
         break;
     }
 
@@ -236,42 +243,86 @@ export class AutoVistoriaComponent implements OnInit {
     }
   }
 
-  downloadFile(file: Documento) {
-    this.downloadLoading = true;
-    // this.pedidoService.downloadRecibo(this.aplicanteData.id, this.pedidoId, this.faturaId, file.id).subscribe({
-    //   next: (response) => {
-    //     const url = window.URL.createObjectURL(response);
-    //     const a = document.createElement('a');
-    //     a.href = url;
-    //     a.download = file.nome;
-    //     a.click();
-    //     window.URL.revokeObjectURL(url);
-    //     this.messageService.add({
-    //       severity: 'info',
-    //       summary: 'Success',
-    //       detail: 'Arquivo descarregado com sucesso!'
-    //     });
-    //   },
-    //   error: error => {
-    //     this.downloadLoading = false;
-    //     this.messageService.add({
-    //       severity: 'error',
-    //       summary: 'Erro',
-    //       detail: 'Falha no download do arquivo!'
-    //     });
-    //   },
-    //   complete: () => {
-    //     this.downloadLoading = false;
-    //   }
-    // });
+
+  /**
+   * Returns a list of all available area representante options for the given position i
+   * @param {number} i - The position index
+   * @returns {any[]} - A list of available area representante options
+   */
+  availablePositions(i: number): any[] {
+    const picked = new Set<string>(
+      this.membrosEquipaVistoria.controls
+        .map((fg, idx) => (idx === i ? null : fg.get('areaRepresentante')?.value))
+        .filter((v): v is string => !!v)
+    );
+    return this.tipoAreaRepresentanteOpts.filter(p => !picked.has(p.value));
   }
 
-  removeFile(file: Documento) {
+  downloadDoc(file: Documento): void {
+    this.loadingDownloadButtons.add(file.nome);
+    this.documentoService.downloadById(file.id).subscribe({
+      next: (response) => {
+        const url = window.URL.createObjectURL(response);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'documento.pdf';
+        a.click();
+        window.URL.revokeObjectURL(url);
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Sucesso',
+          detail: 'Arquivo descarregado com sucesso!'
+        });
+      },
+      error: error => {
+        this.loadingDownloadButtons.delete(file.nome);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Falha no download do arquivo!'
+        });
+      },
+      complete: () => {
+        this.loadingDownloadButtons.delete(file.nome);
+      }
+    });
+  }
+
+  removeDoc(file: Documento) {
+    this.loadingRemoveButtons.add(file.nome);
     const index = this.uploadedFiles.indexOf(file);
     if (index !== -1) {
-      this.uploadedFiles.splice(index, 1);
+      if (!file.id) {
+        this.uploadedFiles.splice(index, 1);
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Sucesso',
+          detail: 'Arquivo foi removido com sucesso!'
+        });
+        return;
+      }
+      this.documentoService.deleteById(file.id).subscribe({
+        next: () => {
+          this.uploadedFiles.splice(index, 1);
+          this.messageService.add({
+            severity: 'info',
+            summary: 'Sucesso',
+            detail: 'Arquivo foi removido com sucesso!'
+          });
+        },
+        error: error => {
+          this.loadingRemoveButtons.delete(file.nome);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Falha no removero arquivo!'
+          });
+        },
+        complete: () => this.loadingRemoveButtons.delete(file.nome)
+      });
     }
   }
+
 
   onPanelHide() {
     this.listaAldeia = [...this.originalAldeias];
@@ -362,6 +413,7 @@ export class AutoVistoriaComponent implements OnInit {
       distribuicaoAgua: [true],
       redeDistribuicao: [true],
       redeEsgotos: [true],
+      maximoHigieneSeguranca: [true],
       equipamentoUtensilios: [true],
       equipamentoPrimeirosSocorros: [true],
       recipientesLixo: [true],
@@ -447,6 +499,7 @@ export class AutoVistoriaComponent implements OnInit {
     //   distribuicaoAgua: [null],
     //   redeDistribuicao: [null],
     //   redeEsgotos: [null],
+    //   maximoHigieneSeguranca: [null],
     //   equipamentoUtensilios: [null],
     //   equipamentoPrimeirosSocorros: [null],
     //   recipientesLixo: [null],
@@ -472,7 +525,7 @@ export class AutoVistoriaComponent implements OnInit {
 
   onUpload(event: any, arg: string) {
     if (event.originalEvent.body) {
-      this.uploadedFiles = [...event.originalEvent.body];
+      this.uploadedFiles = [...this.uploadedFiles, ...event.originalEvent.body];
     }
     this.messageService.add({
       severity: 'info',

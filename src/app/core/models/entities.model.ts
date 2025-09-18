@@ -248,6 +248,7 @@ export interface AutoVistoria extends BaseModel {
     distribuicaoAgua: boolean;
     redeDistribuicao: boolean;
     redeEsgotos: boolean;
+    maximoHigieneSeguranca: boolean;
     equipamentoUtensilios: boolean;
     equipamentoPrimeirosSocorros: boolean;
     recipientesLixo: boolean;

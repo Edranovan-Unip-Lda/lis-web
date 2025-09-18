@@ -377,11 +377,13 @@
                                  {{ item.nome }} - {{ bytesToMBs(item.tamanho) }}
                              </a>
                              &nbsp;
-                             <p-button (click)="downloadDoc(item.id)" [loading]="loadingDownloadButtons.has(item.id)"
+                             @if (item.id) {
+                             <p-button (click)="downloadDoc(item)" [loading]="loadingDownloadButtons.has(item.nome)"
                                  icon="pi pi-download" [rounded]="true" [text]="true" severity="success" />
+                             }
                              &nbsp;
                              <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
-                                 [loading]="loadingRemoveButtons.has(item.id)" severity="danger"
+                                 [loading]="loadingRemoveButtons.has(item.nome)" severity="danger"
                                  [disabled]="disabledForm" (click)="removeDoc(item)" />
                          </li>
                          }
