@@ -1,3 +1,4 @@
+@if (certificadoData) {
 <div class="card">
     <div class="grid grid-cols-12 mb-4">
         <div class="col-span-6">
@@ -23,49 +24,49 @@
                         <div class="mt-4 font-extrabold text-5xl text-sky-600 tracking-wide">ALVARÁ DE LICENÇA</div>
                         <div class="text-3xl font-semibold text-sky-600">
                             PARA EXERCÍCIO DA ATIVIDADE
-                            {{aplicanteData.categoria | titlecase}}
+                            {{certificadoData.pedidoLicencaAtividade.aplicante.categoria | titlecase}}
                         </div>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-6 text-black">
                     <div class="col-span-6 text-xl my-4">
-                        N.º <span class="font-bold">{{aplicanteData.numero}}</span>
+                        N.º <span class="font-bold">{{certificadoData.pedidoLicencaAtividade.aplicante.numero}}</span>
                     </div>
                     <div class="col-span-6 text-xl my-4">
                         Sociedade Comercial <span
-                            class="font-bold">{{aplicanteData.pedidoLicencaAtividade.nomeEmpresa}}</span>
+                            class="font-bold">{{certificadoData.pedidoLicencaAtividade.nomeEmpresa}}</span>
                     </div>
                     <div class="col-span-6 text-xl my-4">
                         Nº Registo Comercial <span
-                            class="font-bold">{{aplicanteData.pedidoLicencaAtividade.empresaNumeroRegistoComercial}}</span>
+                            class="font-bold">{{certificadoData.pedidoLicencaAtividade.empresaNumeroRegistoComercial}}</span>
                     </div>
                     <div class="col-span-6 text-xl my-4">
-                        NIF: <span class="font-bold">{{aplicanteData.pedidoLicencaAtividade.empresaNif}}</span>
+                        NIF: <span class="font-bold">{{certificadoData.pedidoLicencaAtividade.empresaNif}}</span>
                     </div>
                     <div class="col-span-6 text-xl my-4">
                         Sede em: <span class="font-bold">
-                            {{aplicanteData.pedidoLicencaAtividade.empresaSede.local}},
-                            {{aplicanteData.pedidoLicencaAtividade.empresaSede.aldeia.nome}},
-                            {{aplicanteData.pedidoLicencaAtividade.empresaSede.aldeia.suco.nome}},
-                            {{aplicanteData.pedidoLicencaAtividade.empresaSede.aldeia.suco.postoAdministrativo.nome}},
-                            {{aplicanteData.pedidoLicencaAtividade.empresaSede.aldeia.suco.postoAdministrativo.municipio.nome}}
+                            {{certificadoData.sede.local}},
+                            {{certificadoData.sede.aldeia.nome}},
+                            {{certificadoData.sede.aldeia.suco.nome}},
+                            {{certificadoData.sede.aldeia.suco.postoAdministrativo.nome}},
+                            {{certificadoData.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
                         </span>
                     </div>
                     <div class="col-span-6 text-xl my-4">
-                        Nível de risco: <span class="font-bold">{{aplicanteData.pedidoLicencaAtividade.risco}}</span>
+                        Nível de risco: <span class="font-bold">{{certificadoData.pedidoLicencaAtividade.risco}}</span>
                     </div>
                     <div class="col-span-3 text-xl my-4">
                         Atividade comercial declarada <span
-                            class="font-bold">{{aplicanteData.pedidoLicencaAtividade.tipoAtividade.descricao}}</span>
+                            class="font-bold">{{certificadoData.pedidoLicencaAtividade.tipoAtividade.descricao}}</span>
                     </div>
                     <div class="col-span-3 text-xl my-4">
                         Código: <span
-                            class="font-bold">{{aplicanteData.pedidoLicencaAtividade.tipoAtividade.codigo}}</span>
+                            class="font-bold">{{certificadoData.pedidoLicencaAtividade.tipoAtividade.codigo}}</span>
                     </div>
                     <div class="col-span-6 text-xl my-4">
                         Data de Emissão: <span
-                            class="font-bold">{{aplicanteData.pedidoLicencaAtividade.certificadoLicencaAtividade.dataEmissao| date:'dd MMMM yyyy': 'pt'}}</span>
+                            class="font-bold">{{certificadoData.dataEmissao| date:'dd MMMM yyyy': 'pt'}}</span>
                     </div>
                     <div class="col-span-6 text-xl my-4">
                         Validade até <span class="font-bold">{{dataValido | date:'dd MMMM yyyy': 'pt'}}</span>
@@ -91,3 +92,4 @@
         </div>
     </div>
 </div>
+}

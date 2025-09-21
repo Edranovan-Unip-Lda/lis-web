@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, take } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { User } from '../models/entities.model';
-import { Role } from '../models/enums';
+import { AplicanteType, Categoria, Role } from '../models/enums';
 
 @Injectable({
   providedIn: 'root'
@@ -113,6 +113,26 @@ export class UserService {
     params.append('staffUsername', staffUsername);
     params.append('notes', note);
     return this.http.patch<any>(`${this.apiUrl}/${username}/aplicantes/atribuidos/${aplicanteId}?staffUsername=${staffUsername}&notes=${note}`, { params }).pipe(take(1));
+  }
+
+  /**
+   * Makes a GET request to the users endpoint with pagination parameters
+   * to retrieve a list of certificados associated with the user.
+   *
+   * @param username The username of the logged user.
+   * @param type The type of the certificados to be retrieved.
+   * @param categoria The categoria of the certificados to be retrieved.
+   * @param page The page number to retrieve (default is 0).
+   * @param size The number of items per page (default is 50).
+   * @returns An observable of the server response.
+   */
+  getPageCertificados(username: string, type: AplicanteType, categoria: Categoria, page = 0, size = 50): Observable<any> {
+    let params = new HttpParams()
+      .append('categoria', categoria)
+      .append('type', type)
+      .append('page', page)
+      .append('size', size);
+    return this.http.get<any>(`${this.apiUrl}/${username}/certificados`, { params }).pipe(take(1));
   }
 
 }

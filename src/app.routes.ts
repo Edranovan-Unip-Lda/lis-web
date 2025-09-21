@@ -49,7 +49,7 @@ export const appRoutes: Routes = [
                 path: 'gestor',
                 data: {
                     breadcrumb: 'Gestor',
-                    role: [Role.manager, Role.chief, Role.staff]
+                    role: [Role.admin, Role.manager, Role.chief, Role.staff]
                 },
                 canActivate: [canActivateByRole],
                 loadChildren: () => import('@/pages/gestor/gestor.routes')
@@ -88,5 +88,5 @@ export const appRoutes: Routes = [
         path: 'notfound',
         loadComponent: () => import('@/pages/notfound/notfound').then((c) => c.Notfound)
     },
-    { path: '**', redirectTo: '/notfound' }
+    // { path: '**', redirectTo: '/notfound' }
 ];

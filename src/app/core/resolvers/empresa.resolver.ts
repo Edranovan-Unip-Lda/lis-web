@@ -3,7 +3,7 @@ import { EmpresaService } from "../services/empresa.service";
 import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 import { of } from "rxjs";
 import { AuthenticationService } from "../services";
-import { Role } from "../models/enums";
+import { AplicanteType, Categoria, Role } from "../models/enums";
 import { AplicanteService } from "../services/aplicante.service";
 
 
@@ -59,6 +59,27 @@ export const getAplicante: ResolveFn<any> = (route: ActivatedRouteSnapshot) => {
         } else {
             return aplicanteService.getById(+id);
         }
+    } else {
+        return of(null);
+    }
+}
+
+/**
+ * Resolver function to fetch a list of certificados based on the current user's empresa ID, the categoria and the type from the route.
+ * If the current user is a client (i.e. has a empresa), it fetches the list of certificados from the EmpresaService based on the empresa ID, the categoria and the type.
+ * If the current user is not a client, it returns `null`.
+ *
+ * @param route - The activated route snapshot containing the route parameters.
+ * @returns An observable containing the list of certificados or `null`.
+ */
+export const getPageCertificadosByEmpresaId: ResolveFn<any> = (route: ActivatedRouteSnapshot) => {
+    const categoria = route.data['categoria'] as Categoria;
+    const type = route.data['type'] as AplicanteType;
+    const authService = inject(AuthenticationService);
+    const service = inject(EmpresaService);
+    const empresa = authService.currentUserValue.empresa;
+    if (empresa) {
+        return service.getPageCertificados(empresa.id, categoria, type);
     } else {
         return of(null);
     }

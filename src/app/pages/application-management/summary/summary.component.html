@@ -184,7 +184,7 @@
                 <div class="flex items-center space-x-4">
                     @if (aplicanteData.pedidoInscricaoCadastro.certificadoInscricaoCadastro) {
                     <p-tag [value]="'EMITIDO'" [severity]="'success'" />
-                    <p-button routerLink="/gestor/application/{{aplicanteData.id}}/certificado-inscricao"
+                    <p-button routerLink="/gestor/application/{{aplicanteData.id}}/certificado-inscricao/{{aplicanteData.pedidoInscricaoCadastro.certificadoInscricaoCadastro.id}}"
                         icon="pi pi-eye" label="Pré-visualização" [raised]="true" severity="info" />
                     }@else {
                     <p-tag value="Nao Emitido" [severity]="'warn'" icon="pi pi-times" />
@@ -441,7 +441,7 @@
                 <div class="flex items-center space-x-4">
                     @if (aplicanteData.pedidoLicencaAtividade.certificadoLicencaAtividade) {
                     <p-tag [value]="'EMITIDO'" [severity]="'success'" />
-                    <p-button routerLink="/gestor/application/{{aplicanteData.id}}/certificado-atividade"
+                    <p-button routerLink="/gestor/application/{{aplicanteData.id}}/certificado-atividade/{{aplicanteData.pedidoLicencaAtividade.certificadoLicencaAtividade.id}}"
                         icon="pi pi-eye" label="Pré-visualização" [raised]="true" severity="info" />
                     }@else {
                     <p-tag value="Nao Emitido" [severity]="'warn'" icon="pi pi-times" />

@@ -194,8 +194,10 @@
                                          @if (aplicanteData.pedidoInscricaoCadastro &&
                                          aplicanteData.pedidoInscricaoCadastro.certificadoInscricaoCadastro) {
                                          <p-tag [value]="'EMITIDO'" [severity]="'success'" />
-                                         <p-button [routerLink]="['certificado-inscricao']" icon="pi pi-eye"
-                                             label="Pré-visualização" [raised]="true" severity="info" />
+                                         <p-button
+                                             [routerLink]="['certificado-inscricao/' + aplicanteData.pedidoInscricaoCadastro.certificadoInscricaoCadastro.id]"
+                                             icon="pi pi-eye" label="Pré-visualização" [raised]="true"
+                                             severity="info" />
                                          }@else {
                                          <p-tag value="Nao Emitido" [severity]="'warn'" icon="pi pi-times" />
                                          }
@@ -473,9 +475,9 @@
                                                      icon="pi pi-download" [rounded]="true" [text]="true"
                                                      severity="success" />
                                                  &nbsp;
-                                                 <p-button icon="pi pi-trash" [disabled]="disableAllForm" [rounded]="true" [text]="true"
-                                                     [loading]="deleteLoading" severity="danger"
-                                                     (click)="removeDoc(item)" />
+                                                 <p-button icon="pi pi-trash" [disabled]="disableAllForm"
+                                                     [rounded]="true" [text]="true" [loading]="deleteLoading"
+                                                     severity="danger" (click)="removeDoc(item)" />
                                              </li>
                                              }
                                          </ul>

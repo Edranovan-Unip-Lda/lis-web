@@ -1,7 +1,8 @@
-import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
-import { AplicanteService } from "../services/aplicante.service";
 import { inject } from "@angular/core";
+import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 import { of } from "rxjs";
+import { AplicanteType, Categoria } from "../models/enums";
+import { AplicanteService } from "../services/aplicante.service";
 
 export const getPageResolver: ResolveFn<any> = () => {
     const service = inject(AplicanteService);

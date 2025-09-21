@@ -2,8 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, take } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { AplicanteType } from '../models/enums';
-import { PedidoAtividadeLicenca, PedidoInscricaoCadastro, PedidoVistoria } from '../models/entities.model';
+import { AplicanteType, Categoria } from '../models/enums';
+import { CertificadoCadastro, CertificadoLicencaAtividade, PedidoAtividadeLicenca, PedidoInscricaoCadastro, PedidoVistoria } from '../models/entities.model';
 
 @Injectable({ providedIn: 'root' })
 export class AplicanteService {
@@ -46,5 +46,12 @@ export class AplicanteService {
 
     getPedidoAtividade(aplicanteId: number): Observable<PedidoAtividadeLicenca> {
         return this.http.get<PedidoAtividadeLicenca>(`${this.apiUrl}/${aplicanteId}/pedidos/atividade`);
+    }
+
+    getCertificados(aplicanteId: number, certificadoId: number, aplicanteType: AplicanteType, categoria: Categoria): Observable<CertificadoCadastro | CertificadoLicencaAtividade> {
+        let params = new HttpParams()
+            .append('type', aplicanteType)
+            .append('categoria', categoria);
+        return this.http.get<CertificadoCadastro | CertificadoLicencaAtividade>(`${this.apiUrl}/${aplicanteId}/certificados/${certificadoId}`, { params });
     }
 }

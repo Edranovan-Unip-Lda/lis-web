@@ -1,6 +1,6 @@
 import { getByIdResolver, getPageResolver } from "@/core/resolvers/aplicante.resolver";
 import { getAllAldeiasResolver, getAllGrupoAtividadeByTipoResolver, getPageClasseAtividadeResolver, getPostosResolver, getSociedadeComercialResolver, getTaxaByCategoriaAndTipoResolver } from "@/core/resolvers/data-master.resolver";
-import { getAssignedAplicanteByIdResolver, getPageAplicanteByUsernameResolver, getPageUserResolver, getUsersByDirecaoId, getUsersByDirecaoIdAndRole_Staff } from "@/core/resolvers/user.resolver";
+import { getAssignedAplicanteByIdResolver, getPageAplicanteByUsernameResolver, getPageCertificadosByUsername, getPageUserResolver, getUsersByDirecaoId, getUsersByDirecaoIdAndRole_Staff } from "@/core/resolvers/user.resolver";
 import { Routes } from "@angular/router";
 import { AutoVistoriaComponent } from "../application-management/application-atividade-detail/auto-vistoria/auto-vistoria.component";
 import { PedidoPdfComponent } from "../application-management/application-atividade-detail/pdf/pedido-pdf/pedido-pdf.component";
@@ -11,7 +11,10 @@ import { PedidoInscricaoComponent } from "../application-management/application-
 import { AutoVistoriaPdfComponent } from "../application-management/application-atividade-detail/pdf/auto-vistoria-pdf/auto-vistoria-pdf.component";
 import { CertificadoAtividadePdfComponent } from "../application-management/application-atividade-detail/pdf/certificado-atividade-pdf/certificado-atividade-pdf.component";
 import { canActivateByRole } from "@/core/security/route.guard";
-import { Role } from "@/core/models/enums";
+import { AplicanteType, Categoria, Role } from "@/core/models/enums";
+import { LicencasListaComponent } from "../licencas-certificados/licencas-lista/licencas-lista.component";
+import { CertificadosListaComponent } from "../licencas-certificados/certificados-lista/certificados-lista.component";
+import { getCertificadoById } from "@/core/resolvers/certificados.resolver";
 
 export default [
     {
@@ -113,11 +116,14 @@ export default [
                 }
             },
             {
-                path: ':id/certificado-inscricao',
-                data: { breadcrumb: 'Certificado PDF' },
+                path: ':id/certificado-inscricao/:certificadoId',
+                data: {
+                    breadcrumb: 'Certificado PDF',
+                    type: AplicanteType.cadastro,
+                },
                 component: CertificatePdfComponent,
                 resolve: {
-                    aplicanteResolver: getByIdResolver,
+                    certificadoResolver: getCertificadoById
                 }
             },
             // Atividade de Licenca
@@ -170,14 +176,126 @@ export default [
                 }
             },
             {
-                path: ':id/certificado-atividade',
-                data: { breadcrumb: 'Certificado PDF' },
+                path: ':id/certificado-atividade/:certificadoId',
+                data: {
+                    breadcrumb: 'Certificado PDF',
+                    type: AplicanteType.licenca,
+                },
                 component: CertificadoAtividadePdfComponent,
                 resolve: {
-                    aplicanteResolver: getByIdResolver,
+                    certificadoResolver: getCertificadoById
                 }
             },
         ]
 
     },
+    {
+        path: 'licencas',
+        data: { breadcrumb: 'Licenças' },
+        children: [
+            {
+                path: 'comercio',
+                data: {
+                    breadcrumb: 'Comércio',
+                    type: AplicanteType.licenca,
+                    categoria: Categoria.comercial,
+                },
+                component: LicencasListaComponent,
+                resolve: {
+                    licencaListResolver: getPageCertificadosByUsername
+                },
+            },
+            {
+                path: 'comercio/:id',
+                data: {
+                    breadcrumb: 'Certificado PDF',
+                    type: AplicanteType.licenca,
+                    categoria: Categoria.comercial,
+                },
+                component: CertificadoAtividadePdfComponent,
+                resolve: {
+                    certificadoResolver: getCertificadoById
+                }
+            },
+            {
+                path: 'industria',
+                data: {
+                    breadcrumb: 'Indústria',
+                    type: AplicanteType.licenca,
+                    categoria: Categoria.industrial,
+                },
+                component: LicencasListaComponent,
+                resolve: {
+                    licencaListResolver: getPageCertificadosByUsername
+                },
+            },
+            {
+                path: 'industria/:id',
+                data: {
+                    breadcrumb: 'Certificado PDF',
+                    type: AplicanteType.licenca,
+                    categoria: Categoria.industrial,
+                },
+                component: CertificadoAtividadePdfComponent,
+                resolve: {
+                    certificadoResolver: getCertificadoById
+                }
+            }
+        ]
+    },
+    {
+        path: 'certificados',
+        data: { breadcrumb: 'Certificados' },
+        children: [
+            {
+                path: 'comercio',
+                data: {
+                    breadcrumb: 'Comércio',
+                    type: AplicanteType.cadastro,
+                    categoria: Categoria.comercial,
+                },
+                component: CertificadosListaComponent,
+                resolve: {
+                    licencaListResolver: getPageCertificadosByUsername
+                },
+            },
+            {
+                path: 'comercio/:id',
+                data: {
+                    breadcrumb: 'Certificado PDF',
+                    type: AplicanteType.cadastro,
+                    categoria: Categoria.comercial,
+                },
+                component: CertificatePdfComponent,
+                resolve: {
+                    certificadoResolver: getCertificadoById
+                }
+            },
+            {
+                path: 'industria',
+                data: {
+                    breadcrumb: 'Indústria',
+                    type: AplicanteType.cadastro,
+                    categoria: Categoria.industrial,
+                },
+                component: CertificadosListaComponent,
+                resolve: {
+                    licencaListResolver: getPageCertificadosByUsername
+                },
+            },
+            {
+                path: 'industria/:id',
+                data: {
+                    breadcrumb: 'Certificado PDF',
+                    type: AplicanteType.cadastro,
+                    categoria: Categoria.industrial,
+                },
+                component: CertificatePdfComponent,
+                resolve: {
+                    certificadoResolver: getCertificadoById
+                }
+            }
+        ]
+    },
+
 ] as Routes;

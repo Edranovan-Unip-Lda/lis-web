@@ -340,8 +340,9 @@
                                         @if (aplicanteData.pedidoLicencaAtividade &&
                                         aplicanteData.pedidoLicencaAtividade.certificadoLicencaAtividade) {
                                         <p-tag [value]="'EMITIDO'" [severity]="'success'" />
-                                        <p-button [routerLink]="['certificado-atividade']" icon="pi pi-eye"
-                                            label="Pré-visualização" [raised]="true" severity="info" />
+                                        <p-button
+                                            [routerLink]="['certificado-atividade/' + aplicanteData.pedidoLicencaAtividade.certificadoLicencaAtividade.id]"
+                                            icon="pi pi-eye" label="Pré-visualização" [raised]="true" severity="info" />
                                         }@else {
                                         <p-tag value="Nao Emitido" [severity]="'warn'" icon="pi pi-times" />
                                         }

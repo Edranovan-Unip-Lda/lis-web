@@ -1,3 +1,5 @@
+import { AplicanteType } from '@/core/models/enums';
+import { getCertificadoById } from '@/core/resolvers/certificados.resolver';
 import { getAllAldeiasResolver, getAllGrupoAtividadeByTipoResolver, getSociedadeComercialResolver, getTaxaByCategoriaAndTipoResolver } from '@/core/resolvers/data-master.resolver';
 import { getAplicante, getPageAplicanteOrByEmpresaIdResolver } from '@/core/resolvers/empresa.resolver';
 import { Routes } from '@angular/router';
@@ -54,11 +56,14 @@ export default [
                 }
             },
             {
-                path: ':id/certificado-inscricao',
-                data: { breadcrumb: 'Certificado PDF' },
+                path: ':id/certificado-inscricao/:certificadoId',
+                data: { 
+                    breadcrumb: 'Certificado PDF',
+                    type: AplicanteType.cadastro, 
+                },
                 component: CertificatePdfComponent,
                 resolve: {
-                    aplicanteResolver: getAplicante,
+                    certificadoResolver: getCertificadoById
                 }
             }
         ]
@@ -128,11 +133,14 @@ export default [
                 }
             },
             {
-                path: ':id/certificado-atividade',
-                data: { breadcrumb: 'Certificado PDF' },
+                path: ':id/certificado-atividade/:certificadoId',
+                data: { 
+                    breadcrumb: 'Certificado PDF',
+                    type: AplicanteType.licenca,
+                 },
                 component: CertificadoAtividadePdfComponent,
                 resolve: {
-                    aplicanteResolver: getAplicante,
+                    certificadoResolver: getCertificadoById
                 }
             },
         ]

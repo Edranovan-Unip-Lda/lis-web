@@ -1,7 +1,10 @@
+import { AplicanteType, Categoria } from "@/core/models/enums";
+
 interface MenuItem {
     label?: string;
     icon?: string;
     routerLink?: string[];
+    queryParams?: any;
     url?: string[];
     target?: '_blank' | '_self' | '_parent' | '_top';
     routerLinkActiveOptions?: { [key: string]: any };
@@ -72,12 +75,12 @@ export const model_admin: MenuItem[] = [
                     {
                         label: 'Comercio',
                         icon: 'bi bi-fw bi-bag',
-                        routerLink: ['licencas-certificados/certificados/comercio']
+                        routerLink: ['gestor/certificados/comercio']
                     },
                     {
                         label: 'Industria',
                         icon: 'bi bi-fw bi-buildings',
-                        routerLink: ['licencas-certificados/certificados/industria']
+                        routerLink: ['gestor/certificados/industria']
 
                     }
                 ]
@@ -89,12 +92,12 @@ export const model_admin: MenuItem[] = [
                     {
                         label: 'Comercio',
                         icon: 'bi bi-fw bi-bag',
-                        routerLink: ['licencas-certificados/licencas/comercio']
+                        routerLink: ['gestor/licencas/comercio']
                     },
                     {
                         label: 'Industria',
                         icon: 'bi bi-fw bi-buildings',
-                        routerLink: ['licencas-certificados/licencas/industria']
+                        routerLink: ['gestor/licencas/industria']
                     }
                 ]
             }
@@ -244,12 +247,12 @@ export const model_manager: MenuItem[] = [
                     {
                         label: 'Comercio',
                         icon: 'bi bi-fw bi-bag',
-                        routerLink: ['licencas-certificados/certificados/comercio']
+                        routerLink: ['gestor/certificados/comercio']
                     },
                     {
                         label: 'Industria',
                         icon: 'bi bi-fw bi-buildings',
-                        routerLink: ['licencas-certificados/certificados/industria']
+                        routerLink: ['gestor/certificados/industria']
 
                     }
                 ]
@@ -261,12 +264,12 @@ export const model_manager: MenuItem[] = [
                     {
                         label: 'Comercio',
                         icon: 'bi bi-fw bi-bag',
-                        routerLink: ['licencas-certificados/licencas/comercio']
+                        routerLink: ['gestor/licencas/comercio']
                     },
                     {
                         label: 'Industria',
                         icon: 'bi bi-fw bi-buildings',
-                        routerLink: ['licencas-certificados/licencas/industria']
+                        routerLink: ['gestor/licencas/industria']
                     }
                 ]
             }
@@ -337,12 +340,12 @@ export const model_staff: MenuItem[] = [
                     {
                         label: 'Comercio',
                         icon: 'bi bi-fw bi-bag',
-                        routerLink: ['licencas-certificados/certificados/comercio']
+                        routerLink: ['gestor/certificados/comercio']
                     },
                     {
                         label: 'Industria',
                         icon: 'bi bi-fw bi-buildings',
-                        routerLink: ['licencas-certificados/certificados/industria']
+                        routerLink: ['gestor/certificados/industria']
 
                     }
                 ]
@@ -354,12 +357,12 @@ export const model_staff: MenuItem[] = [
                     {
                         label: 'Comercio',
                         icon: 'bi bi-fw bi-bag',
-                        routerLink: ['licencas-certificados/licencas/comercio']
+                        routerLink: ['gestor/licencas/comercio']
                     },
                     {
                         label: 'Industria',
                         icon: 'bi bi-fw bi-buildings',
-                        routerLink: ['licencas-certificados/licencas/industria']
+                        routerLink: ['gestor/licencas/industria']
                     }
                 ]
             }

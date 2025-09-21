@@ -2,7 +2,7 @@ import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, ResolveFn, Router } from "@angular/router";
 import { EMPTY, of } from "rxjs";
 import { AuthenticationService, UserService } from "../services";
-import { Role } from "../models/enums";
+import { AplicanteType, Categoria, Role } from "../models/enums";
 
 /**
  * Resolves a page of users.
@@ -115,6 +115,20 @@ export const getAssignedAplicanteByIdResolver: ResolveFn<any> = (route: Activate
     const username = authService.currentUserValue.username;
     if (id) {
         return service.getAssignedAplicante(username, +id);
+    } else {
+        return of(null);
+    }
+}
+
+export const getPageCertificadosByUsername: ResolveFn<any> = (route: ActivatedRouteSnapshot) => {
+    const categoria = route.data['categoria'] as Categoria;
+    const type = route.data['type'] as AplicanteType;
+    const authService = inject(AuthenticationService);
+    const service = inject(UserService);
+    const user = authService.currentUserValue;
+    
+    if (user) {
+        return service.getPageCertificados(user.id, type, categoria);
     } else {
         return of(null);
     }

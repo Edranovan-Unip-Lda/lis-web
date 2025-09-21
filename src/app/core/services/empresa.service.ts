@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, take } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { AplicanteType, Categoria } from '../models/enums';
 
 @Injectable({
   providedIn: 'root'
@@ -67,5 +68,14 @@ export class EmpresaService {
 
   deleteApicante(empresaId: number, aplicanteId: number): Observable<string> {
     return this.http.delete<string>(`${this.apiUrl}/${empresaId}/aplicantes/${aplicanteId}`);
+  }
+
+  getPageCertificados(empresaId: number, categoria: Categoria, type: AplicanteType, page = 0, size = 50): Observable<any> {
+    let params = new HttpParams()
+    .append('categoria', categoria)
+    .append('type', type)
+    .append('page', page)
+    .append('size', size);
+    return this.http.get<any>(`${this.apiUrl}/${empresaId}/certificados`, { params }).pipe(take(1));
   }
 }

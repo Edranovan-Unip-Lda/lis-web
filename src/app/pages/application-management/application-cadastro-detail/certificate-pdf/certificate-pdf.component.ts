@@ -1,5 +1,5 @@
-import { Aplicante } from '@/core/models/entities.model';
-import { CurrencyPipe, DatePipe, Location, TitleCasePipe } from '@angular/common';
+import { CertificadoCadastro } from '@/core/models/entities.model';
+import { DatePipe, Location } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgxPrintModule } from 'ngx-print';
@@ -13,7 +13,7 @@ import { TableModule } from 'primeng/table';
   styleUrl: './certificate-pdf.component.scss'
 })
 export class CertificatePdfComponent {
-  aplicanteData!: Aplicante;
+  certificadoData!: CertificadoCadastro;
   dataValido = new Date();
 
   constructor(
@@ -22,10 +22,16 @@ export class CertificatePdfComponent {
   ) { }
 
   ngOnInit(): void {
-    this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
-    this.aplicanteData.updatedAt = new Date(this.aplicanteData.updatedAt)
-    this.aplicanteData.updatedAt.setFullYear(this.aplicanteData.updatedAt.getFullYear() + 1);
-    this.dataValido = this.aplicanteData.updatedAt
+    // certificadoResolver
+    console.log(
+      this.router.snapshot.data['certificadoResolver']
+    );
+
+    this.certificadoData = this.router.snapshot.data['certificadoResolver'];
+    
+    this.certificadoData.updatedAt = new Date(this.certificadoData.updatedAt)
+    this.certificadoData.updatedAt.setFullYear(this.certificadoData.updatedAt.getFullYear() + 1);
+    this.dataValido = this.certificadoData.updatedAt;
   }
 
   goBack() {

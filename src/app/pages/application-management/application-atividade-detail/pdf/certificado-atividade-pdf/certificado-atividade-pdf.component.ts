@@ -1,4 +1,4 @@
-import { Aplicante } from '@/core/models/entities.model';
+import { CertificadoLicencaAtividade } from '@/core/models/entities.model';
 import { DatePipe, Location, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -12,7 +12,7 @@ import { Button } from 'primeng/button';
   styleUrl: './certificado-atividade-pdf.component.scss'
 })
 export class CertificadoAtividadePdfComponent {
-  aplicanteData!: Aplicante;
+  certificadoData!: CertificadoLicencaAtividade;
   dataValido = new Date();
 
   constructor(
@@ -21,10 +21,12 @@ export class CertificadoAtividadePdfComponent {
   ) { }
 
   ngOnInit(): void {
-    this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
-    this.aplicanteData.updatedAt = new Date(this.aplicanteData.updatedAt)
-    this.aplicanteData.updatedAt.setFullYear(this.aplicanteData.updatedAt.getFullYear() + 1);
-    this.dataValido = this.aplicanteData.updatedAt
+    this.certificadoData = this.router.snapshot.data['certificadoResolver'];
+    console.log(this.certificadoData);
+    
+    this.certificadoData.updatedAt = new Date(this.certificadoData.updatedAt)
+    this.certificadoData.updatedAt.setFullYear(this.certificadoData.updatedAt.getFullYear() + 1);
+    this.dataValido = this.certificadoData.updatedAt
   }
 
   goBack() {

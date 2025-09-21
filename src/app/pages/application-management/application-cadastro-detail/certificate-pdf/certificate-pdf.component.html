@@ -1,3 +1,4 @@
+@if (certificadoData) {
 <div class="card">
     <div class="grid grid-cols-12 mb-4">
         <div class="col-span-6">
@@ -12,7 +13,7 @@
     </div>
 
     <div id="myDiv">
-        @if (aplicanteData.categoria === 'COMERCIAL') {
+        @if (certificadoData.pedidoInscricaoCadastro.aplicante.categoria === 'COMERCIAL') {
         <div class="w-full mx-auto bg-white text-black p-2 rounded shadow-lg border relative mt-10"
             style="border: 6px solid #db2828;">
 
@@ -32,27 +33,27 @@
                 <!-- Certificate Body -->
                 <div class="mt-8 text-base p-6">
                     <div class="mb-3 font-bold text-2xl">N.º <span class="font-normal">
-                            {{aplicanteData.numero}}
+                            {{certificadoData.pedidoInscricaoCadastro.aplicante.numero}}
                         </span></div>
                     <p class="mb-6">
                         Certifica-se que a Sociedade comercial <span class="font-semibold underline">
-                            {{aplicanteData.empresa.nome}}
+                            {{certificadoData.pedidoInscricaoCadastro.nomeEmpresa}}
                         </span>,
                         titular de Registo Comercial n.º <span class="font-semibold underline">
-                            {{aplicanteData.empresa.numeroRegistoComercial}}
+                            {{certificadoData.pedidoInscricaoCadastro.empresaNumeroRegistoComercial}}
                         </span> e sede em
                         <span class="font-semibold underline">
-                            {{aplicanteData.empresa.sede.local}},
-                            {{aplicanteData.empresa.sede.aldeia.nome}},
-                            {{aplicanteData.empresa.sede.aldeia.suco.nome}},
-                            {{aplicanteData.empresa.sede.aldeia.suco.postoAdministrativo.nome}},
-                            {{aplicanteData.empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
+                            {{certificadoData.sede.local}},
+                            {{certificadoData.sede.aldeia.nome}},
+                            {{certificadoData.sede.aldeia.suco.nome}},
+                            {{certificadoData.sede.aldeia.suco.postoAdministrativo.nome}},
+                            {{certificadoData.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
                         </span>,<br>
                         está inscrita no sistema de registo do cadastro comercial junto da Direção-Geral do Comércio do
                         Ministério
                         do Comércio e Indústria, pelo exercício da atividade de
                         <span class="font-semibold underline">
-                            {{aplicanteData.pedidoInscricaoCadastro.classeAtividade.descricao}}
+                            {{certificadoData.pedidoInscricaoCadastro.classeAtividade.descricao}}
                         </span>, nos termos do
                         Decreto-Lei
                         n.º
@@ -65,11 +66,11 @@
                     </div>
                     <div class="mb-6">
                         Díli, <span class="font-semibold">
-                            {{aplicanteData.updatedAt | date: 'dd'}}
+                            {{certificadoData.createdAt | date: 'dd'}}
                         </span> de <span class="font-semibold">
-                            {{aplicanteData.updatedAt | date: 'MMMM':'':'pt'}}
+                            {{certificadoData.createdAt | date: 'MMMM':'':'pt'}}
                         </span> de <span class="font-semibold">
-                            {{aplicanteData.updatedAt | date: 'yyyy'}}
+                            {{certificadoData.createdAt | date: 'yyyy'}}
                         </span>
                     </div>
 
@@ -117,27 +118,27 @@
                 <!-- Certificate Body -->
                 <div class="mt-8 text-base p-6">
                     <div class="mb-6 font-bold text-4xl">N.º <span class="font-normal">
-                            {{aplicanteData.numero}}
+                            {{certificadoData.pedidoInscricaoCadastro.aplicante.numero}}
                         </span></div>
                     <p class="mb-6">
-                        Certifica-se que a Sociedade comercial <span class="font-semibold underline">COMERCIAL TIMOR
-                            LESTE,
-                            LDA</span>,
+                        Certifica-se que a Sociedade comercial <span class="font-semibold underline">
+                            {{certificadoData.pedidoInscricaoCadastro.nomeEmpresa}}
+                        </span>,
                         titular de Registo Comercial n.º <span class="font-semibold underline">
-                            {{aplicanteData.empresa.numeroRegistoComercial}}
+                            {{certificadoData.pedidoInscricaoCadastro.empresaNumeroRegistoComercial}}
                         </span> e sede em
                         <span class="font-semibold underline">
-                            {{aplicanteData.empresa.sede.local}},
-                            {{aplicanteData.empresa.sede.aldeia.nome}},
-                            {{aplicanteData.empresa.sede.aldeia.suco.nome}},
-                            {{aplicanteData.empresa.sede.aldeia.suco.postoAdministrativo.nome}},
-                            {{aplicanteData.empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
+                            {{certificadoData.sede.local}},
+                            {{certificadoData.sede.aldeia.nome}},
+                            {{certificadoData.sede.aldeia.suco.nome}},
+                            {{certificadoData.sede.aldeia.suco.postoAdministrativo.nome}},
+                            {{certificadoData.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
                         </span>,<br>
                         está inscrita no sistema de registo do cadastro comercial junto da Direção-Geral do Comércio do
                         Ministério
                         do Comércio e Indústria, pelo exercício da atividade de
                         <span class="font-semibold underline">
-                            {{aplicanteData.pedidoInscricaoCadastro.classeAtividade.descricao}}
+                            {{certificadoData.pedidoInscricaoCadastro.classeAtividade.descricao}}
                         </span>, nos termos do Decreto-Lei
                         n.º
                         90/2023, de 27 de dezembro.
@@ -149,11 +150,11 @@
                     </div>
                     <div class="mb-6">
                         Díli, <span class="font-semibold">
-                            {{aplicanteData.updatedAt | date: 'dd'}}
+                            {{certificadoData.createdAt | date: 'dd'}}
                         </span> de <span class="font-semibold">
-                            {{aplicanteData.updatedAt | date: 'MMMM':'':'pt'}}
+                            {{certificadoData.createdAt | date: 'MMMM':'':'pt'}}
                         </span> de <span class="font-semibold">
-                            {{aplicanteData.updatedAt | date: 'yyyy'}}
+                            {{certificadoData.createdAt | date: 'yyyy'}}
                         </span>
                     </div>
                 </div>
@@ -182,3 +183,4 @@
 
     </div>
 </div>
+}

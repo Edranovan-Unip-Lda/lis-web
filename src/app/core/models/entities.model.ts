@@ -55,6 +55,7 @@ export interface CertificadoCadastro extends BaseModel {
     dataValidade: string;
     dataEmissao: string;
     nomeDiretorGeral: string;
+    pedidoInscricaoCadastro: PedidoInscricaoCadastro;
 }
 
 export interface CertificadoLicencaAtividade extends BaseModel {
@@ -68,6 +69,7 @@ export interface CertificadoLicencaAtividade extends BaseModel {
     dataValidade: string;
     dataEmissao: string;
     nomeDiretorGeral: string;
+    pedidoLicencaAtividade: PedidoAtividadeLicenca;
 }
 
 
@@ -104,6 +106,7 @@ export interface PedidoInscricaoCadastro {
     documentos: Documento[];
     fatura: Fatura;
     certificadoInscricaoCadastro: CertificadoCadastro;
+    aplicante: Aplicante;
 }
 
 export interface PedidoAtividadeLicenca extends BaseModel {
