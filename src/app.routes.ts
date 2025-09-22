@@ -1,4 +1,5 @@
 import { Role } from '@/core/models/enums';
+import { getByIdResolver } from '@/core/resolvers/empresa.resolver';
 import { authenticationCanActivate, canActivateByRole } from '@/core/security/route.guard';
 import { AppLayout } from '@/layout/components/app.layout';
 import { Routes } from '@angular/router';
@@ -23,6 +24,9 @@ export const appRoutes: Routes = [
             {
                 path: 'home',
                 data: { breadcrumb: 'Início' },
+                resolve: {
+                    empresaResolver: getByIdResolver
+                },
                 loadComponent: () => import('@/pages/inicio/inicio.component').then((c) => c.InicioComponent)
             },
             {

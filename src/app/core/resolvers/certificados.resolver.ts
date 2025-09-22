@@ -10,7 +10,6 @@ export const getCertificadoById: ResolveFn<any> = (route: ActivatedRouteSnapshot
     const categoria = route.data['categoria'] as Categoria;
     const type = route.data['type'] as AplicanteType;
     const service = inject(CertificadoService);
-    console.log(id);
     
     if (id) {
         return service.getCertificadosById(+id, type, categoria);

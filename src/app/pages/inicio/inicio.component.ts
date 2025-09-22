@@ -1,28 +1,29 @@
-import { Empresa } from '@/core/models/empresa/empresa';
+import { Empresa } from '@/core/models/entities.model';
 import { AplicanteType, Categoria } from '@/core/models/enums';
 import { AuthenticationService } from '@/core/services';
 import { EmpresaService } from '@/core/services/empresa.service';
 import { applicationTypesOptions, categoryTpesOptions } from '@/core/utils/global-function';
-import { Component } from '@angular/core';
+import { CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { SelectModule } from 'primeng/select';
 
 @Component({
   selector: 'app-inicio',
-  imports: [RouterModule, DialogModule, ButtonModule, ReactiveFormsModule, SelectModule],
+  imports: [RouterModule, DialogModule, ButtonModule, ReactiveFormsModule, SelectModule, DatePipe, TitleCasePipe, CurrencyPipe],
   templateUrl: './inicio.component.html',
   styleUrl: './inicio.component.scss'
 })
-export class InicioComponent {
+export class InicioComponent implements OnInit {
   visible = false;
   applicationForm: FormGroup;
   loading = false;
   comercial = Categoria.comercial;
   industrial = Categoria.industrial;
-  empresa: Empresa;
+  empresa!: Empresa;
 
   applicationTypes: any[] = applicationTypesOptions
   categoryTpes: any[] = categoryTpesOptions
@@ -32,13 +33,18 @@ export class InicioComponent {
     private route: Router,
     private empresaService: EmpresaService,
     private authService: AuthenticationService,
+    private router: ActivatedRoute,
   ) {
     this.applicationForm = this._fb.group({
       tipo: [null, [Validators.required]],
       categoria: [null, [Validators.required]],
     });
 
-    this.empresa = this.authService.currentUserValue.empresa;
+    // this.empresa = this.authService.currentUserValue.empresa;
+  }
+
+  ngOnInit(): void {
+    this.empresa = this.router.snapshot.data['empresaResolver'];
   }
 
   create(form: FormGroup) {

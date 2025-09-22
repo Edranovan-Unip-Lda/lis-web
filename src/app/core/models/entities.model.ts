@@ -1,6 +1,6 @@
 import { BaseModel } from "./base";
 import { ClasseAtividade, Endereco, GrupoAtividade, PostoAdministrativo, Role } from "./data-master.model";
-import { AplicanteStatus, AplicanteType, AreaRepresentante, CaraterizacaoEstabelecimento, Categoria, FaturaStatus, NivelRisco, QuantoAtividade, TipoAto, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro, TipoPedidoLicenca, TipoPedidoVistoria } from "./enums";
+import { AplicanteStatus, AplicanteType, AreaRepresentante, CaraterizacaoEstabelecimento, Categoria, FaturaStatus, NivelRisco, QuantoAtividade, TipoAto, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro, TipoPedidoLicenca, TipoPedidoVistoria, TipoPropriedade } from "./enums";
 
 export interface User {
     id: number;
@@ -32,6 +32,20 @@ export interface Empresa extends BaseModel {
     telemovel: string;
     sede: Endereco;
     sociedadeComercial: SociedadeComercial;
+    capitalSocial: number;
+    dataRegisto: Date;
+    tipoPropriedade: TipoPropriedade;
+    acionistas: Acionista[];
+    email: string;
+}
+
+export interface Acionista extends BaseModel {
+    nome: string;
+    nif: string;
+    tipoDocumento: string;
+    numeroDocumento: string;
+    email: string;
+    acoes: number;
 }
 
 export interface Aplicante extends BaseModel {

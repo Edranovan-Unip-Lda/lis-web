@@ -13,7 +13,7 @@ export const getPageEmpresaResolver: ResolveFn<any> = () => {
 }
 
 export const getByIdResolver: ResolveFn<any> = (route: ActivatedRouteSnapshot) => {
-    const id = route.paramMap.get('id');
+    const id = route.paramMap.get('id') || inject(AuthenticationService).currentUserValue.empresa.id;
     const service = inject(EmpresaService);
     if (id) {
         return service.getById(+id);
