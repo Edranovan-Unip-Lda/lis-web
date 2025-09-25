@@ -37,6 +37,11 @@ export interface Empresa extends BaseModel {
     tipoPropriedade: TipoPropriedade;
     acionistas: Acionista[];
     email: string;
+    totalTrabalhadores: number;
+    volumeNegocioAnual: number;
+    balancoTotalAnual: number;
+    tipoEmpresa: TipoEmpresa;
+    documentos: Documento[];
 }
 
 export interface Acionista extends BaseModel {
@@ -46,6 +51,9 @@ export interface Acionista extends BaseModel {
     numeroDocumento: string;
     email: string;
     acoes: number;
+    endereco: Endereco;
+    agregadoFamilia: string;
+    relacaoFamilia: string;
 }
 
 export interface Aplicante extends BaseModel {

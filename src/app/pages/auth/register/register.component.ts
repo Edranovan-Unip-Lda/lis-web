@@ -2,15 +2,16 @@ import { Aldeia, Role } from '@/core/models/data-master.model';
 import { TipoPropriedade } from '@/core/models/enums';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { EmpresaService } from '@/core/services/empresa.service';
-import { tipoDocumentoOptions, tipoPropriedadeOptions } from '@/core/utils/global-function';
+import { maxFileSizeUpload, tipoDocumentoOptions, tipoPropriedadeOptions, tipoRelacaoFamiliaOptions } from '@/core/utils/global-function';
 import { LayoutService } from '@/layout/service/layout.service';
-import { DatePipe } from '@angular/common';
+import { DatePipe, JsonPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
 import { Divider } from 'primeng/divider';
+import { FileSelectEvent, FileUpload } from 'primeng/fileupload';
 import { Fluid } from 'primeng/fluid';
 import { InputGroup } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
@@ -19,7 +20,7 @@ import { InputText } from 'primeng/inputtext';
 import { Message } from 'primeng/message';
 import { Password } from 'primeng/password';
 import { Ripple } from 'primeng/ripple';
-import { Select, SelectFilterEvent } from 'primeng/select';
+import { Select, SelectChangeEvent, SelectFilterEvent } from 'primeng/select';
 import { StepperModule } from 'primeng/stepper';
 import { Tooltip } from 'primeng/tooltip';
 
@@ -33,7 +34,7 @@ interface Notification {
 @Component({
     selector: 'app-register',
     standalone: true,
-    imports: [ButtonModule, RouterLink, InputText, Fluid, Ripple, Password, ReactiveFormsModule, Select, Message, StepperModule, DatePicker, InputGroup, InputGroupAddonModule, InputNumber, Divider, Tooltip, DatePipe],
+    imports: [ButtonModule, FileUpload, RouterLink, InputText, Fluid, Ripple, Password, ReactiveFormsModule, Select, Message, StepperModule, DatePicker, InputGroup, InputGroupAddonModule, InputNumber, Divider, Tooltip, DatePipe],
     templateUrl: './register.component.html',
 })
 export class Register {
@@ -55,8 +56,12 @@ export class Register {
     originalAldeias: any[] = [];
     tipoProriedadeOpts = tipoPropriedadeOptions;
     tipoDocumentoOpts = tipoDocumentoOptions;
+    tipoRelacaoFamiliaOpts = tipoRelacaoFamiliaOptions;
     showAddBtnAcionistas = false;
     selectedRole!: Role;
+    listaAldeiaAcionista: any[][] = [];
+    uploadedDocs: any[] = [];
+    maxFileSize = maxFileSizeUpload;
 
     constructor(
         private _fb: FormBuilder,
@@ -80,6 +85,9 @@ export class Register {
             telemovel: [null, [Validators.required]],
             tipoPropriedade: [null, [Validators.required]],
             acionistas: this._fb.array([]),
+            totalTrabalhadores: [null],
+            volumeNegocioAnual: [null],
+            balancoTotalAnual: [null, [Validators.required]],
             utilizador: this._fb.group({
                 gerente: [null, [Validators.required, Validators.minLength(3)]],
                 email: [null, [Validators.required, Validators.email]],
@@ -95,26 +103,6 @@ export class Register {
 
 
     ngOnInit() {
-        this.empresaForm.get('aldeia')?.valueChanges.subscribe((selectedItem) => {
-            if (selectedItem) {
-                this.dataMasterService.getAldeiaById(selectedItem.value).subscribe((aldeia: Aldeia) => {
-                    this.empresaForm.patchValue({
-                        municipio: aldeia.suco.postoAdministrativo.municipio.nome,
-                        postoAdministrativo: aldeia.suco.postoAdministrativo.nome,
-                        suco: aldeia.suco.nome
-                    });
-
-                });
-            } else {
-                this.empresaForm.patchValue({
-                    municipio: null,
-                    postoAdministrativo: null,
-                    suco: null
-                });
-            }
-        });
-
-
         this.empresaForm.get('tipoPropriedade')?.valueChanges.subscribe({
             next: (value) => {
                 if (!value) {
@@ -124,22 +112,23 @@ export class Register {
                 }
                 switch (value.value) {
                     case TipoPropriedade.individual:
-                        this.showAddBtnAcionistas = false;
                         this.acionistasArray.clear();
-                        this.acionistasArray.push(this.generateAcionistaForm());
+                        this.showAddBtnAcionistas = false;
+                        this.acionistasArray.push(this.generateAcionistaForm(true));
                         break;
 
                     case TipoPropriedade.sociedade:
-                        this.showAddBtnAcionistas = true;
                         this.acionistasArray.clear();
-                        this.acionistasArray.push(this.generateAcionistaForm());
+                        this.showAddBtnAcionistas = true;
+                        this.acionistasArray.push(this.generateAcionistaForm(false));
                         break;
                     default:
                         this.showAddBtnAcionistas = false;
                         this.acionistasArray.clear();
                         break;
                 }
-
+                const idx = this.acionistasArray.length - 1;
+                this.listaAldeiaAcionista[idx] = [...this.originalAldeias];
             }
         });
 
@@ -147,6 +136,24 @@ export class Register {
         this.selectedRole = roles.find(r => r.name === 'ROLE_CLIENT')!;
     }
 
+    aldeiaOnChange(event: SelectChangeEvent): void {
+        if (event.value) {
+            this.dataMasterService.getAldeiaById(event.value.value).subscribe((aldeia: Aldeia) => {
+                this.empresaForm.patchValue({
+                    municipio: aldeia.suco.postoAdministrativo.municipio.nome,
+                    postoAdministrativo: aldeia.suco.postoAdministrativo.nome,
+                    suco: aldeia.suco.nome
+                });
+
+            });
+        } else {
+            this.empresaForm.patchValue({
+                municipio: null,
+                postoAdministrativo: null,
+                suco: null
+            });
+        }
+    }
 
     aldeiaFilter(event: SelectFilterEvent) {
         const query = event.filter?.trim();
@@ -196,6 +203,14 @@ export class Register {
                     telefone: a.telefone,
                     email: a.email,
                     acoes: a.acoes,
+                    agregadoFamilia: a.agregadoFamilia,
+                    relacaoFamilia: a.relacaoFamilia,
+                    endereco: {
+                        local: a.local,
+                        aldeia: {
+                            id: a.aldeia.value
+                        }
+                    }
                 }
             });
             const [firstName, ...rest] = form.value.utilizador.gerente.split(' ');
@@ -204,7 +219,7 @@ export class Register {
             formData.utilizador.username = form.value.utilizador.email.split('@')[0] + new Date().getUTCMilliseconds().toString();
             formData.utilizador.role = this.selectedRole
 
-            this.empresaService.save(formData).subscribe({
+            this.empresaService.save(formData, this.uploadedDocs).subscribe({
                 next: (response) => {
                     this.loading = false;
                     this.isSuccess = true;
@@ -257,7 +272,7 @@ export class Register {
      * @returns a new `FormGroup` for a acionista
      */
 
-    generateAcionistaForm() {
+    generateAcionistaForm(isIndividual: boolean) {
         return this._fb.group({
             nome: [null, [Validators.required, Validators.minLength(3)]],
             nif: [null, [Validators.required]],
@@ -265,8 +280,15 @@ export class Register {
             numeroDocumento: [, [Validators.required]],
             telefone: [null, [Validators.required]],
             email: [null, [Validators.required, Validators.email]],
-            acoes: [null, [Validators.required]],
-            sectionTitle: [`Acionista n.º ${this.acionistasArray.length + 1}`]
+            acoes: [isIndividual ? 100 : null, [Validators.required]],
+            agregadoFamilia: [null, [Validators.required]],
+            relacaoFamilia: [null, [Validators.required]],
+            sectionTitle: [`Acionista n.º ${this.acionistasArray.length + 1}`],
+            local: [null, [Validators.required]],
+            municipio: new FormControl({ value: null, disabled: true }),
+            postoAdministrativo: new FormControl({ value: null, disabled: true }),
+            suco: new FormControl({ value: null, disabled: true }),
+            aldeia: [null, [Validators.required]],
         });
     }
 
@@ -275,13 +297,66 @@ export class Register {
     }
 
     addAcionistaForm() {
-        this.acionistasArray.push(this.generateAcionistaForm());
+        this.acionistasArray.push(this.generateAcionistaForm(false));
+        const idx = this.acionistasArray.length - 1;
+        this.listaAldeiaAcionista[idx] = [...this.originalAldeias];
     }
 
     removeAcionistaForm(index: number) {
         if (this.acionistasArray.length > 1) {
             this.acionistasArray.removeAt(index);
         }
+    }
+
+    aldeiaAcionistaOnChange(event: SelectChangeEvent, index: number): void {
+        if (event.value) {
+            this.dataMasterService.getAldeiaById(event.value.value).subscribe((aldeia: Aldeia) => {
+                this.acionistasArray.controls.at(index)?.patchValue({
+                    municipio: aldeia.suco.postoAdministrativo.municipio.nome,
+                    postoAdministrativo: aldeia.suco.postoAdministrativo.nome,
+                    suco: aldeia.suco.nome
+                });
+
+            });
+        } else {
+            this.acionistasArray.controls.at(index)?.patchValue({
+                municipio: null,
+                postoAdministrativo: null,
+                suco: null
+            });
+        }
+    }
+
+    aldeiaAcionistaFilter(event: any, index: number) {
+        const query = event.filter?.trim();
+        if (query && query.length) {
+            this.dataMasterService.searchAldeiasByNome(query)
+                .subscribe(resp => {
+                    this.listaAldeiaAcionista[index] = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+                    this.loading = false;
+                });
+        } else {
+            // filter cleared — reset full list
+            this.listaAldeiaAcionista[index] = [...this.originalAldeias];
+        }
+    }
+
+    onPanelHideAcionista(index: number) {
+        this.listaAldeiaAcionista[index] = [...this.originalAldeias];
+    }
+
+    onSelect(e: FileSelectEvent) {
+        this.uploadedDocs = [...this.uploadedDocs, ...e.files];
+    }
+
+    onFileRemove(e: { file: any }) {
+        const key = e.file.__key ?? `${e.file.name}-${e.file.size}-${e.file.lastModified}`;
+        this.uploadedDocs = this.uploadedDocs.filter(f => (f.__key ?? `${f.name}-${f.size}-${f.lastModified}`) !== key);
+    }
+
+    // Fired when the "clear" button is pressed
+    onFileClear() {
+        this.uploadedDocs = [];
     }
 
     disableStepEmpresa(): boolean {
@@ -316,5 +391,11 @@ export class Register {
         const corrected = new Date(date.getTime() - offsetMs);
 
         return corrected.toISOString().split('T')[0];
+    }
+
+    bytesToMBs(value: number): string {
+        if (!value && value !== 0) return '';
+        const mb = value / (1024 * 1024);
+        return `${mb.toFixed(2)} MB`;
     }
 }

@@ -43,11 +43,11 @@
             <i class="bi bi-pencil mr-2"></i>
             Edit
         </button>
-        <button
+        <!-- <button
             class="flex items-center justify-center bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 hover:cursor-pointer">
             <i class="bi bi-printer mr-2"></i>
             Print
-        </button>
+        </button> -->
     </div>
 </div>
 <main>
@@ -72,6 +72,12 @@
                         </p>
                     </div>
                     <div>
+                        <p class="text-sm text-gray-400 font-medium">Dimensão</p>
+                        <p class="text-lg text-gray-100">
+                            {{empresa.tipoEmpresa.replace('_',' ')}}
+                        </p>
+                    </div>
+                    <div>
                         <p class="text-sm text-gray-400 font-medium">Nº TIN (NIF)</p>
                         <p class="text-lg text-gray-100">
                             {{empresa.nif}}
@@ -93,6 +99,30 @@
                         <p class="text-sm text-gray-400 font-medium">Sociedade Comercial</p>
                         <p class="text-lg text-gray-100">
                             {{empresa.sociedadeComercial.nome}}
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-400 font-medium">
+                            Total Trabalhadores
+                        </p>
+                        <p class="text-lg text-gray-100">
+                            {{empresa.totalTrabalhadores}}
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-400 font-medium">
+                            Volume de Negócios Anual
+                        </p>
+                        <p class="text-lg text-gray-100">
+                            {{empresa.volumeNegocioAnual | currency}}
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-400 font-medium">
+                            Balanço total Anual
+                        </p>
+                        <p class="text-lg text-gray-100">
+                            {{empresa.balancoTotalAnual |currency}}
                         </p>
                     </div>
                     <div>
@@ -148,6 +178,32 @@
                                     {{item.email}}
                                 </p>
                             </div>
+                            <div>
+                                <p class="text-sm text-gray-400 font-medium">
+                                    Agregado Família
+                                </p>
+                                <p class="text-lg text-gray-100">
+                                    {{item.agregadoFamilia}}
+                                </p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-400 font-medium">
+                                    Relação Família
+                                </p>
+                                <p class="text-lg text-gray-100">
+                                    {{item.relacaoFamilia}}
+                                </p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-400 font-medium">Endereço</p>
+                                <p class="text-lg text-gray-100">
+                                    {{item.endereco.local}} <br>
+                                    {{item.endereco.aldeia.nome}},
+                                    {{item.endereco.aldeia.suco.nome}},
+                                    {{item.endereco.aldeia.suco.postoAdministrativo.nome}},
+                                    {{item.endereco.aldeia.suco.postoAdministrativo.municipio.nome}}
+                                </p>
+                            </div>
                         </div>
                     </div>
                     }
@@ -176,30 +232,25 @@
                     <h2 class="text-2xl font-semibold text-gray-200">Documentos</h2>
                 </div>
                 <ul class="space-y-3">
+                    @for (doc of empresa.documentos; track $index) {
                     <li class="flex items-center justify-between bg-gray-700/50 p-3 rounded-lg">
                         <div class="flex items-center">
                             <i class="bi bi-file-text text-gray-400 mr-3"></i>
-                            <span class="text-gray-200">Certificate_of_Incorporation.pdf</span>
+                            <span class="text-gray-200">
+                                {{doc.nome}}
+                            </span>
                         </div>
-                        <button class="text-emerald-400 hover:text-emerald-300">
-                            <i class="bi bi-download"></i>
-                        </button>
+                        <p-button class="text-emerald-400 hover:text-emerald-300" (click)="downloadDoc(doc)"
+                            [loading]="loadingDownloadButtons.has(doc.nome)" icon="pi pi-download" [rounded]="true"
+                            [text]="true" severity="success" />
                     </li>
-                    <li class="flex items-center justify-between bg-gray-700/50 p-3 rounded-lg">
-                        <div class="flex items-center">
-                            <i class="bi bi-file-text text-gray-400 mr-3"></i>
-                            <span class="text-gray-200">Tax_Registration.pdf</span>
-                        </div>
-                        <button class="text-emerald-400 hover:text-emerald-300">
-                            <i class="bi bi-download"></i>
-                        </button>
-                    </li>
+                    }
                 </ul>
             </section>
         </div>
     </div>
 </main>
-
+<p-toast position="bottom-center" />
 <p-dialog header="Criar Aplicante" [modal]="true" [position]="'top'" [(visible)]="visible" [style]="{ width: '45rem' }">
     <div class="card">
         <div class="grid grid-cols-12 gap-8 md:gap-4">

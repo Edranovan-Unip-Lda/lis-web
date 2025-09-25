@@ -1,21 +1,24 @@
-import { Empresa } from '@/core/models/entities.model';
+import { Documento, Empresa } from '@/core/models/entities.model';
 import { AplicanteType, Categoria } from '@/core/models/enums';
-import { AuthenticationService } from '@/core/services';
+import { DocumentosService } from '@/core/services/documentos.service';
 import { EmpresaService } from '@/core/services/empresa.service';
 import { applicationTypesOptions, categoryTpesOptions } from '@/core/utils/global-function';
 import { CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { SelectModule } from 'primeng/select';
+import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-inicio',
-  imports: [RouterModule, DialogModule, ButtonModule, ReactiveFormsModule, SelectModule, DatePipe, TitleCasePipe, CurrencyPipe],
+  imports: [RouterModule, DialogModule, ButtonModule, ReactiveFormsModule, SelectModule, DatePipe, TitleCasePipe, CurrencyPipe, Toast],
   templateUrl: './inicio.component.html',
-  styleUrl: './inicio.component.scss'
+  styleUrl: './inicio.component.scss',
+  providers: [MessageService]
 })
 export class InicioComponent implements OnInit {
   visible = false;
@@ -26,14 +29,16 @@ export class InicioComponent implements OnInit {
   empresa!: Empresa;
 
   applicationTypes: any[] = applicationTypesOptions
-  categoryTpes: any[] = categoryTpesOptions
+  categoryTpes: any[] = categoryTpesOptions;
+  loadingDownloadButtons = new Set<string>();
 
   constructor(
     private _fb: FormBuilder,
     private route: Router,
     private empresaService: EmpresaService,
-    private authService: AuthenticationService,
     private router: ActivatedRoute,
+    private documentoService: DocumentosService,
+    private messageService: MessageService,
   ) {
     this.applicationForm = this._fb.group({
       tipo: [null, [Validators.required]],
@@ -91,6 +96,35 @@ export class InicioComponent implements OnInit {
       categoria: this.categoryTpes.find(type => type.value === categoryTpe)
     });
     this.visible = true;
+  }
+
+  downloadDoc(file: Documento): void {
+    this.loadingDownloadButtons.add(file.nome);
+    this.documentoService.downloadById(file.id).subscribe({
+      next: (response) => {
+        const url = window.URL.createObjectURL(response);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'documento.pdf';
+        a.click();
+        window.URL.revokeObjectURL(url);
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Sucesso',
+          detail: 'Arquivo descarregado com sucesso!'
+        });
+      },
+      error: error => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Falha no download do arquivo!'
+        });
+      },
+      complete: () => {
+        this.loadingDownloadButtons.delete(file.nome);
+      }
+    });
   }
 
 }

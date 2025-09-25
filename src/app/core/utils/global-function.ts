@@ -198,6 +198,14 @@ export const tipoPropriedadeOptions: any[] = [
     { name: 'Sociedade por Quotas', value: TipoPropriedade.sociedade },
 ];
 
+export const tipoRelacaoFamiliaOptions: any[] = [
+    { name: 'Marido', value: 'Marido' },
+    { name: 'Esposa', value: 'Esposa' },
+    { name: 'Filho(a)', value: 'Filho(a)' },
+    { name: 'Pai', value: 'Pai' },
+    { name: 'Mãe', value: 'Mãe' },
+];
+
 export const tipoDocumentoOptions: any[] = [
     { name: 'Bilhete de Identidade', value: TipoDocumento.bilheteIdentidade },
     { name: 'Cartão de Eleitoral', value: TipoDocumento.eleitoral },

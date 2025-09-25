@@ -14,8 +14,15 @@ export class EmpresaService {
     private http: HttpClient,
   ) { }
 
-  save(formData: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, formData);
+  save(formData: any, selectedFiles: any[]): Observable<any> {
+    const fd = new FormData();
+
+    fd.append('data', new Blob([JSON.stringify(formData)], { type: 'application/json' }));
+    for (const file of selectedFiles) {
+      fd.append('files', file, file.name);
+    }
+
+    return this.http.post<any>(this.apiUrl, fd);
   }
 
   update(id: string, formData: any): Observable<any> {
@@ -72,10 +79,10 @@ export class EmpresaService {
 
   getPageCertificados(empresaId: number, categoria: Categoria, type: AplicanteType, page = 0, size = 50): Observable<any> {
     let params = new HttpParams()
-    .append('categoria', categoria)
-    .append('type', type)
-    .append('page', page)
-    .append('size', size);
+      .append('categoria', categoria)
+      .append('type', type)
+      .append('page', page)
+      .append('size', size);
     return this.http.get<any>(`${this.apiUrl}/${empresaId}/certificados`, { params }).pipe(take(1));
   }
 }
