@@ -59,6 +59,10 @@ export class PedidoVistoriaFormComponent {
       this.categoria = Categoria.industrial;
       this.atividadesOpts = quantoAtividadeoptions;
       this.vistoriaRequestForm.get('tipoAtividade')?.setValidators(Validators.required);
+      this.vistoriaRequestForm.patchValue({
+        tipoEmpresa: this.aplicanteData.empresa.tipoEmpresa
+      })
+      this.vistoriaRequestForm.get('tipoEmpresa')?.disable();
     }
 
     if (this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria) {

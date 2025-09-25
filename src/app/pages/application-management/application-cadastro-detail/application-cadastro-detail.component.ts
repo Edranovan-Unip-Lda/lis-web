@@ -114,7 +114,10 @@ export class ApplicationCadastroDetailComponent {
 
     if (!this.aplicanteData.pedidoInscricaoCadastro) {
       this.isNew = true;
-      // this.mapNewPedido(this.aplicanteData.empresaDto);
+      this.requestForm.patchValue({
+        tipoEmpresa: this.aplicanteData.empresa.tipoEmpresa
+      });
+      this.requestForm.get('tipoEmpresa')?.disable();
     } else {
       this.isNew = false;
       this.pedidoActive = true;

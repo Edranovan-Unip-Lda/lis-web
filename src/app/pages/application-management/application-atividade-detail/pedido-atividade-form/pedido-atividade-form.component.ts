@@ -69,6 +69,10 @@ export class PedidoAtividadeFormComponent {
     } else {
       this.isNew = true;
       this.mapFormEmpresa(this.aplicanteData.empresa);
+      // this.requestForm.patchValue({
+      //   numEmpregosCriados: this.aplicanteData.empresa.totalTrabalhadores
+      // });
+      // this.requestForm.get('numEmpregosCriados')?.disable();
     }
 
     this.uploadURLDocs.set(`${environment.apiUrl}/documentos/${this.authService.currentUserValue.username}/upload`);
@@ -317,7 +321,7 @@ export class PedidoAtividadeFormComponent {
       contratoArrendamento: [null],
       planoEmergencia: [null],
       estudoAmbiental: [null],
-      numEmpregosCriados: [null, [Validators.min(0)]],
+      numEmpregosCriados: new FormControl({ value: this.aplicanteData.empresa.totalTrabalhadores, disabled: true }),
       numEmpregadosCriar: [null, [Validators.min(0)]],
       reciboPagamento: [null],
       outrosDocumentos: [null]
