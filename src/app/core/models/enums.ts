@@ -24,6 +24,7 @@ export enum AplicanteStatus {
     aprovado = 'APROVADO',
     atribuido = 'ATRIBUIDO',
     revisao = 'REVISAO',
+    revisto = 'REVISTO',
 }
 
 export enum Categoria {

@@ -201,7 +201,8 @@ export class ApplicationAtividadeDetailComponent {
     return aplicanteData.estado !== AplicanteStatus.submetido &&
       aplicanteData.estado !== AplicanteStatus.revisao &&
       aplicanteData.estado !== AplicanteStatus.aprovado &&
-      aplicanteData.estado !== AplicanteStatus.atribuido
+      aplicanteData.estado !== AplicanteStatus.atribuido &&
+      aplicanteData.estado !== AplicanteStatus.revisto;
   }
 
   private checkedForms(aplicante: Aplicante) {

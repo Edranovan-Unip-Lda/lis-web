@@ -85,6 +85,10 @@ export class UserService {
     return this.http.get<any>(`${this.apiUrl}/${username}/aplicantes/${aplicanteId}`);
   }
 
+  revistoAplicante(username: string, aplicanteId: number, form: any): Observable<any> {
+    return this.http.patch<any>(`${this.apiUrl}/${username}/aplicantes/${aplicanteId}/revisto`, form);
+  }
+
   /**
    * Sends a PATCH request to approve an aplicante associated with a user.
    *

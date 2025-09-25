@@ -184,7 +184,8 @@
                 <div class="flex items-center space-x-4">
                     @if (aplicanteData.pedidoInscricaoCadastro.certificadoInscricaoCadastro) {
                     <p-tag [value]="'EMITIDO'" [severity]="'success'" />
-                    <p-button routerLink="/gestor/application/{{aplicanteData.id}}/certificado-inscricao/{{aplicanteData.pedidoInscricaoCadastro.certificadoInscricaoCadastro.id}}"
+                    <p-button
+                        routerLink="/gestor/application/{{aplicanteData.id}}/certificado-inscricao/{{aplicanteData.pedidoInscricaoCadastro.certificadoInscricaoCadastro.id}}"
                         icon="pi pi-eye" label="Pré-visualização" [raised]="true" severity="info" />
                     }@else {
                     <p-tag value="Nao Emitido" [severity]="'warn'" icon="pi pi-times" />
@@ -427,6 +428,32 @@
             <div
                 class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
                 <div class="flex items-center mb-4 sm:mb-0">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-orange-500 text-white mr-4">
+                        <i class="bi bi-person-check text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-white">
+                            Revisto pelo Chefe de Departamento
+                        </h3>
+                        <p class="text-sm text-gray-400">
+                            Detalhes do Auto Vistoria
+                            {{aplicanteData.categoria |titlecase}}
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    @if (aplicanteData.estado === 'REVISTO' || aplicanteData.estado === 'APROVADO')
+                    {
+                    <p-tag [value]="'REVISTO'" [severity]="'SUBMETIDO'" />
+                    }
+                    @else {
+                    <p-tag value="Em curso" [severity]="'info'" icon="pi pi-clock" />
+                    }
+                </div>
+            </div>
+            <div
+                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                <div class="flex items-center mb-4 sm:mb-0">
                     <div class="flex items-center justify-center h-12 w-12 rounded-full bg-purple-500 text-white mr-4">
                         <i class="bi bi-award text-2xl"></i>
                     </div>
@@ -441,7 +468,8 @@
                 <div class="flex items-center space-x-4">
                     @if (aplicanteData.pedidoLicencaAtividade.certificadoLicencaAtividade) {
                     <p-tag [value]="'EMITIDO'" [severity]="'success'" />
-                    <p-button routerLink="/gestor/application/{{aplicanteData.id}}/certificado-atividade/{{aplicanteData.pedidoLicencaAtividade.certificadoLicencaAtividade.id}}"
+                    <p-button
+                        routerLink="/gestor/application/{{aplicanteData.id}}/certificado-atividade/{{aplicanteData.pedidoLicencaAtividade.certificadoLicencaAtividade.id}}"
                         icon="pi pi-eye" label="Pré-visualização" [raised]="true" severity="info" />
                     }@else {
                     <p-tag value="Nao Emitido" [severity]="'warn'" icon="pi pi-times" />
@@ -536,6 +564,21 @@
                         </p>
                     </div>
                     }
+                    @case ('REVISTO') {
+                    <div
+                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-orange-500 ring-4 ring-[#2D3748]">
+                        <i class="bi bi-person-check-fill"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="font-semibold text-white">Aplicante foi revisto</p>
+                        <p class="text-sm text-gray-400">Revisto pelo: <span class="font-medium text-gray-300">
+                                {{item.alteradoPor}}
+                            </span></p>
+                        <p class="text-xs text-gray-500 mt-1">
+                            {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                        </p>
+                    </div>
+                    }
                     @case ('REJEITADO') {
                     <div
                         class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-red-500 ring-4 ring-[#2D3748]">
@@ -567,7 +610,37 @@
             severity="success" />
     </div>
     }
+    @if (showReviewdActions(aplicanteData)) {
+    <div class="mt-10 flex justify-end space-x-4">
+        <p-button (click)="rejeitarRevisto($event)" icon="pi pi-times" label="Rejeitar o Aplicante" [raised]="true"
+            severity="danger" />
+        <p-button (click)="revisto($event)" icon="pi pi-check-circle" label="Revisto o Aplicante" [raised]="true"
+            severity="success" />
+    </div>
+    }
 </div>
+<p-confirmdialog key="revisto">
+    <ng-template #headless let-message let-onAccept="onAccept" let-onReject="onReject">
+        <div class="flex flex-col items-center p-8 rounded">
+            <div
+                class="rounded-full bg-amber-400 text-primary-contrast inline-flex justify-center items-center h-24 w-24 -mt-20">
+                <i class="pi pi-exclamation-triangle !text-5xl"></i>
+            </div>
+            <div class="flex flex-col items-start gap-4">
+                <p class="mb-0 text-balance">
+                    Após a revisão deste aplicante, o processo será automaticamente
+                    encaminhado ao Diretor para apreciação e decisão final de aprovação.
+                </p>
+            </div>
+            <div class="flex items-center gap-2 mt-6">
+                <p-button type="button" [outlined]="true" severity="secondary" icon="pi pi-times" label="Cancel"
+                    (click)="onReject()"></p-button>
+                <p-button type="button" icon="pi pi-check" label="Confirmar" (onClick)="onAccept()">
+                </p-button>
+            </div>
+        </div>
+    </ng-template>
+</p-confirmdialog>
 <p-confirmdialog key="aprovar">
     <ng-template #headless let-message let-onAccept="onAccept" let-onReject="onReject">
         <div class="flex flex-col items-center p-8 rounded">

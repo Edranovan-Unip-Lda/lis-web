@@ -89,6 +89,88 @@ export class SummaryComponent {
 
   }
 
+  revisto(event: any) {
+    this.confirmationService.confirm({
+      key: 'revisto',
+      target: event.currentTarget as EventTarget,
+      icon: 'pi pi-exclamation-triangle',
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Confirmar',
+      },
+      accept: () => {
+        const formData = {
+          id: null,
+          status: AplicanteStatus.revisto,
+          descricao: null,
+          alteradoPor: this.user.username,
+        }
+        this.userService.revistoAplicante(this.user.username, this.aplicanteData.id, formData).subscribe({
+          next: response => {
+            this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Aplicante revisto com sucesso', life: 3000, key: 'tr' });
+            this.aplicanteData = response;
+            this.route.navigate(['gestor/application', this.aplicanteData.id],
+              {
+                queryParams: {
+                  categoria: this.aplicanteData.categoria,
+                  tipo: this.aplicanteData.tipo
+                }
+              }
+            );
+          },
+          error: () => {
+            this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao revisto o aplicante', life: 3000, key: 'tr' });
+          }
+        });
+      },
+    });
+  }
+
+  rejeitarRevisto(event: any) {
+    this.confirmationService.confirm({
+      key: 'aprovar',
+      target: event.currentTarget as EventTarget,
+      icon: 'pi pi-exclamation-triangle',
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Confirmar',
+      },
+      accept: () => {
+        const formData = {
+          id: null,
+          status: AplicanteStatus.rejeitado,
+          descricao: null,
+          alteradoPor: this.user.username,
+        }
+        this.userService.revistoAplicante(this.user.username, this.aplicanteData.id, formData).subscribe({
+          next: response => {
+            this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Aplicante revisto com sucesso', life: 3000, key: 'tr' });
+            this.aplicanteData = response;
+            this.route.navigate(['gestor/application', this.aplicanteData.id],
+              {
+                queryParams: {
+                  categoria: this.aplicanteData.categoria,
+                  tipo: this.aplicanteData.tipo
+                }
+              }
+            );
+          },
+          error: () => {
+            this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao revisto o aplicante', life: 3000, key: 'tr' });
+          }
+        });
+      },
+    });
+  }
+
   aprovar(event: any) {
     this.confirmationService.confirm({
       key: 'aprovar',
@@ -205,9 +287,19 @@ export class SummaryComponent {
 
     const validEstadoTipo =
       (estado === AplicanteStatus.submetido && tipo === AplicanteType.cadastro) ||
-      (estado === AplicanteStatus.revisao && tipo === AplicanteType.licenca);
+      (estado === AplicanteStatus.revisto && tipo === AplicanteType.licenca);
 
     return validEstadoTipo && role === Role.manager;
+  }
+
+  showReviewdActions(aplicante: Aplicante): boolean {
+    const estado = aplicante?.estado;
+    const tipo = aplicante?.tipo;
+    const role = this.user?.role.name;
+
+    const validEstadoTipo = estado === AplicanteStatus.revisao && tipo === AplicanteType.licenca;
+
+    return validEstadoTipo && role === Role.chief;
   }
 
   showDispatchActions(aplicante: Aplicante): boolean {
