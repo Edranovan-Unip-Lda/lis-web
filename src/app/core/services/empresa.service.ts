@@ -25,12 +25,12 @@ export class EmpresaService {
     return this.http.post<any>(this.apiUrl, fd);
   }
 
-  update(id: string, formData: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`, formData);
+  update(username: string, formData: any): Observable<any> {
+    return this.http.patch<any>(`${this.apiUrl}/${username}`, formData);
   }
 
-  getById(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  getByUsername(username: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${username}`);
   }
 
   getPage(page?: number, size?: number): Observable<any> {

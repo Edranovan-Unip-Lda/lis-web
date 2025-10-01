@@ -4,7 +4,7 @@ import { DataMasterService } from '@/core/services/data-master.service';
 import { EmpresaService } from '@/core/services/empresa.service';
 import { maxFileSizeUpload, tipoDocumentoOptions, tipoPropriedadeOptions, tipoRelacaoFamiliaOptions } from '@/core/utils/global-function';
 import { LayoutService } from '@/layout/service/layout.service';
-import { DatePipe, JsonPipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';

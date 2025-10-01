@@ -87,11 +87,11 @@ import { StyleClassModule } from 'primeng/styleclass';
                                 [hideOnOutsideClick]="true"
                             >
                                 <i class="pi pi-fw pi-lock mr-2"></i>
-                                <span>Privacy</span>
+                                <span>Perfíl</span>
                             </a>
                         </li>
 
-                        <li role="menuitem" class="!m-0 !mb-4">
+                      <!--   <li role="menuitem" class="!m-0 !mb-4">
                             <a
                                 href="#"
                                 class="flex items-center hover:text-primary-500 duration-200"
@@ -103,9 +103,9 @@ import { StyleClassModule } from 'primeng/styleclass';
                                 [hideOnOutsideClick]="true"
                             >
                                 <i class="pi pi-fw pi-cog mr-2"></i>
-                                <span>Settings</span>
+                                <span>Configurac</span>
                             </a>
-                        </li>
+                        </li> -->
                         <li (click)="signOut()" role="menuitem" class="!m-0">
                             <a
                                 href="#"
@@ -119,7 +119,7 @@ import { StyleClassModule } from 'primeng/styleclass';
                                 [hideOnOutsideClick]="true"
                             >
                                 <i class="pi pi-fw pi-sign-out mr-2"></i>
-                                <span>Logout</span>
+                                <span>Sair</span>
                             </a>
                         </li>
                     </ul>

@@ -54,6 +54,7 @@ export interface Acionista extends BaseModel {
     endereco: Endereco;
     agregadoFamilia: string;
     relacaoFamilia: string;
+    telefone: string;
 }
 
 export interface Aplicante extends BaseModel {

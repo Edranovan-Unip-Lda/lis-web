@@ -1,7 +1,9 @@
+import { getAllAldeiasResolver, getRolesResolver, getSociedadeComercialResolver } from '@/core/resolvers/data-master.resolver';
+import { getByUsernameResolver, getPageEmpresaResolver } from '@/core/resolvers/empresa.resolver';
 import { Routes } from '@angular/router';
-import { EmpresaListComponent } from './empresa-list/empresa-list.component';
+import { EmpresaDetailComponent } from './empresa-detail/empresa-detail.component';
 import { EmpresaFormComponent } from './empresa-form/empresa-form.component';
-import { getPageEmpresaResolver } from '@/core/resolvers/empresa.resolver';
+import { EmpresaListComponent } from './empresa-list/empresa-list.component';
 
 export default [
     { path: '', redirectTo: 'list', pathMatch: 'full' },
@@ -10,24 +12,38 @@ export default [
         data: { breadcrumb: 'Lista' },
         component: EmpresaListComponent,
         resolve: {
-            empresaPage: getPageEmpresaResolver
+            empresaPage: getPageEmpresaResolver,
+            // role: [Role.admin, Role.manager, Role.chief, Role.staff]
+        }
+    },
+    // {
+    //     path: 'create',
+    //     data: { breadcrumb: 'Criar' },
+    //     component: EmpresaFormComponent,
+    //     resolve: {
+    //         roleList: getRolesResolver,
+    //     }
+    // },
+    {
+        path: ':username',
+        data: { breadcrumb: 'Edit' },
+        component: EmpresaFormComponent,
+        resolve: {
+            aldeiasResolver: getAllAldeiasResolver,
+            listaSociedadeComercial: getSociedadeComercialResolver,
+            roleListResolver: getRolesResolver,
+            empresaResolver: getByUsernameResolver,
         }
     },
     {
-        path: 'create',
-        data: { breadcrumb: 'Criar' },
-        component: EmpresaFormComponent,
-        // resolve: {
-        //     roleList: getRolesResolver,
-        // }
-    },
-    // {
-    //     path: ':username',
-    //     data: { breadcrumb: 'Edit' },
-    //     component: UserCreate,
-    //     resolve: {
-    //         roleList: getRolesResolver,
-    //         userData: getUserByUsernameResolver,
-    //     }
-    // }
+        path: 'detail/:username',
+        data: { breadcrumb: 'Detail' },
+        component: EmpresaDetailComponent,
+        resolve: {
+            aldeiasResolver: getAllAldeiasResolver,
+            listaSociedadeComercial: getSociedadeComercialResolver,
+            roleListResolver: getRolesResolver,
+            empresaResolver: getByUsernameResolver,
+        }
+    }
 ] as Routes;

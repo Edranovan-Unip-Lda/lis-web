@@ -36,7 +36,7 @@
                 <th class="white-space-nowrap">
                     Criado em
                 </th>
-                 <th class="white-space-nowrap">
+                <th class="white-space-nowrap">
                     Ações
                 </th>
             </tr>
@@ -62,27 +62,9 @@
                     {{ empresa.createdAt | date: 'MM/dd/yyyy, HH:mm:ss' }}
                 </td>
                 <td>
-                    <p-button (click)="op.toggle($event)" icon="pi pi-ellipsis-v" [rounded]="true" [text]="true"
-                        severity="info" />
-                    <p-popover #op>
-                        <div class="flex flex-col gap-1 w-[25rem]">
-                            <ul class="topbar-menu active-topbar-menu z-50 rounded">
-                                <li role="menuitem" class="!m-0 !mb-4">
-                                    <a [routerLink]="['/empresa', empresa.id]">
-                                        <i class="pi pi-fw pi-pencil mr-2"></i>
-                                        <span>Atualizar</span>
-                                    </a>
-                                </li>
-                                <li role="menuitem" class="!m-0">
-                                    <a href="#">
-                                        <i class="pi pi-fw pi-eye mr-2"></i>
-                                        <span>Detalho</span>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </div>
-                    </p-popover>
+                    <a routerLink="/empresa/detail/{{empresa.utilizador.username}}" pTooltip="Detalho" tooltipPosition="top">
+                        <p-button icon="pi pi-eye" class="mr-2" severity="info" [rounded]="true" [outlined]="true" />
+                    </a>
                 </td>
             </tr>
         </ng-template>

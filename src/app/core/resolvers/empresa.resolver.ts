@@ -12,11 +12,11 @@ export const getPageEmpresaResolver: ResolveFn<any> = () => {
     return service.getPage();
 }
 
-export const getByIdResolver: ResolveFn<any> = (route: ActivatedRouteSnapshot) => {
-    const id = route.paramMap.get('id') || inject(AuthenticationService).currentUserValue.empresa.id;
+export const getByUsernameResolver: ResolveFn<any> = (route: ActivatedRouteSnapshot) => {
+    const username = route.paramMap.get('username') || inject(AuthenticationService).currentUserValue.username;
     const service = inject(EmpresaService);
-    if (id) {
-        return service.getById(+id);
+    if (username) {
+        return service.getByUsername(username);
     } else {
         return of(null);
     }
