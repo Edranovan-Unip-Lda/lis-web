@@ -28,22 +28,19 @@
                          <form [formGroup]="empresaForm">
                              <div class="grid grid-cols-12 gap-4">
                                  <div class="mb-6 col-span-12">
-                                     <label for="nome"
-                                         class="font-medium  mb-2 block">
+                                     <label for="nome" class="font-medium  mb-2 block">
                                          Nome da Empresa
                                      </label>
                                      <input formControlName="nome" id="nome" type="text" pInputText fluid />
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
-                                     <label for="sede"
-                                         class="font-medium  mb-2 block">
+                                     <label for="sede" class="font-medium  mb-2 block">
                                          Sede
                                      </label>
                                      <input formControlName="sede" id="sede" type="text" pInputText fluid />
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
-                                     <label for="sociedadeComercial"
-                                         class="font-medium  mb-2 block">
+                                     <label for="sociedadeComercial" class="font-medium  mb-2 block">
                                          Tipo de Sociedade Comercial
                                      </label>
                                      <p-select fluid formControlName="sociedadeComercial"
@@ -55,8 +52,7 @@
                              <div class="flex flex-col gap-6 w-full sm:w-auto mb-6">
                                  <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                                      <div class="flex-auto">
-                                         <label for="aldeia"
-                                             class="font-medium  mb-2 block">
+                                         <label for="aldeia" class="font-medium  mb-2 block">
                                              Aldeia
                                          </label>
                                          <p-select fluid formControlName="aldeia" [options]="aldeias" optionLabel="nome"
@@ -67,24 +63,21 @@
                                          </p-select>
                                      </div>
                                      <div class="flex-auto">
-                                         <label for="suco"
-                                             class="font-medium  mb-2 block">
+                                         <label for="suco" class="font-medium  mb-2 block">
                                              Suco
                                          </label>
                                          <input formControlName="suco" id="suco" type="text" pInputText fluid />
                                      </div>
 
                                      <div class="flex-auto">
-                                         <label for="posto"
-                                             class="font-medium  mb-2 block">
+                                         <label for="posto" class="font-medium  mb-2 block">
                                              Posto Administrativo
                                          </label>
                                          <input formControlName="postoAdministrativo" id="postoAdministrativo"
                                              type="text" pInputText fluid />
                                      </div>
                                      <div class="flex-auto">
-                                         <label for="municipio"
-                                             class="font-medium  mb-2 block">
+                                         <label for="municipio" class="font-medium  mb-2 block">
                                              Municipio
                                          </label>
                                          <input formControlName="municipio" id="municipio" type="text" pInputText
@@ -95,23 +88,20 @@
                              </div>
                              <div class="grid grid-cols-12 gap-4">
                                  <div class="mb-6 col-span-12 md:col-span-6">
-                                     <label for="nif"
-                                         class="font-medium  mb-2 block">
+                                     <label for="nif" class="font-medium  mb-2 block">
                                          NIF da Empresa
                                      </label>
                                      <input formControlName="nif" id="nif" type="text" pInputText fluid />
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
-                                     <label for="numeroRegistoComercial"
-                                         class="font-medium  mb-2 block">
+                                     <label for="numeroRegistoComercial" class="font-medium  mb-2 block">
                                          Nº Registo Comercial
                                      </label>
                                      <input formControlName="numeroRegistoComercial" id="numeroRegistoComercial"
                                          type="text" pInputText fluid />
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
-                                     <label for="capitalSocial"
-                                         class="font-medium  mb-2 block">
+                                     <label for="capitalSocial" class="font-medium  mb-2 block">
                                          Capital Social
                                      </label>
                                      <p-inputgroup>
@@ -121,24 +111,21 @@
                                      </p-inputgroup>
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
-                                     <label for="dataRegisto"
-                                         class="font-medium  mb-2 block">
+                                     <label for="dataRegisto" class="font-medium  mb-2 block">
                                          Data de Registo
                                      </label>
                                      <p-date-picker formControlName="dataRegisto" id="dataRegisto" [showIcon]="true"
                                          [showButtonBar]="true" fluid dateFormat="dd/mm/yy" inputStyleClass="w-full" />
                                  </div>
                                  <div class="mb-6 col-span-12">
-                                     <label for="totalTrabalhadores"
-                                         class="font-medium  mb-2 block">
+                                     <label for="totalTrabalhadores" class="font-medium mb-2 block">
                                          Total Trabalhadores (Funcionários)
                                      </label>
                                      <input formControlName="totalTrabalhadores" id="totalTrabalhadores" type="text"
                                          pInputText fluid />
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
-                                     <label for="volumeNegocioAnual"
-                                         class="font-medium  mb-2 block">
+                                     <label for="volumeNegocioAnual" class="font-medium mb-2 block">
                                          Volume de Negócios Anual
                                      </label>
                                      <p-inputgroup>
@@ -148,8 +135,7 @@
                                      </p-inputgroup>
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
-                                     <label for="balancoTotalAnual"
-                                         class="font-medium  mb-2 block">
+                                     <label for="balancoTotalAnual" class="font-medium  mb-2 block">
                                          Balanço total Anual
                                      </label>
                                      <p-inputgroup>
@@ -159,30 +145,56 @@
                                      </p-inputgroup>
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
-                                     <label for="telefone"
-                                         class="font-medium  mb-2 block">
+                                     <label for="telefone" class="font-medium mb-2 block">
                                          Nº Telefone
                                      </label>
                                      <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
-                                     <label for="telemovel"
-                                         class="font-medium  mb-2 block">
+                                     <label for="telemovel" class="font-medium mb-2 block">
                                          Nº Telemóvel
                                      </label>
                                      <input formControlName="telemovel" id="telemovel" type="tel" pInputText fluid />
                                  </div>
                                  <div class="mb-6 col-span-12">
-                                     <label for="outrosDocumentos"
-                                         class="font-medium  mb-2 block">
+                                     <label for="outrosDocumentos" class="font-medium  mb-2 block">
                                          DOCUMENTOS
                                      </label>
-                                     <p-fileupload name="files" method="post" (onSelect)="onSelect($event)"
-                                         [maxFileSize]="maxFileSize" [multiple]="true" accept="application/pdf"
-                                         [showUploadButton]="false" [showCancelButton]="false" mode="advanced"
-                                         (onRemove)="onFileRemove($event)" (onClear)="onFileClear()"
-                                         [customUpload]="true">
-                                     </p-fileupload>
+                                     <ul class="list-decimal     list-inside mb-2">
+                                         <li>
+                                             Certidão de Registo Comercial
+                                         </li>
+                                         <li>
+                                             Estatuto da Empresa
+                                         </li>
+                                         <li>
+                                             NIF da Empresa
+                                         </li>
+                                         <li>
+                                             Declaração Anual de Imposto de Renda
+                                         </li>
+                                         <li>
+                                             Documento de Identificação do(s) Proprietário(s) / Acionista(s)
+                                         </li>
+                                     </ul>
+                                     <div class="flex justify-start">
+                                         <p-fileupload name="files" method="post" (onSelect)="onSelect($event)"
+                                             [maxFileSize]="maxFileSize" [multiple]="true" accept="application/pdf"
+                                             [showUploadButton]="false" [showCancelButton]="false" mode="basic"
+                                             [chooseLabel]="'Selecionar'" [customUpload]="true"
+                                             chooseIcon="pi pi-upload">
+                                         </p-fileupload>
+                                     </div>
+                                     @for (item of uploadedDocs; track $index) {
+                                     <li>
+                                         <a class="cursor-pointer hover:underline hover:text-teal-300">
+                                             {{ item.name }} - {{ bytesToMBs(item.size) }}
+                                         </a>
+                                         &nbsp;
+                                         <p-button icon="pi pi-times" [rounded]="true" [text]="true" severity="danger"
+                                             (onClick)="onFileRemove({file: item})" />
+                                     </li>
+                                     }
                                  </div>
                              </div>
                          </form>
@@ -201,8 +213,7 @@
                          <form [formGroup]="empresaForm" class="px-8">
                              <div class="grid grid-cols-12 gap-4">
                                  <div class="mb-6 col-span-12">
-                                     <label for="tipoPropriedade"
-                                         class="font-medium  mb-2 block">
+                                     <label for="tipoPropriedade" class="font-medium  mb-2 block">
                                          Tipo propetário
                                      </label>
                                      <p-select fluid formControlName="tipoPropriedade" [options]="tipoProriedadeOpts"
@@ -223,15 +234,13 @@
                                  }
                                  <div class="grid grid-cols-12 gap-4" [formGroupName]="$index">
                                      <div class="mb-6 col-span-12">
-                                         <label for="nome"
-                                             class="font-medium  mb-2 block">
+                                         <label for="nome" class="font-medium  mb-2 block">
                                              Nome
                                          </label>
                                          <input formControlName="nome" id="nome" type="text" pInputText fluid />
                                      </div>
                                      <div class="mb-6 col-span-12 md:col-span-6">
-                                         <label for="acoes"
-                                             class="font-medium  mb-2 block">
+                                         <label for="acoes" class="font-medium  mb-2 block">
                                              Ações
                                          </label>
                                          <p-inputgroup>
@@ -241,15 +250,13 @@
                                          </p-inputgroup>
                                      </div>
                                      <div class="mb-6 col-span-12 md:col-span-6">
-                                         <label for="nif"
-                                             class="font-medium  mb-2 block">
+                                         <label for="nif" class="font-medium  mb-2 block">
                                              NIF
                                          </label>
                                          <input formControlName="nif" id="nif" type="text" pInputText fluid />
                                      </div>
                                      <div class="mb-6 col-span-12 md:col-span-6">
-                                         <label for="tipoDocumento"
-                                             class="font-medium  mb-2 block">
+                                         <label for="tipoDocumento" class="font-medium  mb-2 block">
                                              Tipo Documento
                                          </label>
                                          <p-select fluid formControlName="tipoDocumento" [options]="tipoDocumentoOpts"
@@ -258,16 +265,14 @@
                                          </p-select>
                                      </div>
                                      <div class="mb-6 col-span-12 md:col-span-6">
-                                         <label for="numeroDocumento"
-                                             class="font-medium  mb-2 block">
+                                         <label for="numeroDocumento" class="font-medium  mb-2 block">
                                              Nº Documento
                                          </label>
                                          <input formControlName="numeroDocumento" id="numeroDocumento" type="text"
                                              pInputText fluid />
                                      </div>
                                      <div class="mb-6 col-span-12">
-                                         <label for="local"
-                                             class="font-medium  mb-2 block">
+                                         <label for="local" class="font-medium  mb-2 block">
                                              Endereço
                                          </label>
                                          <input formControlName="local" id="local" type="text" pInputText fluid
@@ -276,8 +281,7 @@
                                      <div class="mb-6 col-span-12">
                                          <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                                              <div class="flex-auto">
-                                                 <label for="aldeia"
-                                                     class="font-medium  mb-2 block">
+                                                 <label for="aldeia" class="font-medium  mb-2 block">
                                                      Aldeia
                                                  </label>
                                                  <p-select fluid formControlName="aldeia"
@@ -290,23 +294,20 @@
                                                  </p-select>
                                              </div>
                                              <div class="flex-auto">
-                                                 <label for="suco"
-                                                     class="font-medium  mb-2 block">
+                                                 <label for="suco" class="font-medium  mb-2 block">
                                                      Suco
                                                  </label>
                                                  <input formControlName="suco" id="suco" type="text" pInputText fluid />
                                              </div>
                                              <div class="flex-auto">
-                                                 <label for="posto"
-                                                     class="font-medium  mb-2 block">
+                                                 <label for="posto" class="font-medium  mb-2 block">
                                                      Posto Administrativo
                                                  </label>
                                                  <input formControlName="postoAdministrativo" id="postoAdministrativo"
                                                      type="text" pInputText fluid />
                                              </div>
                                              <div class="flex-auto">
-                                                 <label for="municipio"
-                                                     class="font-medium  mb-2 block">
+                                                 <label for="municipio" class="font-medium  mb-2 block">
                                                      Municipio
                                                  </label>
                                                  <input formControlName="municipio" id="municipio" type="text"
@@ -315,30 +316,26 @@
                                          </div>
                                      </div>
                                      <div class="mb-6 col-span-12 md:col-span-6">
-                                         <label for="telefone"
-                                             class="font-medium  mb-2 block">
+                                         <label for="telefone" class="font-medium  mb-2 block">
                                              Nº Telefone
                                          </label>
                                          <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
                                      </div>
                                      <div class="mb-6 col-span-12 md:col-span-6">
-                                         <label for="email"
-                                             class="font-medium  mb-2 block">
+                                         <label for="email" class="font-medium  mb-2 block">
                                              Email
                                          </label>
                                          <input formControlName="email" id="email" type="email" pInputText fluid />
                                      </div>
                                      <div class="mb-6 col-span-12 md:col-span-6">
-                                         <label for="agregadoFamilia"
-                                             class="font-medium  mb-2 block">
+                                         <label for="agregadoFamilia" class="font-medium  mb-2 block">
                                              Agregado Familia
                                          </label>
                                          <input formControlName="agregadoFamilia" id="agregadoFamilia" pInputText
                                              fluid />
                                      </div>
                                      <div class="mb-6 col-span-12 md:col-span-6">
-                                         <label for="relacaoFamilia"
-                                             class="font-medium  mb-2 block">
+                                         <label for="relacaoFamilia" class="font-medium  mb-2 block">
                                              Relação Família
                                          </label>
                                          <p-select fluid formControlName="relacaoFamilia"
@@ -372,23 +369,20 @@
                              <div formGroupName="utilizador" class="grid grid-cols-12 gap-4">
 
                                  <div class="mb-6 col-span-12">
-                                     <label for="gerente"
-                                         class="font-medium  mb-2 block">
+                                     <label for="gerente" class="font-medium  mb-2 block">
                                          Gerente
                                      </label>
                                      <input formControlName="gerente" id="gerente" type="text" pInputText fluid
                                          placeholder="Ex: Joao da Silva" />
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
-                                     <label for="email"
-                                         class="font-medium  mb-2 block">
+                                     <label for="email" class="font-medium  mb-2 block">
                                          Email
                                      </label>
                                      <input formControlName="email" id="email" type="email" pInputText fluid />
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
-                                     <label for="password"
-                                         class="font-medium  mb-2 block">
+                                     <label for="password" class="font-medium  mb-2 block">
                                          Palavra-passe
                                      </label>
                                      <p-password formControlName="password" fluid [feedback]="true"
