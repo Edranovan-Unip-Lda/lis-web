@@ -3,13 +3,13 @@
      <form [formGroup]="autoVistoriaForm">
          <div class="grid grid-cols-12 gap-4">
              <div class="mb-6 col-span-12">
-                 <label for="numeroProcesso" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="numeroProcesso" class="font-medium  mb-2 block">
                      Nº Processo
                  </label>
                  <input formControlName="numeroProcesso" id="numeroProcesso" type="text" pInputText fluid />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="dataHora" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="dataHora" class="font-medium  mb-2 block">
                      Data e Hora
                  </label>
                  <p-datepicker formControlName="dataHora" [showTime]="true" appendTo="body" [showButtonBar]="true"
@@ -18,7 +18,7 @@
              <div class="mb-6 col-span-12">
                  <div formGroupName="local" class="grid grid-cols-12">
                      <div class="mb-6 col-span-12">
-                         <label for="local" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         <label for="local" class="font-medium  mb-2 block">
                              Local
                          </label>
                          <input formControlName="local" id="local" type="text" pInputText fluid />
@@ -27,7 +27,7 @@
                          <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                              <div class="flex-auto">
                                  <label for="aldeia"
-                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     class="font-medium  mb-2 block">
                                      Aldeia
                                  </label>
                                  <p-select fluid formControlName="aldeia" [options]="listaAldeia" optionLabel="nome"
@@ -37,14 +37,14 @@
                                  </p-select>
                              </div>
                              <div class="flex-auto">
-                                 <label for="suco" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                 <label for="suco" class="font-medium  mb-2 block">
                                      Suco
                                  </label>
                                  <input formControlName="suco" id="suco" type="text" pInputText fluid />
                              </div>
                              <div class="flex-auto">
                                  <label for="postoAdministrativo"
-                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     class="font-medium  mb-2 block">
                                      Posto Administrativo
                                  </label>
                                  <input formControlName="postoAdministrativo" id="postoAdministrativo" type="text"
@@ -52,7 +52,7 @@
                              </div>
                              <div class="flex-auto">
                                  <label for="municipio"
-                                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                     class="font-medium  mb-2 block">
                                      Municipio
                                  </label>
                                  <input formControlName="municipio" id="municipio" type="text" pInputText fluid />
@@ -69,14 +69,14 @@
          <div formGroupName="requerente">
              <div class="grid grid-cols-12 gap-4">
                  <div class="mb-6 col-span-12 md:col-span-6">
-                     <label for="denominacaoSocial" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     <label for="denominacaoSocial" class="font-medium  mb-2 block">
                          Denominacao Social
                      </label>
                      <input formControlName="denominacaoSocial" id="denominacaoSocial" type="text" pInputText fluid />
                  </div>
                  <div class="mb-6 col-span-12 md:col-span-6">
                      <label for="numeroRegistoComercial"
-                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         class="font-medium  mb-2 block">
                          Nº de Registo Comercial
                      </label>
                      <input formControlName="numeroRegistoComercial" id="numeroRegistoComercial" type="text" pInputText
@@ -85,7 +85,7 @@
                  <div class="mb-6 col-span-12">
                      <div formGroupName="sede" class="grid grid-cols-12">
                          <div class="mb-6 col-span-12">
-                             <label for="local" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                             <label for="local" class="font-medium  mb-2 block">
                                  Local do Estabelecimento
                              </label>
                              <input formControlName="local" id="local" type="text" pInputText fluid
@@ -95,7 +95,7 @@
                              <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                                  <div class="flex-auto">
                                      <label for="aldeia"
-                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         class="font-medium  mb-2 block">
                                          Aldeia
                                      </label>
                                      <p-select fluid formControlName="aldeia" [options]="listaAldeiaRequerente"
@@ -109,14 +109,14 @@
                                  </div>
                                  <div class="flex-auto">
                                      <label for="suco"
-                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         class="font-medium  mb-2 block">
                                          Suco
                                      </label>
                                      <input formControlName="suco" id="suco" type="text" pInputText fluid />
                                  </div>
                                  <div class="flex-auto">
                                      <label for="postoAdministrativo"
-                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         class="font-medium  mb-2 block">
                                          Posto Administrativo
                                      </label>
                                      <input formControlName="postoAdministrativo" id="postoAdministrativo" type="text"
@@ -124,7 +124,7 @@
                                  </div>
                                  <div class="flex-auto">
                                      <label for="municipio"
-                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         class="font-medium  mb-2 block">
                                          Municipio
                                      </label>
                                      <input formControlName="municipio" id="municipio" type="text" pInputText fluid />
@@ -134,31 +134,31 @@
                      </div>
                  </div>
                  <div class="mb-6 col-span-12 md:col-span-6">
-                     <label for="nif" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     <label for="nif" class="font-medium  mb-2 block">
                          NIF
                      </label>
                      <input formControlName="nif" id="nif" type="text" pInputText fluid />
                  </div>
                  <div class="mb-6 col-span-12 md:col-span-6">
-                     <label for="gerente" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     <label for="gerente" class="font-medium  mb-2 block">
                          Gerente
                      </label>
                      <input formControlName="gerente" id="gerente" type="text" pInputText fluid />
                  </div>
                  <div class="mb-6 col-span-12 md:col-span-6">
-                     <label for="telefone" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     <label for="telefone" class="font-medium  mb-2 block">
                          Telefone
                      </label>
                      <input formControlName="telefone" id="telefone" type="text" pInputText fluid />
                  </div>
                  <div class="mb-6 col-span-12 md:col-span-6">
-                     <label for="email" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     <label for="email" class="font-medium  mb-2 block">
                          Email
                      </label>
                      <input formControlName="email" id="email" type="text" pInputText fluid />
                  </div>
                  <div class="mb-6 col-span-12 md:col-span-6">
-                     <label for="classeAtividade" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     <label for="classeAtividade" class="font-medium  mb-2 block">
                          Classificacao Atividade
                      </label>
                      <p-select fluid formControlName="classeAtividade" [options]="listaClassificacaoAtividade"
@@ -173,58 +173,58 @@
                  </div>
                  <div class="mb-6 col-span-12 md:col-span-6">
                      <label for="classeAtividadeCodigo"
-                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         class="font-medium  mb-2 block">
                          Descricao
                      </label>
                      <input formControlName="classeAtividadeCodigo" id="classeAtividadeCodigo" type="text" pInputText
                          fluid />
                  </div>
                  <div class="mb-6 col-span-12">
-                     <label for="nomeRepresentante" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     <label for="nomeRepresentante" class="font-medium  mb-2 block">
                          Nome Representante
                      </label>
                      <input formControlName="nomeRepresentante" id="nomeRepresentante" type="text" pInputText fluid />
                  </div>
                  <div class="mb-6 col-span-12 md:col-span-6">
-                     <label for="pai" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     <label for="pai" class="font-medium  mb-2 block">
                          Pai
                      </label>
                      <input formControlName="pai" id="pai" type="text" pInputText fluid />
                  </div>
                  <div class="mb-6 col-span-12 md:col-span-6">
-                     <label for="mae" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     <label for="mae" class="font-medium  mb-2 block">
                          Mae
                      </label>
                      <input formControlName="mae" id="mae" type="text" pInputText fluid />
                  </div>
                  <div class="mb-6 col-span-12 md:col-span-6">
-                     <label for="dataNascimento" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     <label for="dataNascimento" class="font-medium  mb-2 block">
                          Data Nascimento
                      </label>
                      <p-datepicker formControlName="dataNascimento" id="dataNascimento" appendTo="body"
                          [showButtonBar]="true" fluid />
                  </div>
                  <div class="mb-6 col-span-12 md:col-span-6">
-                     <label for="estadoCivil" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     <label for="estadoCivil" class="font-medium  mb-2 block">
                          Estado Civil
                      </label>
                      <input formControlName="estadoCivil" id="estadoCivil" type="text" pInputText fluid />
                  </div>
                  <div class="mb-6 col-span-12">
-                     <label for="nacionalidade" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     <label for="nacionalidade" class="font-medium  mb-2 block">
                          Nacionalidade
                      </label>
                      <input formControlName="nacionalidade" id="nacionalidade" type="text" pInputText fluid />
                  </div>
                  <div class="mb-6 col-span-12">
-                     <label for="naturalidade" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     <label for="naturalidade" class="font-medium  mb-2 block">
                          Natural de
                      </label>
                      <input formControlName="naturalidade" id="naturalidade" type="text" pInputText fluid />
                  </div>
                  <div class="mb-6 col-span-12 md:col-span-6">
                      <label for="postoAdministrativo"
-                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                         class="font-medium  mb-2 block">
                          Posto Administrativo
                      </label>
                      <p-select fluid formControlName="postoAdministrativo" [options]="listaPostoAdministrativo"
@@ -233,13 +233,13 @@
                      </p-select>
                  </div>
                  <div class="mb-6 col-span-12 md:col-span-6">
-                     <label for="municipio" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     <label for="municipio" class="font-medium  mb-2 block">
                          Municipio
                      </label>
                      <input formControlName="municipio" id="municipio" type="text" pInputText fluid />
                  </div>
                  <div class="mb-6 col-span-12 md:col-span-6">
-                     <label for="tipoDocumento" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     <label for="tipoDocumento" class="font-medium  mb-2 block">
                          Tipo de Documento de Identificação
                      </label>
                      <p-select fluid formControlName="tipoDocumento" id="tipoDocumento" [options]="tipoDocumentoOpts"
@@ -248,7 +248,7 @@
                      </p-select>
                  </div>
                  <div class="mb-6 col-span-12 md:col-span-6">
-                     <label for="numeroDocumento" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     <label for="numeroDocumento" class="font-medium  mb-2 block">
                          Nº Documento de Identificacao
                      </label>
                      <input formControlName="numeroDocumento" id="numeroDocumento" type="text" pInputText fluid />
@@ -256,7 +256,7 @@
                  <div class="mb-6 col-span-12">
                      <div formGroupName="residencia" class="grid grid-cols-12">
                          <div class="mb-6 col-span-12">
-                             <label for="local" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                             <label for="local" class="font-medium  mb-2 block">
                                  Local do Estabelecimento
                              </label>
                              <input formControlName="local" id="local" type="text" pInputText fluid
@@ -266,7 +266,7 @@
                              <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                                  <div class="flex-auto">
                                      <label for="aldeia"
-                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         class="font-medium  mb-2 block">
                                          Aldeia
                                      </label>
                                      <p-select fluid formControlName="aldeia" [options]="listaAldeiaResidencia"
@@ -280,14 +280,14 @@
                                  </div>
                                  <div class="flex-auto">
                                      <label for="suco"
-                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         class="font-medium  mb-2 block">
                                          Suco
                                      </label>
                                      <input formControlName="suco" id="suco" type="text" pInputText fluid />
                                  </div>
                                  <div class="flex-auto">
                                      <label for="postoAdministrativo"
-                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         class="font-medium  mb-2 block">
                                          Posto Administrativo
                                      </label>
                                      <input formControlName="postoAdministrativo" id="postoAdministrativo" type="text"
@@ -295,7 +295,7 @@
                                  </div>
                                  <div class="flex-auto">
                                      <label for="municipio"
-                                         class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                                         class="font-medium  mb-2 block">
                                          Municipio
                                      </label>
                                      <input formControlName="municipio" id="municipio" type="text" pInputText fluid />
@@ -313,13 +313,13 @@
              @for (membro of membrosEquipaVistoria.controls; track membro; let i = $index) {
              <div class="grid grid-cols-12 gap-4 mt-6" [formGroupName]="i">
                  <div class="mb-6 col-span-12">
-                     <label for="nome" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     <label for="nome" class="font-medium  mb-2 block">
                          Nome
                      </label>
                      <input formControlName="nome" id="nome" type="text" pInputText fluid />
                  </div>
                  <div class="mb-6 col-span-12 md:col-span-7">
-                     <label for="instituicao" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     <label for="instituicao" class="font-medium  mb-2 block">
                          Instituicao
                      </label>
                      <p-select fluid formControlName="areaRepresentante" [options]="availablePositions(i)"
@@ -328,7 +328,7 @@
                      </p-select>
                  </div>
                  <div class="mb-6 col-span-12 md:col-span-5">
-                     <label for="cargo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     <label for="cargo" class="font-medium  mb-2 block">
                          Cargo
                      </label>
                      <input formControlName="cargo" id="cargo" type="text" pInputText fluid />
@@ -370,7 +370,7 @@
          </span>
          <div class="grid grid-cols-12 gap-4">
              <div class="mb-6 col-span-12 md:col-span-8">
-                 <label for="legislacaoUrbanistica" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="legislacaoUrbanistica" class="font-medium  mb-2 block">
                      1. A escolha do local deve staisfazer as exigencias da legislacao urbanistica, tendo
                      em
                      conta especialmente os planos urbanisticos existentes ou as indicacoes dadas pelas
@@ -385,14 +385,14 @@
          </span>
          <div class="grid grid-cols-12 gap-4 pl-4">
              <div class="mb-6 col-span-12">
-                 <label for="accessoEstrada" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="accessoEstrada" class="font-medium  mb-2 block">
                      a) De acesso por estrada:
                  </label>
                  <p-selectbutton [options]="stateOptions" formControlName="accessoEstrada" optionLabel="label"
                      optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="escoamentoAguas" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="escoamentoAguas" class="font-medium  mb-2 block">
                      b) De escoamento de aguas residuais, as quais devem obedecer a regulamentacao
                      adotada
                      ou a adotar relativa ao sanemento publico
@@ -401,7 +401,7 @@
                      optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="alimentacaoEnergia" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="alimentacaoEnergia" class="font-medium  mb-2 block">
                      c) De execucao de um ramal de alimentacao de energia eletrica em media tensao (alta
                      tensao)
                  </label>
@@ -423,21 +423,21 @@
          </span>
          <div class="grid grid-cols-12 gap-4 pl-4">
              <div class="mb-6 col-span-12">
-                 <label for="seperadosSexo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="seperadosSexo" class="font-medium  mb-2 block">
                      i.&nbsp;&nbsp; Separados por sexo
                  </label>
                  <p-selectbutton [options]="stateOptions" id="seperadosSexo" formControlName="seperadosSexo"
                      optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="lavatoriosComEspelho" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="lavatoriosComEspelho" class="font-medium  mb-2 block">
                      ii.&nbsp;&nbsp; Dispor de lavatorios com espelho:
                  </label>
                  <p-selectbutton [options]="stateOptions" id="lavatoriosComEspelho"
                      formControlName="lavatoriosComEspelho" optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="comunicacaoVentilacao" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="comunicacaoVentilacao" class="font-medium  mb-2 block">
                      iii.&nbsp;&nbsp;Comunicacao direta para o exterior ou serem adotadas de dispositivos
                      ventilacao
                      artificial com continua renovacao do ar adequados a sua dimensao:
@@ -446,7 +446,7 @@
                      formControlName="comunicacaoVentilacao" optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="esgotoAguas" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="esgotoAguas" class="font-medium  mb-2 block">
                      iv.&nbsp;&nbsp; Ligadas a uma rede interna de esgotos que conduzzam as aguas
                      residuais a sistemas
                      adequados ao seu escoamento, nomeadamente atraves da rede publica ou, se esta nao
@@ -457,7 +457,7 @@
                      optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="paredesPavimentos" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="paredesPavimentos" class="font-medium  mb-2 block">
                      vi.&nbsp;&nbsp; As paredes, pavimentos e tetos das instalacoes sanitarias devem ser
                      revestidas de
                      materiais resistentes, impermeaveis, nao inflamaveis e de facil limpeza:
@@ -466,7 +466,7 @@
                      optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="zonasDestinadas" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="zonasDestinadas" class="font-medium  mb-2 block">
                      vii.&nbsp;&nbsp;Nao podem situar-se junto das zonas destinadas a preparar e cozinhar
                      alimentos ou a
                      tomar refeicoes
@@ -478,21 +478,21 @@
          <div class="grid grid-cols-12 gap-4">
              <div class="mb-6 col-span-12">
                  <label for="instalacoesFrigorificas"
-                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     class="font-medium  mb-2 block">
                      b)&nbsp;&nbsp;Instalacoes sanitarias de utilizacao comum dotadas de agua corrente
                  </label>
                  <p-selectbutton [options]="stateOptions" id="instalacoesFrigorificas"
                      formControlName="instalacoesFrigorificas" optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="sectoresLimpos" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="sectoresLimpos" class="font-medium  mb-2 block">
                      c)&nbsp;&nbsp;Separação de sectores limpos e sujos
                  </label>
                  <p-selectbutton [options]="stateOptions" id="sectoresLimpos" formControlName="sectoresLimpos"
                      optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="pisosParedes" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="pisosParedes" class="font-medium  mb-2 block">
                      d)&nbsp;&nbsp;Pisos e paredes - os edifícios devem ser providos de dispositivos de
                      proteção
                      contra insetos e roedores e
@@ -505,7 +505,7 @@
          </div>
          <div class="grid grid-cols-12 gap-4 pl-4">
              <div class="mb-6 col-span-12">
-                 <label for="pisosResistentes" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="pisosResistentes" class="font-medium  mb-2 block">
                      i.&nbsp;&nbsp;Os pisos devem ser resistentes, perfeitamente estanques,
                      antiderrapantes e
                      com inclinações da ordem
@@ -515,14 +515,14 @@
                      optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="paredesInteriores" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="paredesInteriores" class="font-medium  mb-2 block">
                      ii.&nbsp;&nbsp;As paredes interiores e o piso devem possuir um revestimento lavável;
                  </label>
                  <p-selectbutton [options]="stateOptions" id="paredesInteriores" formControlName="paredesInteriores"
                      optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="paredes3metros" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="paredes3metros" class="font-medium  mb-2 block">
                      iii.&nbsp;&nbsp;As paredes vem possuir até 3 metros de altura e um revestimento
                      resistente
                      ao choque, impermeáveis,
@@ -532,7 +532,7 @@
                      optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="unioesParedes" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="unioesParedes" class="font-medium  mb-2 block">
                      iv.&nbsp;&nbsp;As uniões das paredes com os tetos e os pisos devem ser
                      arredondadas.
                  </label>
@@ -543,14 +543,14 @@
          <div class="grid grid-cols-12 gap-4">
              <div class="mb-6 col-span-12">
                  <label for="ventilacoesNecessarias"
-                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     class="font-medium  mb-2 block">
                      e)&nbsp;&nbsp;Em todos os locais deve ser assegurada a ventilação necessária
                  </label>
                  <p-selectbutton [options]="stateOptions" id="ventilacoesNecessarias"
                      formControlName="ventilacoesNecessarias" optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="iluminacao" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="iluminacao" class="font-medium  mb-2 block">
                      f)&nbsp;&nbsp;A iluminação, natural ou artificial, deve ser adequada às
                      características de cada local
                  </label>
@@ -558,7 +558,7 @@
                      optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="aguaPotavel" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="aguaPotavel" class="font-medium  mb-2 block">
                      g)&nbsp;&nbsp;O estabelecimento deve ser provido de uma rede de água potável sob
                      pressão, fria e/ou quente, em
                      quantidade suficiente para cobrir as suas necessidades
@@ -567,7 +567,7 @@
                      optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="distribuicaoAgua" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="distribuicaoAgua" class="font-medium  mb-2 block">
                      h)&nbsp;&nbsp;A rede de distribuição de águas deve ter o número necessário de
                      dispositivos de saída de água para
                      assegurar a limpeza e lavagem em todas as suas atividades, incluindo a higiene do
@@ -577,7 +577,7 @@
                      optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="redeDistribuicao" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="redeDistribuicao" class="font-medium  mb-2 block">
                      i)&nbsp;&nbsp;Pode existir uma rede de distribuição, devidamente sinalizada, de água
                      não potável para geradores de
                      vapor, instalações comerciais frigoríficas, bocas de incêndio, jardinagem e outros
@@ -588,7 +588,7 @@
                      optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="redeEsgotos" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="redeEsgotos" class="font-medium  mb-2 block">
                      j)&nbsp;&nbsp;A rede de esgotos, fossas ou tanques sépticos tem de permitir a fácil
                      observação, limpeza e desinfeção e
                      possuir válvulas sifonadas grelhas de proteção e caixas de recolha de gorduras;
@@ -597,7 +597,7 @@
                      optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="equipamentoUtensilios" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="equipamentoUtensilios" class="font-medium  mb-2 block">
                      k)&nbsp;&nbsp;Todo o equipamento e utensílios devem ser em material inalterável e de
                      fácil limpeza e desinfeção.
                  </label>
@@ -606,14 +606,14 @@
              </div>
              <div class="mb-6 col-span-12">
                  <label for="equipamentoPrimeirosSocorros"
-                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     class="font-medium  mb-2 block">
                      l)&nbsp;&nbsp;Equipados com equipamento de primeiros socorros
                  </label>
                  <p-selectbutton [options]="stateOptions" id="equipamentoPrimeirosSocorros"
                      formControlName="equipamentoPrimeirosSocorros" optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="recipientesLixo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="recipientesLixo" class="font-medium  mb-2 block">
                      m)&nbsp;&nbsp;Dispor de recipientes para o lixo, com tampa, colocados em locais de
                      fácil acesso e devidamente
                      sinalizados.
@@ -622,7 +622,7 @@
                      optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="limpezaDiaria" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="limpezaDiaria" class="font-medium  mb-2 block">
                      n)&nbsp;&nbsp;A limpeza e desinfeção diária dos contentores é obrigatória e o lixo e
                      demais resíduos devem ser
                      removidos diariamente para local adequado de forma a serem transportados pelos
@@ -634,7 +634,7 @@
              </div>
          </div>
          <div class="mb-12 col-span-12">
-             <label for="descreverIrregularidades" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="descreverIrregularidades" class="font-medium  mb-2 block">
                  Verificou-se que (descrever as irregularidades e/ou omissões)
              </label>
              <textarea id="descreverIrregularidades" rows="5" cols="30" variant="outlined" pTextarea
@@ -652,28 +652,28 @@
          </span>
          <div class="grid grid-cols-12 gap-4 pl-4">
              <div class="mb-6 col-span-12">
-                 <label for="seperadosSexo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="seperadosSexo" class="font-medium  mb-2 block">
                      a&#41;&nbsp;&nbsp; Separados por sexo
                  </label>
                  <p-selectbutton [options]="stateOptions" id="seperadosSexo" formControlName="seperadosSexo"
                      optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="lavatoriosComEspelho" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="lavatoriosComEspelho" class="font-medium  mb-2 block">
                      b&#41;&nbsp;&nbsp; Dispor de lavatorios com espelho:
                  </label>
                  <p-selectbutton [options]="stateOptions" id="lavatoriosComEspelho"
                      formControlName="lavatoriosComEspelho" optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="sanitasAutomaticaAgua" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="sanitasAutomaticaAgua" class="font-medium  mb-2 block">
                      c&#41;&nbsp;&nbsp; Dispor de sanitas, dotadas de descarga automatica de agua:
                  </label>
                  <p-selectbutton [options]="stateOptions" id="sanitasAutomaticaAgua"
                      formControlName="sanitasAutomaticaAgua" optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="comunicacaoVentilacao" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="comunicacaoVentilacao" class="font-medium  mb-2 block">
                      d&#41;&nbsp;&nbsp;Comunicacao direta para o exterior ou serem adotadas de dispositivos
                      ventilacao
                      artificial com continua renovacao do ar adequados a sua dimensao:
@@ -682,7 +682,7 @@
                      formControlName="comunicacaoVentilacao" optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="esgotoAguas" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="esgotoAguas" class="font-medium  mb-2 block">
                      e&#41;&nbsp;&nbsp; Ligadas a uma rede interna de esgotos que conduzzam as aguas
                      residuais a sistemas
                      adequados ao seu escoamento, nomeadamente atraves da rede publica ou, se esta nao
@@ -694,7 +694,7 @@
              </div>
          </div>
          <div class="mb-6 col-span-12">
-             <label for="paredesPavimentos" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="paredesPavimentos" class="font-medium  mb-2 block">
                  2.&nbsp;&nbsp; As paredes, pavimentos e tetos das instalacoes sanitarias devem ser
                  revestidas de
                  materiais resistentes, impermeaveis, nao inflamaveis e de facil limpeza:
@@ -704,7 +704,7 @@
          </div>
 
          <div class="mb-6 col-span-12">
-             <label for="pisosParedes" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="pisosParedes" class="font-medium  mb-2 block">
                  3.&nbsp;&nbsp;Pisos e paredes - os edifícios devem ser providos de dispositivos de
                  proteção
                  contra insetos e roedores e
@@ -715,14 +715,14 @@
                  optionLabel="label" optionValue="value" />
          </div>
          <div class="mb-6 col-span-12">
-             <label for="paredesInteriores" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="paredesInteriores" class="font-medium  mb-2 block">
                  4.&nbsp;&nbsp;As paredes interiores e o piso devem possuir um revestimento lavável;
              </label>
              <p-selectbutton [options]="stateOptions" id="paredesInteriores" formControlName="paredesInteriores"
                  optionLabel="label" optionValue="value" />
          </div>
          <div class="mb-6 col-span-12">
-             <label for="paredes3metros" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="paredes3metros" class="font-medium  mb-2 block">
                  5.&nbsp;&nbsp;As paredes vem possuir até 3 metros de altura e um revestimento
                  resistente
                  ao choque, impermeáveis,
@@ -732,14 +732,14 @@
                  optionLabel="label" optionValue="value" />
          </div>
          <div class="mb-6 col-span-12">
-             <label for="ventilacoesNecessarias" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="ventilacoesNecessarias" class="font-medium  mb-2 block">
                  6.&nbsp;&nbsp;Em todos os locais deve ser assegurada a ventilação necessária
              </label>
              <p-selectbutton [options]="stateOptions" id="ventilacoesNecessarias"
                  formControlName="ventilacoesNecessarias" optionLabel="label" optionValue="value" />
          </div>
          <div class="mb-6 col-span-12">
-             <label for="iluminacao" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="iluminacao" class="font-medium  mb-2 block">
                  7.&nbsp;&nbsp;A iluminação, natural ou artificial, deve ser adequada às
                  características de cada local
              </label>
@@ -747,7 +747,7 @@
                  optionValue="value" />
          </div>
          <div class="mb-6 col-span-12">
-             <label for="aguaPotavel" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="aguaPotavel" class="font-medium  mb-2 block">
                  8.&nbsp;&nbsp;O estabelecimento deve ser provido de uma rede de água potável sob
                  pressão, fria e/ou quente, em
                  quantidade suficiente para cobrir as suas necessidades
@@ -756,7 +756,7 @@
                  optionValue="value" />
          </div>
          <div class="mb-6 col-span-12">
-             <label for="distribuicaoAgua" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="distribuicaoAgua" class="font-medium  mb-2 block">
                  9.&nbsp;&nbsp;A rede de distribuição de águas deve ter o número necessário de
                  dispositivos de saída de água para
                  assegurar a limpeza e lavagem em todas as suas atividades, incluindo a higiene do
@@ -766,7 +766,7 @@
                  optionLabel="label" optionValue="value" />
          </div>
          <div class="mb-6 col-span-12">
-             <label for="redeDistribuicao" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="redeDistribuicao" class="font-medium  mb-2 block">
                  10.&nbsp;&nbsp;Pode existir uma rede de distribuição, devidamente sinalizada, de água
                  não potável para geradores de
                  vapor, instalações comerciais frigoríficas, bocas de incêndio, jardinagem e outros
@@ -777,7 +777,7 @@
                  optionLabel="label" optionValue="value" />
          </div>
          <div class="mb-6 col-span-12">
-             <label for="redeEsgotos" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="redeEsgotos" class="font-medium  mb-2 block">
                  11.&nbsp;&nbsp;A rede de esgotos, fossas ou tanques sépticos tem de permitir a fácil
                  observação, limpeza e desinfeção e
                  possuir válvulas sifonadas grelhas de proteção e caixas de recolha de gorduras;
@@ -786,7 +786,7 @@
                  optionValue="value" />
          </div>
          <div class="mb-6 col-span-12">
-             <label for="maximoHigieneSeguranca" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="maximoHigieneSeguranca" class="font-medium  mb-2 block">
                  12.&nbsp;&nbsp;Garantir o maximo de higiene e seguranva dos trabalhadores;
              </label>
              <p-selectbutton [options]="stateOptions" id="maximoHigieneSeguranca"
@@ -794,14 +794,14 @@
          </div>
          <div class="mb-6 col-span-12">
              <label for="equipamentoPrimeirosSocorros"
-                 class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 class="font-medium  mb-2 block">
                  13.&nbsp;&nbsp;Equipados com equipamento de primeiros socorros
              </label>
              <p-selectbutton [options]="stateOptions" id="equipamentoPrimeirosSocorros"
                  formControlName="equipamentoPrimeirosSocorros" optionLabel="label" optionValue="value" />
          </div>
          <div class="mb-6 col-span-12">
-             <label for="recipientesLixo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="recipientesLixo" class="font-medium  mb-2 block">
                  14.&nbsp;&nbsp;Dispor de recipientes para o lixo, com tampa, colocados em locais de
                  fácil acesso e devidamente
                  sinalizados.
@@ -820,7 +820,7 @@
 
          <div class="grid grid-cols-12 gap-4">
              <div class="mb-6 col-span-12">
-                 <label for="zonasDestinadas" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="zonasDestinadas" class="font-medium  mb-2 block">
                      a)&nbsp;&nbsp;Nao podem situar-se junto das zonas destinadas a preparar e cozinhar
                      alimentos ou a
                      tomar refeicoes
@@ -830,14 +830,14 @@
              </div>
              <div class="mb-6 col-span-12">
                  <label for="instalacoesFrigorificas"
-                     class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     class="font-medium  mb-2 block">
                      b)&nbsp;&nbsp;Instalacoes sanitarias de utilizacao comum dotadas de agua corrente
                  </label>
                  <p-selectbutton [options]="stateOptions" id="instalacoesFrigorificas"
                      formControlName="instalacoesFrigorificas" optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="sectoresLimpos" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="sectoresLimpos" class="font-medium  mb-2 block">
                      c)&nbsp;&nbsp;Separação de sectores limpos e sujos
                  </label>
                  <p-selectbutton [options]="stateOptions" id="sectoresLimpos" formControlName="sectoresLimpos"
@@ -846,7 +846,7 @@
          </div>
          <div class="grid grid-cols-12 gap-4 pl-4">
              <div class="mb-6 col-span-12">
-                 <label for="pisosResistentes" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="pisosResistentes" class="font-medium  mb-2 block">
                      i.&nbsp;&nbsp;Os pisos devem ser resistentes, perfeitamente estanques,
                      antiderrapantes e
                      com inclinações da ordem
@@ -856,7 +856,7 @@
                      optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="unioesParedes" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="unioesParedes" class="font-medium  mb-2 block">
                      iv.&nbsp;&nbsp;As uniões das paredes com os tetos e os pisos devem ser
                      arredondadas.
                  </label>
@@ -868,7 +868,7 @@
 
 
              <div class="mb-6 col-span-12">
-                 <label for="equipamentoUtensilios" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="equipamentoUtensilios" class="font-medium  mb-2 block">
                      k)&nbsp;&nbsp;Todo o equipamento e utensílios devem ser em material inalterável e de
                      fácil limpeza e desinfeção.
                  </label>
@@ -876,7 +876,7 @@
                      formControlName="equipamentoUtensilios" optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="limpezaDiaria" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="limpezaDiaria" class="font-medium  mb-2 block">
                      n)&nbsp;&nbsp;A limpeza e desinfeção diária dos contentores é obrigatória e o lixo e
                      demais resíduos devem ser
                      removidos diariamente para local adequado de forma a serem transportados pelos
@@ -888,7 +888,7 @@
              </div>
          </div>
          <div class="mb-12 col-span-12">
-             <label for="descreverIrregularidades" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="descreverIrregularidades" class="font-medium  mb-2 block">
                  Verificou-se que (descrever as irregularidades e/ou omissões)
              </label>
              <textarea id="descreverIrregularidades" rows="5" cols="30" variant="outlined" pTextarea
@@ -903,14 +903,14 @@
          </span>
          <div class="grid grid-cols-12 gap-4 mb-12">
              <div class="mb-6 col-span-12">
-                 <label for="aptoAberto" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="aptoAberto" class="font-medium  mb-2 block">
                      Apto para ser aberto ao público
                  </label>
                  <p-selectbutton [options]="stateOptions" id="aptoAberto" formControlName="aptoAberto"
                      optionLabel="label" optionValue="value" />
              </div>
              <div class="mb-6 col-span-12">
-                 <label for="comDeficiencias" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="comDeficiencias" class="font-medium  mb-2 block">
                      Com deficiências e recomendou a sua superação
                  </label>
                  <p-selectbutton [options]="stateOptions" id="comDeficiencias" formControlName="comDeficiencias"
@@ -922,7 +922,7 @@
          </span>
          <div class="grid grid-cols-12 gap-4 mb-12">
              <div class="mb-12 col-span-12">
-                 <label for="recomendacoes" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 <label for="recomendacoes" class="font-medium  mb-2 block">
                      Face à(s) irregularidade(s) e omissão(ões) detetadas, tendo em vista o seu
                      suprimento, foram emitidas as
                      seguintes recomendações:

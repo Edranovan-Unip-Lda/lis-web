@@ -4,7 +4,7 @@
      </span>
      <div class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="tipoVistoria" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="tipoVistoria" class="font-medium  mb-2 block">
                  Tipo
              </label>
              <p-select formControlName="tipoVistoria" inputId="tipoVistoria" [options]="tipoPedidoVistoriaOpts"
@@ -18,7 +18,7 @@
      </span>
      <div class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="nomeEstabelecimento" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="nomeEstabelecimento" class="font-medium  mb-2 block">
                  Nome do estabelecimento
              </label>
              <input formControlName="nomeEstabelecimento" id="nomeEstabelecimento" type="text" pInputText fluid />
@@ -26,7 +26,7 @@
          <div class="mb-6 col-span-12">
              <div formGroupName="localEstabelecimento" class="grid grid-cols-12">
                  <div class="mb-6 col-span-12">
-                     <label for="local" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     <label for="local" class="font-medium  mb-2 block">
                          Local do Estabelecimento
                      </label>
                      <input formControlName="local" id="local" type="text" pInputText fluid
@@ -35,7 +35,7 @@
                  <div class="mb-6 col-span-12">
                      <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                          <div class="flex-auto">
-                             <label for="aldeia" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                             <label for="aldeia" class="font-medium  mb-2 block">
                                  Aldeia
                              </label>
                              <p-select fluid formControlName="aldeia" [options]="listaAldeia" optionLabel="nome"
@@ -45,20 +45,20 @@
                              </p-select>
                          </div>
                          <div class="flex-auto">
-                             <label for="suco" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                             <label for="suco" class="font-medium  mb-2 block">
                                  Suco
                              </label>
                              <input formControlName="suco" id="suco" type="text" pInputText fluid />
                          </div>
                          <div class="flex-auto">
-                             <label for="posto" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                             <label for="posto" class="font-medium  mb-2 block">
                                  Posto Administrativo
                              </label>
                              <input formControlName="postoAdministrativo" id="postoAdministrativo" type="text"
                                  pInputText fluid />
                          </div>
                          <div class="flex-auto">
-                             <label for="municipio" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                             <label for="municipio" class="font-medium  mb-2 block">
                                  Municipio
                              </label>
                              <input formControlName="municipio" id="municipio" type="text" pInputText fluid />
@@ -74,7 +74,7 @@
      </span>
      <div class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="tipoEmpresa" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="tipoEmpresa" class="font-medium  mb-2 block">
                  Tipo de Empresa
              </label>
              <p-select formControlName="tipoEmpresa" inputId="tipoEmpresa" [options]="tipoEmpresaOpts"
@@ -84,7 +84,7 @@
          </div>
          @if (categoria === 'COMERCIAL') {
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="tipoEstabelecimento" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="tipoEstabelecimento" class="font-medium  mb-2 block">
                  Tipo de estabelecimento
              </label>
              <p-select formControlName="tipoEstabelecimento" inputId="tipoEstabelecimento"
@@ -99,14 +99,14 @@
      </span>
      <div class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="risco" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="risco" class="font-medium  mb-2 block">
                  Nivel de Risco
              </label>
              <input formControlName="risco" id="risco" type="text" pInputText fluid />
          </div>
          @if (categoria === 'COMERCIAL') {
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="atividade" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="atividade" class="font-medium  mb-2 block">
                  Atividade
              </label>
              <p-select formControlName="atividade" inputId="atividade" [options]="atividadesOpts" optionLabel="name"
@@ -116,7 +116,7 @@
          </div>
          }@else {
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="tipoAtividade" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="tipoAtividade" class="font-medium  mb-2 block">
                  Tipo de atividade
              </label>
              <p-select formControlName="tipoAtividade" inputId="tipoAtividade" [options]="atividadesOpts"
@@ -126,7 +126,7 @@
          </div>
          }
          <div class="mb-6 col-span-12 md:col-span-7">
-             <label for="grupoAtividade" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="grupoAtividade" class="font-medium  mb-2 block">
                  Tipo de Atividade no Estabelecimento
              </label>
              <p-select formControlName="grupoAtividade" (onChange)="tipoAtividadeChange($event)"
@@ -140,13 +140,13 @@
              </p-select>
          </div>
          <div class="mb-6 col-span-12 md:col-span-5">
-             <label for="grupoAtividadeCodigo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="grupoAtividadeCodigo" class="font-medium  mb-2 block">
                  Descricao
              </label>
              <input formControlName="grupoAtividadeCodigo" id="grupoAtividadeCodigo" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-7">
-             <label for="classeAtividade" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="classeAtividade" class="font-medium  mb-2 block">
                  Atividade Principal exercida no Estabelecimento
              </label>
              <p-select formControlName="classeAtividade" (onChange)="atividadePrincipalChange($event)"
@@ -160,19 +160,19 @@
              </p-select>
          </div>
          <div class="mb-6 col-span-12 md:col-span-5">
-             <label for="classeAtividadeCodigo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="classeAtividadeCodigo" class="font-medium  mb-2 block">
                  Descricao
              </label>
              <input formControlName="classeAtividadeCodigo" id="classeAtividadeCodigo" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12">
-             <label for="alteracoes" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="alteracoes" class="font-medium  mb-2 block">
                  Alteracoes a averbar
              </label>
              <input formControlName="alteracoes" id="alteracoes" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12">
-             <label for="observacao" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="observacao" class="font-medium  mb-2 block">
                  Observacao
              </label>
              <textarea rows="8" cols="30" variant="outlined" pTextarea formControlName="observacao" fluid></textarea>

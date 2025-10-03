@@ -58,7 +58,7 @@
         <div class="grid grid-cols-12 gap-4">
             <div class="mb-6 col-span-12">
                 <div class="mb-6 col-span-12">
-                    <label for="municipio" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    <label for="municipio" class="font-medium  mb-2 block">
                         Municipio
                     </label>
                     <p-select (onChange)="municipioSelectOnChange($event)" [appendTo]="'body'"
@@ -67,7 +67,7 @@
                     </p-select>
                 </div>
                 <div class="mb-6 col-span-12">
-                    <label for="posto" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                    <label for="posto" class="font-medium  mb-2 block">
                         Posto Administrativo
                     </label>
                     <p-select [appendTo]="'body'" formControlName="postoAdministrativo" inputId="posto"
@@ -75,7 +75,7 @@
                         placeholder="Selecione o Posto Administrativo">
                     </p-select>
                 </div>
-                <label for="nome" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                <label for="nome" class="font-medium  mb-2 block">
                     Nome
                 </label>
                 <input formControlName="nome" id="nome" type="text" pInputText fluid />

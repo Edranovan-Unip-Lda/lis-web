@@ -63,7 +63,7 @@
             @switch (type) {
             @case ('direcoes') {
             <div class="mb-2 col-span-12">
-                <label for="nome" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                <label for="nome" class="font-medium  mb-2 block">
                     Categoria (Comercial/Industrial)
                 </label>
                 <p-select [appendTo]="'body'" formControlName="nome" inputId="nome" [options]="categoryOpts"
@@ -73,7 +73,7 @@
             }
             @case ('roles') {
             <div class="mb-2 col-span-12">
-                <label for="name" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                <label for="name" class="font-medium  mb-2 block">
                     Nome
                 </label>
                 <p-select [appendTo]="'body'" formControlName="name" inputId="name" [options]="rolesOpts"
@@ -83,7 +83,7 @@
             }
             @case ('grupo-atividades') {
             <div class="mb-2 col-span-12">
-                <label for="tipo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                <label for="tipo" class="font-medium  mb-2 block">
                     Categoria (Comercial/Industrial)
                 </label>
                 <p-select [appendTo]="'body'" formControlName="tipo" inputId="tipo" [options]="categoryOpts"
@@ -92,19 +92,19 @@
                 </p-select>
             </div>
             <div class="mb-6 col-span-12">
-                <label for="codigo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                <label for="codigo" class="font-medium  mb-2 block">
                     Código
                 </label>
                 <input formControlName="codigo" id="codigo" type="text" pInputText fluid />
             </div>
             <div class="mb-6 col-span-12">
-                <label for="descricao" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                <label for="descricao" class="font-medium  mb-2 block">
                     Descrição
                 </label>
                 <input formControlName="descricao" id="descricao" type="text" pInputText fluid />
             </div>
             <div class="col-span-12">
-                <label for="tipoRisco" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                <label for="tipoRisco" class="font-medium  mb-2 block">
                     Risco
                 </label>
                 <p-select [appendTo]="'body'" formControlName="tipoRisco" inputId="tipoRisco" [options]="nivelRiscoOpts"
@@ -115,7 +115,7 @@
             }
             @case ('classe-atividades') {
             <div class="mb-2 col-span-12">
-                <label for="tipo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                <label for="tipo" class="font-medium  mb-2 block">
                     Categoria (Comercial/Industrial)
                 </label>
                 <p-select [appendTo]="'body'" formControlName="tipo" inputId="tipo" [options]="categoryOpts"
@@ -124,7 +124,7 @@
                 </p-select>
             </div>
             <div class="mb-2 col-span-12">
-                <label for="grupoAtividade" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                <label for="grupoAtividade" class="font-medium  mb-2 block">
                     Grupo Atividade
                 </label>
                 <p-select [appendTo]="'body'" formControlName="grupoAtividade" inputId="grupoAtividade"
@@ -138,19 +138,19 @@
                 </p-select>
             </div>
             <div class="mb-6 col-span-12">
-                <label for="codigo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                <label for="codigo" class="font-medium  mb-2 block">
                     Código
                 </label>
                 <input formControlName="codigo" id="codigo" type="text" pInputText fluid />
             </div>
             <div class="mb-6 col-span-12">
-                <label for="descricao" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                <label for="descricao" class="font-medium  mb-2 block">
                     Descrição
                 </label>
                 <input formControlName="descricao" id="descricao" type="text" pInputText fluid />
             </div>
             <div class="col-span-12">
-                <label for="tipoRisco" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                <label for="tipoRisco" class="font-medium  mb-2 block">
                     Risco
                 </label>
                 <p-select [appendTo]="'body'" formControlName="tipoRisco" inputId="tipoRisco" [options]="nivelRiscoOpts"
@@ -161,7 +161,7 @@
             }
             @case ('taxas') {
             <div class="mb-2 col-span-12">
-                <label for="categoria" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                <label for="categoria" class="font-medium  mb-2 block">
                     Categoria (Comercial/Industrial)
                 </label>
                 <p-select [appendTo]="'body'" formControlName="categoria" inputId="categoria" [options]="categoryOpts"
@@ -169,7 +169,7 @@
                 </p-select>
             </div>
             <div class="mb-2 col-span-12">
-                <label for="tipo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                <label for="tipo" class="font-medium  mb-2 block">
                     Tipo (Cadastro/Atividade)
                 </label>
                 <p-select [appendTo]="'body'" formControlName="tipo" inputId="tipo" [options]="aplicanteOpts"
@@ -177,19 +177,19 @@
                 </p-select>
             </div>
             <div class="mb-6 col-span-12">
-                <label for="ato" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                <label for="ato" class="font-medium  mb-2 block">
                     Ato
                 </label>
                 <input formControlName="ato" id="ato" type="text" pInputText fluid />
             </div>
             <div class="mb-6 col-span-12 md:col-span-6">
-                <label for="montanteMinimo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                <label for="montanteMinimo" class="font-medium  mb-2 block">
                     Montante Mínimo
                 </label>
                 <input formControlName="montanteMinimo" id="montanteMinimo" type="number" pInputText fluid />
             </div>
             <div class="mb-6 col-span-12 md:col-span-6">
-                <label for="montanteMaximo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                <label for="montanteMaximo" class="font-medium  mb-2 block">
                     Montante Máximo
                 </label>
                 <input formControlName="montanteMaximo" id="montanteMaximo" type="number" pInputText fluid />
@@ -197,13 +197,13 @@
             }
             @case ('sociedade-comercial'){
             <div class="mb-6 col-span-12">
-                <label for="nome" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                <label for="nome" class="font-medium  mb-2 block">
                     Nome
                 </label>
                 <input formControlName="nome" id="nome" type="text" pInputText fluid />
             </div>
             <div class="mb-6 col-span-12">
-                <label for="acronimo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                <label for="acronimo" class="font-medium  mb-2 block">
                     Acrónimo
                 </label>
                 <input formControlName="acronimo" id="acronimo" type="text" pInputText fluid />

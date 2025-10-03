@@ -255,7 +255,7 @@
     <div class="card">
         <div class="grid grid-cols-12 gap-8 md:gap-4">
             <div class="col-span-12">
-                <p class="m-0 p-0 text-surface-600 dark:text-surface-200 leading-normal mr-4">Forneça as informações
+                <p class="m-0 p-0 leading-normal mr-4">Forneça as informações
                     necessárias abaixo para configurar uma nova inscrição.</p>
             </div>
 
@@ -263,7 +263,7 @@
                 <form [formGroup]="applicationForm">
                     <div class="grid grid-cols-12 gap-4">
                         <div class="mb-6 col-span-12">
-                            <label for="tipo" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                            <label for="tipo" class="font-medium mb-2 block">
                                 Tipo Aplicante
                             </label>
                             <p-select formControlName="tipo" inputId="tipo" [options]="applicationTypes"

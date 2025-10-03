@@ -1,5 +1,5 @@
 <div class="card">
-    <span class="text-surface-900 dark:text-surface-0 text-xl font-bold mb-6 block">
+    <span class="text-xl font-bold mb-6 block">
         @if (isNew) {
         Criar Novo Utilizadór
         }@else {
@@ -14,8 +14,8 @@
 
     <div class="grid grid-cols-12 gap-4">
         <div class="col-span-12 lg:col-span-2">
-            <!-- <div class="text-surface-900 dark:text-surface-0 font-medium text-xl mb-4">Profile</div> -->
-            <p class="m-0 p-0 text-surface-600 dark:text-surface-200 leading-normal mr-4">
+            <!-- <div class=" font-medium text-xl mb-4">Profile</div> -->
+            <p class="m-0 p-0 leading-normal mr-4">
                 @if (isNew) {
                 Forneça as informações
                 necessárias abaixo para configurar uma nova conta de utilizador.
@@ -29,24 +29,24 @@
             <form [formGroup]="userForm">
                 <div class="grid grid-cols-12 gap-4">
                     <div class="mb-6 col-span-12 md:col-span-6">
-                        <label for="firstName" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                        <label for="firstName" class="font-medium  mb-2 block">
                             Nome próprio
                         </label>
                         <input formControlName="firstName" id="firstName" type="text" pInputText fluid />
                     </div>
                     <div class="mb-6 col-span-12 md:col-span-6">
-                        <label for="lastName" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                        <label for="lastName" class="font-medium  mb-2 block">
                             Apelido
                         </label>
                         <input formControlName="lastName" id="lastName" type="text" pInputText fluid />
                     </div>
                     <div class="mb-6 col-span-12 md:col-span-6">
-                        <label for="email" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block"> Email
+                        <label for="email" class="font-medium  mb-2 block"> Email
                         </label>
                         <input formControlName="email" id="email" type="text" pInputText fluid />
                     </div>
                     <div class="mb-6 col-span-12 md:col-span-6">
-                        <label for="username" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                        <label for="username" class="font-medium  mb-2 block">
                             Nome de Utilizadór
                         </label>
                         <input formControlName="username" id="username" pInputText fluid />
@@ -54,15 +54,14 @@
 
                     <!-- Password -->
                     <div class="mb-6 col-span-12 md:col-span-6">
-                        <label for="password" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                        <label for="password" class="font-medium  mb-2 block">
                             Palavra-passe
                         </label>
                         <p-password formControlName="password" id="password" [feedback]="true" [fluid]="true"
                             [toggleMask]="true" />
                     </div>
                     <div class="mb-6 col-span-12 md:col-span-6">
-                        <label for="confirmPassword"
-                            class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                        <label for="confirmPassword" class="font-medium  mb-2 block">
                             Confirmar palavra-passe
                         </label>
                         <p-password formControlName="confirmPassword" id="confirmPassword" [feedback]="false"
@@ -71,7 +70,7 @@
 
                     <!-- Role -->
                     <div class="mb-6 col-span-12 md:col-span-6">
-                        <label for="role" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                        <label for="role" class="font-medium  mb-2 block">
                             Função
                         </label>
                         <p-select formControlName="role" [appendTo]="'body'" (onChange)="roleOnChange($event)"
@@ -145,7 +144,7 @@
                     </div>
                     @if (showCategoria) {
                     <div class="mb-6 col-span-12 md:col-span-6">
-                        <label for="direcao" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                        <label for="direcao" class="font-medium  mb-2 block">
                             Direção
                         </label>
                         <p-select [appendTo]="'body'" formControlName="direcao" inputId="direcao"
@@ -159,7 +158,7 @@
                     @if (!isNew) {
                     <!-- Status -->
                     <div class="mb-6 col-span-12 md:col-span-6">
-                        <label for="status" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                        <label for="status" class="font-medium  mb-2 block">
                             Estado
                         </label>
                         <p-selectButton inputId="status" formControlName="status" [options]="statusOptions"

@@ -5,7 +5,7 @@
      </span>
      <div class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="application" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="application" class="font-medium  mb-2 block">
                  Tipo
              </label>
              <p-select formControlName="tipo" inputId="application" [options]="tipoPedidoOpts(aplicanteData.categoria)"
@@ -20,14 +20,14 @@
      </span>
      <section id="requerente" class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="nomeEmpresa" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="nomeEmpresa" class="font-medium  mb-2 block">
                  Firma ou denominacao social
              </label>
              <input formControlName="nomeEmpresa" id="nomeEmpresa" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="empresaNumeroRegistoComercial"
-                 class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 class="font-medium  mb-2 block">
                  Nº de Registo Comercial
              </label>
              <input formControlName="empresaNumeroRegistoComercial" id="empresaNumeroRegistoComercial" type="text"
@@ -36,7 +36,7 @@
          <div class="col-span-12">
              <div formGroupName="empresaSede" class="grid grid-cols-12">
                  <div class="mb-6 col-span-12">
-                     <label for="local" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     <label for="local" class="font-medium  mb-2 block">
                          Local do Estabelecimento
                      </label>
                      <input formControlName="local" id="local" type="text" pInputText fluid
@@ -45,7 +45,7 @@
                  <div class="mb-6 col-span-12">
                      <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                          <div class="flex-auto">
-                             <label for="aldeia" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                             <label for="aldeia" class="font-medium  mb-2 block">
                                  Aldeia
                              </label>
                              <p-select fluid formControlName="aldeia" [options]="listaAldeiaEmpresa" optionLabel="nome"
@@ -55,20 +55,20 @@
                              </p-select>
                          </div>
                          <div class="flex-auto">
-                             <label for="suco" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                             <label for="suco" class="font-medium  mb-2 block">
                                  Suco
                              </label>
                              <input formControlName="suco" id="suco" type="text" pInputText fluid />
                          </div>
                          <div class="flex-auto">
-                             <label for="posto" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                             <label for="posto" class="font-medium  mb-2 block">
                                  Posto Administrativo
                              </label>
                              <input formControlName="postoAdministrativo" id="postoAdministrativo" type="text"
                                  pInputText fluid />
                          </div>
                          <div class="flex-auto">
-                             <label for="municipio" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                             <label for="municipio" class="font-medium  mb-2 block">
                                  Municipio
                              </label>
                              <input formControlName="municipio" id="municipio" type="text" pInputText fluid />
@@ -78,7 +78,7 @@
              </div>
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="tipoAtividade" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="tipoAtividade" class="font-medium  mb-2 block">
                  Tipo Atividade
              </label>
              <p-select formControlName="tipoAtividade" (onChange)="tipoAtividadeChange($event)" inputId="tipoAtividade"
@@ -92,21 +92,21 @@
              </p-select>
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="risco" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="risco" class="font-medium  mb-2 block">
                  Nivel de Risco
              </label>
              <input formControlName="risco" id="risco" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="estatutoSociedadeComercial"
-                 class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                 class="font-medium  mb-2 block">
                  Estatuto da sociedade comercial
              </label>
              <p-selectbutton [options]="stateOpts" formControlName="estatutoSociedadeComercial" optionLabel="label"
                  optionValue="value" />
          </div>
          <div class="mb-6 col-span-12">
-             <label for="empresaNif" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="empresaNif" class="font-medium  mb-2 block">
                  NIF
              </label>
              <input formControlName="empresaNif" id="empresaNif" type="text" pInputText fluid />
@@ -118,19 +118,19 @@
      </span>
      <section formGroupName="representante" id="representante" class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12">
-             <label for="nome" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="nome" class="font-medium  mb-2 block">
                  Nome
              </label>
              <input formControlName="nome" id="nome" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="nacionalidade" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="nacionalidade" class="font-medium  mb-2 block">
                  Nacionalidade
              </label>
              <input formControlName="nacionalidade" id="nacionalidade" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="naturalidade" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="naturalidade" class="font-medium  mb-2 block">
                  Naturalidade
              </label>
              <input formControlName="naturalidade" id="naturalidade" type="text" pInputText fluid />
@@ -138,7 +138,7 @@
          <div class="col-span-12">
              <div formGroupName="morada" class="grid grid-cols-12">
                  <div class="mb-6 col-span-12">
-                     <label for="local" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     <label for="local" class="font-medium  mb-2 block">
                          Morada
                      </label>
                      <input formControlName="local" id="local" type="text" pInputText fluid
@@ -147,7 +147,7 @@
                  <div class="mb-6 col-span-12">
                      <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                          <div class="flex-auto">
-                             <label for="aldeia" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                             <label for="aldeia" class="font-medium  mb-2 block">
                                  Aldeia
                              </label>
                              <p-select fluid formControlName="aldeia" [options]="listaAldeiaRepresentante"
@@ -159,20 +159,20 @@
                              </p-select>
                          </div>
                          <div class="flex-auto">
-                             <label for="suco" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                             <label for="suco" class="font-medium  mb-2 block">
                                  Suco
                              </label>
                              <input formControlName="suco" id="suco" type="text" pInputText fluid />
                          </div>
                          <div class="flex-auto">
-                             <label for="posto" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                             <label for="posto" class="font-medium  mb-2 block">
                                  Posto Administrativo
                              </label>
                              <input formControlName="postoAdministrativo" id="postoAdministrativo" type="text"
                                  pInputText fluid />
                          </div>
                          <div class="flex-auto">
-                             <label for="municipio" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                             <label for="municipio" class="font-medium  mb-2 block">
                                  Municipio
                              </label>
                              <input formControlName="municipio" id="municipio" type="text" pInputText fluid />
@@ -182,13 +182,13 @@
              </div>
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="telefone" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="telefone" class="font-medium  mb-2 block">
                  Telefone
              </label>
              <input formControlName="telefone" id="telefone" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="email" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="email" class="font-medium  mb-2 block">
                  Email
              </label>
              <input formControlName="email" id="email" type="text" pInputText fluid />
@@ -201,19 +201,19 @@
      </span>
      <section formGroupName="gerente" id="representante" class="grid grid-cols-12 gap-4 mb-8">
          <div class="mb-6 col-span-12">
-             <label for="nome" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="nome" class="font-medium  mb-2 block">
                  Nome
              </label>
              <input formControlName="nome" id="nome" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="nacionalidade" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="nacionalidade" class="font-medium  mb-2 block">
                  Nacionalidade
              </label>
              <input formControlName="nacionalidade" id="nacionalidade" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="naturalidade" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="naturalidade" class="font-medium  mb-2 block">
                  Naturalidade
              </label>
              <input formControlName="naturalidade" id="naturalidade" type="text" pInputText fluid />
@@ -221,7 +221,7 @@
          <div class="col-span-12">
              <div formGroupName="morada" class="grid grid-cols-12">
                  <div class="mb-6 col-span-12">
-                     <label for="local" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                     <label for="local" class="font-medium  mb-2 block">
                          Morada
                      </label>
                      <input formControlName="local" id="local" type="text" pInputText fluid
@@ -230,7 +230,7 @@
                  <div class="mb-6 col-span-12">
                      <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                          <div class="flex-auto">
-                             <label for="aldeia" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                             <label for="aldeia" class="font-medium  mb-2 block">
                                  Aldeia
                              </label>
                              <p-select fluid formControlName="aldeia" [options]="listaAldeiaGerente" optionLabel="nome"
@@ -242,20 +242,20 @@
                              </p-select>
                          </div>
                          <div class="flex-auto">
-                             <label for="suco" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                             <label for="suco" class="font-medium  mb-2 block">
                                  Suco
                              </label>
                              <input formControlName="suco" id="suco" type="text" pInputText fluid />
                          </div>
                          <div class="flex-auto">
-                             <label for="posto" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                             <label for="posto" class="font-medium  mb-2 block">
                                  Posto Administrativo
                              </label>
                              <input formControlName="postoAdministrativo" id="postoAdministrativo" type="text"
                                  pInputText fluid />
                          </div>
                          <div class="flex-auto">
-                             <label for="municipio" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+                             <label for="municipio" class="font-medium  mb-2 block">
                                  Municipio
                              </label>
                              <input formControlName="municipio" id="municipio" type="text" pInputText fluid />
@@ -265,13 +265,13 @@
              </div>
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="telefone" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="telefone" class="font-medium  mb-2 block">
                  Telefone
              </label>
              <input formControlName="telefone" id="telefone" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="email" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="email" class="font-medium  mb-2 block">
                  Email
              </label>
              <input formControlName="email" id="email" type="text" pInputText fluid />
@@ -282,7 +282,7 @@
      <div class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="numeroRegistoComercial"
-                 class="font-medium text-surface-900 dark:text-surface-0 mb-2 block text-xl uppercase">
+                 class="font-medium  mb-2 block text-xl uppercase">
                  Planta de Localizacao do Estabelecimento Comercial
              </label>
              <p-selectbutton [options]="stateOpts" formControlName="planta" optionLabel="label" optionValue="value" />
@@ -293,35 +293,35 @@
      </span>
      <div class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12">
-             <label for="documentoPropriedade" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="documentoPropriedade" class="font-medium  mb-2 block">
                  Documento comprovativo do direito de propriedade
              </label>
              <p-selectbutton [options]="stateOpts" formControlName="documentoPropriedade" optionLabel="label"
                  optionValue="value" />
          </div>
          <div class="mb-6 col-span-12">
-             <label for="documentoImovel" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="documentoImovel" class="font-medium  mb-2 block">
                  Documento comprovativo de posse de imovel
              </label>
              <p-selectbutton [options]="stateOpts" formControlName="documentoImovel" optionLabel="label"
                  optionValue="value" />
          </div>
          <div class="mb-6 col-span-12">
-             <label for="contratoArrendamento" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="contratoArrendamento" class="font-medium  mb-2 block">
                  Contrato de arrendamento
              </label>
              <p-selectbutton [options]="stateOpts" formControlName="contratoArrendamento" optionLabel="label"
                  optionValue="value" />
          </div>
          <div class="mb-6 col-span-12">
-             <label for="planoEmergencia" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="planoEmergencia" class="font-medium  mb-2 block">
                  PLANO DE EMERGENCIA
              </label>
              <p-selectbutton [options]="stateOpts" formControlName="planoEmergencia" optionLabel="label"
                  optionValue="value" />
          </div>
          <div class="mb-6 col-span-12">
-             <label for="estudoAmbiental" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="estudoAmbiental" class="font-medium  mb-2 block">
                  ESTUDO DE IMPACTO AMBIENTAL
              </label>
              <p-selectbutton [options]="stateOpts" formControlName="estudoAmbiental" optionLabel="label"
@@ -333,13 +333,13 @@
      </span>
      <div class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="numEmpregosCriados" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="numEmpregosCriados" class="font-medium  mb-2 block">
                  Nº de empregos ja criados
              </label>
              <input formControlName="numEmpregosCriados" id="numEmpregosCriados" type="number" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="numEmpregadosCriar" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="numEmpregadosCriar" class="font-medium  mb-2 block">
                  Nº de empregos a criar
              </label>
              <input formControlName="numEmpregadosCriar" id="numEmpregadosCriar" type="number" pInputText fluid />
@@ -350,14 +350,14 @@
      </span>
      <div class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12">
-             <label for="reciboPagamento" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="reciboPagamento" class="font-medium  mb-2 block">
                  Recibo de pagamento da taxa de pedido de licenca
              </label>
              <p-selectbutton [options]="stateOpts" formControlName="reciboPagamento" optionLabel="label"
                  optionValue="value" />
          </div>
          <div class="mb-6 col-span-12">
-             <label for="outrosDocumentos" class="font-medium text-surface-900 dark:text-surface-0 mb-2 block">
+             <label for="outrosDocumentos" class="font-medium  mb-2 block">
                  OUTROS DOCUMENTOS
              </label>
              <p-fileupload name="files" method="post" (onUpload)="onUploadDocs($event)" [maxFileSize]="maxFileSize"
