@@ -134,6 +134,10 @@ export class DataMasterService {
         return this.http.get<any>(`${this.apiUrl}/classe-atividades?projection=withGrupo`, { params }).pipe(take(1));
     }
 
+    getAllClasseAtividadeByTipo(tipo: Categoria): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/classe-atividades/search/findByTipo?tipo=${tipo}&projection=withGrupo`).pipe(take(1));
+    }
+
     getClasseAtividadeById(id: number): Observable<any> {
         return this.http.get<any>(`${this.apiUrl}/classe-atividades/${id}?projection=withGrupo`).pipe(take(1));
     }

@@ -208,9 +208,7 @@ export const tipoRelacaoFamiliaOptions: any[] = [
 
 export const tipoDocumentoOptions: any[] = [
     { name: 'Bilhete de Identidade', value: TipoDocumento.bilheteIdentidade },
-    { name: 'Cartão de Eleitoral', value: TipoDocumento.eleitoral },
     { name: 'Passaporte', value: TipoDocumento.passaporte },
-    { name: 'Carta de Condução', value: TipoDocumento.cartaConducao },
 ];
 
 export const tipoPedidoAtividadeComercialOptions: any[] = [
@@ -331,3 +329,14 @@ export const tipoAreaRepresentanteIndustrial: any[] = [
         value: AreaRepresentante.bombeiros
     },
 ]
+
+export const tipoRepresentante: { name: string, value: string }[] = [
+    {
+        name: 'Agente',
+        value: 'Agente'
+    },
+    {
+        name: 'Funcionario',
+        value: 'Funcionario'
+    }
+] 

@@ -1,6 +1,6 @@
 import { AplicanteType } from '@/core/models/enums';
 import { getCertificadoById } from '@/core/resolvers/certificados.resolver';
-import { getAllAldeiasResolver, getAllGrupoAtividadeByTipoResolver, getSociedadeComercialResolver, getTaxaByCategoriaAndTipoResolver } from '@/core/resolvers/data-master.resolver';
+import { getAllAldeiasResolver, getAllClasseAtividadeByTipoResolver, getAllGrupoAtividadeByTipoResolver, getSociedadeComercialResolver, getTaxaByCategoriaAndTipoResolver } from '@/core/resolvers/data-master.resolver';
 import { getAplicante, getPageAplicanteOrByEmpresaIdResolver } from '@/core/resolvers/empresa.resolver';
 import { Routes } from '@angular/router';
 import { ApplicationAtividadeDetailComponent } from './application-atividade-detail/application-atividade-detail.component';
@@ -35,8 +35,7 @@ export default [
                     listaTaxaResolver: getTaxaByCategoriaAndTipoResolver,
                     aldeiasResolver: getAllAldeiasResolver,
                     sociedadeComercialResolver: getSociedadeComercialResolver,
-                    grupoAtividadeResolver: getAllGrupoAtividadeByTipoResolver,
-
+                    classeAtividadeResolver: getAllClasseAtividadeByTipoResolver,
                 }
             },
             {

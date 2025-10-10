@@ -26,7 +26,8 @@ export interface Empresa extends BaseModel {
     nome: string;
     nif: string;
     utilizador: User;
-    gerente: string;
+    gerente: Gerente;
+    representante: Representante;
     numeroRegistoComercial: string;
     telefone: string;
     telemovel: string;
@@ -42,6 +43,33 @@ export interface Empresa extends BaseModel {
     balancoTotalAnual: number;
     tipoEmpresa: TipoEmpresa;
     documentos: Documento[];
+    longitude: number;
+    latitude: number;
+}
+
+export interface Gerente extends BaseModel {
+    nome: string;
+    email: string;
+    morada: Endereco;
+    telefone: string;
+    tipoDocumento: string;
+    numeroDocumento: string;
+}
+
+export interface Representante extends BaseModel {
+    tipo: string;
+    nome: string;
+    pai: string;
+    mae: string;
+    dataNascimento: string;
+    estadoCivil: string;
+    naturalidade: string;
+    nacionalidade: string;
+    morada: Endereco;
+    tipoDocumento: string;
+    numeroDocumento: string;
+    email: string;
+    telefone: string;
 }
 
 export interface Acionista extends BaseModel {

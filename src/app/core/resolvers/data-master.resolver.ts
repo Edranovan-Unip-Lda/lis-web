@@ -49,6 +49,12 @@ export const getPageClasseAtividadeResolver: ResolveFn<any> = () => {
     return service.getPageClasseAtividade();
 }
 
+export const getAllClasseAtividadeByTipoResolver: ResolveFn<any> = (route) => {
+    const service = inject(DataMasterService);
+    const categoria = route.queryParams['categoria'];
+    return service.getAllClasseAtividadeByTipo(categoria);
+}
+
 export const getTipoRiscoResolver: ResolveFn<any> = () => {
     const service = inject(DataMasterService);
     return service.getTipoRisco();

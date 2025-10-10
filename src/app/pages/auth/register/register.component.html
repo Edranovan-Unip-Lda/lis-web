@@ -19,8 +19,9 @@
              <p-step-list>
                  <p-step [value]="1">Empresa</p-step>
                  <p-step [value]="2">Proprietário(a) / Titular da empresa</p-step>
-                 <p-step [value]="3">Conta de Acesso</p-step>
-                 <p-step [value]="4">Confirmação</p-step>
+                 <p-step [value]="3">Gerente & Representante</p-step>
+                 <p-step [value]="4">Conta de Acesso</p-step>
+                 <p-step [value]="5">Confirmação</p-step>
              </p-step-list>
              <p-step-panels>
                  <p-step-panel [value]="1">
@@ -34,59 +35,15 @@
                                      <input formControlName="nome" id="nome" type="text" pInputText fluid />
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
-                                     <label for="sede" class="font-medium  mb-2 block">
-                                         Sede
-                                     </label>
-                                     <input formControlName="sede" id="sede" type="text" pInputText fluid />
-                                 </div>
-                                 <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="sociedadeComercial" class="font-medium  mb-2 block">
                                          Tipo de Sociedade Comercial
                                      </label>
                                      <p-select fluid formControlName="sociedadeComercial"
                                          [options]="listaSociedadeComercial" optionLabel="nome"
+                                         (onChange)="sociedadeComercialOnChange($event)"
                                          placeholder="Selecione o tipo de sociedade" [showClear]="true">
                                      </p-select>
                                  </div>
-                             </div>
-                             <div class="flex flex-col gap-6 w-full sm:w-auto mb-6">
-                                 <div class="flex flex-col sm:flex-row sm:items-center gap-6">
-                                     <div class="flex-auto">
-                                         <label for="aldeia" class="font-medium  mb-2 block">
-                                             Aldeia
-                                         </label>
-                                         <p-select fluid formControlName="aldeia" [options]="aldeias" optionLabel="nome"
-                                             placeholder="Selecione a Aldeia" [filter]="true" filterBy="nome"
-                                             [showClear]="true" (onChange)="aldeiaOnChange($event)"
-                                             (onFilter)="aldeiaFilter($event)" (onpanelHide)="onPanelHide()"
-                                             (onClear)="onPanelHide()">
-                                         </p-select>
-                                     </div>
-                                     <div class="flex-auto">
-                                         <label for="suco" class="font-medium  mb-2 block">
-                                             Suco
-                                         </label>
-                                         <input formControlName="suco" id="suco" type="text" pInputText fluid />
-                                     </div>
-
-                                     <div class="flex-auto">
-                                         <label for="posto" class="font-medium  mb-2 block">
-                                             Posto Administrativo
-                                         </label>
-                                         <input formControlName="postoAdministrativo" id="postoAdministrativo"
-                                             type="text" pInputText fluid />
-                                     </div>
-                                     <div class="flex-auto">
-                                         <label for="municipio" class="font-medium  mb-2 block">
-                                             Municipio
-                                         </label>
-                                         <input formControlName="municipio" id="municipio" type="text" pInputText
-                                             fluid />
-                                     </div>
-
-                                 </div>
-                             </div>
-                             <div class="grid grid-cols-12 gap-4">
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="nif" class="font-medium  mb-2 block">
                                          NIF da Empresa
@@ -117,7 +74,7 @@
                                      <p-date-picker formControlName="dataRegisto" id="dataRegisto" [showIcon]="true"
                                          [showButtonBar]="true" fluid dateFormat="dd/mm/yy" inputStyleClass="w-full" />
                                  </div>
-                                 <div class="mb-6 col-span-12">
+                                 <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="totalTrabalhadores" class="font-medium mb-2 block">
                                          Total Trabalhadores (Funcionários)
                                      </label>
@@ -143,6 +100,65 @@
                                          <p-inputnumber formControlName="balancoTotalAnual" mode="decimal"
                                              [minFractionDigits]="2" [maxFractionDigits]="2" />
                                      </p-inputgroup>
+                                 </div>
+                                 <div class="col-span-12">
+                                     <div formGroupName="sede" class="grid grid-cols-12">
+                                         <div class="mb-6 col-span-12">
+                                             <label for="local" class="font-medium  mb-2 block">
+                                                 Sede
+                                             </label>
+                                             <input formControlName="local" id="local" type="text" pInputText fluid
+                                                 placeholder="ex. Av. Pres. Nicolau Lobato" />
+                                         </div>
+                                         <div class="mb-6 col-span-12">
+                                             <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+                                                 <div class="flex-auto">
+                                                     <label for="aldeia" class="font-medium  mb-2 block">
+                                                         Aldeia
+                                                     </label>
+                                                     <p-select fluid formControlName="aldeia" [options]="aldeias"
+                                                         optionLabel="nome" placeholder="Selecione a Aldeia"
+                                                         [filter]="true" filterBy="nome" [showClear]="true"
+                                                         (onFilter)="aldeiaFilter($event)" (onpanelHide)="onPanelHide()"
+                                                         (onChange)="aldeiaOnChange($event)" (onClear)="onPanelHide()">
+                                                     </p-select>
+                                                 </div>
+                                                 <div class="flex-auto">
+                                                     <label for="suco" class="font-medium  mb-2 block">
+                                                         Suco
+                                                     </label>
+                                                     <input formControlName="suco" id="suco" type="text" pInputText
+                                                         fluid />
+                                                 </div>
+                                                 <div class="flex-auto">
+                                                     <label for="posto" class="font-medium  mb-2 block">
+                                                         Posto Administrativo
+                                                     </label>
+                                                     <input formControlName="postoAdministrativo"
+                                                         id="postoAdministrativo" type="text" pInputText fluid />
+                                                 </div>
+                                                 <div class="flex-auto">
+                                                     <label for="municipio" class="font-medium  mb-2 block">
+                                                         Municipio
+                                                     </label>
+                                                     <input formControlName="municipio" id="municipio" type="text"
+                                                         pInputText fluid />
+                                                 </div>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="longitude" class="font-medium mb-2 block">
+                                         Longitude
+                                     </label>
+                                     <input formControlName="longitude" id="longitude" type="number" pInputText fluid />
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="latitude" class="font-medium mb-2 block">
+                                         Latitude
+                                     </label>
+                                     <input formControlName="latitude" id="latitude" type="number" pInputText fluid />
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="telefone" class="font-medium mb-2 block">
@@ -179,10 +195,10 @@
                                      </ul>
                                      <div class="flex justify-start">
                                          <p-fileupload name="files" method="post" (onSelect)="onSelect($event)"
-                                             [maxFileSize]="maxFileSize" [multiple]="true" accept="application/pdf"
-                                             [showUploadButton]="false" [showCancelButton]="false" mode="basic"
-                                             [chooseLabel]="'Selecionar'" [customUpload]="true"
-                                             chooseIcon="pi pi-upload">
+                                             [fileLimit]="5" [maxFileSize]="maxFileSize" [multiple]="true"
+                                             accept="application/pdf" [showUploadButton]="false"
+                                             [showCancelButton]="false" mode="basic" [chooseLabel]="'Selecionar'"
+                                             [customUpload]="true" chooseIcon="pi pi-upload">
                                          </p-fileupload>
                                      </div>
                                      @for (item of uploadedDocs; track $index) {
@@ -235,7 +251,7 @@
                                  <div class="grid grid-cols-12 gap-4" [formGroupName]="$index">
                                      <div class="mb-6 col-span-12">
                                          <label for="nome" class="font-medium  mb-2 block">
-                                             Nome
+                                             Nome do titular da empresa
                                          </label>
                                          <input formControlName="nome" id="nome" type="text" pInputText fluid />
                                      </div>
@@ -366,15 +382,244 @@
                  <p-step-panel [value]="3">
                      <ng-template #content let-activateCallback="activateCallback">
                          <form [formGroup]="empresaForm" class="px-8">
-                             <div formGroupName="utilizador" class="grid grid-cols-12 gap-4">
+                             <h1 class="text-2xl font-bold text-white">
+                                 Gerente
+                             </h1>
+                             <div formGroupName="gerente" class="grid grid-cols-12 gap-4 py-4">
 
                                  <div class="mb-6 col-span-12">
-                                     <label for="gerente" class="font-medium  mb-2 block">
-                                         Gerente
+                                     <label for="nome" class="font-medium  mb-2 block">
+                                         Nome
                                      </label>
-                                     <input formControlName="gerente" id="gerente" type="text" pInputText fluid
+                                     <input formControlName="nome" id="nome" type="text" pInputText fluid
                                          placeholder="Ex: Joao da Silva" />
                                  </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="tipoDocumento" class="font-medium  mb-2 block">
+                                         Tipo Documento
+                                     </label>
+                                     <p-select fluid formControlName="tipoDocumento" [options]="tipoDocumentoOpts"
+                                         optionLabel="name" placeholder="Selecione o tipo documento" [showClear]="true">
+                                     </p-select>
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="numeroDocumento" class="font-medium  mb-2 block">
+                                         Nº Documento
+                                     </label>
+                                     <input formControlName="numeroDocumento" id="numeroDocumento" type="text"
+                                         pInputText fluid />
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="email" class="font-medium  mb-2 block">
+                                         Email
+                                     </label>
+                                     <input formControlName="email" id="email" type="email" pInputText fluid />
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="telefone" class="font-medium mb-2 block">
+                                         Nº Telefone
+                                     </label>
+                                     <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
+                                 </div>
+                                 <div class="mb-6 col-span-12">
+                                     <div formGroupName="morada" class="flex flex-col gap-6 w-full sm:w-auto mb-6">
+                                         <div class="mb-6 col-span-12">
+                                             <label for="local" class="font-medium  mb-2 block">
+                                                 Morada
+                                             </label>
+                                             <input formControlName="local" id="local" type="text" pInputText fluid
+                                                 placeholder="ex. Av. Pres. Nicolau Lobato" />
+                                         </div>
+                                         <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+                                             <div class="flex-auto">
+                                                 <label for="aldeia" class="font-medium  mb-2 block">
+                                                     Aldeia
+                                                 </label>
+                                                 <p-select fluid formControlName="aldeia" [options]="aldeias"
+                                                     optionLabel="nome" placeholder="Selecione a Aldeia" [filter]="true"
+                                                     filterBy="nome" [showClear]="true"
+                                                     (onChange)="gerenteRepresentanteAldeiaOnChange($event, 'gerente')"
+                                                     (onFilter)="gerenteRepresentanteAldeiaFilter($event, 'gerente')"
+                                                     (onpanelHide)="gerenteRepresentanteOnPanelHide('gerente')"
+                                                     (onClear)="gerenteRepresentanteOnPanelHide('gerente')">
+                                                 </p-select>
+                                             </div>
+                                             <div class="flex-auto">
+                                                 <label for="suco" class="font-medium  mb-2 block">
+                                                     Suco
+                                                 </label>
+                                                 <input formControlName="suco" id="suco" type="text" pInputText fluid />
+                                             </div>
+
+                                             <div class="flex-auto">
+                                                 <label for="posto" class="font-medium  mb-2 block">
+                                                     Posto Administrativo
+                                                 </label>
+                                                 <input formControlName="postoAdministrativo" id="postoAdministrativo"
+                                                     type="text" pInputText fluid />
+                                             </div>
+                                             <div class="flex-auto">
+                                                 <label for="municipio" class="font-medium  mb-2 block">
+                                                     Municipio
+                                                 </label>
+                                                 <input formControlName="municipio" id="municipio" type="text"
+                                                     pInputText fluid />
+                                             </div>
+
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+                             <h1 class="text-2xl font-bold text-white">
+                                 Representante
+                             </h1>
+                             <div formGroupName="representante" class="grid grid-cols-12 gap-4 pt-4">
+                                 <div class="mb-6 col-span-12">
+                                     <label for="tipo" class="font-medium  mb-2 block">
+                                         Tipo
+                                     </label>
+                                     <p-select fluid formControlName="tipo" [options]="tipoRepresentanteOptions"
+                                         optionLabel="name" optionValue="value"
+                                         placeholder="Selecione o tipo de Representante">
+                                     </p-select>
+                                 </div>
+                                 <div class="mb-6 col-span-12">
+                                     <label for="nome" class="font-medium  mb-2 block">
+                                         Nome
+                                     </label>
+                                     <input formControlName="nome" id="nome" type="text" pInputText fluid
+                                         placeholder="Ex: Joao da Silva" />
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="tipoDocumento" class="font-medium  mb-2 block">
+                                         Tipo Documento
+                                     </label>
+                                     <p-select fluid formControlName="tipoDocumento" [options]="tipoDocumentoOpts"
+                                         optionLabel="name" placeholder="Selecione o tipo documento" [showClear]="true">
+                                     </p-select>
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="numeroDocumento" class="font-medium  mb-2 block">
+                                         Nº Documento
+                                     </label>
+                                     <input formControlName="numeroDocumento" id="numeroDocumento" type="text"
+                                         pInputText fluid />
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="dataNascimento" class="font-medium  mb-2 block">
+                                         Data Nascimento
+                                     </label>
+                                     <p-datepicker formControlName="dataNascimento" id="dataNascimento" appendTo="body"
+                                         [showButtonBar]="true" fluid />
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="estadoCivil" class="font-medium  mb-2 block">
+                                         Estado Civil
+                                     </label>
+                                     <input formControlName="estadoCivil" id="estadoCivil" type="text" pInputText
+                                         fluid />
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="nacionalidade" class="font-medium  mb-2 block">
+                                         Nacionalidade
+                                     </label>
+                                     <input formControlName="nacionalidade" id="nacionalidade" type="text" pInputText
+                                         fluid />
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="naturalidade" class="font-medium  mb-2 block">
+                                         Naturalidade
+                                     </label>
+                                     <input formControlName="naturalidade" id="naturalidade" type="text" pInputText
+                                         fluid />
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="pai" class="font-medium  mb-2 block">
+                                         Pai
+                                     </label>
+                                     <input formControlName="pai" id="pai" pInputText fluid />
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="mae" class="font-medium  mb-2 block">
+                                         Mãe
+                                     </label>
+                                     <input formControlName="mae" id="mae" pInputText fluid />
+                                 </div>
+                                 <div class="mb-6 col-span-12">
+                                     <div formGroupName="morada" class="flex flex-col gap-6 w-full sm:w-auto mb-6">
+                                         <div class="mb-6 col-span-12">
+                                             <label for="local" class="font-medium  mb-2 block">
+                                                 Morada
+                                             </label>
+                                             <input formControlName="local" id="local" type="text" pInputText fluid
+                                                 placeholder="ex. Av. Pres. Nicolau Lobato" />
+                                         </div>
+                                         <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+                                             <div class="flex-auto">
+                                                 <label for="aldeia" class="font-medium  mb-2 block">
+                                                     Aldeia
+                                                 </label>
+                                                 <p-select fluid formControlName="aldeia" [options]="aldeias"
+                                                     optionLabel="nome" placeholder="Selecione a Aldeia" [filter]="true"
+                                                     filterBy="nome" [showClear]="true"
+                                                     (onChange)="gerenteRepresentanteAldeiaOnChange($event, 'representante')"
+                                                     (onFilter)="gerenteRepresentanteAldeiaFilter($event, 'representante')"
+                                                     (onpanelHide)="gerenteRepresentanteOnPanelHide('representante')"
+                                                     (onClear)="gerenteRepresentanteOnPanelHide('representante')">
+                                                 </p-select>
+                                             </div>
+                                             <div class="flex-auto">
+                                                 <label for="suco" class="font-medium  mb-2 block">
+                                                     Suco
+                                                 </label>
+                                                 <input formControlName="suco" id="suco" type="text" pInputText fluid />
+                                             </div>
+
+                                             <div class="flex-auto">
+                                                 <label for="posto" class="font-medium  mb-2 block">
+                                                     Posto Administrativo
+                                                 </label>
+                                                 <input formControlName="postoAdministrativo" id="postoAdministrativo"
+                                                     type="text" pInputText fluid />
+                                             </div>
+                                             <div class="flex-auto">
+                                                 <label for="municipio" class="font-medium  mb-2 block">
+                                                     Municipio
+                                                 </label>
+                                                 <input formControlName="municipio" id="municipio" type="text"
+                                                     pInputText fluid />
+                                             </div>
+
+                                         </div>
+                                     </div>
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="email" class="font-medium  mb-2 block">
+                                         Email
+                                     </label>
+                                     <input formControlName="email" id="email" type="email" pInputText fluid />
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="telefone" class="font-medium mb-2 block">
+                                         Nº Telefone
+                                     </label>
+                                     <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
+                                 </div>
+                             </div>
+                             <div class="mt-6 mb-6 text-left flex justify-between">
+                                 <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
+                                     (onClick)="activateCallback(2)" />
+                                 <p-button [disabled]="disableStepGerente()" label="Continuar" icon="pi pi-arrow-right"
+                                     iconPos="right" (onClick)="activateCallback(4)" />
+                             </div>
+                         </form>
+                     </ng-template>
+                 </p-step-panel>
+
+                 <p-step-panel [value]="4">
+                     <ng-template #content let-activateCallback="activateCallback">
+                         <form [formGroup]="empresaForm" class="px-8">
+                             <div formGroupName="utilizador" class="grid grid-cols-12 gap-4">
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="email" class="font-medium  mb-2 block">
                                          Email
@@ -391,15 +636,15 @@
                              </div>
                              <div class="mt-6 mb-6 text-left flex justify-between">
                                  <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
-                                     (onClick)="activateCallback(2)" />
+                                     (onClick)="activateCallback(3)" />
                                  <p-button [disabled]="disableStepConta()" label="Continuar" icon="pi pi-arrow-right"
-                                     iconPos="right" (onClick)="activateCallback(4)" />
+                                     iconPos="right" (onClick)="activateCallback(5)" />
                              </div>
                          </form>
                      </ng-template>
                  </p-step-panel>
 
-                 <p-step-panel [value]="4">
+                 <p-step-panel [value]="5">
                      <ng-template #content let-activateCallback="activateCallback">
 
                          <div class="text-white">
@@ -466,11 +711,11 @@
                                              <div class="md:col-span-2">
                                                  <p class="text-sm text-gray-400">Localização:</p>
                                                  <p class="text-lg text-gray-100">
-                                                     {{ empresaForm.get('sede')?.value }},
-                                                     {{ empresaForm.get('aldeia')?.value.nome }},
-                                                     {{ empresaForm.get('suco')?.value }},
-                                                     {{ empresaForm.get('postoAdministrativo')?.value }},
-                                                     {{ empresaForm.get('municipio')?.value }}
+                                                     {{ empresaForm.get('sede.local')?.value }} <br>
+                                                     {{ empresaForm.get('sede.aldeia')?.value.nome }},
+                                                     {{ empresaForm.get('sede.suco')?.value }},
+                                                     {{ empresaForm.get('sede.postoAdministrativo')?.value }},
+                                                     {{ empresaForm.get('sede.municipio')?.value }}
                                                  </p>
                                              </div>
                                          </div>
@@ -537,21 +782,153 @@
                                      </section>
                                      <section class="bg-gray-800 p-8 rounded-2xl shadow-lg mt-4 mb-8">
                                          <div class="flex items-center mb-6">
-                                             <i class="bi bi-person-vcard mr-4" style="font-size: 2rem"></i>
-                                             <h2 class="text-2xl font-semibold text-gray-200">Gerente/Conta de acesso
+                                             <i class="bi bi-person-gear text-4xl mr-3"></i>
+                                             <h2 class="text-2xl font-semibold text-gray-200">Gerente
                                              </h2>
                                          </div>
                                          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                                              <div>
-                                                 <p class="text-sm text-gray-400">Gerente:</p>
+                                                 <p class="text-sm text-gray-400">Nome:</p>
                                                  <p class="text-lg text-gray-100">
-                                                     {{ empresaForm.get('utilizador.gerente')?.value }}
+                                                     {{ empresaForm.get('gerente.nome')?.value }}
                                                  </p>
                                              </div>
                                              <div>
                                                  <p class="text-sm text-gray-400">Email:</p>
                                                  <p class="text-lg text-gray-100">
+                                                     {{ empresaForm.get('gerente.email')?.value }}
+                                                 </p>
+                                             </div>
+                                             <div>
+                                                 <p class="text-sm text-gray-400">Documento:</p>
+                                                 <p class="text-lg text-gray-100">
+                                                     {{ empresaForm.get('gerente.tipoDocumento')?.value.name }} -
+                                                     {{ empresaForm.get('gerente.numeroDocumento')?.value }}
+                                                 </p>
+                                             </div>
+                                             <div>
+                                                 <p class="text-sm text-gray-400">Telemovel:</p>
+                                                 <p class="text-lg text-gray-100">
+                                                     {{ empresaForm.get('gerente.email')?.value }}
+                                                 </p>
+                                             </div>
+                                             <div>
+                                                 <p class="text-sm text-gray-400">Morada:</p>
+                                                 <p class="text-lg text-gray-100">
+                                                     {{ empresaForm.get('gerente.morada.local')?.value }} <br>
+                                                     {{ empresaForm.get('gerente.morada.aldeia')?.value.nome }},
+                                                     {{ empresaForm.get('gerente.morada.suco')?.value }},
+                                                     {{ empresaForm.get('gerente.morada.postoAdministrativo')?.value }},
+                                                     {{ empresaForm.get('gerente.morada.municipio')?.value }}
+                                                 </p>
+                                             </div>
+                                         </div>
+                                     </section>
+                                     <section class="bg-gray-800 p-8 rounded-2xl shadow-lg mt-4 mb-8">
+                                         <div class="flex items-center mb-6">
+                                             <!-- <i class="bi bi-person-vcard mr-4" style="font-size: 2rem"></i> -->
+                                             <i class="bi bi-person-badge text-4xl mr-3"></i>
+                                             <h2 class="text-2xl font-semibold text-gray-200">Representante
+                                             </h2>
+                                         </div>
+                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                                             <div>
+                                                 <p class="text-sm text-gray-400">Nome:</p>
+                                                 <p class="text-lg text-gray-100">
+                                                     {{ empresaForm.get('representante.nome')?.value }}
+                                                 </p>
+                                             </div>
+                                             <div>
+                                                 <p class="text-sm text-gray-400">Tipo:</p>
+                                                 <p class="text-lg text-gray-100">
+                                                     {{ empresaForm.get('representante.tipo')?.value }}
+                                                 </p>
+                                             </div>
+
+                                             <div>
+                                                 <p class="text-sm text-gray-400">Documento:</p>
+                                                 <p class="text-lg text-gray-100">
+                                                     {{ empresaForm.get('representante.tipoDocumento')?.value.name }} -
+                                                     {{ empresaForm.get('representante.numeroDocumento')?.value }}
+                                                 </p>
+                                             </div>
+                                             <div>
+                                                 <p class="text-sm text-gray-400">Data Nascimento:</p>
+                                                 <p class="text-lg text-gray-100">
+                                                     {{ empresaForm.get('representante.dataNascimento')?.value | date: 'dd MMM yyyy' }}
+                                                 </p>
+                                             </div>
+                                             <div>
+                                                 <p class="text-sm text-gray-400">Morada:</p>
+                                                 <p class="text-lg text-gray-100">
+                                                     {{ empresaForm.get('representante.morada.local')?.value }} <br>
+                                                     {{ empresaForm.get('representante.morada.aldeia')?.value.nome }},
+                                                     {{ empresaForm.get('representante.morada.suco')?.value }},
+                                                     {{ empresaForm.get('representante.morada.postoAdministrativo')?.value }},
+                                                     {{ empresaForm.get('representante.morada.municipio')?.value }}
+                                                 </p>
+                                             </div>
+                                             <div>
+                                                 <p class="text-sm text-gray-400">Estado Civil:</p>
+                                                 <p class="text-lg text-gray-100">
+                                                     {{ empresaForm.get('representante.estadoCivil')?.value }}
+                                                 </p>
+                                             </div>
+                                             <div>
+                                                 <p class="text-sm text-gray-400">Pai:</p>
+                                                 <p class="text-lg text-gray-100">
+                                                     {{ empresaForm.get('representante.pai')?.value }}
+                                                 </p>
+                                             </div>
+                                             <div>
+                                                 <p class="text-sm text-gray-400">Mãe:</p>
+                                                 <p class="text-lg text-gray-100">
+                                                     {{ empresaForm.get('representante.mae')?.value }}
+                                                 </p>
+                                             </div>
+                                             <div>
+                                                 <p class="text-sm text-gray-400">Nacionalidade:</p>
+                                                 <p class="text-lg text-gray-100">
+                                                     {{ empresaForm.get('representante.nacionalidade')?.value }}
+                                                 </p>
+                                             </div>
+                                             <div>
+                                                 <p class="text-sm text-gray-400">Naturalidade:</p>
+                                                 <p class="text-lg text-gray-100">
+                                                     {{ empresaForm.get('representante.naturalidade')?.value }}
+                                                 </p>
+                                             </div>
+                                             <div>
+                                                 <p class="text-sm text-gray-400">Email:</p>
+                                                 <p class="text-lg text-gray-100">
+                                                     {{ empresaForm.get('representante.email')?.value }}
+                                                 </p>
+                                             </div>
+                                             <div>
+                                                 <p class="text-sm text-gray-400">Telemovel:</p>
+                                                 <p class="text-lg text-gray-100">
+                                                     {{ empresaForm.get('representante.telefone')?.value }}
+                                                 </p>
+                                             </div>
+                                         </div>
+                                     </section>
+                                     <section class="bg-gray-800 p-8 rounded-2xl shadow-lg mt-4 mb-8">
+                                         <div class="flex items-center mb-6">
+                                             <i class="bi bi-person-vcard mr-4" style="font-size: 2rem"></i>
+                                             <h2 class="text-2xl font-semibold text-gray-200">Conta de acesso
+                                             </h2>
+                                         </div>
+                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                                             <div>
+                                                 <p class="text-sm text-gray-400">Email:</p>
+                                                 <p class="text-lg text-gray-100">
                                                      {{ empresaForm.get('utilizador.email')?.value }}
+                                                 </p>
+                                             </div>
+                                             <div>
+                                                 <p class="text-sm text-gray-400">Senha:</p>
+                                                 <p class="text-lg text-gray-100">
+                                                     ********
                                                  </p>
                                              </div>
                                          </div>

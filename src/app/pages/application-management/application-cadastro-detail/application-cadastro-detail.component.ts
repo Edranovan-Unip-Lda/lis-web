@@ -59,7 +59,6 @@ export class ApplicationCadastroDetailComponent {
   quantoAtividadeOpts = quantoAtividadeoptions;
   categoria!: Categoria;
   listaAldeia: any[] = [];
-  listaGrupoAtividade: any[] = [];
   listaClasseAtividade: any[] = [];
   listaSociedadeComercial: any[] = [];
   listaPedidoAto: any[] = [];
@@ -108,7 +107,7 @@ export class ApplicationCadastroDetailComponent {
     this.disabledForms(this.aplicanteData.estado);
 
     this.listaPedidoAto = mapToTaxa(this.router.snapshot.data['listaTaxaResolver']._embedded.taxas);
-    this.listaGrupoAtividade = mapToGrupoAtividade(this.router.snapshot.data['grupoAtividadeResolver']._embedded.grupoAtividade);
+    this.listaClasseAtividade = this.router.snapshot.data['classeAtividadeResolver']._embedded.classeAtividade;
 
     this.mapNewFatura(this.aplicanteData);
 
@@ -127,6 +126,7 @@ export class ApplicationCadastroDetailComponent {
         this.faturaActive = true;
         this.faturaId = this.aplicanteData.pedidoInscricaoCadastro.fatura.id;
         this.mapEditFatura(this.aplicanteData.pedidoInscricaoCadastro.fatura);
+        this.setTaxaAto(this.aplicanteData.pedidoInscricaoCadastro.tipoPedidoCadastro);
         this.uploadUrl.set(
           `${environment.apiUrl}/aplicantes/${this.aplicanteData.id}/pedidos/${this.pedidoId}/faturas/${this.faturaId}/upload/${this.authService.currentUserValue.username}`
         );
@@ -141,7 +141,7 @@ export class ApplicationCadastroDetailComponent {
       this.mapEditPedido(this.aplicanteData.pedidoInscricaoCadastro);
     }
 
-    this.enableSuperficieFormControl();
+    // this.enableSuperficieFormControl();
     this.superficieOnChange();
     this.uploadURLDocs.set(`${environment.apiUrl}/documentos/${this.authService.currentUserValue.username}/upload`);
   }
@@ -247,9 +247,14 @@ export class ApplicationCadastroDetailComponent {
   atividadePrincipalChange(event: any): void {
     if (event.value) {
       this.requestForm.get('classeAtividadeCodigo')?.patchValue(event.value.descricao);
+
+      this.requestForm.get('grupoAtividadeCodigo')?.setValue(event.value.grupoAtividade.descricao);
+      this.requestForm.get('grupoAtividade')?.setValue(event.value.grupoAtividade.codigo);
       this.requestForm.get('risco')?.setValue(event.value.tipoRisco);
     } else {
       this.requestForm.get('classeAtividadeCodigo')?.reset();
+      this.requestForm.get('grupoAtividadeCodigo')?.reset();
+      this.requestForm.get('grupoAtividade')?.reset();
       this.requestForm.get('risco')?.reset();
     }
   }
@@ -337,6 +342,7 @@ export class ApplicationCadastroDetailComponent {
       this.aplicanteService.updatePedidoCadastro(this.aplicanteData.id, formData.id, formData).subscribe({
         next: (response) => {
           this.addMessages(true, false);
+          this.setTaxaAto(response.tipoPedidoCadastro);
           callback(3);
         },
         error: error => {
@@ -597,7 +603,7 @@ export class ApplicationCadastroDetailComponent {
       caraterizacaoEstabelecimento: [null],
       risco: new FormControl({ value: null, disabled: true }),
       ato: [null],
-      grupoAtividade: [null, Validators.required],
+      grupoAtividade: new FormControl({ value: null, disabled: true }),
       grupoAtividadeCodigo: new FormControl({ value: null, disabled: true }),
       classeAtividade: [null, Validators.required],
       classeAtividadeCodigo: new FormControl({ value: null, disabled: true }),
@@ -609,13 +615,13 @@ export class ApplicationCadastroDetailComponent {
 
     this.faturaForm = this._fb.group({
       id: [null],
-      taxas: [null, [Validators.required]],
+      taxas: new FormControl({ value: null, disabled: true, }),
       nomeEmpresa: [null, [Validators.required]],
       sociedadeComercial: [null, [Validators.required]],
       nif: [null, [Validators.required]],
       sede: [null, [Validators.required]],
       nivelRisco: [null, [Validators.required]],
-      superficie: new FormControl({ value: null, disabled: true, }),
+      superficie: [null, [Validators.required]],
       total: new FormControl({ value: null, disabled: true, }, [Validators.required]),
     });
   }
@@ -629,6 +635,7 @@ export class ApplicationCadastroDetailComponent {
   }
 
   private mapNewFatura(aplicante: Aplicante): void {
+    this.setTaxaAto(aplicante.pedidoInscricaoCadastro?.tipoPedidoCadastro);
     this.faturaForm.patchValue({
       nomeEmpresa: aplicante.empresa.nome,
       sociedadeComercial: aplicante.empresa.sociedadeComercial.nome,
@@ -645,7 +652,7 @@ export class ApplicationCadastroDetailComponent {
     this.faturaForm.get('superficie')?.enable();
     this.faturaForm.get('superficie')?.addValidators([Validators.required])
 
-    this.enableSuperficieFormControl();
+    // this.enableSuperficieFormControl();
 
     this.faturaForm.patchValue(fatura);
     this.faturaForm.patchValue({
@@ -658,18 +665,44 @@ export class ApplicationCadastroDetailComponent {
     }
   }
 
-  private enableSuperficieFormControl() {
-    this.faturaForm.get('taxas')?.valueChanges.subscribe({
-      next: value => {
-        if (value && value.length > 0) {
-          this.faturaForm.get('superficie')?.enable();
-          this.faturaForm.get('superficie')?.addValidators([Validators.required])
-        } else {
-          this.faturaForm.get('superficie')?.disable();
-        }
-      }
-    })
+  private setTaxaAto(tipoPedidoCadastro: TipoPedidoCadastro) {
+    switch (tipoPedidoCadastro) {
+      case TipoPedidoCadastro.inicial:
+        let incialFiltered = this.listaPedidoAto.filter(
+          t => t.ato && !/atualiza[cç]ão/i.test(t.ato)
+        ).map(t => t.id);
+        this.faturaForm.get('taxas')?.setValue(incialFiltered);
+        break;
+
+      case TipoPedidoCadastro.anual:
+        const anualFiltered = this.listaPedidoAto.filter(
+          t => t.ato && /atualiza[cç]ão anual/i.test(t.ato)
+        ).map(t => t.id);
+        this.faturaForm.get('taxas')?.setValue(anualFiltered);
+        break;
+      case TipoPedidoCadastro.alteracao:
+        const alteracaoFiltered = this.listaPedidoAto.filter(
+          t => t.ato && /atualiza[cç]ão pontual/i.test(t.ato)
+        ).map(t => t.id);
+        this.faturaForm.get('taxas')?.setValue(alteracaoFiltered);
+        break;
+    }
   }
+
+  // private enableSuperficieFormControl() {
+  //   this.faturaForm.get('taxas')?.valueChanges.subscribe({
+  //     next: value => {
+  //       console.log(value);
+
+  //       if (value && value.length > 0) {
+  //         this.faturaForm.get('superficie')?.enable();
+  //         this.faturaForm.get('superficie')?.addValidators([Validators.required])
+  //       } else {
+  //         this.faturaForm.get('superficie')?.disable();
+  //       }
+  //     }
+  //   })
+  // }
 
   /**
    * Subscribes to changes in the 'superficie' form control and updates the 'total' form control

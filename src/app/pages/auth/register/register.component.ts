@@ -2,7 +2,7 @@ import { Aldeia, Role } from '@/core/models/data-master.model';
 import { TipoPropriedade } from '@/core/models/enums';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { EmpresaService } from '@/core/services/empresa.service';
-import { maxFileSizeUpload, tipoDocumentoOptions, tipoPropriedadeOptions, tipoRelacaoFamiliaOptions } from '@/core/utils/global-function';
+import { maxFileSizeUpload, tipoDocumentoOptions, tipoPropriedadeOptions, tipoRelacaoFamiliaOptions, tipoRepresentante } from '@/core/utils/global-function';
 import { LayoutService } from '@/layout/service/layout.service';
 import { DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
@@ -43,10 +43,12 @@ export class Register {
     postos = [];
     sucos = [];
     aldeias: any = [];
+    gerenteListaAldeias: any[] = [];
+    representanteListaAldeias: any[] = [];
     listaSociedadeComercial = [];
 
     layoutService = inject(LayoutService);
-    empresaForm: FormGroup;
+    empresaForm!: FormGroup;
 
     loading = false;
     isSuccess = false;
@@ -62,47 +64,26 @@ export class Register {
     listaAldeiaAcionista: any[][] = [];
     uploadedDocs: any[] = [];
     maxFileSize = maxFileSizeUpload;
+    tipoRepresentanteOptions = tipoRepresentante;
 
     constructor(
         private _fb: FormBuilder,
         private route: ActivatedRoute,
         private dataMasterService: DataMasterService,
         private empresaService: EmpresaService,
-    ) {
-        this.empresaForm = this._fb.group({
-            nome: [null, [Validators.required, Validators.minLength(3)]],
-            nif: [null, [Validators.required]],
-            sede: [null, [Validators.required]],
-            sociedadeComercial: [null, [Validators.required]],
-            municipio: new FormControl({ value: null, disabled: true }),
-            postoAdministrativo: new FormControl({ value: null, disabled: true }),
-            suco: new FormControl({ value: null, disabled: true }),
-            aldeia: [null, [Validators.required]],
-            numeroRegistoComercial: [null, [Validators.required]],
-            capitalSocial: [null, [Validators.required]],
-            dataRegisto: [null, [Validators.required]],
-            telefone: [null, [Validators.required]],
-            telemovel: [null, [Validators.required]],
-            tipoPropriedade: [null, [Validators.required]],
-            acionistas: this._fb.array([]),
-            totalTrabalhadores: [null],
-            volumeNegocioAnual: [null],
-            balancoTotalAnual: [null, [Validators.required]],
-            utilizador: this._fb.group({
-                gerente: [null, [Validators.required, Validators.minLength(3)]],
-                email: [null, [Validators.required, Validators.email]],
-                password: [null],
-            })
-        });
+    ) { }
+
+
+    ngOnInit() {
+        this.initForm();
 
         this.aldeias = this.route.snapshot.data['aldeiasResolver']._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
 
         this.listaSociedadeComercial = this.route.snapshot.data['listaSociedadeComercial']._embedded.sociedadeComercial.map((s: any) => ({ nome: s.nome, value: s.id }));
         this.originalAldeias = [...this.aldeias];
-    }
+        this.gerenteListaAldeias = [...this.aldeias];
+        this.representanteListaAldeias = [...this.aldeias];
 
-
-    ngOnInit() {
         this.empresaForm.get('tipoPropriedade')?.valueChanges.subscribe({
             next: (value) => {
                 if (!value) {
@@ -134,20 +115,110 @@ export class Register {
 
         const roles: any[] = this.route.snapshot.data['roleListResolver']._embedded.roles;
         this.selectedRole = roles.find(r => r.name === 'ROLE_CLIENT')!;
+
+        this.setUtilizadorEmail();
+    }
+
+
+    submit(form: FormGroup) {
+        this.loading = true;
+        if (this.empresaForm.valid) {
+
+            let formData = { ...form.getRawValue() }
+            formData.sede = {
+                ...formData.sede,
+                aldeia: {
+                    id: formData.sede.aldeia.value,
+                },
+            };
+            formData.sociedadeComercial = {
+                id: formData.sociedadeComercial.value,
+                nome: formData.sociedadeComercial.nome
+            }
+
+            formData.gerente = {
+                ...formData.gerente,
+                morada: {
+                    ...formData.gerente.morada,
+                    aldeia: {
+                        id: formData.gerente.morada.aldeia.value
+                    }
+                },
+                tipoDocumento: formData.gerente.tipoDocumento.value
+            }
+            formData.representante = {
+                ...formData.representante,
+                morada: {
+                    ...formData.representante.morada,
+                    aldeia: {
+                        id: formData.representante.morada.aldeia.value
+                    }
+                },
+                tipoDocumento: formData.representante.tipoDocumento.value
+            }
+            formData.tipoPropriedade = form.value.tipoPropriedade.value;
+            formData.dataRegisto = this.formatDateForLocalDate(form.value.dataRegisto);
+            formData.acionistas = form.value.acionistas.map((a: any) => {
+                return {
+                    nome: a.nome,
+                    nif: a.nif,
+                    tipoDocumento: a.tipoDocumento.value,
+                    numeroDocumento: a.numeroDocumento,
+                    telefone: a.telefone,
+                    email: a.email,
+                    acoes: a.acoes,
+                    agregadoFamilia: a.agregadoFamilia,
+                    relacaoFamilia: a.relacaoFamilia,
+                    endereco: {
+                        local: a.local,
+                        aldeia: {
+                            id: a.aldeia.value
+                        }
+                    }
+                }
+            });
+            const [firstName, ...rest] = form.value.gerente.nome.split(' ');
+            formData.utilizador.firstName = firstName;
+            formData.utilizador.lastName = rest.join(' ');
+            formData.utilizador.username = formData.gerente.email.split('@')[0] + new Date().getUTCMilliseconds().toString();
+            formData.utilizador.role = this.selectedRole;
+            formData.utilizador.email = formData.gerente.email;
+
+            this.empresaService.save(formData, this.uploadedDocs).subscribe({
+                next: (response) => {
+                    this.loading = false;
+                    this.isSuccess = true;
+                    this.emailVerification = response.utilizador.email;
+                    this.empresaForm.reset();
+                    this.setNotification();
+                },
+                error: (error) => {
+                    this.loading = false;
+                    this.isError = true;
+                    // this.empresaForm.reset();
+                    // Handle error response
+                    console.error('Error saving empresa:', error);
+                }
+            });
+
+        } else {
+            this.loading = false;
+            // Handle form errors
+            console.error('Form is invalid');
+        }
     }
 
     aldeiaOnChange(event: SelectChangeEvent): void {
         if (event.value) {
             this.dataMasterService.getAldeiaById(event.value.value).subscribe((aldeia: Aldeia) => {
-                this.empresaForm.patchValue({
+                this.empresaForm.get('sede')?.patchValue({
                     municipio: aldeia.suco.postoAdministrativo.municipio.nome,
                     postoAdministrativo: aldeia.suco.postoAdministrativo.nome,
                     suco: aldeia.suco.nome
                 });
-
             });
         } else {
-            this.empresaForm.patchValue({
+            this.empresaForm.get('sede')?.patchValue({
                 municipio: null,
                 postoAdministrativo: null,
                 suco: null
@@ -174,73 +245,69 @@ export class Register {
         this.aldeias = [...this.originalAldeias];
     }
 
-    submit(form: FormGroup) {
-        this.loading = true;
-        if (this.empresaForm.valid) {
+    gerenteRepresentanteAldeiaOnChange(event: SelectChangeEvent, formControl: string): void {
+        if (event.value) {
+            this.dataMasterService.getAldeiaById(event.value.value).subscribe((aldeia: Aldeia) => {
+                this.empresaForm.get(formControl)?.get('morada')?.patchValue({
+                    municipio: aldeia.suco.postoAdministrativo.municipio.nome,
+                    postoAdministrativo: aldeia.suco.postoAdministrativo.nome,
+                    suco: aldeia.suco.nome
+                });
 
-            let formData = { ...form.value }
-            formData.sede = {
-                local: form.value.sede,
-                aldeia: {
-                    id: form.value.aldeia.value,
-                    nome: form.value.aldeia.nome
-                },
-            };
-            formData.sociedadeComercial = {
-                id: formData.sociedadeComercial.value,
-                nome: formData.sociedadeComercial.nome
+            });
+        } else {
+            this.empresaForm.get(formControl)?.patchValue({
+                municipio: null,
+                postoAdministrativo: null,
+                suco: null
+            });
+        }
+    }
+
+    gerenteRepresentanteAldeiaFilter(event: SelectFilterEvent, formControl: string) {
+        const query = event.filter?.trim();
+        if (query && query.length) {
+            this.dataMasterService.searchAldeiasByNome(query)
+                .subscribe(resp => {
+                    if (formControl === 'gerente') {
+                        this.gerenteListaAldeias = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+                    } else {
+                        this.representanteListaAldeias = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+                    }
+                    this.loading = false;
+                });
+        } else {
+            // filter cleared — reset full list
+            if (formControl === 'gerente') {
+                this.gerenteListaAldeias = [...this.originalAldeias];
+            } else {
+                this.representanteListaAldeias = [...this.originalAldeias];
             }
 
-            formData.gerente = form.value.utilizador.gerente;
-            formData.tipoPropriedade = form.value.tipoPropriedade.value;
-            formData.dataRegisto = this.formatDateForLocalDate(form.value.dataRegisto);
-            formData.acionistas = form.value.acionistas.map((a: any) => {
-                return {
-                    nome: a.nome,
-                    nif: a.nif,
-                    tipoDocumento: a.tipoDocumento.value,
-                    numeroDocumento: a.numeroDocumento,
-                    telefone: a.telefone,
-                    email: a.email,
-                    acoes: a.acoes,
-                    agregadoFamilia: a.agregadoFamilia,
-                    relacaoFamilia: a.relacaoFamilia,
-                    endereco: {
-                        local: a.local,
-                        aldeia: {
-                            id: a.aldeia.value
-                        }
-                    }
-                }
-            });
-            const [firstName, ...rest] = form.value.utilizador.gerente.split(' ');
-            formData.utilizador.firstName = firstName;
-            formData.utilizador.lastName = rest.join(' ');
-            formData.utilizador.username = form.value.utilizador.email.split('@')[0] + new Date().getUTCMilliseconds().toString();
-            formData.utilizador.role = this.selectedRole
-
-            this.empresaService.save(formData, this.uploadedDocs).subscribe({
-                next: (response) => {
-                    this.loading = false;
-                    this.isSuccess = true;
-                    this.emailVerification = response.utilizador.email;
-                    this.empresaForm.reset();
-                    this.setNotification();
-                },
-                error: (error) => {
-                    this.loading = false;
-                    this.isError = true;
-                    // this.empresaForm.reset();
-                    // Handle error response
-                    console.error('Error saving empresa:', error);
-                }
-            });
-
-        } else {
-            this.loading = false;
-            // Handle form errors
-            console.error('Form is invalid');
         }
+    }
+
+
+    gerenteRepresentanteOnPanelHide(formControl: string) {
+        if (formControl === 'gerente') {
+            this.gerenteListaAldeias = [...this.originalAldeias];
+        } else {
+            this.representanteListaAldeias = [...this.originalAldeias];
+        }
+        this.empresaForm.get(formControl)?.get('morada')?.reset();
+    }
+
+    sociedadeComercialOnChange({ value }: SelectChangeEvent): void {
+        const tipo = this.getTipoFromNome(value?.nome);
+        this.empresaForm.patchValue({
+            tipoPropriedade: tipoPropriedadeOptions.find(t => t.value === tipo)
+        });
+    }
+
+    private getTipoFromNome(nome?: unknown): TipoPropriedade {
+        const text = String(nome ?? '').toLowerCase();
+        const isUnipessoal = /\bunipessoal\b/.test(text);
+        return isUnipessoal ? TipoPropriedade.individual : TipoPropriedade.sociedade;
     }
 
     private setNotification(resend?: boolean): void {
@@ -368,7 +435,7 @@ export class Register {
             this.empresaForm.get('nif')?.invalid ||
             this.empresaForm.get('numeroRegistoComercial')?.invalid ||
             this.empresaForm.get('capitalSocial')?.invalid ||
-            this.empresaForm.get('dataRegisto')?.invalid
+            this.empresaForm.get('dataRegisto')?.invalid || this.uploadedDocs.length < 3
         );
     }
 
@@ -376,6 +443,14 @@ export class Register {
         return !!(
             this.empresaForm.get('tipoPropriedade')?.invalid ||
             this.acionistasArray.invalid);
+    }
+
+    disableStepGerente(): boolean {
+        return !!(
+            this.empresaForm.get('gerente.nome')?.invalid ||
+            this.empresaForm.get('gerente.email')?.invalid ||
+            this.empresaForm.get('gerente.morada.local')?.invalid ||
+            this.empresaForm.get('gerente.morada.aldeia')?.invalid);
     }
 
     disableStepConta(): boolean {
@@ -398,4 +473,139 @@ export class Register {
         const mb = value / (1024 * 1024);
         return `${mb.toFixed(2)} MB`;
     }
+
+    private setUtilizadorEmail(): void {
+        this.empresaForm.get('gerente')?.get('email')?.valueChanges.subscribe(email => {
+            this.empresaForm.get('utilizador')?.get('email')?.setValue(email);
+        });
+    }
+
+    private initForm(): void {
+        this.empresaForm = this._fb.group({
+            nome: [null, [Validators.required, Validators.minLength(3)]],
+            nif: [null, [Validators.required]],
+            sede: this._fb.group({
+                local: [null, [Validators.required]],
+                municipio: new FormControl({ value: null, disabled: true }),
+                postoAdministrativo: new FormControl({ value: null, disabled: true }),
+                suco: new FormControl({ value: null, disabled: true }),
+                aldeia: [null, [Validators.required]],
+            }),
+            sociedadeComercial: [null, [Validators.required]],
+            numeroRegistoComercial: [null, [Validators.required]],
+            capitalSocial: [null, [Validators.required]],
+            dataRegisto: [null, [Validators.required]],
+            telefone: [null, [Validators.required]],
+            telemovel: [null, [Validators.required]],
+            tipoPropriedade: [null, [Validators.required]],
+            acionistas: this._fb.array([]),
+            totalTrabalhadores: [null],
+            volumeNegocioAnual: [null],
+            balancoTotalAnual: [null, [Validators.required]],
+            latitude: [null, [Validators.required, Validators.min(-90), Validators.max(90)]],
+            longitude: [null, [Validators.required, Validators.min(-180), Validators.max(180)]],
+            gerente: this._fb.group({
+                nome: [null],
+                telefone: [null],
+                email: [null, [Validators.email]],
+                tipoDocumento: [null, [Validators.required]],
+                numeroDocumento: [, [Validators.required]],
+                morada: this._fb.group({
+                    local: [null, [Validators.required]],
+                    municipio: new FormControl({ value: null, disabled: true }),
+                    postoAdministrativo: new FormControl({ value: null, disabled: true }),
+                    suco: new FormControl({ value: null, disabled: true }),
+                    aldeia: [null, [Validators.required]],
+                }),
+            }),
+            representante: this._fb.group({
+                tipo: [null, [Validators.required]],
+                nome: [null, [Validators.required]],
+                pai: [null, [Validators.required]],
+                mae: [null, [Validators.required]],
+                dataNascimento: [null, [Validators.required]],
+                estadoCivil: [null, [Validators.required]],
+                nacionalidade: [null, [Validators.required]],
+                naturalidade: [null, [Validators.required]],
+                telefone: [null, [Validators.required]],
+                email: [null, [Validators.email]],
+                tipoDocumento: [null, [Validators.required]],
+                numeroDocumento: [, [Validators.required]],
+                morada: this._fb.group({
+                    local: [null, [Validators.required]],
+                    municipio: new FormControl({ value: null, disabled: true }),
+                    postoAdministrativo: new FormControl({ value: null, disabled: true }),
+                    suco: new FormControl({ value: null, disabled: true }),
+                    aldeia: [null, [Validators.required]],
+                }),
+            }),
+            utilizador: this._fb.group({
+                email: new FormControl({ value: null, disabled: true }),
+                password: [null, [Validators.required, Validators.minLength(6)]],
+            }),
+        });
+    }
+    // private initForm(): void {
+    //     this.empresaForm = this._fb.group({
+    //         nome: ['Comércio Timorense, Lda', [Validators.required, Validators.minLength(3)]],
+    //         nif: ['123456789', [Validators.required]],
+    //         sede: this._fb.group({
+    //             local: ['Rua Nicolau Lobato, Díli', [Validators.required]],
+    //             municipio: new FormControl({ value: 'Díli', disabled: true }),
+    //             postoAdministrativo: new FormControl({ value: 'Dom Aleixo', disabled: true }),
+    //             suco: new FormControl({ value: 'Caicoli', disabled: true }),
+    //             aldeia: ['Bairro Pite', [Validators.required]],
+    //         }),
+    //         sociedadeComercial: ['Sociedade por Quotas', [Validators.required]],
+    //         numeroRegistoComercial: ['MCI/COMERCIAL/0002/VII/MMXXV', [Validators.required]],
+    //         capitalSocial: [50000, [Validators.required]],
+    //         dataRegisto: ['2023-09-18', [Validators.required]],
+    //         telefone: ['3312345', [Validators.required]],
+    //         telemovel: ['77233445', [Validators.required]],
+    //         tipoPropriedade: ['Sociedade', [Validators.required]],
+    //         acionistas: this._fb.array([
+    //         ]),
+    //         totalTrabalhadores: [25],
+    //         volumeNegocioAnual: [120000],
+    //         balancoTotalAnual: [90000, [Validators.required]],
+    //         gerente: this._fb.group({
+    //             nome: ['Ana Fernandes'],
+    //             telefone: ['77311223'],
+    //             email: ['ana.fernandes@example.com', [Validators.email]],
+    //             morada: this._fb.group({
+    //                 local: ['Rua de Balide, Díli', [Validators.required]],
+    //                 municipio: new FormControl({ value: 'Díli', disabled: true }),
+    //                 postoAdministrativo: new FormControl({ value: 'Dom Aleixo', disabled: true }),
+    //                 suco: new FormControl({ value: 'Lahane', disabled: true }),
+    //                 aldeia: ['Kuluhun', [Validators.required]],
+    //             }),
+    //             tipoDocumento: [],
+    //             numeroDocumento: ['93928873'],
+    //         }),
+    //         representante: this._fb.group({
+    //             nome: ['Carlos Almeida', [Validators.required]],
+    //             pai: ['José Almeida', [Validators.required]],
+    //             mae: ['Rosa da Costa', [Validators.required]],
+    //             dataNascimento: ['1985-04-22', [Validators.required]],
+    //             estadoCivil: ['Casado', [Validators.required]],
+    //             nacionalidade: ['Timorense', [Validators.required]],
+    //             naturalidade: ['Díli', [Validators.required]],
+    //             telefone: ['77123456', [Validators.required]],
+    //             email: ['carlos.almeida@example.com', [Validators.email]],
+    //             morada: this._fb.group({
+    //                 local: ['Rua Formosa, Díli', [Validators.required]],
+    //                 municipio: new FormControl({ value: 'Díli', disabled: true }),
+    //                 postoAdministrativo: new FormControl({ value: 'Vera Cruz', disabled: true }),
+    //                 suco: new FormControl({ value: 'Motael', disabled: true }),
+    //                 aldeia: ['Bairo Pite', [Validators.required]],
+    //             }),
+    //             tipoDocumento: [],
+    //             numeroDocumento: ['00382389'],
+    //         }),
+    //         utilizador: this._fb.group({
+    //             email: ['empresa@example.com', [Validators.required, Validators.email]],
+    //             password: ['123456', [Validators.required, Validators.minLength(6)]],
+    //         }),
+    //     });
+    // }
 }

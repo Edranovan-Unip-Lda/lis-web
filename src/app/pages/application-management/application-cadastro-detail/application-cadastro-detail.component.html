@@ -227,8 +227,7 @@
                          </span>
                          <div class="grid grid-cols-12 gap-4">
                              <div class="mb-6 col-span-12 md:col-span-6">
-                                 <label for="tipoPedidoCadastro"
-                                     class="font-medium  mb-2 block">
+                                 <label for="tipoPedidoCadastro" class="font-medium  mb-2 block">
                                      Tipo
                                  </label>
                                  <p-select formControlName="tipoPedidoCadastro" inputId="tipoPedidoCadastro"
@@ -243,8 +242,7 @@
                          </span>
                          <div class="grid grid-cols-12 gap-4">
                              <div class="mb-6 col-span-12 md:col-span-6">
-                                 <label for="nomeEstabelecimento"
-                                     class="font-medium  mb-2 block">
+                                 <label for="nomeEstabelecimento" class="font-medium  mb-2 block">
                                      Nome do Estabelecimento
                                  </label>
                                  <input formControlName="nomeEstabelecimento" id="nomeEstabelecimento" type="text"
@@ -253,8 +251,7 @@
                              <div class="mb-6 col-span-12">
                                  <div formGroupName="localEstabelecimento" class="grid grid-cols-12">
                                      <div class="mb-6 col-span-12">
-                                         <label for="local"
-                                             class="font-medium  mb-2 block">
+                                         <label for="local" class="font-medium  mb-2 block">
                                              Local do Estabelecimento
                                          </label>
                                          <input formControlName="local" id="local" type="text" pInputText fluid
@@ -263,8 +260,7 @@
                                      <div class="mb-6 col-span-12">
                                          <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                                              <div class="flex-auto">
-                                                 <label for="aldeia"
-                                                     class="font-medium  mb-2 block">
+                                                 <label for="aldeia" class="font-medium  mb-2 block">
                                                      Aldeia
                                                  </label>
                                                  <p-select fluid formControlName="aldeia" [options]="listaAldeia"
@@ -275,23 +271,20 @@
                                                  </p-select>
                                              </div>
                                              <div class="flex-auto">
-                                                 <label for="suco"
-                                                     class="font-medium  mb-2 block">
+                                                 <label for="suco" class="font-medium  mb-2 block">
                                                      Suco
                                                  </label>
                                                  <input formControlName="suco" id="suco" type="text" pInputText fluid />
                                              </div>
                                              <div class="flex-auto">
-                                                 <label for="posto"
-                                                     class="font-medium  mb-2 block">
+                                                 <label for="posto" class="font-medium  mb-2 block">
                                                      Posto Administrativo
                                                  </label>
                                                  <input formControlName="postoAdministrativo" id="postoAdministrativo"
                                                      type="text" pInputText fluid />
                                              </div>
                                              <div class="flex-auto">
-                                                 <label for="municipio"
-                                                     class="font-medium  mb-2 block">
+                                                 <label for="municipio" class="font-medium  mb-2 block">
                                                      Municipio
                                                  </label>
                                                  <input formControlName="municipio" id="municipio" type="text"
@@ -303,8 +296,7 @@
                              </div>
                              @if (categoria === 'COMERCIAL') {
                              <div class="mb-6 col-span-12 md:col-span-6">
-                                 <label for="tipoEstabelecimento"
-                                     class="font-medium  mb-2 block">
+                                 <label for="tipoEstabelecimento" class="font-medium  mb-2 block">
                                      Tipo do Estabelecimento
                                  </label>
                                  <p-select formControlName="tipoEstabelecimento" inputId="tipoEstabelecimento"
@@ -314,8 +306,7 @@
                              </div>
                              }@else {
                              <div class="mb-6 col-span-12 md:col-span-6">
-                                 <label for="tipoEmpresa"
-                                     class="font-medium  mb-2 block">
+                                 <label for="tipoEmpresa" class="font-medium  mb-2 block">
                                      Tipo do Empresa
                                  </label>
                                  <p-select formControlName="tipoEmpresa" inputId="tipoEmpresa"
@@ -326,8 +317,7 @@
                              }
 
                              <div class="mb-6 col-span-12 md:col-span-6">
-                                 <label for="caraterizacaoEstabelecimento"
-                                     class="font-medium  mb-2 block">
+                                 <label for="caraterizacaoEstabelecimento" class="font-medium  mb-2 block">
                                      Caraterizacao do Estabelecimento
                                  </label>
                                  <p-select formControlName="caraterizacaoEstabelecimento"
@@ -360,8 +350,7 @@
                              </div>
                              }@else {
                              <div class="mb-6 col-span-12 md:col-span-6">
-                                 <label for="quantoAtividade"
-                                     class="font-medium  mb-2 block">
+                                 <label for="quantoAtividade" class="font-medium  mb-2 block">
                                      Quanto à atividade
                                  </label>
                                  <p-select formControlName="quantoAtividade" inputId="quantoAtividade"
@@ -370,34 +359,8 @@
                                  </p-select>
                              </div>
                              }
-
                              <div class="mb-6 col-span-12 md:col-span-6">
-                                 <label for="grupoAtividade"
-                                     class="font-medium  mb-2 block">
-                                     Tipo de Atividade no Estabelecimento
-                                 </label>
-                                 <p-select formControlName="grupoAtividade" (onChange)="tipoAtividadeChange($event)"
-                                     inputId="grupoAtividade" [options]="listaGrupoAtividade" optionLabel="codigo" fluid
-                                     [filter]="true" filterBy="codigo,descricao" [showClear]="true"
-                                     placeholder="Selecione o tipo de atividade">
-                                     <ng-template let-tipo #item>
-                                         <div class="flex items-center gap-2">
-                                             <span>{{tipo.codigo}} </span> - <span>{{tipo.descricao}} </span>
-                                         </div>
-                                     </ng-template>
-                                 </p-select>
-                             </div>
-                             <div class="mb-6 col-span-12 md:col-span-6">
-                                 <label for="grupoAtividadeCodigo"
-                                     class="font-medium  mb-2 block">
-                                     Descricao
-                                 </label>
-                                 <input formControlName="grupoAtividadeCodigo" id="grupoAtividadeCodigo" type="text"
-                                     pInputText fluid />
-                             </div>
-                             <div class="mb-6 col-span-12 md:col-span-6">
-                                 <label for="classeAtividade"
-                                     class="font-medium  mb-2 block">
+                                 <label for="classeAtividade" class="font-medium  mb-2 block">
                                      Atividade Principal exercida no Estabelecimento
                                  </label>
                                  <p-select formControlName="classeAtividade"
@@ -413,25 +376,45 @@
                                  </p-select>
                              </div>
                              <div class="mb-6 col-span-12 md:col-span-6">
-                                 <label for="classeAtividadeCodigo"
-                                     class="font-medium  mb-2 block">
+                                 <label for="classeAtividadeCodigo" class="font-medium  mb-2 block">
                                      Descricao
                                  </label>
                                  <input formControlName="classeAtividadeCodigo" id="classeAtividadeCodigo" type="text"
                                      pInputText fluid />
                              </div>
-
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="grupoAtividade" class="font-medium  mb-2 block">
+                                     Tipo de Atividade no Estabelecimento
+                                 </label>
+                                 <input formControlName="grupoAtividade" id="grupoAtividade" type="text"
+                                     pInputText fluid />
+                                 <!-- <p-select formControlName="grupoAtividade" (onChange)="tipoAtividadeChange($event)"
+                                     inputId="grupoAtividade" [options]="listaGrupoAtividade" optionLabel="codigo" fluid
+                                     [filter]="true" filterBy="codigo,descricao" [showClear]="true"
+                                     placeholder="Selecione o tipo de atividade">
+                                     <ng-template let-tipo #item>
+                                         <div class="flex items-center gap-2">
+                                             <span>{{tipo.codigo}} </span> - <span>{{tipo.descricao}} </span>
+                                         </div>
+                                     </ng-template>
+                                 </p-select> -->
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="grupoAtividadeCodigo" class="font-medium  mb-2 block">
+                                     Descricao
+                                 </label>
+                                 <input formControlName="grupoAtividadeCodigo" id="grupoAtividadeCodigo" type="text"
+                                     pInputText fluid />
+                             </div>
                              <div class="mb-6 col-span-12">
-                                 <label for="alteracoes"
-                                     class="font-medium  mb-2 block">
+                                 <label for="alteracoes" class="font-medium  mb-2 block">
                                      Alteracoes a Averbar
                                  </label>
                                  <input formControlName="alteracoes" id="alteracoes" type="text" pInputText fluid />
                              </div>
                              @if (!this.showDataEmissaoCertAnterior) {
                              <div class="mb-6 col-span-12 md:col-span-6">
-                                 <label for="dataEmissao"
-                                     class="font-medium  mb-2 block">
+                                 <label for="dataEmissao" class="font-medium  mb-2 block">
                                      Data da Emissao do Certificado anterior
                                  </label>
                                  <p-date-picker formControlName="dataEmissaoCertAnterior" id="dataEmissaoCertAnterior"
@@ -441,8 +424,7 @@
                              }
 
                              <div class="mb-6 col-span-12">
-                                 <label for="observacao"
-                                     class="font-medium  mb-2 block">
+                                 <label for="observacao" class="font-medium  mb-2 block">
                                      Observacao
                                  </label>
                                  <input formControlName="observacao" id="observacao" type="text" pInputText fluid />
@@ -510,8 +492,7 @@
                              </span>
                              <div class="grid grid-cols-12 gap-4">
                                  <div class="mb-6 col-span-12">
-                                     <label for="taxas"
-                                         class="font-medium  mb-2 block">
+                                     <label for="taxas" class="font-medium  mb-2 block">
                                          Ato da taxa
                                      </label>
                                      <p-multiselect formControlName="taxas" inputId="taxas" [options]="listaPedidoAto"
@@ -520,8 +501,7 @@
                                      </p-multiselect>
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
-                                     <label for="superficie"
-                                         class="font-medium  mb-2 block">
+                                     <label for="superficie" class="font-medium  mb-2 block">
                                          Superfície do estabelecimento comercial <span class="">(&#13217;)</span>
                                      </label>
                                      <p-inputgroup>
@@ -533,8 +513,7 @@
                                      </p-inputgroup>
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
-                                     <label for="total"
-                                         class="font-medium  mb-2 block">
+                                     <label for="total" class="font-medium  mb-2 block">
                                          Total
                                      </label>
                                      <p-inputgroup>
