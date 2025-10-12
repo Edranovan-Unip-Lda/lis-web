@@ -299,7 +299,8 @@
                                  <label for="tipoEstabelecimento" class="font-medium  mb-2 block">
                                      Tipo do Estabelecimento
                                  </label>
-                                 <p-select formControlName="tipoEstabelecimento" inputId="tipoEstabelecimento"
+                                 <p-select formControlName="tipoEstabelecimento"
+                                     (onChange)="tipoEstabelecimentoOnChange($event)" inputId="tipoEstabelecimento"
                                      [options]="tipoEstabelecimentoOpts" optionLabel="name" fluid filterBy="name"
                                      [showClear]="true" placeholder="Selecione o Tipo de Estabelecimento">
                                  </p-select>
@@ -326,6 +327,21 @@
                                      placeholder="Selecione a Caraterizacao do Estabelecimento">
                                  </p-select>
                              </div>
+
+                             @if (showGpsCoordinates) {
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="longitude" class="font-medium  mb-2 block">
+                                     Longitude
+                                 </label>
+                                 <input formControlName="longitude" id="longitude" type="text" pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="latitude" class="font-medium  mb-2 block">
+                                     latitude
+                                 </label>
+                                 <input formControlName="latitude" id="latitude" type="text" pInputText fluid />
+                             </div>
+                             }
                          </div>
 
                          <span class="text-xl font-bold mt-6 mb-3 block">
@@ -386,8 +402,8 @@
                                  <label for="grupoAtividade" class="font-medium  mb-2 block">
                                      Tipo de Atividade no Estabelecimento
                                  </label>
-                                 <input formControlName="grupoAtividade" id="grupoAtividade" type="text"
-                                     pInputText fluid />
+                                 <input formControlName="grupoAtividade" id="grupoAtividade" type="text" pInputText
+                                     fluid />
                                  <!-- <p-select formControlName="grupoAtividade" (onChange)="tipoAtividadeChange($event)"
                                      inputId="grupoAtividade" [options]="listaGrupoAtividade" optionLabel="codigo" fluid
                                      [filter]="true" filterBy="codigo,descricao" [showClear]="true"

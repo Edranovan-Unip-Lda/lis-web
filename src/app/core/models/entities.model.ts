@@ -158,6 +158,8 @@ export interface PedidoInscricaoCadastro {
     fatura: Fatura;
     certificadoInscricaoCadastro: CertificadoCadastro;
     aplicante: Aplicante;
+    longitude: number;
+    latitude: number;
 }
 
 export interface PedidoAtividadeLicenca extends BaseModel {

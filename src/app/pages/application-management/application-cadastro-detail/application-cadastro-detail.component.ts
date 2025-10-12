@@ -1,6 +1,6 @@
 import { Aldeia } from '@/core/models/data-master.model';
 import { Aplicante, Documento, Empresa, Fatura, HistoricoEstadoAplicante, PedidoInscricaoCadastro } from '@/core/models/entities.model';
-import { AplicanteStatus, AplicanteType, Categoria, TipoPedidoCadastro } from '@/core/models/enums';
+import { AplicanteStatus, AplicanteType, Categoria, TipoEstabelecimento, TipoPedidoCadastro } from '@/core/models/enums';
 import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService } from '@/core/services';
 import { AplicanteService } from '@/core/services/aplicante.service';
@@ -75,6 +75,7 @@ export class ApplicationCadastroDetailComponent {
   pedidoActive = false;
   faturaActive = false;
   motivoRejeicao: any;
+  showGpsCoordinates = false;
 
   constructor(
     private _fb: FormBuilder,
@@ -611,6 +612,8 @@ export class ApplicationCadastroDetailComponent {
       dataEmissaoCertAnterior: [null],
       observacao: [null],
       documentos: [null],
+      longitude: [null],
+      latitude: [null],
     });
 
     this.faturaForm = this._fb.group({
@@ -624,6 +627,31 @@ export class ApplicationCadastroDetailComponent {
       superficie: [null, [Validators.required]],
       total: new FormControl({ value: null, disabled: true, }, [Validators.required]),
     });
+  }
+
+  tipoEstabelecimentoOnChange(event: SelectChangeEvent): void {
+    const selected = event.value;
+    if (!selected) {
+      this.requestForm.patchValue({
+        longitude: null,
+        latitude: null
+      });
+      this.showGpsCoordinates = false;
+      return;
+    }
+    if (selected.value === TipoEstabelecimento.principal) {
+      this.requestForm.patchValue({
+        longitude: this.aplicanteData.empresa.longitude,
+        latitude: this.aplicanteData.empresa.latitude
+      });
+      this.showGpsCoordinates = false;
+    } else {
+      this.requestForm.patchValue({
+        longitude: null,
+        latitude: null
+      });
+      this.showGpsCoordinates = true;
+    }
   }
 
   private disabledForms(aplicanteEstado: AplicanteStatus): void {
