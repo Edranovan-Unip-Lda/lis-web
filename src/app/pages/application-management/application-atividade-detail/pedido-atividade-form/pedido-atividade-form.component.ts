@@ -35,7 +35,6 @@ export class PedidoAtividadeFormComponent {
   tipoPedidoAtividadeComercialOpts = tipoPedidoAtividadeComercialOptions;
   tipoPedidoAtividadeIndustrialOpts = tipoPedidoAtividadeIndustrialOptions;
   @Input() listaAldeia: any[] = [];
-  @Input() listaGrupoAtividade: any[] = [];
   @Input() listaClasseAtividade: any[] = [];
   @Input() disabledForm!: boolean;
   @Input() disabledAllForm!: boolean;
@@ -241,8 +240,6 @@ export class PedidoAtividadeFormComponent {
 
   atividadePrincipalChange(event: any): void {
     if (event.value) {
-      console.log(event.value);
-
       this.requestForm.get('classeAtividadeCodigo')?.patchValue(event.value.descricao);
 
       this.requestForm.get('tipoAtividadeCodigo')?.setValue(event.value.grupoAtividade.descricao);
@@ -409,8 +406,6 @@ export class PedidoAtividadeFormComponent {
   }
 
   private mapRequestFormData(request: PedidoAtividadeLicenca) {
-    console.log(this.listaClasseAtividade,request.classeAtividade.grupoAtividade);
-
     this.requestForm.patchValue({
       ...request,
       tipoAtividade: request.classeAtividade.grupoAtividade.codigo,

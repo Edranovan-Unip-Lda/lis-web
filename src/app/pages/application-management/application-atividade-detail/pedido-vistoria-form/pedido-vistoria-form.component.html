@@ -126,26 +126,6 @@
          </div>
          }
          <div class="mb-6 col-span-12 md:col-span-7">
-             <label for="grupoAtividade" class="font-medium  mb-2 block">
-                 Tipo de Atividade no Estabelecimento
-             </label>
-             <p-select formControlName="grupoAtividade" (onChange)="tipoAtividadeChange($event)"
-                 inputId="grupoAtividade" [options]="listaGrupoAtividade" optionLabel="codigo" fluid [filter]="true"
-                 filterBy="codigo,descricao" [showClear]="true" placeholder="Selecione o tipo de atividade">
-                 <ng-template let-tipo #item>
-                     <div class="flex items-center gap-2">
-                         <span>{{tipo.codigo}} </span> - <span>{{tipo.descricao}} </span>
-                     </div>
-                 </ng-template>
-             </p-select>
-         </div>
-         <div class="mb-6 col-span-12 md:col-span-5">
-             <label for="grupoAtividadeCodigo" class="font-medium  mb-2 block">
-                 Descricao
-             </label>
-             <input formControlName="grupoAtividadeCodigo" id="grupoAtividadeCodigo" type="text" pInputText fluid />
-         </div>
-         <div class="mb-6 col-span-12 md:col-span-7">
              <label for="classeAtividade" class="font-medium  mb-2 block">
                  Atividade Principal exercida no Estabelecimento
              </label>
@@ -164,6 +144,18 @@
                  Descricao
              </label>
              <input formControlName="classeAtividadeCodigo" id="classeAtividadeCodigo" type="text" pInputText fluid />
+         </div>
+         <div class="mb-6 col-span-12 md:col-span-7">
+             <label for="grupoAtividade" class="font-medium  mb-2 block">
+                 Tipo de Atividade no Estabelecimento
+             </label>
+             <input formControlName="grupoAtividade" id="grupoAtividade" type="text" pInputText fluid />
+         </div>
+         <div class="mb-6 col-span-12 md:col-span-5">
+             <label for="grupoAtividadeCodigo" class="font-medium  mb-2 block">
+                 Descricao
+             </label>
+             <input formControlName="grupoAtividadeCodigo" id="grupoAtividadeCodigo" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12">
              <label for="alteracoes" class="font-medium  mb-2 block">

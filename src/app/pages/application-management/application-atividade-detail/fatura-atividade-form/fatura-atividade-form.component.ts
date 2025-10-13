@@ -57,13 +57,25 @@ export class FaturaAtividadeFormComponent {
       this.fatura = this.aplicanteData.pedidoLicencaAtividade.fatura;
       this.faturaId = this.fatura.id;
       this.mapEditFatura(this.fatura);
+    } else {
+      // Set default superficie value from arrendador areaTotalConstrucao if arrendador exists
+      if (this.aplicanteData.pedidoLicencaAtividade.arrendador) {
+        this.faturaForm.patchValue({
+          superficie: this.aplicanteData.pedidoLicencaAtividade.arrendador.areaTotalConstrucao
+        });
+      }
+
     }
 
     this.enableSuperficieFormControl();
     this.superficieOnChange();
 
-    this.disabledForm ? this.faturaForm.disable() : this.faturaForm.enable();
-    this.disabledAllForm ? this.faturaForm.disable() : this.faturaForm.enable();
+    if (this.disabledForm) {
+      this.faturaForm.disable()
+    }
+    if (this.disabledAllForm) {
+      this.faturaForm.disable();
+    }
   }
 
   submitFatura(form: FormGroup) {

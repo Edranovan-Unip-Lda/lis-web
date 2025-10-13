@@ -60,6 +60,13 @@ export class FaturaVistoriaFormComponent {
           this.faturaId = this.pedidoVistoria.fatura.id;
           this.fatura = this.pedidoVistoria.fatura;
           this.mapEditFatura(this.pedidoVistoria.fatura);
+        } else {
+          // Set default superficie value from arrendador areaTotalConstrucao if arrendador exists
+          if (this.aplicanteData.pedidoLicencaAtividade.arrendador) {
+            this.faturaForm.patchValue({
+              superficie: this.aplicanteData.pedidoLicencaAtividade.arrendador.areaTotalConstrucao
+            });
+          }
         }
       }
     }

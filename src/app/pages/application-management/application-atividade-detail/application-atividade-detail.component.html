@@ -8,9 +8,9 @@
             <p-step [value]="1">Detalho da Aplicação</p-step>
             @if (isSubmitted(aplicanteData)) {
             <p-step [value]="2">Pedido de Licenca</p-step>
-            <p-step [value]="3">Fatura-Recibo Pedido de Licenca</p-step>
-            <p-step [value]="4">Pedido de Vistoria</p-step>
-            <p-step [value]="5">Fatura-Recibo Pedido de Vistoria</p-step>
+            <!-- <p-step [value]="3">Fatura-Recibo Pedido de Licenca</p-step> -->
+            <p-step [value]="3">Pedido de Vistoria</p-step>
+            <p-step [value]="4">Fatura-Recibo Pedido de Vistoria</p-step>
             }
         </p-step-list>
         <p-step-panels>
@@ -124,8 +124,8 @@
                                             }
                                         </div>
                                     </div>
-                                    <div class="border-t border-gray-600 mx-4"></div>
-                                    <div
+                                    <!-- <div class="border-t border-gray-600 mx-4"></div> -->
+                                    <!-- <div
                                         class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4">
                                         <div class="flex items-center mb-4 sm:mb-0">
                                             <div
@@ -187,7 +187,7 @@
                                             }
 
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
 
                                 <div class="bg-[#3A3A41] rounded-lg">
@@ -223,7 +223,10 @@
 
                                         </div>
                                     </div>
-                                    <div class="border-t border-gray-600 mx-4"></div>
+                                    <!-- <div class="border-t border-gray-600 mx-4"></div> -->
+                                </div>
+
+                                <div class="bg-[#3A3A41] rounded-lg">
                                     <div
                                         class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
                                         <div class="flex items-center mb-4 sm:mb-0">
@@ -235,10 +238,22 @@
                                                 <h3 class="text-lg font-semibold text-white">
                                                     Fatura
                                                 </h3>
-                                                <p class="text-sm text-gray-400">Informação da Fatura do Pedido de
-                                                    Vistoria
-                                                    para Licença de Exercício de Atividade
-                                                    {{aplicanteData.categoria |titlecase}}</p>
+                                                <p class="text-sm text-gray-400">Informação da Fatura do:</p>
+                                                <ul class="list-disc ml-4">
+                                                    <li>
+                                                        <p class="text-sm text-gray-400">Pedido
+                                                            de
+                                                            Licença
+                                                            para Exercício de Atividade</p>
+                                                    </li>
+                                                    <li>
+                                                        <p class="text-sm text-gray-400">Pedido
+                                                            de
+                                                            Vistoria
+                                                            para Licença de Exercício de Atividade
+                                                            {{aplicanteData.categoria |titlecase}}</p>
+                                                    </li>
+                                                </ul>
                                             </div>
                                         </div>
                                         <div class="flex items-center space-x-4">
@@ -267,10 +282,23 @@
                                                     Recibo
                                                 </h3>
                                                 <p class="text-sm text-gray-400">
-                                                    Informação do Recibo da Fatura do Pedido de Vistoria
-                                                    para Licença de Exercício de Atividade
-                                                    {{aplicanteData.categoria |titlecase}}
+                                                    Informação do Recibo da Fatura do:
                                                 </p>
+                                                <ul class="list-disc ml-4">
+                                                    <li>
+                                                        <p class="text-sm text-gray-400">Pedido
+                                                            de
+                                                            Licença
+                                                            para Exercício de Atividade</p>
+                                                    </li>
+                                                    <li>
+                                                        <p class="text-sm text-gray-400">Pedido
+                                                            de
+                                                            Vistoria
+                                                            para Licença de Exercício de Atividade
+                                                            {{aplicanteData.categoria |titlecase}}</p>
+                                                    </li>
+                                                </ul>
                                             </div>
                                         </div>
                                         <div class="flex items-center space-x-4">
@@ -406,7 +434,7 @@
             </p-step-panel>
 
             <!-- Fatura Pedido de Licenca -->
-            <p-step-panel [value]="3">
+            <!-- <p-step-panel [value]="3">
                 <ng-template #content let-activateCallback="activateCallback">
                     <app-fatura-atividade-form [aplicanteData]="aplicanteData" [listaPedidoAto]="listaPedidoAto"
                         (dataSent)="onFaturaPedidoReceived($event)" [disabledForm]="disabledPedidoLicencaAndFatura">
@@ -418,32 +446,32 @@
                             icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(4)" />
                     </div>
                 </ng-template>
-            </p-step-panel>
+            </p-step-panel> -->
 
             <!-- Pedido de Vistoria -->
-            <p-step-panel [value]="4">
+            <p-step-panel [value]="3">
                 <ng-template #content let-activateCallback="activateCallback">
                     <app-pedido-vistoria-form [aplicanteData]="aplicanteData" [listaAldeia]="listaAldeia"
-                        [listaGrupoAtividade]="listaGrupoAtividade" (dataSent)="onPedidoVistoriaReceived($event)">
+                        [listaClasseAtividade]="listaClasseAtividade" (dataSent)="onPedidoVistoriaReceived($event)">
                     </app-pedido-vistoria-form>
                     <div class="flex pt-6 justify-between">
                         <p-button label="Back" severity="secondary" icon="pi pi-arrow-left"
-                            (onClick)="activateCallback(3)" />
+                            (onClick)="activateCallback(2)" />
                         <p-button [disabled]="disabledPedidoVistoriaNextBtn" label="Próximo" severity="secondary"
-                            icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(5)" />
+                            icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(4)" />
                     </div>
                 </ng-template>
             </p-step-panel>
 
             <!-- Fatura Pedido de Licenca -->
-            <p-step-panel [value]="5">
+            <p-step-panel [value]="4">
                 <ng-template #content let-activateCallback="activateCallback">
                     <app-fatura-vistoria-form [aplicanteData]="aplicanteData" [listaPedidoAto]="listaPedidoAto"
                         (dataSent)="onPedidoVistoriaFaturaReceived($event)">
                     </app-fatura-vistoria-form>
                     <div class="flex pt-6 justify-between">
                         <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="right"
-                            (onClick)="activateCallback(4)" />
+                            (onClick)="activateCallback(3)" />
                         @if (isClient && aplicanteData.estado !== 'SUBMETIDO') {
                         <p-button (click)="submitAplicante(activateCallback)" [loading]="loading" label="Submeter"
                             [disabled]="disabledFaturaVistoriaNextBtn" icon="pi pi-save" iconPos="left" />

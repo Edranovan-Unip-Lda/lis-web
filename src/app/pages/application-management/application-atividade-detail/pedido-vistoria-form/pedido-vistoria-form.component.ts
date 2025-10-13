@@ -25,13 +25,12 @@ export class PedidoVistoriaFormComponent {
   vistoriaRequestForm!: FormGroup;
   @Input() aplicanteData!: Aplicante;
   @Input() listaAldeia: any[] = [];
-  @Input() listaGrupoAtividade: any[] = [];
+  @Input() listaClasseAtividade: any[] = [];
   tipoEmpresaOpts = tipoEmpresaOptions;
   tipoEstabelecimentoOpts = caraterizacaEstabelecimentoOptions;
   nivelRiscoOpts = nivelRiscoOptions;
   atividadesOpts = tipoAtoOptions;
   tipoPedidoVistoriaOpts: any = [];
-  listaClasseAtividade: any[] = [];
   originalAldeias: any = [];
   dataSent = output<any>();
   loading = false;
@@ -74,10 +73,10 @@ export class PedidoVistoriaFormComponent {
       this.mapPedidoForm(this.pedido);
     }
 
-
+    this.vistoriaRequestForm.patchValue({
+      tipoEmpresa: this.aplicanteData.empresa.tipoEmpresa
+    });
     this.listaAldeia = mapToIdAndNome(this.route.snapshot.data['aldeiasResolver']._embedded.aldeias);
-    this.listaGrupoAtividade = mapToGrupoAtividade(this.route.snapshot.data['grupoAtividadeResolver']._embedded.grupoAtividade);
-
   }
 
   submit(form: FormGroup): void {
@@ -90,11 +89,14 @@ export class PedidoVistoriaFormComponent {
         aldeia: {
           id: form.getRawValue().localEstabelecimento.aldeia
         }
-      }
+      },
+      classeAtividade: {
+        id: form.value.classeAtividade.id
+      },
     }
 
     if (this.pedido) {
-      this.pedidoService.updatePedidoVistoria(this.aplicanteData.id, this.pedido.id, formData).subscribe({
+      this.pedidoService.updatePedidoVistoria(this.aplicanteData.pedidoLicencaAtividade.id, this.pedido.id, formData).subscribe({
         next: (resp: any) => {
           this.vistoriaRequestForm.get('id')?.setValue(resp.id);
           this.addMessages(true, true);
@@ -188,20 +190,24 @@ export class PedidoVistoriaFormComponent {
   atividadePrincipalChange(event: any): void {
     if (event.value) {
       this.vistoriaRequestForm.get('classeAtividadeCodigo')?.patchValue(event.value.descricao);
+      this.vistoriaRequestForm.get('grupoAtividade')?.setValue(event.value.grupoAtividade.codigo);
+      this.vistoriaRequestForm.get('grupoAtividadeCodigo')?.setValue(event.value.grupoAtividade.descricao);
       this.vistoriaRequestForm.get('risco')?.setValue(event.value.tipoRisco);
     } else {
       this.vistoriaRequestForm.get('classeAtividadeCodigo')?.reset();
+      this.vistoriaRequestForm.get('grupoAtividade')?.reset();
+      this.vistoriaRequestForm.get('grupoAtividadeCodigo')?.reset();
       this.vistoriaRequestForm.get('risco')?.reset();
     }
   }
 
   private mapPedidoForm(pedido: PedidoVistoria): void {
-    let grupoAtividade = {
-      id: pedido.classeAtividade.grupoAtividade.id,
-      codigo: pedido.classeAtividade.grupoAtividade.codigo,
-      descricao: pedido.classeAtividade.grupoAtividade.descricao,
-      tipoRisco: pedido.classeAtividade.grupoAtividade.tipoRisco
-    }
+    // let grupoAtividade = {
+    //   id: pedido.classeAtividade.grupoAtividade.id,
+    //   codigo: pedido.classeAtividade.grupoAtividade.codigo,
+    //   descricao: pedido.classeAtividade.grupoAtividade.descricao,
+    //   tipoRisco: pedido.classeAtividade.grupoAtividade.tipoRisco
+    // }
 
     this.vistoriaRequestForm.patchValue({
       ...pedido,
@@ -220,23 +226,34 @@ export class PedidoVistoriaFormComponent {
       tipoEstabelecimento: pedido.tipoEstabelecimento,
       risco: pedido.risco,
       atividade: pedido.atividade,
-      grupoAtividade: grupoAtividade,
-      grupoAtividadeCodigo: grupoAtividade.descricao,
+      grupoAtividade: pedido.classeAtividade.grupoAtividade.codigo,
+      grupoAtividadeCodigo: pedido.classeAtividade.grupoAtividade.descricao,
+      classeAtividade: {
+        id: pedido.classeAtividade.id,
+        codigo: pedido.classeAtividade.codigo,
+        descricao: pedido.classeAtividade.descricao,
+        tipoRisco: pedido.classeAtividade.tipoRisco,
+        grupoAtividade: {
+          id: pedido.classeAtividade.grupoAtividade.id,
+          codigo: pedido.classeAtividade.grupoAtividade.codigo,
+          descricao: pedido.classeAtividade.grupoAtividade.descricao,
+        }
+      },
       classeAtividadeCodigo: pedido.classeAtividade.descricao,
     });
 
-    this.dataMasterService.getClassesByGrupoId(pedido.classeAtividade.grupoAtividade.id).subscribe({
-      next: response => {
-        let classeAtividade = {
-          id: pedido.classeAtividade.id,
-          codigo: pedido.classeAtividade.codigo,
-          descricao: pedido.classeAtividade.descricao,
-          tipoRisco: pedido.classeAtividade.tipoRisco
-        };
-        this.listaClasseAtividade = mapToAtividadeEconomica(response._embedded.classeAtividade);
-        this.vistoriaRequestForm.get('classeAtividade')?.setValue(classeAtividade);
-      }
-    });
+    // this.dataMasterService.getClassesByGrupoId(pedido.classeAtividade.grupoAtividade.id).subscribe({
+    //   next: response => {
+    //     let classeAtividade = {
+    //       id: pedido.classeAtividade.id,
+    //       codigo: pedido.classeAtividade.codigo,
+    //       descricao: pedido.classeAtividade.descricao,
+    //       tipoRisco: pedido.classeAtividade.tipoRisco
+    //     };
+    //     this.listaClasseAtividade = mapToAtividadeEconomica(response._embedded.classeAtividade);
+    //     this.vistoriaRequestForm.get('classeAtividade')?.setValue(classeAtividade);
+    //   }
+    // });
   }
 
   private initForm(): void {
@@ -257,10 +274,10 @@ export class PedidoVistoriaFormComponent {
       risco: new FormControl({ value: null, disabled: true }),
       atividade: [null],
       tipoAtividade: [null],
-      grupoAtividade: [null, Validators.required],
-      grupoAtividadeCodigo: new FormControl({ value: null, disabled: true }),
       classeAtividade: [null, Validators.required],
       classeAtividadeCodigo: new FormControl({ value: null, disabled: true }),
+      grupoAtividade: new FormControl({ value: null, disabled: true }),
+      grupoAtividadeCodigo: new FormControl({ value: null, disabled: true }),
       alteracoes: [null],
       observacao: [null],
     });

@@ -4,25 +4,24 @@ import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService } from '@/core/services';
 import { EmpresaService } from '@/core/services/empresa.service';
 import { PedidoService } from '@/core/services/pedido.service';
-import { mapToAtividadeEconomica, mapToGrupoAtividade, mapToIdAndNome, mapToTaxa } from '@/core/utils/global-function';
+import { mapToAtividadeEconomica, mapToIdAndNome, mapToTaxa } from '@/core/utils/global-function';
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
 import { StepperModule } from 'primeng/stepper';
 import { Tag } from 'primeng/tag';
-import { FaturaAtividadeFormComponent } from './fatura-atividade-form/fatura-atividade-form.component';
 import { FaturaVistoriaFormComponent } from './fatura-vistoria-form/fatura-vistoria-form.component';
 import { PedidoAtividadeFormComponent } from './pedido-atividade-form/pedido-atividade-form.component';
 import { PedidoVistoriaFormComponent } from './pedido-vistoria-form/pedido-vistoria-form.component';
 
 @Component({
   selector: 'app-application-atividade-detail',
-  imports: [ReactiveFormsModule, ButtonModule, StepperModule, InputTextModule, FileUploadModule, Tag, RouterLink, StatusSeverityPipe, DatePipe, TitleCasePipe, PedidoAtividadeFormComponent, FaturaAtividadeFormComponent, FaturaVistoriaFormComponent, PedidoVistoriaFormComponent],
+  imports: [ReactiveFormsModule, ButtonModule, StepperModule, InputTextModule, FileUploadModule, Tag, RouterLink, StatusSeverityPipe, DatePipe, TitleCasePipe, PedidoAtividadeFormComponent, FaturaVistoriaFormComponent, PedidoVistoriaFormComponent],
   templateUrl: './application-atividade-detail.component.html',
   styleUrl: './application-atividade-detail.component.scss',
   providers: [MessageService]
@@ -65,7 +64,8 @@ export class ApplicationAtividadeDetailComponent {
     private pedidoService: PedidoService,
     private empresaService: EmpresaService,
     private messageService: MessageService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private route: Router,
   ) {
 
   }
@@ -135,7 +135,13 @@ export class ApplicationAtividadeDetailComponent {
           detail: 'O Aplicante foi submetida com sucesso!'
         });
         // this.disabledForms(AplicanteStatus.submetido);
-        callback(1);
+        this.route.navigate([`/application/${this.aplicanteData.tipo.toLowerCase()}`, this.aplicanteData.id], {
+          // this.router.navigate([`/application`, aplicante.id], {
+          queryParams: {
+            categoria: this.aplicanteData.categoria,
+            tipo: this.aplicanteData.tipo
+          }
+        });
       },
       error: err => {
         this.loading = false;
