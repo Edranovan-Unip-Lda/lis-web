@@ -4,7 +4,7 @@ import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService } from '@/core/services';
 import { EmpresaService } from '@/core/services/empresa.service';
 import { PedidoService } from '@/core/services/pedido.service';
-import { mapToGrupoAtividade, mapToIdAndNome, mapToTaxa } from '@/core/utils/global-function';
+import { mapToAtividadeEconomica, mapToGrupoAtividade, mapToIdAndNome, mapToTaxa } from '@/core/utils/global-function';
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
@@ -36,6 +36,7 @@ export class ApplicationAtividadeDetailComponent {
   motivoRejeicao!: string | null;
   listaAldeia: any[] = [];
   listaGrupoAtividade: any[] = [];
+  listaClasseAtividade: any[] = [];
   listaPedidoAto: any[] = [];
   uploadedFiles: any[] = [];
   pedidoVistoria!: PedidoVistoria | undefined;
@@ -73,7 +74,8 @@ export class ApplicationAtividadeDetailComponent {
     this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
 
     this.listaAldeia = mapToIdAndNome(this.router.snapshot.data['aldeiasResolver']._embedded.aldeias);
-    this.listaGrupoAtividade = mapToGrupoAtividade(this.router.snapshot.data['grupoAtividadeResolver']._embedded.grupoAtividade);
+    this.listaClasseAtividade = mapToAtividadeEconomica(this.router.snapshot.data['classeAtividadeResolver']._embedded.classeAtividade);
+
     this.listaPedidoAto = mapToTaxa(this.router.snapshot.data['listaTaxaResolver']._embedded.taxas);
     this.aplicanteEstado = this.aplicanteData.estado;
 

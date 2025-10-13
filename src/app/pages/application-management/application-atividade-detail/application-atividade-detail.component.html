@@ -134,7 +134,7 @@
                                             </div>
                                             <div>
                                                 <h3 class="text-lg font-semibold text-white">
-                                                    Fatura 1
+                                                    Fatura
                                                 </h3>
                                                 <p class="text-sm text-gray-400">Informação da Fatura do Pedido de
                                                     Licença
@@ -393,7 +393,7 @@
             <p-step-panel [value]="2">
                 <ng-template #content let-activateCallback="activateCallback">
                     <app-pedido-atividade-form [aplicanteData]="aplicanteData" [listaAldeia]="listaAldeia"
-                        [listaGrupoAtividade]="listaGrupoAtividade" (dataSent)="onPedidoLicencaReceived($event)"
+                        [listaClasseAtividade]="listaClasseAtividade" (dataSent)="onPedidoLicencaReceived($event)"
                         [disabledForm]="disabledPedidoLicencaAndFatura">
                     </app-pedido-atividade-form>
                     <div class="flex pt-6 justify-between">

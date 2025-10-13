@@ -169,6 +169,7 @@ export interface PedidoAtividadeLicenca extends BaseModel {
     empresaNumeroRegistoComercial: string;
     empresaSede: Endereco;
     tipoAtividade: GrupoAtividade;
+    classeAtividade: ClasseAtividade;
     risco: NivelRisco;
     estatutoSociedadeComercial: boolean;
     empresaNif: string;
@@ -185,10 +186,23 @@ export interface PedidoAtividadeLicenca extends BaseModel {
     reciboPagamento: boolean;
     outrosDocumentos: boolean;
     documentos: Documento[];
+    arrendador: Arrendador;
     aplicante: Aplicante;
     fatura: Fatura;
     listaPedidoVistoria: PedidoVistoria[];
     certificadoLicencaAtividade: CertificadoLicencaAtividade;
+}
+
+export interface Arrendador extends BaseModel {
+    nome: string;
+    endereco: Endereco;
+    tipoDocumento: string;
+    numeroDocumento: string;
+    areaTotalTerreno: number;
+    areaTotalConstrucao: number;
+    dataInicio: Date;
+    dataFim: Date;
+    valorRendaMensal: number;
 }
 
 export interface Pessoa extends BaseModel {
@@ -198,6 +212,7 @@ export interface Pessoa extends BaseModel {
     morada: Endereco;
     telefone: string;
     email: string;
+    estadoCivil: string;
 }
 
 

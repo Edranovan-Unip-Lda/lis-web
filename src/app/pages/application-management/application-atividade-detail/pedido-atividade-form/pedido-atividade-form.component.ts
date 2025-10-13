@@ -1,26 +1,30 @@
 import { Aldeia } from '@/core/models/data-master.model';
-import { Aplicante, Documento, Empresa, PedidoAtividadeLicenca } from '@/core/models/entities.model';
+import { Aplicante, Documento, Empresa, Gerente, PedidoAtividadeLicenca, Representante } from '@/core/models/entities.model';
 import { Categoria } from '@/core/models/enums';
 import { AuthenticationService } from '@/core/services';
 import { AplicanteService } from '@/core/services/aplicante.service';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { DocumentosService } from '@/core/services/documentos.service';
-import { mapToIdAndNome, maxFileSizeUpload, stateOptions, tipoPedidoAtividadeComercialOptions, tipoPedidoAtividadeIndustrialOptions } from '@/core/utils/global-function';
+import { formatDateForLocalDate, mapToIdAndNome, maxFileSizeUpload, stateOptions, tipoDocumentoOptions, tipoPedidoAtividadeComercialOptions, tipoPedidoAtividadeIndustrialOptions } from '@/core/utils/global-function';
 import { Component, Input, output, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
+import { DatePicker } from 'primeng/datepicker';
 import { FileUpload } from 'primeng/fileupload';
+import { InputGroup } from 'primeng/inputgroup';
+import { InputGroupAddon } from 'primeng/inputgroupaddon';
+import { InputNumber } from 'primeng/inputnumber';
 import { InputText } from 'primeng/inputtext';
 import { Select, SelectFilterEvent } from 'primeng/select';
-import { SelectButton } from 'primeng/selectbutton';
+import { SelectButton, SelectButtonChangeEvent } from 'primeng/selectbutton';
 import { Toast } from 'primeng/toast';
 import { forkJoin } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-pedido-atividade-form',
-  imports: [ReactiveFormsModule, Select, SelectButton, InputText, Button, Toast, FileUpload],
+  imports: [ReactiveFormsModule, Select, SelectButton, InputText, Button, Toast, FileUpload, DatePicker, InputGroup, InputGroupAddon, InputNumber],
   templateUrl: './pedido-atividade-form.component.html',
   styleUrl: './pedido-atividade-form.component.scss',
   providers: [MessageService]
@@ -32,12 +36,14 @@ export class PedidoAtividadeFormComponent {
   tipoPedidoAtividadeIndustrialOpts = tipoPedidoAtividadeIndustrialOptions;
   @Input() listaAldeia: any[] = [];
   @Input() listaGrupoAtividade: any[] = [];
+  @Input() listaClasseAtividade: any[] = [];
   @Input() disabledForm!: boolean;
   @Input() disabledAllForm!: boolean;
   originalAldeias: any[] = [];
   listaAldeiaEmpresa: any[] = [];
   listaAldeiaRepresentante: any[] = [];
   listaAldeiaGerente: any[] = [];
+  listaAldeiaArrendador: any[] = [];
   isNew = false;
   isLoading = false;
   uploadedDocs: any[] = [];
@@ -45,6 +51,8 @@ export class PedidoAtividadeFormComponent {
   maxFileSize = maxFileSizeUpload;
   loadingDownloadButtons = new Set<string>();
   loadingRemoveButtons = new Set<string>();
+  showArrendadorForm = false;
+  tipoDocumentoOpts = tipoDocumentoOptions;
 
   stateOpts = stateOptions;
   dataSent = output<any>();
@@ -65,18 +73,18 @@ export class PedidoAtividadeFormComponent {
 
     if (this.aplicanteData.pedidoLicencaAtividade) {
       this.mapRequestFormData(this.aplicanteData.pedidoLicencaAtividade);
-      this.disabledForm ? this.requestForm.disable() : this.requestForm.enable();
+      if (this.disabledAllForm) {
+        this.requestForm.disable();
+      }
     } else {
       this.isNew = true;
       this.mapFormEmpresa(this.aplicanteData.empresa);
-      // this.requestForm.patchValue({
-      //   numEmpregosCriados: this.aplicanteData.empresa.totalTrabalhadores
-      // });
-      // this.requestForm.get('numEmpregosCriados')?.disable();
     }
 
     this.uploadURLDocs.set(`${environment.apiUrl}/documentos/${this.authService.currentUserValue.username}/upload`);
-    this.disabledAllForm ? this.requestForm.disable() : this.requestForm.enable();
+    if (this.disabledAllForm) {
+      this.requestForm.disable();
+    }
   }
 
 
@@ -208,6 +216,20 @@ export class PedidoAtividadeFormComponent {
     }
   }
 
+  arrendadorAldeiaFilter(event: SelectFilterEvent): void {
+    const query = event.filter?.trim();
+    if (query && query.length) {
+      this.dataMasterService.searchAldeiasByNome(query)
+        .subscribe(resp => {
+          this.listaAldeiaArrendador = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, id: a.id }));
+          // this.loading = false;
+        });
+    } else {
+      // filter cleared — reset full list
+      this.listaAldeiaArrendador = [...this.originalAldeias];
+    }
+  }
+
 
   onPanelHide() {
     this.listaAldeia = [...this.originalAldeias];
@@ -217,8 +239,34 @@ export class PedidoAtividadeFormComponent {
     this.requestForm.get('risco')?.setValue(event.value.tipoRisco);
   }
 
+  atividadePrincipalChange(event: any): void {
+    if (event.value) {
+      console.log(event.value);
+
+      this.requestForm.get('classeAtividadeCodigo')?.patchValue(event.value.descricao);
+
+      this.requestForm.get('tipoAtividadeCodigo')?.setValue(event.value.grupoAtividade.descricao);
+      this.requestForm.get('tipoAtividade')?.setValue(event.value.grupoAtividade.codigo);
+      this.requestForm.get('risco')?.setValue(event.value.tipoRisco);
+    } else {
+      this.requestForm.get('classeAtividadeCodigo')?.reset();
+      this.requestForm.get('tipoAtividadeCodigo')?.reset();
+      this.requestForm.get('tipoAtividade')?.reset();
+      this.requestForm.get('risco')?.reset();
+    }
+  }
+
   tipoPedidoOpts(categoria: Categoria): any[] {
     return categoria === Categoria.comercial ? tipoPedidoAtividadeComercialOptions : tipoPedidoAtividadeIndustrialOptions;
+  }
+
+  contratoArrendamentoOnChange(event: SelectButtonChangeEvent): void {
+    if (event.value) {
+      this.showArrendadorForm = true;
+    } else {
+      this.showArrendadorForm = false;
+      this.requestForm.get('arrendador')?.reset();
+    }
   }
 
   onUploadDocs(event: any) {
@@ -309,7 +357,10 @@ export class PedidoAtividadeFormComponent {
         postoAdministrativo: new FormControl({ value: null, disabled: true }),
         municipio: new FormControl({ value: null, disabled: true }),
       }),
-      tipoAtividade: [null],
+      classeAtividade: [null],
+      classeAtividadeCodigo: new FormControl({ value: null, disabled: true }),
+      tipoAtividade: new FormControl({ value: null, disabled: true }),
+      tipoAtividadeCodigo: new FormControl({ value: null, disabled: true }),
       risco: new FormControl({ value: null, disabled: true }),
       estatutoSociedadeComercial: [null],
       empresaNif: [null],
@@ -324,7 +375,25 @@ export class PedidoAtividadeFormComponent {
       numEmpregosCriados: new FormControl({ value: this.aplicanteData.empresa.totalTrabalhadores, disabled: true }),
       numEmpregadosCriar: [null, [Validators.min(0)]],
       reciboPagamento: [null],
-      outrosDocumentos: [null]
+      outrosDocumentos: [null],
+      arrendador: this._fb.group({
+        id: [null],
+        nome: [null],
+        endereco: this._fb.group({
+          local: [null],
+          aldeia: [null],
+          suco: new FormControl({ value: null, disabled: true }),
+          postoAdministrativo: new FormControl({ value: null, disabled: true }),
+          municipio: new FormControl({ value: null, disabled: true }),
+        }),
+        tipoDocumento: [null],
+        numeroDocumento: [null],
+        areaTotalTerreno: [null],
+        areaTotalConstrucao: [null],
+        dataInicio: [null],
+        dataFim: [null],
+        valorRendaMensal: [null],
+      })
     });
   }
 
@@ -334,24 +403,49 @@ export class PedidoAtividadeFormComponent {
       this.originalAldeias,
       this.listaAldeiaEmpresa,
       this.listaAldeiaRepresentante,
-      this.listaAldeiaGerente
-    ] = [copy(), copy(), copy(), copy()];
+      this.listaAldeiaGerente,
+      this.listaAldeiaArrendador,
+    ] = [copy(), copy(), copy(), copy(), copy()];
   }
 
   private mapRequestFormData(request: PedidoAtividadeLicenca) {
+    console.log(this.listaClasseAtividade,request.classeAtividade.grupoAtividade);
+
     this.requestForm.patchValue({
       ...request,
-      tipoAtividade: {
-        id: request.tipoAtividade.id,
-        codigo: request.tipoAtividade.codigo,
-        descricao: request.tipoAtividade.descricao,
-        tipoRisco: request.tipoAtividade.tipoRisco
+      tipoAtividade: request.classeAtividade.grupoAtividade.codigo,
+      tipoAtividadeCodigo: request.classeAtividade.grupoAtividade.descricao,
+      classeAtividade: {
+        id: request.classeAtividade.id,
+        codigo: request.classeAtividade.codigo,
+        descricao: request.classeAtividade.descricao,
+        tipoRisco: request.classeAtividade.tipoRisco,
+        grupoAtividade: {
+          id: request.classeAtividade.grupoAtividade.id,
+          codigo: request.classeAtividade.grupoAtividade.codigo,
+          descricao: request.classeAtividade.grupoAtividade.descricao,
+        }
+      },
+      classeAtividadeCodigo: request.classeAtividade.descricao,
+      arrendador: {
+        ...request.arrendador,
+        dataInicio: request.arrendador?.dataInicio ? new Date(request.arrendador.dataInicio) : null,
+        dataFim: request.arrendador?.dataFim ? new Date(request.arrendador.dataFim) : null,
+        endereco: {
+          ...request.arrendador?.endereco,
+          aldeia: request.arrendador?.endereco.aldeia.id,
+          suco: request.arrendador?.endereco.aldeia.suco.nome,
+          postoAdministrativo: request.arrendador?.endereco.aldeia.suco.postoAdministrativo.nome,
+          municipio: request.arrendador?.endereco.aldeia.suco.postoAdministrativo.municipio.nome,
+        }
       }
     });
     this.uploadedDocs = [...request.documentos];
     const empresaSedeService = this.dataMasterService.getAldeiasBySuco(request.empresaSede.aldeia.suco.id);
     const representanteService = this.dataMasterService.getAldeiasBySuco(request.representante.morada.aldeia.suco.id);
     const gerenteService = this.dataMasterService.getAldeiasBySuco(request.gerente.morada.aldeia.suco.id);
+
+    this.showArrendadorForm = request.contratoArrendamento ? true : false;
 
     forkJoin([empresaSedeService, representanteService, gerenteService]).subscribe({
       next: ([empresaSedeResponse, representanteResponse, gerenteResponse]) => {
@@ -390,13 +484,16 @@ export class PedidoAtividadeFormComponent {
           id: form.value.empresaSede.aldeia,
         }
       },
-      tipoAtividade: {
-        id: form.value.tipoAtividade.id
+      classeAtividade: {
+        id: form.value.classeAtividade.id
       },
+
       representante: {
         ...form.value.representante,
+        id: null,
         morada: {
           ...form.value.representante.morada,
+          id: null,
           aldeia: {
             id: form.value.representante.morada.aldeia
           }
@@ -404,12 +501,25 @@ export class PedidoAtividadeFormComponent {
       },
       gerente: {
         ...form.value.gerente,
+        id: null,
         morada: {
           ...form.value.gerente.morada,
+          id: null,
           aldeia: {
             id: form.value.gerente.morada.aldeia
           }
         }
+      },
+      arrendador: {
+        ...form.value.arrendador,
+        endereco: {
+          ...form.value.arrendador.endereco,
+          aldeia: {
+            id: form.value.gerente.morada.aldeia
+          }
+        },
+        dataInicio: formatDateForLocalDate(form.value.arrendador.dataInicio),
+        dataFim: formatDateForLocalDate(form.value.arrendador.dataFim),
       },
       documentos: this.uploadedDocs
     }
@@ -428,38 +538,57 @@ export class PedidoAtividadeFormComponent {
       this.requestForm.get('empresaSede')?.get('postoAdministrativo')?.setValue(empresa.sede.aldeia.suco.postoAdministrativo.nome);
       this.requestForm.get('empresaSede')?.get('municipio')?.setValue(empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome);
     });
+
+    this.mapRepresentante(empresa.representante);
+    this.mapGerente(empresa.gerente);
+  }
+
+  private mapRepresentante(obj: Representante): void {
+    const newObj: any = {
+      ...obj
+    };
+    newObj.morada.suco = obj.morada.aldeia.suco.nome;
+    newObj.morada.postoAdministrativo = obj.morada.aldeia.suco.postoAdministrativo.nome;
+    newObj.morada.municipio = obj.morada.aldeia.suco.postoAdministrativo.municipio.nome;
+    newObj.morada.aldeia = obj.morada.aldeia.id;
+    this.requestForm.patchValue({
+      representante: {
+        ...newObj,
+      }
+    });
+  }
+
+  private mapGerente(obj: Gerente): void {
+    const newObj: any = {
+      ...obj
+    };
+    newObj.morada.suco = obj.morada.aldeia.suco.nome;
+    newObj.morada.postoAdministrativo = obj.morada.aldeia.suco.postoAdministrativo.nome;
+    newObj.morada.municipio = obj.morada.aldeia.suco.postoAdministrativo.municipio.nome;
+    newObj.morada.aldeia = obj.morada.aldeia.id;
+    this.requestForm.patchValue({
+      gerente: {
+        ...newObj,
+      }
+    })
   }
 
   private initPersonForm(): FormGroup {
     return this._fb.group({
-      // id: [null],
-      // nome: [null],
-      // nacionalidade: [null],
-      // naturalidade: [null],
-      // morada: this._fb.group({
-      //   id: [null],
-      //   local: [null],
-      //   aldeia: [null],
-      //   suco: new FormControl({ value: null, disabled: true }),
-      //   postoAdministrativo: new FormControl({ value: null, disabled: true }),
-      //   municipio: new FormControl({ value: null, disabled: true }),
-      // }),
-      // telefone: [null],
-      // email: [null],
       id: [null],
-      nome: ['Mario dos Santos'],
-      nacionalidade: ['Timorense'],
-      naturalidade: ['Dili'],
+      nome: [null],
+      nacionalidade: [null],
+      naturalidade: [null],
       morada: this._fb.group({
         id: [null],
-        local: ['Beco Mota'],
+        local: [null],
         aldeia: [null],
         suco: new FormControl({ value: null, disabled: true }),
         postoAdministrativo: new FormControl({ value: null, disabled: true }),
         municipio: new FormControl({ value: null, disabled: true }),
       }),
-      telefone: ['78899992'],
-      email: ['mar@mail.com'],
+      telefone: [null],
+      email: [null],
     })
   }
 

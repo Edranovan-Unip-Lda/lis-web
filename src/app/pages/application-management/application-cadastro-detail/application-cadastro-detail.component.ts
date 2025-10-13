@@ -185,12 +185,7 @@ export class ApplicationCadastroDetailComponent {
       caraterizacaoEstabelecimento: this.caraterizacaEstabelecimentoOpts.find(item => item.value === pedido.caraterizacaoEstabelecimento),
       risco: pedido.classeAtividade.tipoRisco,
       ato: this.tipoAtoOpts.find(item => item.value === pedido.ato),
-      grupoAtividade: {
-        id: pedido.classeAtividade.grupoAtividade.id,
-        codigo: pedido.classeAtividade.grupoAtividade.codigo,
-        descricao: pedido.classeAtividade.grupoAtividade.descricao,
-        tipoRisco: pedido.classeAtividade.grupoAtividade.tipoRisco
-      },
+      grupoAtividade: pedido.classeAtividade.grupoAtividade.codigo,
       grupoAtividadeCodigo: pedido.classeAtividade.grupoAtividade.descricao,
     });
 

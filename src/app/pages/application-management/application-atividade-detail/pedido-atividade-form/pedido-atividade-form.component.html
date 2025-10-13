@@ -26,8 +26,7 @@
              <input formControlName="nomeEmpresa" id="nomeEmpresa" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="empresaNumeroRegistoComercial"
-                 class="font-medium  mb-2 block">
+             <label for="empresaNumeroRegistoComercial" class="font-medium  mb-2 block">
                  Nº de Registo Comercial
              </label>
              <input formControlName="empresaNumeroRegistoComercial" id="empresaNumeroRegistoComercial" type="text"
@@ -78,12 +77,12 @@
              </div>
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="tipoAtividade" class="font-medium  mb-2 block">
-                 Tipo Atividade
+             <label for="classeAtividade" class="font-medium  mb-2 block">
+                 Atividade Principal exercida no Estabelecimento
              </label>
-             <p-select formControlName="tipoAtividade" (onChange)="tipoAtividadeChange($event)" inputId="tipoAtividade"
-                 [options]="listaGrupoAtividade" optionLabel="codigo" fluid [filter]="true" filterBy="codigo,descricao"
-                 [showClear]="true" placeholder="Selecione o tipo de atividade">
+             <p-select formControlName="classeAtividade" (onChange)="atividadePrincipalChange($event)"
+                 inputId="classeAtividade" [options]="listaClasseAtividade" optionLabel="codigo" fluid [filter]="true"
+                 filterBy="codigo,descricao" [showClear]="true" placeholder="Selecione a atividade principal">
                  <ng-template let-tipo #item>
                      <div class="flex items-center gap-2">
                          <span>{{tipo.codigo}} </span> - <span>{{tipo.descricao}} </span>
@@ -92,14 +91,31 @@
              </p-select>
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
+             <label for="classeAtividadeCodigo" class="font-medium mb-2 block">
+                 Descricao
+             </label>
+             <input pInputText formControlName="classeAtividadeCodigo" id="classeAtividadeCodigo" fluid />
+         </div>
+         <div class="mb-6 col-span-12 md:col-span-6">
+             <label for="tipoAtividade" class="font-medium  mb-2 block">
+                 Tipo Atividade
+             </label>
+             <input formControlName="tipoAtividade" id="tipoAtividade" type="text" pInputText fluid />
+         </div>
+         <div class="mb-6 col-span-12 md:col-span-6">
+             <label for="tipoAtividadeCodigo" class="font-medium  mb-2 block">
+                 Descricao
+             </label>
+             <input formControlName="tipoAtividadeCodigo" id="tipoAtividadeCodigo" type="text" pInputText fluid />
+         </div>
+         <div class="mb-6 col-span-12 md:col-span-6">
              <label for="risco" class="font-medium  mb-2 block">
                  Nivel de Risco
              </label>
              <input formControlName="risco" id="risco" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="estatutoSociedadeComercial"
-                 class="font-medium  mb-2 block">
+             <label for="estatutoSociedadeComercial" class="font-medium  mb-2 block">
                  Estatuto da sociedade comercial
              </label>
              <p-selectbutton [options]="stateOpts" formControlName="estatutoSociedadeComercial" optionLabel="label"
@@ -281,8 +297,7 @@
 
      <div class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="numeroRegistoComercial"
-                 class="font-medium  mb-2 block text-xl uppercase">
+             <label for="numeroRegistoComercial" class="font-medium  mb-2 block text-xl uppercase">
                  Planta de Localizacao do Estabelecimento Comercial
              </label>
              <p-selectbutton [options]="stateOpts" formControlName="planta" optionLabel="label" optionValue="value" />
@@ -310,9 +325,123 @@
              <label for="contratoArrendamento" class="font-medium  mb-2 block">
                  Contrato de arrendamento
              </label>
-             <p-selectbutton [options]="stateOpts" formControlName="contratoArrendamento" optionLabel="label"
-                 optionValue="value" />
+             <p-selectbutton [options]="stateOpts" (onChange)="contratoArrendamentoOnChange($event)"
+                 formControlName="contratoArrendamento" optionLabel="label" optionValue="value" />
          </div>
+         @if (showArrendadorForm) {
+         <div class="col-span-12 mb-6">
+             <span class="text-xl font-bold mb-3 block">
+                 Arrendador
+             </span>
+             <div formGroupName="arrendador" class="grid grid-cols-12 gap-4">
+                 <div class="mb-6 col-span-12">
+                     <label for="nome" class="font-medium  mb-2 block">
+                         Nome
+                     </label>
+                     <input formControlName="nome" id="nome" type="text" pInputText fluid />
+                 </div>
+                 <div class="col-span-12">
+                     <div formGroupName="endereco" class="grid grid-cols-12">
+                         <div class="mb-6 col-span-12">
+                             <label for="local" class="font-medium  mb-2 block">
+                                 Endereço
+                             </label>
+                             <input formControlName="local" id="local" type="text" pInputText fluid
+                                 placeholder="ex. Av. Pres. Nicolau Lobato" />
+                         </div>
+                         <div class="mb-6 col-span-12">
+                             <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+                                 <div class="flex-auto">
+                                     <label for="aldeia" class="font-medium  mb-2 block">
+                                         Aldeia
+                                     </label>
+                                     <p-select fluid formControlName="aldeia" [options]="listaAldeiaArrendador"
+                                         optionLabel="nome" optionValue="id" placeholder="Selecione a Aldeia"
+                                         [filter]="true" filterBy="nome" [showClear]="true"
+                                         (onFilter)="arrendadorAldeiaFilter($event)" (onpanelHide)="onPanelHide()"
+                                         (onChange)="aldeiaNestedOnChange($event, 'arrendador', 'endereco')"
+                                         (onClear)="onPanelHide()">
+                                     </p-select>
+                                 </div>
+                                 <div class="flex-auto">
+                                     <label for="suco" class="font-medium  mb-2 block">
+                                         Suco
+                                     </label>
+                                     <input formControlName="suco" id="suco" type="text" pInputText fluid />
+                                 </div>
+                                 <div class="flex-auto">
+                                     <label for="posto" class="font-medium  mb-2 block">
+                                         Posto Administrativo
+                                     </label>
+                                     <input formControlName="postoAdministrativo" id="postoAdministrativo" type="text"
+                                         pInputText fluid />
+                                 </div>
+                                 <div class="flex-auto">
+                                     <label for="municipio" class="font-medium  mb-2 block">
+                                         Municipio
+                                     </label>
+                                     <input formControlName="municipio" id="municipio" type="text" pInputText fluid />
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+                 <div class="mb-6 col-span-12 md:col-span-6">
+                     <label for="tipoDocumento" class="font-medium  mb-2 block">
+                         Tipo de Documento de Identificação
+                     </label>
+                     <p-select fluid formControlName="tipoDocumento" id="tipoDocumento" [options]="tipoDocumentoOpts"
+                         optionLabel="name" optionValue="value" placeholder="Selecione o Tipo de Documento"
+                         [filter]=" true" filterBy="nome" [showClear]="true">
+                     </p-select>
+                 </div>
+                 <div class="mb-6 col-span-12 md:col-span-6">
+                     <label for="numeroDocumento" class="font-medium  mb-2 block">
+                         Nº Documento de Identificacao
+                     </label>
+                     <input formControlName="numeroDocumento" id="numeroDocumento" type="text" pInputText fluid />
+                 </div>
+                 <div class="mb-6 col-span-12 md:col-span-6">
+                     <label for="areaTotalTerreno" class="font-medium  mb-2 block">
+                         Area Total do Terreno
+                     </label>
+                     <input formControlName="areaTotalTerreno" id="areaTotalTerreno" type="number" pInputText fluid />
+                 </div>
+                 <div class="mb-6 col-span-12 md:col-span-6">
+                     <label for="areaTotalConstrucao" class="font-medium  mb-2 block">
+                         Area Total da Construção
+                     </label>
+                     <input formControlName="areaTotalConstrucao" id="areaTotalConstrucao" type="number" pInputText
+                         fluid />
+                 </div>
+                 <div class="mb-6 col-span-12 md:col-span-6">
+                     <label for="dataInicio" class="font-medium mb-2 block">
+                         Data de Inicio
+                     </label>
+                     <p-datepicker formControlName="dataInicio" appendTo="body" dateFormat="dd/mm/yy"
+                         [showButtonBar]="true" fluid />
+                 </div>
+                 <div class="mb-6 col-span-12 md:col-span-6">
+                     <label for="dataFim" class="font-medium mb-2 block">
+                         Data de Termino
+                     </label>
+                     <p-datepicker formControlName="dataFim" appendTo="body" dateFormat="dd/mm/yy"
+                         [showButtonBar]="true" fluid />
+                 </div>
+                 <div class="mb-6 col-span-12">
+                     <label for="valorRendaMensal" class="font-medium  mb-2 block">
+                         Valor Renda Mensal
+                     </label>
+                     <p-inputgroup>
+                         <p-inputgroup-addon>$</p-inputgroup-addon>
+                         <p-inputnumber formControlName="valorRendaMensal" mode="decimal" [minFractionDigits]="2"
+                             [maxFractionDigits]="2" />
+                     </p-inputgroup>
+                 </div>
+             </div>
+
+         </div>
+         }
          <div class="mb-6 col-span-12">
              <label for="planoEmergencia" class="font-medium  mb-2 block">
                  PLANO DE EMERGENCIA
@@ -345,21 +474,49 @@
              <input formControlName="numEmpregadosCriar" id="numEmpregadosCriar" type="number" pInputText fluid />
          </div>
      </div>
-     <span class="text-xl font-bold mt-6 mb-3 block">
-         COMPROVATIVO DO PAGAMENTO DA TAXA DE PEDIDO DE LICENCA
-     </span>
      <div class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12">
-             <label for="reciboPagamento" class="font-medium  mb-2 block">
-                 Recibo de pagamento da taxa de pedido de licenca
-             </label>
-             <p-selectbutton [options]="stateOpts" formControlName="reciboPagamento" optionLabel="label"
-                 optionValue="value" />
-         </div>
-         <div class="mb-6 col-span-12">
              <label for="outrosDocumentos" class="font-medium  mb-2 block">
-                 OUTROS DOCUMENTOS
+                 DOCUMENTOS
              </label>
+             <ul class="list-decimal list-inside mb-2">
+                 @if (requestForm.get('planta')?.value === true) {
+                 <li>
+                     Planta de Localização do Estabelecimento
+                 </li>
+                 }
+
+                 @if (requestForm.get('documentoPropriedade')?.value === true) {
+                 <li>
+                     Documento comprovativo do direito de propriedade
+                 </li>
+                 }
+
+                 @if (requestForm.get('documentoImovel')?.value === true) {
+                 <li>
+                     Documento comprovativo de posse de imovel
+                 </li>
+                 }
+
+                 @if (showArrendadorForm === true) {
+                 <li>
+                     Contrato de arrendamento
+                 </li>
+                 }
+
+                 @if (requestForm.get('planoEmergencia')?.value === true) {
+                 <li>
+                     Plano de Emergência
+                 </li>
+                 }
+
+                 @if (requestForm.get('estudoAmbiental')?.value === true) {
+                 <li>
+                     Estudo de Impacto Ambiental
+                 </li>
+                 }
+
+             </ul>
              <p-fileupload name="files" method="post" (onUpload)="onUploadDocs($event)" [maxFileSize]="maxFileSize"
                  [multiple]="true" accept="application/pdf" mode="advanced" [url]="uploadURLDocs()"
                  [disabled]="disabledForm">

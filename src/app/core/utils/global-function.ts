@@ -54,7 +54,12 @@ export function mapToAtividadeEconomica(array: any[]): { id: number, codigo: str
             id: item.id,
             codigo: item.codigo,
             descricao: item.descricao,
-            tipoRisco: item.tipoRisco
+            tipoRisco: item.tipoRisco,
+            grupoAtividade: {
+                id: item.grupoAtividade.id,
+                codigo: item.grupoAtividade.codigo,
+                descricao: item.grupoAtividade.descricao,
+            }
         };
     });
 }
@@ -339,4 +344,18 @@ export const tipoRepresentante: { name: string, value: string }[] = [
         name: 'Funcionario',
         value: 'Funcionario'
     }
-] 
+];
+
+/**
+ * Adjusts a given date for the timezone offset so that the local date is preserved.
+ * Returns a string in the format "YYYY-MM-DD".
+ * @param date The date to be adjusted
+ * @returns A string representing the adjusted date in local time
+ */
+export function formatDateForLocalDate(date: Date): string {
+    // Adjust for timezone offset so that local date is preserved
+    const offsetMs = date.getTimezoneOffset() * 60 * 1000;
+    const corrected = new Date(date.getTime() - offsetMs);
+
+    return corrected.toISOString().split('T')[0];
+}

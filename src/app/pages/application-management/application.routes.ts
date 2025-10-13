@@ -81,6 +81,7 @@ export default [
                     aldeiasResolver: getAllAldeiasResolver,
                     sociedadeComercialResolver: getSociedadeComercialResolver,
                     grupoAtividadeResolver: getAllGrupoAtividadeByTipoResolver,
+                    classeAtividadeResolver: getAllClasseAtividadeByTipoResolver,
                 }
             },
             {
