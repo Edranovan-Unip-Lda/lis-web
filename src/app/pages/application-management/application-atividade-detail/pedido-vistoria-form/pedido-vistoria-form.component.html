@@ -14,6 +14,53 @@
          </div>
      </div>
      <span class="text-xl font-bold mt-6 mb-3 block">
+         IDENTIFICACAO DA EMPRESA
+     </span>
+     <div formGroupName="empresa" class="grid grid-cols-12 gap-4">
+         <div class="mb-6 col-span-12 md:col-span-6">
+             <label for="nome" class="font-medium  mb-2 block">
+                 Nome da Empresa
+             </label>
+             <input formControlName="nome" id="nome" type="text" pInputText fluid />
+         </div>
+         <div class="mb-6 col-span-12">
+             <label for="sede" class="font-medium  mb-2 block">
+                 Sede
+             </label>
+             <input formControlName="sede" id="sede" type="text" pInputText fluid />
+         </div>
+         <div class="mb-6 col-span-12 md:col-span-6">
+             <label for="nif" class="font-medium  mb-2 block">
+                 NIF
+             </label>
+             <input formControlName="nif" id="nif" type="text" pInputText fluid />
+         </div>
+         <div class="mb-6 col-span-12 md:col-span-6">
+             <label for="numeroRegistoComercial" class="font-medium  mb-2 block">
+                 Nº de Registo Comercial
+             </label>
+             <input formControlName="numeroRegistoComercial" id="numeroRegistoComercial" type="text" pInputText fluid />
+         </div>
+         <div class="mb-6 col-span-12 md:col-span-6">
+             <label for="telemovel" class="font-medium  mb-2 block">
+                 Telemóvel
+             </label>
+             <input formControlName="telemovel" id="telemovel" type="text" pInputText fluid />
+         </div>
+         <div class="mb-6 col-span-12 md:col-span-6">
+             <label for="email" class="font-medium  mb-2 block">
+                 Email
+             </label>
+             <input formControlName="email" id="email" type="text" pInputText fluid />
+         </div>
+         <div class="mb-6 col-span-12">
+             <label for="gerente" class="font-medium  mb-2 block">
+                 Identificação do administrador/gerente
+             </label>
+             <input formControlName="gerente" id="gerente" type="text" pInputText fluid />
+         </div>
+     </div>
+     <span class="text-xl font-bold mt-6 mb-3 block">
          IDENTIFICACAO DO ESTABELECIMENTO
      </span>
      <div class="grid grid-cols-12 gap-4">
@@ -161,7 +208,7 @@
              <label for="alteracoes" class="font-medium  mb-2 block">
                  Alteracoes a averbar
              </label>
-             <input formControlName="alteracoes" id="alteracoes" type="text" pInputText fluid />
+             <textarea rows="8" cols="30" variant="outlined" pTextarea formControlName="alteracoes"  id="alteracoes" fluid></textarea>
          </div>
          <div class="mb-6 col-span-12">
              <label for="observacao" class="font-medium  mb-2 block">

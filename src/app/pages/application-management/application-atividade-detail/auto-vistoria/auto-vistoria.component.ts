@@ -1,10 +1,10 @@
 import { Aldeia } from '@/core/models/data-master.model';
-import { Aplicante, Documento, PedidoVistoria } from '@/core/models/entities.model';
+import { Aplicante, Documento, Empresa, PedidoVistoria } from '@/core/models/entities.model';
 import { AplicanteStatus, Categoria } from '@/core/models/enums';
 import { AuthenticationService, DataMasterService } from '@/core/services';
 import { DocumentosService } from '@/core/services/documentos.service';
 import { PedidoService } from '@/core/services/pedido.service';
-import { stateOptions, tipoAreaRepresentanteComercial, tipoAreaRepresentanteIndustrial, tipoDocumentoOptions } from '@/core/utils/global-function';
+import { stateOptions, tipoAreaRepresentanteComercial, tipoAreaRepresentanteIndustrial, tipoDocumentoOptions, tipoEletricidadeOptions, tipoLocalOptions } from '@/core/utils/global-function';
 import { Component, OnInit, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -12,6 +12,9 @@ import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
 import { FileUpload } from 'primeng/fileupload';
+import { InputGroup } from 'primeng/inputgroup';
+import { InputGroupAddon } from 'primeng/inputgroupaddon';
+import { InputNumber } from 'primeng/inputnumber';
 import { InputText } from 'primeng/inputtext';
 import { Select, SelectFilterEvent } from 'primeng/select';
 import { SelectButton } from 'primeng/selectbutton';
@@ -21,7 +24,7 @@ import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-auto-vistoria',
-  imports: [ReactiveFormsModule, SelectButton, Textarea, DatePicker, FileUpload, InputText, Select, Button, Toast],
+  imports: [ReactiveFormsModule, SelectButton, Textarea, DatePicker, FileUpload, InputText, Select, Button, Toast, InputGroup, InputGroupAddon, InputNumber],
   templateUrl: './auto-vistoria.component.html',
   styleUrl: './auto-vistoria.component.scss',
   providers: [MessageService]
@@ -50,6 +53,8 @@ export class AutoVistoriaComponent implements OnInit {
   loadingDownloadButtons = new Set<string>();
   loadingRemoveButtons = new Set<string>();
   maxLengthParticipantes = 5;
+  tipoLocalOpts = tipoLocalOptions;
+  tipoEletricidadeOpts = tipoEletricidadeOptions;
 
   constructor(
     private _fb: FormBuilder,
@@ -91,6 +96,15 @@ export class AutoVistoriaComponent implements OnInit {
 
     this.addParticipanteForm();
     this.uploadUrl.set(`${environment.apiUrl}/documentos/${this.authService.currentUserValue.username}/upload`);
+    this.mapRequerenteForm(this.aplicante.empresa);
+
+    this.autoVistoriaForm.valueChanges.subscribe(() => {
+      if (!this.isAllOptionsTrue()) {
+        this.autoVistoriaForm.get('prazo')?.setValue(30, { emitEvent: false });
+      } else {
+        this.autoVistoriaForm.get('prazo')?.setValue(0, { emitEvent: false });
+      }
+    })
   }
 
   save(form: FormGroup) {
@@ -336,15 +350,19 @@ export class AutoVistoriaComponent implements OnInit {
 
 
   classeAtividadeChange(event: any): void {
-    this.autoVistoriaForm.get('requerente')?.get('classeAtividadeCodigo')?.setValue(event.value.descricao);
+    if (event.value) {
+      this.autoVistoriaForm.get('requerente')?.get('classeAtividadeCodigo')?.setValue(event.value.descricao);
+    } else {
+      this.autoVistoriaForm.get('requerente')?.get('classeAtividadeCodigo')?.reset();
+    }
   }
 
   private initForm() {
     this.autoVistoriaForm = this._fb.group({
-      numeroProcesso: ['372932323'],
+      numeroProcesso: [null],
       dataHora: [null],
       local: this._fb.group({
-        local: ['Rua de Teste'],
+        local: [null],
         aldeia: [null],
         suco: new FormControl({ value: null, disabled: true }),
         postoAdministrativo: new FormControl({ value: null, disabled: true }),
@@ -354,164 +372,151 @@ export class AutoVistoriaComponent implements OnInit {
         id: this.authService.currentUserValue.id,
       },
       requerente: this._fb.group({
-        denominacaoSocial: ['Edranovan Unipes, Lda'],
-        numeroRegistoComercial: ['83929323'],
+        denominacaoSocial: new FormControl({ value: null, disabled: true }),
+        numeroRegistoComercial: new FormControl({ value: null, disabled: true }),
         sede: this._fb.group({
-          local: ['Avenida de Teste, n. 23'],
-          aldeia: [null],
+          local: new FormControl({ value: null, disabled: true }),
+          aldeia: new FormControl({ value: null, disabled: true }),
           suco: new FormControl({ value: null, disabled: true }),
           postoAdministrativo: new FormControl({ value: null, disabled: true }),
           municipio: new FormControl({ value: null, disabled: true }),
         }),
-        nif: ['9493044'],
-        gerente: ['Mario da Silva'],
-        telefone: ['4123-1234'],
-        email: ['mario@mail.com'],
+        nif: new FormControl({ value: null, disabled: true }),
+        gerente: new FormControl({ value: null, disabled: true }),
+        telefone: new FormControl({ value: null, disabled: true }),
+        email: new FormControl({ value: null, disabled: true }),
         classeAtividade: [null],
         classeAtividadeCodigo: new FormControl({ value: null, disabled: true }),
-        nomeRepresentante: ['Abrao da Silva'],
-        pai: ['Noel da Silva'],
-        mae: ['Joana da Silva'],
-        dataNascimento: [null],
-        estadoCivil: ['Solteiro'],
-        nacionalidade: ['Timorense'],
-        naturalidade: ['Dili'],
-        postoAdministrativo: [null],
-        municipio: new FormControl({ value: null, disabled: true }),
-        tipoDocumento: [null],
-        numeroDocumento: ['00328383'],
+        nomeRepresentante: new FormControl({ value: null, disabled: true }),
+        pai: new FormControl({ value: null, disabled: true }),
+        mae: new FormControl({ value: null, disabled: true }),
+        dataNascimento: new FormControl({ value: null, disabled: true }),
+        estadoCivil: new FormControl({ value: null, disabled: true }),
+        nacionalidade: new FormControl({ value: null, disabled: true }),
+        naturalidade: new FormControl({ value: null, disabled: true }),
+        tipoDocumento: new FormControl({ value: null, disabled: true }),
+        numeroDocumento: new FormControl({ value: null, disabled: true }),
         residencia: this._fb.group({
-          local: ['Beco de Teste, n. 23'],
-          aldeia: [null],
+          local: new FormControl({ value: null, disabled: true }),
+          aldeia: new FormControl({ value: null, disabled: true }),
           suco: new FormControl({ value: null, disabled: true }),
           postoAdministrativo: new FormControl({ value: null, disabled: true }),
           municipio: new FormControl({ value: null, disabled: true }),
         }),
       }),
-      nomeAtuante: ['Bruno da Alves'],
-      legislacaoUrbanistica: [true],
-      accessoEstrada: [true],
-      escoamentoAguas: [true],
-      alimentacaoEnergia: [true],
-      seperadosSexo: [true],
-      lavatoriosComEspelho: [true],
-      sanitasAutomaticaAgua: [true],
-      comunicacaoVentilacao: [true],
-      esgotoAguas: [true],
-      paredesPavimentos: [true],
-      zonasDestinadas: [true],
-      instalacoesFrigorificas: [true],
-      sectoresLimpos: [true],
-      pisosParedes: [true],
-      pisosResistentes: [true],
-      paredesInteriores: [true],
-      paredes3metros: [true],
-      unioesParedes: [true],
-      ventilacoesNecessarias: [true],
-      iluminacao: [true],
-      aguaPotavel: [true],
-      distribuicaoAgua: [true],
-      redeDistribuicao: [true],
-      redeEsgotos: [true],
-      maximoHigieneSeguranca: [true],
-      equipamentoUtensilios: [true],
-      equipamentoPrimeirosSocorros: [true],
-      recipientesLixo: [true],
-      limpezaDiaria: [true],
-      descreverIrregularidades: ['fdjfdnfjfndjfndjfnkjdfndjfnjdfn'],
-      aptoAberto: [true],
-      comDeficiencias: [false],
+      nomeAtuante: new FormControl({ value: null, disabled: true }),
+      legislacaoUrbanistica: [null],
+      tipoLocal: [null],
+      accessoEstrada: [null],
+      superficie: [null],
+      larguraEstrada: [null],
+      escoamentoAguas: [null],
+      alimentacaoEnergia: [null],
+      tipoEletricidade: [null],
+      seperadosSexo: [null],
+      lavatoriosComEspelho: [null],
+      sanitasAutomaticaAgua: [null],
+      comunicacaoVentilacao: [null],
+      esgotoAguas: [null],
+      paredesPavimentos: [null],
+      zonasDestinadas: [null],
+      instalacoesFrigorificas: [null],
+      sectoresLimpos: [null],
+      pisosParedes: [null],
+      pisosResistentes: [null],
+      paredesInteriores: [null],
+      paredes3metros: [null],
+      unioesParedes: [null],
+      ventilacoesNecessarias: [null],
+      iluminacao: [null],
+      aguaPotavel: [null],
+      distribuicaoAgua: [null],
+      redeDistribuicao: [null],
+      redeEsgotos: [null],
+      maximoHigieneSeguranca: [null],
+      equipamentoUtensilios: [null],
+      equipamentoPrimeirosSocorros: [null],
+      recipientesLixo: [null],
+      limpezaDiaria: [null],
+      descreverIrregularidades: [null, [Validators.required, Validators.minLength(3)]],
+      aptoAberto: [null],
+      comDeficiencias: [null],
       recomendacoes: [null],
-      prazo: [30],
-      documentos: [null],
+      prazo: new FormControl({ value: null, disabled: true }),
+      documental: [null],
       membrosEquipaVistoria: this._fb.array([]),
     });
-    // this.autoVistoriaForm = this._fb.group({
-    //   numeroProcesso: [null],
-    //   dataHora: [null],
-    //   local: this._fb.group({
-    //     local: [null],
-    //     aldeia: [null],
-    //     suco: new FormControl({ value: null, disabled: true }),
-    //     postoAdministrativo: new FormControl({ value: null, disabled: true }),
-    //     municipio: new FormControl({ value: null, disabled: true }),
-    //   }),
-    //   funcionario: {
-    //   id: this.authService.currentUserValue.id,
-    // },
-    //   requerente: this._fb.group({
-    //     denominacaoSocial: [null],
-    //     numeroRegisto: [null],
-    //     sede: this._fb.group({
-    //       local: [null],
-    //       aldeia: [null],
-    //       suco: new FormControl({ value: null, disabled: true }),
-    //       postoAdministrativo: new FormControl({ value: null, disabled: true }),
-    //       municipio: new FormControl({ value: null, disabled: true }),
-    //     }),
-    //     nif: [null],
-    //     gerente: [null],
-    //     telefone: [null],
-    //     email: [null],
-    //     classeAtividade: [null],
-    //     classeAtividadeCodigo: new FormControl({ value: null, disabled: true }),
-    //     nomeRepresentante: [null],
-    //     pai: [null],
-    //     mae: [null],
-    //     dataNascimento: [null],
-    //     estadoCivil: [null],
-    //     nacionalidade: [null],
-    //     naturalidade: [null],
-    //     postoAdministrativo: [null],
-    //     municipio: new FormControl({ value: null, disabled: true }),
-    //     tipoDocumento: [null],
-    //     numeroDocumento: [null],
-    //     residencia: this._fb.group({
-    //       local: [null],
-    //       aldeia: [null],
-    //       suco: new FormControl({ value: null, disabled: true }),
-    //       postoAdministrativo: new FormControl({ value: null, disabled: true }),
-    //       municipio: new FormControl({ value: null, disabled: true }),
-    //     }),
-    //   }),
-    //   nomeAtuante: [null],
-    //   legislacaoUrbanistica: [null],
-    //   accessoEstrada: [null],
-    //   escoamentoAguas: [null],
-    //   alimentacaoEnergia: [null],
-    //   seperadosSexo: [null],
-    //   lavatoriosComEspelho: [null],
-    //   sanitasAutomaticaAgua: [null],
-    //   comunicacaoVentilacao: [null],
-    //   esgotoAguas: [null],
-    //   paredesPavimentos: [null],
-    //   zonasDestinadas: [null],
-    //   instalacoesFrigorificas: [null],
-    //   sectoresLimpos: [null],
-    //   pisosParedes: [null],
-    //   pisosResistentes: [null],
-    //   paredesInteriores: [null],
-    //   paredes3metros: [null],
-    //   unioesParedes: [null],
-    //   ventilacoesNecessarias: [null],
-    //   iluminacao: [null],
-    //   aguaPotavel: [null],
-    //   distribuicaoAgua: [null],
-    //   redeDistribuicao: [null],
-    //   redeEsgotos: [null],
-    //   maximoHigieneSeguranca: [null],
-    //   equipamentoUtensilios: [null],
-    //   equipamentoPrimeirosSocorros: [null],
-    //   recipientesLixo: [null],
-    //   limpezaDiaria: [null],
-    //   descreverIrregularidades: [null],
-    //   aptoAberto: [null],
-    //   comDeficiencias: [null],
-    //   recomendacoes: [null],
-    //   prazo: [null],
-    //   documental: [null],
-    //   membrosEquipaVistoria: this._fb.array([]),
-    // });
+  }
+
+  /**
+   * Verifica se todas as opcoes de uma auto-vistoria estao como true.
+   * Se a categoria for comercial, verifica se todas as opcoes de comecialidade estao como true.
+   * Se a categoria for diferente de comercial, verifica se todas as opcoes de comecialidade e sanitas automaticas estao como true.
+   * @return boolean - True se todas as opcoes estiverem como true, false caso contrario.
+   */
+  private isAllOptionsTrue(): boolean {
+    if (this.categoria === Categoria.comercial) {
+      return this.autoVistoriaForm.get('legislacaoUrbanistica')?.value &&
+        this.autoVistoriaForm.get('accessoEstrada')?.value &&
+        this.autoVistoriaForm.get('escoamentoAguas')?.value &&
+        this.autoVistoriaForm.get('alimentacaoEnergia')?.value &&
+        this.autoVistoriaForm.get('tipoEletricidade')?.value &&
+
+        this.autoVistoriaForm.get('seperadosSexo')?.value &&
+        this.autoVistoriaForm.get('lavatoriosComEspelho')?.value &&
+        this.autoVistoriaForm.get('comunicacaoVentilacao')?.value &&
+        this.autoVistoriaForm.get('esgotoAguas')?.value &&
+        this.autoVistoriaForm.get('paredesPavimentos')?.value &&
+        this.autoVistoriaForm.get('zonasDestinadas')?.value &&
+        this.autoVistoriaForm.get('instalacoesFrigorificas')?.value &&
+        this.autoVistoriaForm.get('sectoresLimpos')?.value &&
+        this.autoVistoriaForm.get('pisosParedes')?.value &&
+        this.autoVistoriaForm.get('pisosResistentes')?.value &&
+        this.autoVistoriaForm.get('paredesInteriores')?.value &&
+        this.autoVistoriaForm.get('paredes3metros')?.value &&
+        this.autoVistoriaForm.get('unioesParedes')?.value &&
+        this.autoVistoriaForm.get('iluminacao')?.value &&
+        this.autoVistoriaForm.get('aguaPotavel')?.value &&
+        this.autoVistoriaForm.get('distribuicaoAgua')?.value &&
+        this.autoVistoriaForm.get('redeDistribuicao')?.value &&
+        this.autoVistoriaForm.get('redeEsgotos')?.value &&
+        this.autoVistoriaForm.get('equipamentoUtensilios')?.value &&
+        this.autoVistoriaForm.get('equipamentoPrimeirosSocorros')?.value &&
+        this.autoVistoriaForm.get('recipientesLixo')?.value &&
+        this.autoVistoriaForm.get('limpezaDiaria')?.value
+    } else {
+      return this.autoVistoriaForm.get('legislacaoUrbanistica')?.value &&
+        this.autoVistoriaForm.get('accessoEstrada')?.value &&
+        this.autoVistoriaForm.get('escoamentoAguas')?.value &&
+        this.autoVistoriaForm.get('alimentacaoEnergia')?.value &&
+        this.autoVistoriaForm.get('tipoEletricidade')?.value &&
+
+        this.autoVistoriaForm.get('seperadosSexo')?.value &&
+        this.autoVistoriaForm.get('lavatoriosComEspelho')?.value &&
+        this.autoVistoriaForm.get('sanitasAutomaticaAgua')?.value &&
+        this.autoVistoriaForm.get('comunicacaoVentilacao')?.value &&
+        this.autoVistoriaForm.get('esgotoAguas')?.value &&
+        this.autoVistoriaForm.get('paredesPavimentos')?.value &&
+        this.autoVistoriaForm.get('pisosParedes')?.value &&
+        this.autoVistoriaForm.get('paredesInteriores')?.value &&
+        this.autoVistoriaForm.get('paredes3metros')?.value &&
+        this.autoVistoriaForm.get('ventilacoesNecessarias')?.value &&
+        this.autoVistoriaForm.get('iluminacao')?.value &&
+        this.autoVistoriaForm.get('aguaPotavel')?.value &&
+        this.autoVistoriaForm.get('distribuicaoAgua')?.value &&
+        this.autoVistoriaForm.get('redeDistribuicao')?.value &&
+        this.autoVistoriaForm.get('redeEsgotos')?.value &&
+        this.autoVistoriaForm.get('maximoHigieneSeguranca')?.value &&
+        this.autoVistoriaForm.get('equipamentoPrimeirosSocorros')?.value &&
+        this.autoVistoriaForm.get('recipientesLixo')?.value &&
+        this.autoVistoriaForm.get('zonasDestinadas')?.value &&
+        this.autoVistoriaForm.get('instalacoesFrigorificas')?.value &&
+        this.autoVistoriaForm.get('sectoresLimpos')?.value &&
+        this.autoVistoriaForm.get('pisosResistentes')?.value &&
+        this.autoVistoriaForm.get('unioesParedes')?.value &&
+        this.autoVistoriaForm.get('equipamentoUtensilios')?.value &&
+        this.autoVistoriaForm.get('limpezaDiaria')?.value
+    }
   }
 
   private createParticipanteForm(): FormGroup {
@@ -520,6 +525,9 @@ export class AutoVistoriaComponent implements OnInit {
       nome: [null, [Validators.required, Validators.minLength(3)]],
       areaRepresentante: [null, [Validators.required, Validators.minLength(3)]],
       cargo: [null, [Validators.required, Validators.minLength(3)]],
+      tipoDocumento: [null, Validators.required],
+      numeroDocumento: [null, Validators.required],
+      telemovel: [null, Validators.required],
     });
   }
 
@@ -544,5 +552,42 @@ export class AutoVistoriaComponent implements OnInit {
 
   get membrosEquipaVistoria(): FormArray {
     return this.autoVistoriaForm.get('membrosEquipaVistoria') as FormArray;
+  }
+
+  private mapRequerenteForm(empresa: Empresa): void {
+    this.autoVistoriaForm.patchValue({
+      requerente: {
+        denominacaoSocial: empresa.nome,
+        numeroRegistoComercial: empresa.numeroRegistoComercial,
+        sede: {
+          local: empresa.sede.local,
+          aldeia: empresa.sede.aldeia.id,
+          suco: empresa.sede.aldeia.suco.nome,
+          postoAdministrativo: empresa.sede.aldeia.suco.postoAdministrativo.nome,
+          municipio: empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome
+        },
+        nif: empresa.nif,
+        gerente: empresa.gerente.nome,
+        telefone: empresa.gerente.telefone,
+        email: empresa.gerente.email,
+        nomeRepresentante: empresa.representante.nome,
+        pai: empresa.representante.pai,
+        mae: empresa.representante.mae,
+        dataNascimento: new Date(empresa.representante.dataNascimento),
+        estadoCivil: empresa.representante.estadoCivil,
+        nacionalidade: empresa.representante.nacionalidade,
+        naturalidade: empresa.representante.naturalidade,
+        tipoDocumento: empresa.representante.tipoDocumento,
+        numeroDocumento: empresa.representante.numeroDocumento,
+        residencia: {
+          local: empresa.representante.morada.local,
+          aldeia: empresa.representante.morada.aldeia.id,
+          suco: empresa.representante.morada.aldeia.suco.nome,
+          postoAdministrativo: empresa.representante.morada.aldeia.suco.postoAdministrativo.nome,
+          municipio: empresa.representante.morada.aldeia.suco.postoAdministrativo.municipio.nome
+        },
+      },
+      nomeAtuante: empresa.nome,
+    });
   }
 }

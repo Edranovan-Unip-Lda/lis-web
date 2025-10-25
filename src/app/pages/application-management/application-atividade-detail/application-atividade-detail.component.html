@@ -3,7 +3,7 @@
         Candidatura para o Pedido de Licenca para Exercicio de Atividade {{aplicanteData.categoria | titlecase}}
     </span>
 
-    <p-stepper [value]="1" class="basis-[50rem]" [linear]="true">
+    <p-stepper [value]="3" class="basis-[50rem]" [linear]="true">
         <p-step-list>
             <p-step [value]="1">Detalho da Aplicação</p-step>
             @if (isSubmitted(aplicanteData)) {
@@ -359,11 +359,10 @@
                                         </div>
                                         <div>
                                             <h3 class="text-lg font-semibold text-white">
-                                                Revisto pelo Chefe de Departamento
+                                                Em Análise
                                             </h3>
                                             <p class="text-sm text-gray-400">
-                                                Detalhes do Auto Vistoria
-                                                {{aplicanteData.categoria |titlecase}}
+                                                Em análise pelo chefe de departamento.
                                             </p>
                                         </div>
                                     </div>

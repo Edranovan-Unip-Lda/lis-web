@@ -346,6 +346,27 @@ export const tipoRepresentante: { name: string, value: string }[] = [
     }
 ];
 
+export const tipoLocalOptions: { name: string, value: string }[] = [
+    {
+        name: 'Comercial',
+        value: 'Comercial'
+    },
+    {
+        name: 'Residencial',
+        value: 'Residencial'
+    }
+];
+export const tipoEletricidadeOptions: { name: string, value: string }[] = [
+    {
+        name: 'Monofásico - (Single-phase)',
+        value: 'Monofásico'
+    },
+    {
+        name: 'Trifásico (Three-phase)',
+        value: 'Trifásico'
+    }
+];
+
 /**
  * Adjusts a given date for the timezone offset so that the local date is preserved.
  * Returns a string in the format "YYYY-MM-DD".

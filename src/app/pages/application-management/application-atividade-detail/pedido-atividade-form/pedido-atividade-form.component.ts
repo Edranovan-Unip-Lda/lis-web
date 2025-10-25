@@ -471,6 +471,20 @@ export class PedidoAtividadeFormComponent {
   }
 
   private mapFormData(form: FormGroup): any {
+    let mapArrendador = null;
+    if (form.value.contratoArrendamento) {
+      mapArrendador = {
+        ...form.value.arrendador,
+        endereco: {
+          ...form.value.arrendador.endereco,
+          aldeia: {
+            id: form.value.gerente.morada.aldeia
+          }
+        },
+        dataInicio: formatDateForLocalDate(form.value.arrendador.dataInicio),
+        dataFim: formatDateForLocalDate(form.value.arrendador.dataFim),
+      }
+    }
     return {
       ...form.getRawValue(),
       empresaSede: {
@@ -505,17 +519,7 @@ export class PedidoAtividadeFormComponent {
           }
         }
       },
-      arrendador: {
-        ...form.value.arrendador,
-        endereco: {
-          ...form.value.arrendador.endereco,
-          aldeia: {
-            id: form.value.gerente.morada.aldeia
-          }
-        },
-        dataInicio: formatDateForLocalDate(form.value.arrendador.dataInicio),
-        dataFim: formatDateForLocalDate(form.value.arrendador.dataFim),
-      },
+      arrendador: mapArrendador,
       documentos: this.uploadedDocs
     }
   }
@@ -539,16 +543,16 @@ export class PedidoAtividadeFormComponent {
   }
 
   private mapRepresentante(obj: Representante): void {
-    const newObj: any = {
-      ...obj
-    };
-    newObj.morada.suco = obj.morada.aldeia.suco.nome;
-    newObj.morada.postoAdministrativo = obj.morada.aldeia.suco.postoAdministrativo.nome;
-    newObj.morada.municipio = obj.morada.aldeia.suco.postoAdministrativo.municipio.nome;
-    newObj.morada.aldeia = obj.morada.aldeia.id;
     this.requestForm.patchValue({
       representante: {
-        ...newObj,
+        ...obj,
+        morada: {
+          ...obj.morada,
+          aldeia: obj.morada.aldeia.id,
+          suco: obj.morada.aldeia.suco.nome,
+          postoAdministrativo: obj.morada.aldeia.suco.postoAdministrativo.nome,
+          municipio: obj.morada.aldeia.suco.postoAdministrativo.municipio.nome,
+        }
       }
     });
   }

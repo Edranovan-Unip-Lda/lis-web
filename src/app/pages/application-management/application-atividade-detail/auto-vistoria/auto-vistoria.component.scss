@@ -1,0 +1,19 @@
+::ng-deep .p-selectbutton .p-togglebutton:first-child {
+    &.p-togglebutton.p-togglebutton-checked {
+        color: #34d399 !important;
+    }
+
+    &.p-togglebutton-checked .p-togglebutton-content {
+        background-color: #34d3992c !important;
+    }
+}
+
+::ng-deep .p-selectbutton .p-togglebutton:last-child {
+    &.p-togglebutton.p-togglebutton-checked {
+        color: #d33434 !important;
+    }
+
+    &.p-togglebutton-checked .p-togglebutton-content {
+        background-color: #d334342c !important;
+    }
+}

@@ -1,9 +1,9 @@
 import { Aldeia } from '@/core/models/data-master.model';
-import { Aplicante, PedidoVistoria } from '@/core/models/entities.model';
+import { Aplicante, Empresa, PedidoVistoria } from '@/core/models/entities.model';
 import { AplicanteStatus, Categoria } from '@/core/models/enums';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { PedidoService } from '@/core/services/pedido.service';
-import { caraterizacaEstabelecimentoOptions, mapToAtividadeEconomica, mapToGrupoAtividade, mapToIdAndNome, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEmpresaOptions, tipoPedidoVistoriaComercialOptions, tipoPedidoVistoriaIndustrialOptions } from '@/core/utils/global-function';
+import { caraterizacaEstabelecimentoOptions, mapToIdAndNome, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEmpresaOptions, tipoPedidoVistoriaComercialOptions, tipoPedidoVistoriaIndustrialOptions } from '@/core/utils/global-function';
 import { Component, Input, output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -16,7 +16,7 @@ import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-pedido-vistoria-form',
-  imports: [Select, ReactiveFormsModule, InputText, Textarea, Button, Toast],
+  imports: [Select, ReactiveFormsModule, InputText, Textarea, Button, Toast, Textarea],
   templateUrl: './pedido-vistoria-form.component.html',
   styleUrl: './pedido-vistoria-form.component.scss',
   providers: [MessageService]
@@ -68,6 +68,7 @@ export class PedidoVistoriaFormComponent {
       this.pedido = this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
     }
 
+    this.mapEmpresaForm(this.aplicanteData.empresa);
 
     if (this.pedido) {
       this.mapPedidoForm(this.pedido);
@@ -201,14 +202,25 @@ export class PedidoVistoriaFormComponent {
     }
   }
 
-  private mapPedidoForm(pedido: PedidoVistoria): void {
-    // let grupoAtividade = {
-    //   id: pedido.classeAtividade.grupoAtividade.id,
-    //   codigo: pedido.classeAtividade.grupoAtividade.codigo,
-    //   descricao: pedido.classeAtividade.grupoAtividade.descricao,
-    //   tipoRisco: pedido.classeAtividade.grupoAtividade.tipoRisco
-    // }
+  private mapEmpresaForm(empresa: Empresa): void {
+    this.vistoriaRequestForm.patchValue({
+      empresa: {
+        nome: empresa.nome,
+        sede: `${empresa.sede.local} - ${empresa.sede.aldeia.nome}, ${empresa.sede.aldeia.suco.nome}, ${empresa.sede.aldeia.suco.postoAdministrativo.nome}, ${empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome}`,
+        aldeia: empresa.sede.aldeia.nome,
+        suco: empresa.sede.aldeia.suco.nome,
+        postoAdministrativo: empresa.sede.aldeia.suco.postoAdministrativo.nome,
+        municipio: empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome,
+        nif: empresa.nif,
+        numeroRegistoComercial: empresa.numeroRegistoComercial,
+        telemovel: empresa.telemovel,
+        email: empresa.email,
+        gerente: empresa.gerente.nome,
+      }
+    });
+  }
 
+  private mapPedidoForm(pedido: PedidoVistoria): void {
     this.vistoriaRequestForm.patchValue({
       ...pedido,
       id: pedido.id,
@@ -241,25 +253,25 @@ export class PedidoVistoriaFormComponent {
       },
       classeAtividadeCodigo: pedido.classeAtividade.descricao,
     });
-
-    // this.dataMasterService.getClassesByGrupoId(pedido.classeAtividade.grupoAtividade.id).subscribe({
-    //   next: response => {
-    //     let classeAtividade = {
-    //       id: pedido.classeAtividade.id,
-    //       codigo: pedido.classeAtividade.codigo,
-    //       descricao: pedido.classeAtividade.descricao,
-    //       tipoRisco: pedido.classeAtividade.tipoRisco
-    //     };
-    //     this.listaClasseAtividade = mapToAtividadeEconomica(response._embedded.classeAtividade);
-    //     this.vistoriaRequestForm.get('classeAtividade')?.setValue(classeAtividade);
-    //   }
-    // });
   }
 
   private initForm(): void {
     this.vistoriaRequestForm = this._fb.group({
       id: [null],
       tipoVistoria: [null],
+      empresa: this._fb.group({
+        nome: new FormControl({ value: null, disabled: true }),
+        sede: new FormControl({ value: null, disabled: true }),
+        aldeia: new FormControl({ value: null, disabled: true }),
+        suco: new FormControl({ value: null, disabled: true }),
+        postoAdministrativo: new FormControl({ value: null, disabled: true }),
+        municipio: new FormControl({ value: null, disabled: true }),
+        nif: new FormControl({ value: null, disabled: true }),
+        numeroRegistoComercial: new FormControl({ value: null, disabled: true }),
+        telemovel: new FormControl({ value: null, disabled: true }),
+        email: new FormControl({ value: null, disabled: true }),
+        gerente: new FormControl({ value: null, disabled: true }),
+      }),
       nomeEstabelecimento: [null],
       localEstabelecimento: this._fb.group({
         id: [null],

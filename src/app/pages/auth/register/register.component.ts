@@ -460,6 +460,17 @@ export class Register {
             this.empresaForm.get('utilizador.password')?.invalid);
     }
 
+    getCurrentPosition(): void {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                console.log(position.coords);
+
+                this.empresaForm.get('latitude')?.setValue(position.coords.latitude);
+                this.empresaForm.get('longitude')?.setValue(position.coords.longitude);
+            });
+        }
+    }
+
     private formatDateForLocalDate(date: Date): string {
         // Adjust for timezone offset so that local date is preserved
         const offsetMs = date.getTimezoneOffset() * 60 * 1000;
@@ -495,7 +506,6 @@ export class Register {
             numeroRegistoComercial: [null, [Validators.required]],
             capitalSocial: [null, [Validators.required]],
             dataRegisto: [null, [Validators.required]],
-            telefone: [null, [Validators.required]],
             telemovel: [null, [Validators.required]],
             tipoPropriedade: [null, [Validators.required]],
             acionistas: this._fb.array([]),
@@ -504,12 +514,15 @@ export class Register {
             balancoTotalAnual: [null, [Validators.required]],
             latitude: [null, [Validators.required, Validators.min(-90), Validators.max(90)]],
             longitude: [null, [Validators.required, Validators.min(-180), Validators.max(180)]],
+            email: [null, [Validators.required, Validators.email]],
             gerente: this._fb.group({
                 nome: [null],
                 telefone: [null],
                 email: [null, [Validators.email]],
                 tipoDocumento: [null, [Validators.required]],
                 numeroDocumento: [, [Validators.required]],
+                nacionalidade: [null, [Validators.required]],
+                naturalidade: [null, [Validators.required]],
                 morada: this._fb.group({
                     local: [null, [Validators.required]],
                     municipio: new FormControl({ value: null, disabled: true }),
@@ -545,67 +558,4 @@ export class Register {
             }),
         });
     }
-    // private initForm(): void {
-    //     this.empresaForm = this._fb.group({
-    //         nome: ['Comércio Timorense, Lda', [Validators.required, Validators.minLength(3)]],
-    //         nif: ['123456789', [Validators.required]],
-    //         sede: this._fb.group({
-    //             local: ['Rua Nicolau Lobato, Díli', [Validators.required]],
-    //             municipio: new FormControl({ value: 'Díli', disabled: true }),
-    //             postoAdministrativo: new FormControl({ value: 'Dom Aleixo', disabled: true }),
-    //             suco: new FormControl({ value: 'Caicoli', disabled: true }),
-    //             aldeia: ['Bairro Pite', [Validators.required]],
-    //         }),
-    //         sociedadeComercial: ['Sociedade por Quotas', [Validators.required]],
-    //         numeroRegistoComercial: ['MCI/COMERCIAL/0002/VII/MMXXV', [Validators.required]],
-    //         capitalSocial: [50000, [Validators.required]],
-    //         dataRegisto: ['2023-09-18', [Validators.required]],
-    //         telefone: ['3312345', [Validators.required]],
-    //         telemovel: ['77233445', [Validators.required]],
-    //         tipoPropriedade: ['Sociedade', [Validators.required]],
-    //         acionistas: this._fb.array([
-    //         ]),
-    //         totalTrabalhadores: [25],
-    //         volumeNegocioAnual: [120000],
-    //         balancoTotalAnual: [90000, [Validators.required]],
-    //         gerente: this._fb.group({
-    //             nome: ['Ana Fernandes'],
-    //             telefone: ['77311223'],
-    //             email: ['ana.fernandes@example.com', [Validators.email]],
-    //             morada: this._fb.group({
-    //                 local: ['Rua de Balide, Díli', [Validators.required]],
-    //                 municipio: new FormControl({ value: 'Díli', disabled: true }),
-    //                 postoAdministrativo: new FormControl({ value: 'Dom Aleixo', disabled: true }),
-    //                 suco: new FormControl({ value: 'Lahane', disabled: true }),
-    //                 aldeia: ['Kuluhun', [Validators.required]],
-    //             }),
-    //             tipoDocumento: [],
-    //             numeroDocumento: ['93928873'],
-    //         }),
-    //         representante: this._fb.group({
-    //             nome: ['Carlos Almeida', [Validators.required]],
-    //             pai: ['José Almeida', [Validators.required]],
-    //             mae: ['Rosa da Costa', [Validators.required]],
-    //             dataNascimento: ['1985-04-22', [Validators.required]],
-    //             estadoCivil: ['Casado', [Validators.required]],
-    //             nacionalidade: ['Timorense', [Validators.required]],
-    //             naturalidade: ['Díli', [Validators.required]],
-    //             telefone: ['77123456', [Validators.required]],
-    //             email: ['carlos.almeida@example.com', [Validators.email]],
-    //             morada: this._fb.group({
-    //                 local: ['Rua Formosa, Díli', [Validators.required]],
-    //                 municipio: new FormControl({ value: 'Díli', disabled: true }),
-    //                 postoAdministrativo: new FormControl({ value: 'Vera Cruz', disabled: true }),
-    //                 suco: new FormControl({ value: 'Motael', disabled: true }),
-    //                 aldeia: ['Bairo Pite', [Validators.required]],
-    //             }),
-    //             tipoDocumento: [],
-    //             numeroDocumento: ['00382389'],
-    //         }),
-    //         utilizador: this._fb.group({
-    //             email: ['empresa@example.com', [Validators.required, Validators.email]],
-    //             password: ['123456', [Validators.required, Validators.minLength(6)]],
-    //         }),
-    //     });
-    // }
 }

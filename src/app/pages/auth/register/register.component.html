@@ -148,29 +148,32 @@
                                          </div>
                                      </div>
                                  </div>
-                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                 <div class="mb-6 col-span-12 md:col-span-1 flex items-end justify-center">
+                                     <p-button (click)="getCurrentPosition()" icon="pi pi-map-marker" />
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-5">
                                      <label for="longitude" class="font-medium mb-2 block">
                                          Longitude
                                      </label>
                                      <input formControlName="longitude" id="longitude" type="number" pInputText fluid />
                                  </div>
-                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                 <div class="mb-6 col-span-12 md:col-span-5">
                                      <label for="latitude" class="font-medium mb-2 block">
                                          Latitude
                                      </label>
                                      <input formControlName="latitude" id="latitude" type="number" pInputText fluid />
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
-                                     <label for="telefone" class="font-medium mb-2 block">
-                                         Nº Telefone
-                                     </label>
-                                     <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
-                                 </div>
-                                 <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="telemovel" class="font-medium mb-2 block">
-                                         Nº Telemóvel
+                                         Nº Telemóvel/Telefone
                                      </label>
                                      <input formControlName="telemovel" id="telemovel" type="tel" pInputText fluid />
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="email" class="font-medium  mb-2 block">
+                                         Email
+                                     </label>
+                                     <input formControlName="email" id="email" type="email" pInputText fluid />
                                  </div>
                                  <div class="mb-6 col-span-12">
                                      <label for="outrosDocumentos" class="font-medium  mb-2 block">
@@ -187,7 +190,7 @@
                                              NIF da Empresa
                                          </li>
                                          <li>
-                                             Declaração Anual de Imposto de Renda
+                                             Relatório do imposto sobre o rendimento anual
                                          </li>
                                          <li>
                                              Documento de Identificação do(s) Proprietário(s) / Acionista(s)
@@ -420,6 +423,20 @@
                                          Nº Telefone
                                      </label>
                                      <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="nacionalidade" class="font-medium  mb-2 block">
+                                         Nacionalidade
+                                     </label>
+                                     <input formControlName="nacionalidade" id="nacionalidade" type="text" pInputText
+                                         fluid />
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="naturalidade" class="font-medium  mb-2 block">
+                                         Naturalidade
+                                     </label>
+                                     <input formControlName="naturalidade" id="naturalidade" type="text" pInputText
+                                         fluid />
                                  </div>
                                  <div class="mb-6 col-span-12">
                                      <div formGroupName="morada" class="flex flex-col gap-6 w-full sm:w-auto mb-6">

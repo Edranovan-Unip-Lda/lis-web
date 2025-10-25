@@ -1,5 +1,5 @@
 import { Aplicante, Documento, Fatura, PedidoVistoria } from '@/core/models/entities.model';
-import { AplicanteStatus } from '@/core/models/enums';
+import { AplicanteStatus, TipoPedidoLicenca, TipoPedidoVistoria } from '@/core/models/enums';
 import { AuthenticationService } from '@/core/services';
 import { PedidoService } from '@/core/services/pedido.service';
 import { calculateCommercialLicenseTax } from '@/core/utils/global-function';
@@ -14,6 +14,7 @@ import { InputGroupAddon } from 'primeng/inputgroupaddon';
 import { InputNumber } from 'primeng/inputnumber';
 import { MultiSelect } from 'primeng/multiselect';
 import { Toast } from 'primeng/toast';
+import { filter } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -67,6 +68,7 @@ export class FaturaVistoriaFormComponent {
               superficie: this.aplicanteData.pedidoLicencaAtividade.arrendador.areaTotalConstrucao
             });
           }
+          this.setTaxaAto(this.aplicanteData.pedidoLicencaAtividade.tipo, this.pedidoVistoria.tipoVistoria);
         }
       }
     }
@@ -213,6 +215,59 @@ export class FaturaVistoriaFormComponent {
     });
   }
 
+  private setTaxaAto(tipoPedidoAtividade: TipoPedidoLicenca, tipoVistoria: TipoPedidoVistoria) {
+    let filtered: number[] = [];
+    switch (tipoPedidoAtividade) {
+      case TipoPedidoLicenca.novo:
+        filtered = this.listaPedidoAto.filter(
+          t => t.ato && /licen[cç]a para exercício/i.test(t.ato)
+        ).map(t => t.id);
+        this.faturaForm.get('taxas')?.setValue(filtered);
+        break;
+
+      case TipoPedidoLicenca.alteracao:
+        filtered = this.listaPedidoAto.filter(
+          t => t.ato && /mudan[cç]a ou altera[cç]ões/i.test(t.ato)
+        ).map(t => t.id);
+        this.faturaForm.get('taxas')?.setValue(filtered);
+        break;
+      case TipoPedidoLicenca.renovacao:
+        filtered = this.listaPedidoAto.filter(
+          t => t.ato && /renova[cç]ão/i.test(t.ato)
+        ).map(t => t.id);
+        this.faturaForm.get('taxas')?.setValue(filtered);
+        break;
+    }
+
+    switch (tipoVistoria) {
+      case TipoPedidoVistoria.inicial:
+        filtered = filtered.concat(this.listaPedidoAto.filter(
+          t => t.ato && /inicial/i.test(t.ato)
+        ).map(t => t.id));
+        this.faturaForm.get('taxas')?.setValue(filtered);
+        break;
+      case TipoPedidoVistoria.exploracao:
+        filtered = filtered.concat(this.listaPedidoAto.filter(
+          t => t.ato && /explora[cç]ão/i.test(t.ato)
+        ).map(t => t.id));
+        this.faturaForm.get('taxas')?.setValue(filtered);
+        break;
+      case TipoPedidoVistoria.subsequente:
+        filtered = filtered.concat(this.listaPedidoAto.filter(
+          t => t.ato && /subsequente/i.test(t.ato)
+        ).map(t => t.id))
+        this.faturaForm.get('taxas')?.setValue(filtered);
+        break;
+      case TipoPedidoVistoria.previa:
+        filtered = filtered.concat(this.listaPedidoAto.filter(
+          t => t.ato && /prévia/i.test(t.ato)
+        ).map(t => t.id));
+        this.faturaForm.get('taxas')?.setValue(filtered);
+        break;
+
+    }
+  }
+
   bytesToMBs(value: number): string {
     if (!value && value !== 0) return '';
     const mb = value / (1024 * 1024);
@@ -244,9 +299,9 @@ export class FaturaVistoriaFormComponent {
           this.faturaForm.get('total')?.setValue(
             this.getTotalFatura(superficie, taxas)
           );
+        } else {
+          this.faturaForm.get('total')?.setValue(0);
         }
-
-
       }
     })
   }
@@ -294,8 +349,8 @@ export class FaturaVistoriaFormComponent {
   private initForm(): void {
     this.faturaForm = this._fb.group({
       id: [null],
-      taxas: [null, [Validators.required]],
-      superficie: new FormControl({ value: null, disabled: true, }),
+      taxas: new FormControl({ value: null, disabled: true, }),
+      superficie: [null, [Validators.required]],
       total: new FormControl({ value: null, disabled: true, }, [Validators.required]),
     });
   }

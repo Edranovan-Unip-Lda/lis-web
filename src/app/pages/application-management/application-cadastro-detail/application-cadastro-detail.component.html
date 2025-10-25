@@ -181,6 +181,32 @@
                                      class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
                                      <div class="flex items-center mb-4 sm:mb-0">
                                          <div
+                                             class="flex items-center justify-center h-12 w-12 rounded-full bg-orange-500 text-white mr-4">
+                                             <i class="bi bi-person-check text-2xl"></i>
+                                         </div>
+                                         <div>
+                                             <h3 class="text-lg font-semibold text-white">
+                                                 Em Análise
+                                             </h3>
+                                             <p class="text-sm text-gray-400">
+                                                 Em análise pelo chefe de departamento.
+                                             </p>
+                                         </div>
+                                     </div>
+                                     <div class="flex items-center space-x-4">
+                                         @if (aplicanteData.estado === 'REVISTO' || aplicanteData.estado === 'APROVADO')
+                                         {
+                                         <p-tag [value]="'REVISTO'" [severity]="'SUBMETIDO'" />
+                                         }
+                                         @else {
+                                         <p-tag value="Em curso" [severity]="'info'" icon="pi pi-clock" />
+                                         }
+                                     </div>
+                                 </div>
+                                 <div
+                                     class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                                     <div class="flex items-center mb-4 sm:mb-0">
+                                         <div
                                              class="flex items-center justify-center h-12 w-12 rounded-full bg-purple-500 text-white mr-4">
                                              <i class="bi bi-award text-2xl"></i>
                                          </div>
@@ -238,9 +264,57 @@
                              </div>
                          </div>
                          <span class="text-xl font-bold mt-6 mb-3 block">
+                             IDENTIFICACAO DA EMPRESA
+                         </span>
+                         <div formGroupName="empresa" class="grid grid-cols-12 gap-4">
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="nome" class="font-medium  mb-2 block">
+                                     Nome da Empresa
+                                 </label>
+                                 <input formControlName="nome" id="nome" type="text" pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12">
+                                 <label for="sede" class="font-medium  mb-2 block">
+                                     Sede
+                                 </label>
+                                 <input formControlName="sede" id="sede" type="text" pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="nif" class="font-medium  mb-2 block">
+                                     NIF
+                                 </label>
+                                 <input formControlName="nif" id="nif" type="text" pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="numeroRegistoComercial" class="font-medium  mb-2 block">
+                                     Nº de Registo Comercial
+                                 </label>
+                                 <input formControlName="numeroRegistoComercial" id="numeroRegistoComercial" type="text"
+                                     pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="telemovel" class="font-medium  mb-2 block">
+                                     Telemóvel
+                                 </label>
+                                 <input formControlName="telemovel" id="telemovel" type="text" pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-6">
+                                 <label for="email" class="font-medium  mb-2 block">
+                                     Email
+                                 </label>
+                                 <input formControlName="email" id="email" type="text" pInputText fluid />
+                             </div>
+                             <div class="mb-6 col-span-12">
+                                 <label for="gerente" class="font-medium  mb-2 block">
+                                     Identificação do administrador/gerente
+                                 </label>
+                                 <input formControlName="gerente" id="gerente" type="text" pInputText fluid />
+                             </div>
+                         </div>
+                         <span class="text-xl font-bold mt-6 mb-3 block">
                              IDENTIFICACAO DO ESTABELECIMENTO
                          </span>
-                         <div class="grid grid-cols-12 gap-4">
+                         <div class="grid grid-cols-12 gap-4 mb-8">
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="nomeEstabelecimento" class="font-medium  mb-2 block">
                                      Nome do Estabelecimento
@@ -329,13 +403,16 @@
                              </div>
 
                              @if (showGpsCoordinates) {
-                             <div class="mb-6 col-span-12 md:col-span-6">
+                             <div class="mb-6 col-span-12 md:col-span-1 flex items-end justify-center">
+                                 <p-button (click)="getCurrentPosition()" icon="pi pi-map-marker" />
+                             </div>
+                             <div class="mb-6 col-span-12 md:col-span-5">
                                  <label for="longitude" class="font-medium  mb-2 block">
                                      Longitude
                                  </label>
                                  <input formControlName="longitude" id="longitude" type="text" pInputText fluid />
                              </div>
-                             <div class="mb-6 col-span-12 md:col-span-6">
+                             <div class="mb-6 col-span-12 md:col-span-5">
                                  <label for="latitude" class="font-medium  mb-2 block">
                                      latitude
                                  </label>
@@ -404,16 +481,6 @@
                                  </label>
                                  <input formControlName="grupoAtividade" id="grupoAtividade" type="text" pInputText
                                      fluid />
-                                 <!-- <p-select formControlName="grupoAtividade" (onChange)="tipoAtividadeChange($event)"
-                                     inputId="grupoAtividade" [options]="listaGrupoAtividade" optionLabel="codigo" fluid
-                                     [filter]="true" filterBy="codigo,descricao" [showClear]="true"
-                                     placeholder="Selecione o tipo de atividade">
-                                     <ng-template let-tipo #item>
-                                         <div class="flex items-center gap-2">
-                                             <span>{{tipo.codigo}} </span> - <span>{{tipo.descricao}} </span>
-                                         </div>
-                                     </ng-template>
-                                 </p-select> -->
                              </div>
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="grupoAtividadeCodigo" class="font-medium  mb-2 block">
@@ -424,14 +491,15 @@
                              </div>
                              <div class="mb-6 col-span-12">
                                  <label for="alteracoes" class="font-medium  mb-2 block">
-                                     Alteracoes a Averbar
+                                     Alterações a Averbar
                                  </label>
-                                 <input formControlName="alteracoes" id="alteracoes" type="text" pInputText fluid />
+                                 <textarea formControlName="alteracoes" id="alteracoes" rows="5" cols="30" pTextarea
+                                     fluid></textarea>
                              </div>
                              @if (!this.showDataEmissaoCertAnterior) {
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="dataEmissao" class="font-medium  mb-2 block">
-                                     Data da Emissao do Certificado anterior
+                                     Data da Emissão do Certificado anterior
                                  </label>
                                  <p-date-picker formControlName="dataEmissaoCertAnterior" id="dataEmissaoCertAnterior"
                                      [showIcon]="true" [showButtonBar]="true" fluid dateFormat="dd/mm/yy"
@@ -441,12 +509,13 @@
 
                              <div class="mb-6 col-span-12">
                                  <label for="observacao" class="font-medium  mb-2 block">
-                                     Observacao
+                                     Observação
                                  </label>
-                                 <input formControlName="observacao" id="observacao" type="text" pInputText fluid />
+                                 <textarea formControlName="observacao" id="observacao" rows="5" cols="30" pTextarea
+                                     fluid></textarea>
                              </div>
 
-                             <div class="mb-6 col-span-12">
+                             <!-- <div class="mb-6 col-span-12">
                                  <div class="mb-3">
                                      <span class="text-md font-bold">
                                          Documentos
@@ -482,7 +551,7 @@
                                          }
                                      </ng-template>
                                  </p-fileupload>
-                             </div>
+                             </div> -->
                          </div>
                      </form>
                      <p-button [label]="isNew? 'Guardar': 'Atualizar'" [disabled]="!requestForm.valid"

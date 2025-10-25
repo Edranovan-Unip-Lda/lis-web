@@ -227,7 +227,41 @@
                     </div>
                 </div>
                 <div class="border-t border-gray-600 mx-4"></div>
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4">
+                <!-- Pedido Vistoria -->
+                <div
+                    class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                    <div class="flex items-center mb-4 sm:mb-0">
+                        <div
+                            class="flex items-center justify-center h-12 w-12 rounded-full bg-amber-500 text-white mr-4">
+                            <i class="bi bi-file-text text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-white">
+                                Formulário do Pedido de Vistoria para Licença de Exercício de
+                                Atividade
+                                {{aplicanteData.categoria |titlecase}}
+                            </h3>
+                            <p class="text-sm text-gray-400">
+                                Detalhes do Pedido de Vistoria
+                                {{aplicanteData.categoria |titlecase}}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        @if (pedidoVistoria) {
+                        <p-tag [value]="pedidoVistoria.status" [severity]="pedidoVistoria.status| statusSeverity" />
+                        <p-button routerLink="/gestor/application/{{aplicanteData.id}}/pedido-vistoria" icon="pi pi-eye"
+                            label="Pré-visualização" [raised]="true" severity="info" />
+                        }
+                        @else {
+                        <p-tag value="Em curso" [severity]="'info'" icon="pi pi-clock" />
+                        }
+
+                    </div>
+                </div>
+                <!-- End Pedido Vistoria -->
+                <!-- Fatura Pedido Licenca -->
+                <!-- <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4">
                     <div class="flex items-center mb-4 sm:mb-0">
                         <div
                             class="flex items-center justify-center h-12 w-12 rounded-full bg-green-500 text-white mr-4">
@@ -255,6 +289,7 @@
 
                     </div>
                 </div>
+                
                 <div class="border-t border-gray-600 mx-4"></div>
                 <div
                     class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
@@ -288,42 +323,11 @@
                         }
 
                     </div>
-                </div>
+                </div> -->
+                <!-- End Fatura Pedido Licenca -->
             </div>
 
             <div class="bg-[#3A3A41] rounded-lg">
-                <div
-                    class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
-                    <div class="flex items-center mb-4 sm:mb-0">
-                        <div
-                            class="flex items-center justify-center h-12 w-12 rounded-full bg-amber-500 text-white mr-4">
-                            <i class="bi bi-file-text text-2xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-semibold text-white">
-                                Formulário do Pedido de Vistoria para Licença de Exercício de
-                                Atividade
-                                {{aplicanteData.categoria |titlecase}}
-                            </h3>
-                            <p class="text-sm text-gray-400">
-                                Detalhes do Pedido de Vistoria
-                                {{aplicanteData.categoria |titlecase}}
-                            </p>
-                        </div>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        @if (pedidoVistoria) {
-                        <p-tag [value]="pedidoVistoria.status" [severity]="pedidoVistoria.status| statusSeverity" />
-                        <p-button routerLink="/gestor/application/{{aplicanteData.id}}/pedido-vistoria" icon="pi pi-eye"
-                            label="Pré-visualização" [raised]="true" severity="info" />
-                        }
-                        @else {
-                        <p-tag value="Em curso" [severity]="'info'" icon="pi pi-clock" />
-                        }
-
-                    </div>
-                </div>
-                <div class="border-t border-gray-600 mx-4"></div>
                 <div
                     class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
                     <div class="flex items-center mb-4 sm:mb-0">
@@ -433,11 +437,10 @@
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold text-white">
-                            Revisto pelo Chefe de Departamento
+                            Em Análise
                         </h3>
                         <p class="text-sm text-gray-400">
-                            Detalhes do Auto Vistoria
-                            {{aplicanteData.categoria |titlecase}}
+                            Em análise pelo chefe de departamento.
                         </p>
                     </div>
                 </div>

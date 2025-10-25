@@ -25,13 +25,14 @@ import { MultiSelect } from 'primeng/multiselect';
 import { Select, SelectChangeEvent, SelectFilterEvent } from 'primeng/select';
 import { StepperModule } from 'primeng/stepper';
 import { Tag } from 'primeng/tag';
+import { Textarea } from 'primeng/textarea';
 import { Toast } from 'primeng/toast';
 import { forkJoin } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-application-cadastro-detail',
-  imports: [ReactiveFormsModule, Button, StepperModule, Select, InputText, FileUpload, Tag, StatusSeverityPipe, DatePipe, Toast, TitleCasePipe, RouterLink, InputNumber, InputGroup, InputGroupAddon, MultiSelect, DatePicker],
+  imports: [ReactiveFormsModule, Button, StepperModule, Select, InputText, FileUpload, Tag, StatusSeverityPipe, DatePipe, Toast, TitleCasePipe, RouterLink, InputNumber, InputGroup, InputGroupAddon, MultiSelect, DatePicker, Textarea],
   templateUrl: './application-cadastro-detail.component.html',
   styleUrl: './application-cadastro-detail.component.scss',
   providers: [MessageService]
@@ -111,6 +112,7 @@ export class ApplicationCadastroDetailComponent {
     this.listaClasseAtividade = this.router.snapshot.data['classeAtividadeResolver']._embedded.classeAtividade;
 
     this.mapNewFatura(this.aplicanteData);
+    this.mapEmpresaForm(this.aplicanteData.empresa);
 
     if (!this.aplicanteData.pedidoInscricaoCadastro) {
       this.isNew = true;
@@ -220,6 +222,24 @@ export class ApplicationCadastroDetailComponent {
           });
         }
       });
+  }
+
+  private mapEmpresaForm(empresa: Empresa): void {
+    this.requestForm.patchValue({
+      empresa: {
+        nome: empresa.nome,
+        sede: `${empresa.sede.local} - ${empresa.sede.aldeia.nome}, ${empresa.sede.aldeia.suco.nome}, ${empresa.sede.aldeia.suco.postoAdministrativo.nome}, ${empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome}`,
+        aldeia: empresa.sede.aldeia.nome,
+        suco: empresa.sede.aldeia.suco.nome,
+        postoAdministrativo: empresa.sede.aldeia.suco.postoAdministrativo.nome,
+        municipio: empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome,
+        nif: empresa.nif,
+        numeroRegistoComercial: empresa.numeroRegistoComercial,
+        telemovel: empresa.telemovel,
+        email: empresa.email,
+        gerente: empresa.gerente.nome,
+      }
+    });
   }
 
   tipoAtividadeChange(event: any): void {
@@ -566,6 +586,15 @@ export class ApplicationCadastroDetailComponent {
     });
   }
 
+  getCurrentPosition(): void {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.requestForm.get('latitude')?.setValue(position.coords.latitude);
+        this.requestForm.get('longitude')?.setValue(position.coords.longitude);
+      });
+    }
+  }
+
   bytesToMBs(value: number): string {
     if (!value && value !== 0) return '';
     const mb = value / (1024 * 1024);
@@ -609,6 +638,19 @@ export class ApplicationCadastroDetailComponent {
       documentos: [null],
       longitude: [null],
       latitude: [null],
+      empresa: this._fb.group({
+        nome: new FormControl({ value: null, disabled: true }),
+        sede: new FormControl({ value: null, disabled: true }),
+        aldeia: new FormControl({ value: null, disabled: true }),
+        suco: new FormControl({ value: null, disabled: true }),
+        postoAdministrativo: new FormControl({ value: null, disabled: true }),
+        municipio: new FormControl({ value: null, disabled: true }),
+        nif: new FormControl({ value: null, disabled: true }),
+        numeroRegistoComercial: new FormControl({ value: null, disabled: true }),
+        telemovel: new FormControl({ value: null, disabled: true }),
+        email: new FormControl({ value: null, disabled: true }),
+        gerente: new FormControl({ value: null, disabled: true }),
+      }),
     });
 
     this.faturaForm = this._fb.group({
