@@ -216,7 +216,12 @@ export class ApplicationCadastroDetailComponent {
               id: pedido.classeAtividade.id,
               codigo: pedido.classeAtividade.codigo,
               descricao: pedido.classeAtividade.descricao,
-              tipoRisco: pedido.classeAtividade.tipoRisco
+              tipoRisco: pedido.classeAtividade.tipoRisco,
+              grupoAtividade: {
+                id: pedido.classeAtividade.grupoAtividade.id,
+                codigo: pedido.classeAtividade.grupoAtividade.codigo,
+                descricao: pedido.classeAtividade.grupoAtividade.descricao,
+              }
             },
             classeAtividadeCodigo: pedido.classeAtividade.descricao,
           });
@@ -283,7 +288,7 @@ export class ApplicationCadastroDetailComponent {
       tipo: this.aplicanteData.tipo,
       categoria: this.aplicanteData.categoria,
       numero: this.aplicanteData.numero,
-      estado: AplicanteStatus.submetido
+      estado: AplicanteStatus.revisao,
     }
 
     this.empresaService.submitAplicanteByEmpresaIdAndAplicanteId(this.aplicanteData.empresa.id, this.aplicanteData.id, formData).subscribe({

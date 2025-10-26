@@ -123,7 +123,7 @@ export class DataMasterService {
     }
 
     getClassesByGrupoId(grupoId: number): Observable<any> {
-        return this.http.get<any>(`${this.apiUrl}/grupo-atividades/${grupoId}/classes`).pipe(take(1));
+        return this.http.get<any>(`${this.apiUrl}/grupo-atividades/${grupoId}/classes?projection=withGrupo`).pipe(take(1));
     }
 
     getPageClasseAtividade(page = 0, size = 50): Observable<any> {

@@ -286,7 +286,7 @@ export class SummaryComponent {
     const role = this.user?.role.name;
 
     const validEstadoTipo =
-      (estado === AplicanteStatus.submetido && tipo === AplicanteType.cadastro) ||
+      (estado === AplicanteStatus.revisto && tipo === AplicanteType.cadastro) ||
       (estado === AplicanteStatus.revisto && tipo === AplicanteType.licenca);
 
     return validEstadoTipo && role === Role.manager;
@@ -297,7 +297,9 @@ export class SummaryComponent {
     const tipo = aplicante?.tipo;
     const role = this.user?.role.name;
 
-    const validEstadoTipo = estado === AplicanteStatus.revisao && tipo === AplicanteType.licenca;
+    const validEstadoTipo =
+      (estado === AplicanteStatus.revisao && tipo === AplicanteType.cadastro) ||
+      (estado === AplicanteStatus.revisao && tipo === AplicanteType.licenca);
 
     return validEstadoTipo && role === Role.chief;
   }

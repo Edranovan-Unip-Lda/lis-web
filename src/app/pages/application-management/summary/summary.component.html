@@ -172,6 +172,31 @@
             <div
                 class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
                 <div class="flex items-center mb-4 sm:mb-0">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-orange-500 text-white mr-4">
+                        <i class="bi bi-person-check text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-white">
+                            Em Análise
+                        </h3>
+                        <p class="text-sm text-gray-400">
+                            Em análise pelo chefe de departamento.
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    @if (aplicanteData.estado === 'REVISTO' || aplicanteData.estado === 'APROVADO')
+                    {
+                    <p-tag [value]="'REVISTO'" [severity]="'SUBMETIDO'" />
+                    }
+                    @else {
+                    <p-tag value="Em curso" [severity]="'info'" icon="pi pi-clock" />
+                    }
+                </div>
+            </div>
+            <div
+                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                <div class="flex items-center mb-4 sm:mb-0">
                     <div class="flex items-center justify-center h-12 w-12 rounded-full bg-purple-500 text-white mr-4">
                         <i class="bi bi-award text-2xl"></i>
                     </div>

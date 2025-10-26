@@ -194,13 +194,31 @@
                                          </div>
                                      </div>
                                      <div class="flex items-center space-x-4">
-                                         @if (aplicanteData.estado === 'REVISTO' || aplicanteData.estado === 'APROVADO')
+                                         @switch (aplicanteData.estado) {
+                                         @case ('REVISTO') {
+                                         <p-tag [value]="'REVISTO'" [severity]="'SUBMETIDO'" />
+
+                                         }
+                                         @case ('APROVADO') {
+                                         <p-tag [value]="'REVISTO'" [severity]="'SUBMETIDO'" />
+                                         }
+                                         @case ('SUBMETIDO') {
+                                         <p-tag [value]="'Em curso'" [severity]="'info'" icon="pi pi-clock" />
+                                         }
+                                         @case ('EM_CURSO') {
+                                         <p-tag value="Pendente" [severity]="'warn'" icon="pi pi-ban" />
+                                         }
+                                         }
+                                         <!-- @if (aplicanteData.estado === 'REVISTO' || aplicanteData.estado === 'APROVADO')
                                          {
                                          <p-tag [value]="'REVISTO'" [severity]="'SUBMETIDO'" />
                                          }
-                                         @else {
-                                         <p-tag value="Em curso" [severity]="'info'" icon="pi pi-clock" />
+                                         @if (aplicanteData.estado === 'SUBMETIDO') {
+                                         <p-tag [value]="'Em curso'" [severity]="'info'" icon="pi pi-clock" />
                                          }
+                                         @else {
+
+                                         } -->
                                      </div>
                                  </div>
                                  <div

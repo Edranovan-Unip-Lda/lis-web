@@ -175,12 +175,10 @@
                     <div class="col-span-12">
                         @if (isNew) {
                         <button (click)="createUser(userForm)" icon="pi pi-save" [loading]="loading"
-                            [disabled]="!userForm.valid" pButton pRipple label="Criar Utilizadór"
-                            class="w-auto mt-3"></button>
+                            [disabled]="!userForm.valid" pButton pRipple label="Criar" class="w-auto mt-3"></button>
                         } @else {
                         <button (click)="updateUser(userForm)" icon="pi pi-sync" [loading]="loading"
-                            [disabled]="!userForm.valid" pButton pRipple label="Atualizar Utilizadór"
-                            class="w-auto mt-3"></button>
+                            [disabled]="!userForm.valid" pButton pRipple label="Atualizar" class="w-auto mt-3"></button>
                         }
 
                     </div>
