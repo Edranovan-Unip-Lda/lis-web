@@ -96,6 +96,10 @@ export class AutoVistoriaComponent implements OnInit {
 
     this.addParticipanteForm();
     this.uploadUrl.set(`${environment.apiUrl}/documentos/${this.authService.currentUserValue.username}/upload`);
+
+    this.mapAutoVistoriaForm(this.aplicante, this.pedidoVistoria);
+    console.log(this.pedidoVistoria);
+
     this.mapRequerenteForm(this.aplicante.empresa);
 
     this.autoVistoriaForm.valueChanges.subscribe(() => {
@@ -110,38 +114,11 @@ export class AutoVistoriaComponent implements OnInit {
   save(form: FormGroup) {
     if (form.valid) {
       this.loading = true;
-      const formValue = {
-        ...form.getRawValue(),
-        documentos: this.uploadedFiles,
-        local: {
-          ...form.value.local,
-          aldeia: {
-            id: form.value.local.aldeia
-          }
-        },
-        requerente: {
-          ...form.value.requerente,
-          sede: {
-            ...form.value.requerente.sede,
-            aldeia: {
-              id: form.value.requerente.sede.aldeia
-            }
-          },
-          postoAdministrativo: {
-            id: form.value.requerente.postoAdministrativo
-          },
-          residencia: {
-            ...form.value.requerente.residencia,
-            aldeia: {
-              id: form.value.requerente.residencia.aldeia
-            }
-          }
-        }
-      };
-      formValue.documentos = this.uploadedFiles;
+      const formData = this.mapFormToData(form);
 
-      this.pedidoService.saveAutoVistoria(this.pedidoVistoria.id, formValue).subscribe({
-        next: response => {
+      console.log(formData);
+      this.pedidoService.saveAutoVistoria(this.pedidoVistoria.id, formData).subscribe({
+        next: () => {
           this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Auto Vistoria submetida com sucesso', life: 3000, key: 'tr' });
           this.autoVistoriaForm.disable();
           this.uploadedFiles = [];
@@ -348,6 +325,10 @@ export class AutoVistoriaComponent implements OnInit {
     return `${mb.toFixed(2)} MB`;
   }
 
+  disabledSubmitButton(): boolean {
+    const { length } = this.uploadedFiles;
+    return !this.autoVistoriaForm.valid || length === 0 || this.autoVistoriaForm.disabled;
+  }
 
   classeAtividadeChange(event: any): void {
     if (event.value) {
@@ -357,13 +338,42 @@ export class AutoVistoriaComponent implements OnInit {
     }
   }
 
+  private mapFormToData(form: FormGroup) {
+    const formData = form.getRawValue();
+    return {
+      ...formData,
+      local: {
+        ...formData.local,
+        aldeia: {
+          id: formData.local.aldeia
+        }
+      },
+      documentos: this.uploadedFiles,
+      requerente: {
+        ...formData.requerente,
+        sede: {
+          ...formData.requerente.sede,
+          aldeia: {
+            id: formData.requerente.sede.aldeia
+          }
+        },
+        residencia: {
+          ...formData.requerente.residencia,
+          aldeia: {
+            id: formData.requerente.residencia.aldeia
+          }
+        }
+      },
+    }
+  }
+
   private initForm() {
     this.autoVistoriaForm = this._fb.group({
-      numeroProcesso: [null],
+      numeroProcesso: new FormControl({ value: null, disabled: true }),
       dataHora: [null],
       local: this._fb.group({
-        local: [null],
-        aldeia: [null],
+        local: new FormControl({ value: null, disabled: true }),
+        aldeia: new FormControl({ value: null, disabled: true }),
         suco: new FormControl({ value: null, disabled: true }),
         postoAdministrativo: new FormControl({ value: null, disabled: true }),
         municipio: new FormControl({ value: null, disabled: true }),
@@ -439,8 +449,8 @@ export class AutoVistoriaComponent implements OnInit {
       recipientesLixo: [null],
       limpezaDiaria: [null],
       descreverIrregularidades: [null, [Validators.required, Validators.minLength(3)]],
-      aptoAberto: [null],
-      comDeficiencias: [null],
+      aptoAberto: [null, [Validators.required]],
+      comDeficiencias: [null, [Validators.required]],
       recomendacoes: [null],
       prazo: new FormControl({ value: null, disabled: true }),
       documental: [null],
@@ -552,6 +562,19 @@ export class AutoVistoriaComponent implements OnInit {
 
   get membrosEquipaVistoria(): FormArray {
     return this.autoVistoriaForm.get('membrosEquipaVistoria') as FormArray;
+  }
+
+  private mapAutoVistoriaForm(aplicanteData: Aplicante, pedidoVistoria: PedidoVistoria): void {
+    this.autoVistoriaForm.patchValue({
+      numeroProcesso: aplicanteData.numero,
+      local: {
+        local: pedidoVistoria.localEstabelecimento.local,
+        aldeia: pedidoVistoria.localEstabelecimento.aldeia.id,
+        suco: pedidoVistoria.localEstabelecimento.aldeia.suco.nome,
+        postoAdministrativo: pedidoVistoria.localEstabelecimento.aldeia.suco.postoAdministrativo.nome,
+        municipio: pedidoVistoria.localEstabelecimento.aldeia.suco.postoAdministrativo.municipio.nome,
+      },
+    });
   }
 
   private mapRequerenteForm(empresa: Empresa): void {

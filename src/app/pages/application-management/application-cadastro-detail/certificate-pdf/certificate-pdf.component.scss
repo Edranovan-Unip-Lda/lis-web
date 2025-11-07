@@ -1,3 +1,8 @@
+#myDiv {
+    width: 210mm;
+    min-height: 297mm;
+}
+
 .text-red {
     color: red;
     font-weight: 600;
@@ -6,17 +11,4 @@
 .text-blue {
     color: #0769C0;
     font-weight: 600;
-}
-
-.with-image {
-    display: inline-flex;
-    flex-direction: column;
-    /* stack vertically */
-    align-items: center;
-}
-
-.stamp {
-    margin-top: -35px;
-    margin-bottom: -30px;
-    /* adjust spacing */
 }

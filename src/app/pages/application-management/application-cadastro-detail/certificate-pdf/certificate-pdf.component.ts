@@ -1,20 +1,24 @@
 import { CertificadoCadastro } from '@/core/models/entities.model';
-import { DatePipe, Location } from '@angular/common';
+import { Categoria } from '@/core/models/enums';
+import { DatePipe, Location, NgStyle } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NgxPrintModule } from 'ngx-print';
+import html2canvas from 'html2canvas-pro';
+import jsPDF from 'jspdf';
 import { Button } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 
 @Component({
   selector: 'app-certificate-pdf',
-  imports: [DatePipe, NgxPrintModule, Button, TableModule],
+  imports: [DatePipe, Button, TableModule, NgStyle],
   templateUrl: './certificate-pdf.component.html',
   styleUrl: './certificate-pdf.component.scss'
 })
 export class CertificatePdfComponent {
   certificadoData!: CertificadoCadastro;
   dataValido = new Date();
+  industrialCSS!: any;
+  comercialCSS!: any;
 
   constructor(
     private router: ActivatedRoute,
@@ -22,19 +26,55 @@ export class CertificatePdfComponent {
   ) { }
 
   ngOnInit(): void {
-    // certificadoResolver
-    console.log(
-      this.router.snapshot.data['certificadoResolver']
-    );
-
     this.certificadoData = this.router.snapshot.data['certificadoResolver'];
-    
+
     this.certificadoData.updatedAt = new Date(this.certificadoData.updatedAt)
     this.certificadoData.updatedAt.setFullYear(this.certificadoData.updatedAt.getFullYear() + 1);
     this.dataValido = this.certificadoData.updatedAt;
+
+    this.industrialCSS = {
+      'background-image': 'url("/images/bg-industrial.png")',
+      'background-size': 'cover',
+      'background-position': 'center',
+      'background-repeat': 'no-repeat',
+    }
+    this.comercialCSS = {
+      'background-image': 'url("/images/bg-comercial.png")',
+      'background-size': 'cover',
+      'background-position': 'center',
+      'background-repeat': 'no-repeat'
+    }
+  }
+
+  getCategoriaStyle() {
+    const categoria = this.certificadoData.pedidoInscricaoCadastro.aplicante.categoria;
+    switch (categoria) {
+      case Categoria.comercial: return this.comercialCSS;
+      case Categoria.industrial: return this.industrialCSS;
+    }
   }
 
   goBack() {
     this.location.back();
+  }
+
+  generatePDF() {
+    const data = document.getElementById('myDiv');
+    if (data) {
+      html2canvas(data, { scale: 3 }).then(canvas => {
+        const imgWidth = 208;
+        const pageHeight = 295;
+        const imgHeight = canvas.height * imgWidth / canvas.width;
+        const heightLeft = imgHeight;
+        const fileName = `alvara-licenca-${this.certificadoData.pedidoInscricaoCadastro.nomeEmpresa}.pdf`;
+
+        const contentDataURL = canvas.toDataURL('image/png', 1.0);
+        const pdf = new jsPDF('p', 'mm', 'a4'); // A4 size page of PDF
+
+        let position = 0;
+        pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight);
+        pdf.save(fileName); // Generated PDF
+      });
+    }
   }
 }

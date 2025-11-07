@@ -6,11 +6,12 @@
             @case ('CADASTRO') {
             <span class="text-2xl font-bold mr-4">Fatura do Pedido Inscriçãono Cadastro</span>
             }
-            @case ('ATIVIDADE') {
-            <span class="text-2xl font-bold mr-4">Fatura do Pedido de Licença para Exercício de Atividade</span>
-            }
+            <!-- @case ('ATIVIDADE') {
+            <span class="text-2xl font-bold mr-4">Fatura do Pedido de Licença e Vistoria para Exercício de
+                Atividade</span>
+            } -->
             @case ('VISTORIA') {
-            <span class="text-2xl font-bold mr-4"> Fatura do Pedido de Vistoria para Licença de Exercício de
+            <span class="text-2xl font-bold mr-4">Fatura do Pedido de Licença e Vistoria para Exercício de
                 Atividade</span>
             }
             }
@@ -83,7 +84,7 @@
                     @if(aplicanteData.pedidoInscricaoCadastro) {
                     {{aplicanteData.pedidoInscricaoCadastro.classeAtividade.descricao}}
                     }@else{
-                    {{aplicanteData.pedidoLicencaAtividade.tipoAtividade.descricao}}
+                    {{aplicanteData.pedidoLicencaAtividade.classeAtividade.descricao}}
                     }
 
 
@@ -94,7 +95,7 @@
                     @if(aplicanteData.pedidoInscricaoCadastro) {
                     {{aplicanteData.pedidoInscricaoCadastro.classeAtividade.codigo}}
                     }@else{
-                    {{aplicanteData.pedidoLicencaAtividade.tipoAtividade.codigo}}
+                    {{aplicanteData.pedidoLicencaAtividade.classeAtividade.codigo}}
                     }
                 </span>
             </div>
@@ -246,7 +247,7 @@
         <!-- Footer -->
         <div class="my-8 flex flex-col items-center gap-4">
             <div>
-                <span class="text-label text-gray-600">Servico que emite:__________________________</span> &nbsp;
+                <!-- <span class="text-label text-gray-600">Servico que emite:__________________________</span> &nbsp; -->
                 <span class="text-label text-gray-600">Data:</span>
                 <span class="w-12 inline-block border-b border-gray-300 text-center text-value text-black">
                     {{aplicanteData.updatedAt | date:'dd'}}
@@ -260,13 +261,13 @@
                     {{aplicanteData.updatedAt | date:'yyyy'}}
                 </span>
             </div>
-            <span class="text-label text-gray-600">O funcionário</span>
+            <!-- <span class="text-label text-gray-600">O funcionário</span>
             <span class="with-image">
                 <img src="images/stamp.png" alt="Stamp" class="stamp" width="110" height="110" />
                 <span class="text-label text-gray-600">Donald Trump</span>
             </span>
             <div class="flex-1"></div>
-            <span class="w-72 inline-block border-b border-black text-center text-value text-black"></span>
+            <span class="w-72 inline-block border-b border-black text-center text-value text-black"></span> -->
         </div>
     </div>
 </div>

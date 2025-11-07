@@ -19,7 +19,7 @@ import { InputText } from 'primeng/inputtext';
 import { Select, SelectFilterEvent } from 'primeng/select';
 import { SelectButton, SelectButtonChangeEvent } from 'primeng/selectbutton';
 import { Toast } from 'primeng/toast';
-import { forkJoin } from 'rxjs';
+import { forkJoin, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -55,6 +55,15 @@ export class PedidoAtividadeFormComponent {
 
   stateOpts = stateOptions;
   dataSent = output<any>();
+  fileLimit = 0;
+  fileFields = [
+    'planta',
+    'documentoPropriedade',
+    'documentoImovel',
+    'arrendador',
+    'planoEmergencia',
+    'estudoAmbiental'
+  ];
 
   constructor(
     private _fb: FormBuilder,
@@ -84,6 +93,12 @@ export class PedidoAtividadeFormComponent {
     if (this.disabledAllForm) {
       this.requestForm.disable();
     }
+
+    this.requestForm.valueChanges
+      .pipe(
+        map(value => this.fileFields.filter(field => value[field]).length)
+      )
+      .subscribe(count => this.fileLimit = count);
   }
 
 
@@ -335,6 +350,11 @@ export class PedidoAtividadeFormComponent {
     }
   }
 
+  disabledSubmitButton(): boolean {
+    const { length } = this.uploadedDocs;
+    return !this.requestForm.valid || length === 0 || length > this.fileLimit;
+  }
+
   bytesToMBs(value: number): string {
     if (!value && value !== 0) return '';
     const mb = value / (1024 * 1024);
@@ -345,11 +365,11 @@ export class PedidoAtividadeFormComponent {
     this.requestForm = this._fb.group({
       id: [null],
       tipo: [null, [Validators.required]],
-      nomeEmpresa: [null],
-      empresaNumeroRegistoComercial: [null],
+      nomeEmpresa: new FormControl({ value: null, disabled: true }),
+      empresaNumeroRegistoComercial: new FormControl({ value: null, disabled: true }),
       empresaSede: this._fb.group({
-        local: [null],
-        aldeia: [null],
+        local: new FormControl({ value: null, disabled: true }),
+        aldeia: new FormControl({ value: null, disabled: true }),
         suco: new FormControl({ value: null, disabled: true }),
         postoAdministrativo: new FormControl({ value: null, disabled: true }),
         municipio: new FormControl({ value: null, disabled: true }),
@@ -360,7 +380,7 @@ export class PedidoAtividadeFormComponent {
       tipoAtividadeCodigo: new FormControl({ value: null, disabled: true }),
       risco: new FormControl({ value: null, disabled: true }),
       estatutoSociedadeComercial: [null],
-      empresaNif: [null],
+      empresaNif: new FormControl({ value: null, disabled: true }),
       representante: this.initPersonForm(),
       gerente: this.initPersonForm(),
       planta: [null],
@@ -471,51 +491,52 @@ export class PedidoAtividadeFormComponent {
   }
 
   private mapFormData(form: FormGroup): any {
+    const formData = form.getRawValue();
     let mapArrendador = null;
-    if (form.value.contratoArrendamento) {
+    if (formData.contratoArrendamento) {
       mapArrendador = {
-        ...form.value.arrendador,
+        ...formData.arrendador,
         endereco: {
-          ...form.value.arrendador.endereco,
+          ...formData.arrendador.endereco,
           aldeia: {
-            id: form.value.gerente.morada.aldeia
+            id: formData.gerente.morada.aldeia
           }
         },
-        dataInicio: formatDateForLocalDate(form.value.arrendador.dataInicio),
-        dataFim: formatDateForLocalDate(form.value.arrendador.dataFim),
+        dataInicio: formatDateForLocalDate(formData.arrendador.dataInicio),
+        dataFim: formatDateForLocalDate(formData.arrendador.dataFim),
       }
     }
     return {
-      ...form.getRawValue(),
+      ...formData,
       empresaSede: {
-        ...form.value.empresaSede,
+        ...formData.empresaSede,
         aldeia: {
-          id: form.value.empresaSede.aldeia,
+          id: formData.empresaSede.aldeia,
         }
       },
       classeAtividade: {
-        id: form.value.classeAtividade.id
+        id: formData.classeAtividade.id
       },
 
       representante: {
-        ...form.value.representante,
+        ...formData.representante,
         id: null,
         morada: {
-          ...form.value.representante.morada,
+          ...formData.representante.morada,
           id: null,
           aldeia: {
-            id: form.value.representante.morada.aldeia
+            id: formData.representante.morada.aldeia
           }
         }
       },
       gerente: {
-        ...form.value.gerente,
+        ...formData.gerente,
         id: null,
         morada: {
-          ...form.value.gerente.morada,
+          ...formData.gerente.morada,
           id: null,
           aldeia: {
-            id: form.value.gerente.morada.aldeia
+            id: formData.gerente.morada.aldeia
           }
         }
       },
@@ -574,20 +595,20 @@ export class PedidoAtividadeFormComponent {
 
   private initPersonForm(): FormGroup {
     return this._fb.group({
-      id: [null],
-      nome: [null],
-      nacionalidade: [null],
-      naturalidade: [null],
+      id: new FormControl({ value: null, disabled: true }),
+      nome: new FormControl({ value: null, disabled: true }),
+      nacionalidade: new FormControl({ value: null, disabled: true }),
+      naturalidade: new FormControl({ value: null, disabled: true }),
       morada: this._fb.group({
         id: [null],
-        local: [null],
-        aldeia: [null],
+        local: new FormControl({ value: null, disabled: true }),
+        aldeia: new FormControl({ value: null, disabled: true }),
         suco: new FormControl({ value: null, disabled: true }),
         postoAdministrativo: new FormControl({ value: null, disabled: true }),
         municipio: new FormControl({ value: null, disabled: true }),
       }),
-      telefone: [null],
-      email: [null],
+      telefone: new FormControl({ value: null, disabled: true }),
+      email: new FormControl({ value: null, disabled: true }),
     })
   }
 

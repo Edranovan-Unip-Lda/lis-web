@@ -12,6 +12,7 @@ import { ApplicationListComponent } from './application-cadastro-detail/applicat
 import { CertificatePdfComponent } from './application-cadastro-detail/certificate-pdf/certificate-pdf.component';
 import { FaturaComponent } from './application-cadastro-detail/fatura/fatura.component';
 import { PedidoInscricaoComponent } from './application-cadastro-detail/pedido-inscricao/pedido-inscricao.component';
+import { PedidoVistoriaPdfComponent } from './application-atividade-detail/pdf/pedido-vistoria-pdf/pedido-vistoria-pdf.component';
 
 export default [
     {
@@ -56,9 +57,9 @@ export default [
             },
             {
                 path: ':id/certificado-inscricao/:certificadoId',
-                data: { 
+                data: {
                     breadcrumb: 'Certificado PDF',
-                    type: AplicanteType.cadastro, 
+                    type: AplicanteType.cadastro,
                 },
                 component: CertificatePdfComponent,
                 resolve: {
@@ -106,7 +107,7 @@ export default [
                     breadcrumb: 'Pedido Vistoria para Licenca de Atividade',
 
                 },
-                component: PedidoPdfComponent,
+                component: PedidoVistoriaPdfComponent,
                 resolve: {
                     aplicanteResolver: getAplicante,
                 }
@@ -134,10 +135,10 @@ export default [
             },
             {
                 path: ':id/certificado-atividade/:certificadoId',
-                data: { 
+                data: {
                     breadcrumb: 'Certificado PDF',
                     type: AplicanteType.licenca,
-                 },
+                },
                 component: CertificadoAtividadePdfComponent,
                 resolve: {
                     certificadoResolver: getCertificadoById

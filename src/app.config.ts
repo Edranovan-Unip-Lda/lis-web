@@ -1,6 +1,6 @@
 import { httpErrorInterceptor } from '@/core/security/http-error.interceptor';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { APP_INITIALIZER, ApplicationConfig, ErrorHandler } from '@angular/core';
+import { APP_INITIALIZER, ApplicationConfig, ErrorHandler, LOCALE_ID } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, Router, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
 import Aura from '@primeng/themes/aura';
@@ -37,5 +37,6 @@ export const appConfig: ApplicationConfig = {
             deps: [Sentry.TraceService],
             multi: true,
         },
+        { provide: LOCALE_ID, useValue: 'pt' }
     ]
 };

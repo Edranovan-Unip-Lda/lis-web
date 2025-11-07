@@ -134,7 +134,7 @@ export class ApplicationAtividadeDetailComponent {
           summary: 'Sucesso',
           detail: 'O Aplicante foi submetida com sucesso!'
         });
-        // this.disabledForms(AplicanteStatus.submetido);
+        this.disabledForms(AplicanteStatus.submetido);
         this.route.navigate([`/application/${this.aplicanteData.tipo.toLowerCase()}`, this.aplicanteData.id], {
           // this.router.navigate([`/application`, aplicante.id], {
           queryParams: {
@@ -211,6 +211,12 @@ export class ApplicationAtividadeDetailComponent {
       aplicanteData.estado !== AplicanteStatus.aprovado &&
       aplicanteData.estado !== AplicanteStatus.atribuido &&
       aplicanteData.estado !== AplicanteStatus.revisto;
+  }
+
+  private disabledForms(aplicanteEstado: AplicanteStatus): void {
+    if (aplicanteEstado === AplicanteStatus.submetido || aplicanteEstado === AplicanteStatus.aprovado) {
+      this.disabledAllForm = true;
+    }
   }
 
   private checkedForms(aplicante: Aplicante) {

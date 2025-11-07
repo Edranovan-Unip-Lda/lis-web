@@ -292,6 +292,7 @@ export interface AutoVistoria extends BaseModel {
     status: string;
     numeroProcesso: string;
     local: Endereco;
+    localEstabelecimento: Endereco;
     requerente: RequerenteAutoVistoria;
     membrosEquipaVistoria: Participante[];
     nomeAtuante: string;
@@ -360,4 +361,7 @@ export interface Participante extends BaseModel {
     nome: string;
     areaRepresentante: AreaRepresentante;
     cargo: string;
+    telemovel: string;
+    tipoDocumento: string;
+    numeroDocumento: string;
 }

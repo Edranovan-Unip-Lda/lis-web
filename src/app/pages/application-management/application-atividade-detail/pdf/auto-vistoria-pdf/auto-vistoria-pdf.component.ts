@@ -1,8 +1,8 @@
 import { Aplicante, AutoVistoria } from '@/core/models/entities.model';
-import { AplicanteStatus, AreaRepresentante, Categoria } from '@/core/models/enums';
+import { AplicanteStatus, Categoria } from '@/core/models/enums';
 import { BooleanPipe } from '@/core/pipes/custom.pipe';
 import { tipoAreaRepresentanteComercial, tipoAreaRepresentanteIndustrial } from '@/core/utils/global-function';
-import { DatePipe, Location } from '@angular/common';
+import { DatePipe, Location, TitleCasePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgxPrintModule } from 'ngx-print';
@@ -10,7 +10,7 @@ import { Button } from 'primeng/button';
 
 @Component({
   selector: 'app-auto-vistoria-pdf',
-  imports: [Button, NgxPrintModule, DatePipe, BooleanPipe],
+  imports: [Button, NgxPrintModule, DatePipe, BooleanPipe, TitleCasePipe],
   templateUrl: './auto-vistoria-pdf.component.html',
   styleUrl: './auto-vistoria-pdf.component.scss'
 })

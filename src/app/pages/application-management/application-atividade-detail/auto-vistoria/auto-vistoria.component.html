@@ -1,13 +1,13 @@
- <p-toast position="bottom-right" />
+ <p-toast key="tr" position="bottom-right" />
  <div class="card">
      <form [formGroup]="autoVistoriaForm">
          <div class="grid grid-cols-12 gap-4">
-             <!-- <div class="mb-6 col-span-12">
+             <div class="mb-6 col-span-12">
                  <label for="numeroProcesso" class="font-medium  mb-2 block">
                      Nº Processo
                  </label>
                  <input formControlName="numeroProcesso" id="numeroProcesso" type="text" pInputText fluid />
-             </div> -->
+             </div>
              <div class="mb-6 col-span-12">
                  <label for="dataHora" class="font-medium  mb-2 block">
                      Data e Hora
@@ -15,19 +15,18 @@
                  <p-datepicker formControlName="dataHora" [showTime]="true" appendTo="body" [showButtonBar]="true"
                      fluid />
              </div>
-             <!-- <div class="mb-6 col-span-12">
+             <div class="mb-6 col-span-12">
                  <div formGroupName="local" class="grid grid-cols-12">
                      <div class="mb-6 col-span-12">
                          <label for="local" class="font-medium  mb-2 block">
-                             Local
+                             Local do Estabelecimento
                          </label>
                          <input formControlName="local" id="local" type="text" pInputText fluid />
                      </div>
                      <div class="mb-6 col-span-12">
                          <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                              <div class="flex-auto">
-                                 <label for="aldeia"
-                                     class="font-medium  mb-2 block">
+                                 <label for="aldeia" class="font-medium  mb-2 block">
                                      Aldeia
                                  </label>
                                  <p-select fluid formControlName="aldeia" [options]="listaAldeia" optionLabel="nome"
@@ -43,16 +42,14 @@
                                  <input formControlName="suco" id="suco" type="text" pInputText fluid />
                              </div>
                              <div class="flex-auto">
-                                 <label for="postoAdministrativo"
-                                     class="font-medium  mb-2 block">
+                                 <label for="postoAdministrativo" class="font-medium  mb-2 block">
                                      Posto Administrativo
                                  </label>
                                  <input formControlName="postoAdministrativo" id="postoAdministrativo" type="text"
                                      pInputText fluid />
                              </div>
                              <div class="flex-auto">
-                                 <label for="municipio"
-                                     class="font-medium  mb-2 block">
+                                 <label for="municipio" class="font-medium  mb-2 block">
                                      Municipio
                                  </label>
                                  <input formControlName="municipio" id="municipio" type="text" pInputText fluid />
@@ -60,7 +57,7 @@
                          </div>
                      </div>
                  </div>
-             </div> -->
+             </div>
 
          </div>
          <span class="text-xl font-bold mt-6 mb-3 block text-center">
@@ -85,7 +82,7 @@
                      <div formGroupName="sede" class="grid grid-cols-12">
                          <div class="mb-6 col-span-12">
                              <label for="local" class="font-medium  mb-2 block">
-                                 Local do Estabelecimento
+                                 Sede
                              </label>
                              <input formControlName="local" id="local" type="text" pInputText fluid
                                  placeholder="ex. Av. Pres. Nicolau Lobato" />
@@ -216,22 +213,6 @@
                      </label>
                      <input formControlName="naturalidade" id="naturalidade" type="text" pInputText fluid />
                  </div>
-                 <!-- <div class="mb-6 col-span-12 md:col-span-6">
-                     <label for="postoAdministrativo"
-                         class="font-medium  mb-2 block">
-                         Posto Administrativo
-                     </label>
-                     <p-select fluid formControlName="postoAdministrativo" [options]="listaPostoAdministrativo"
-                         (onChange)="postoChange($event)" (onFilter)="postoFilter($event)" optionLabel="nome"
-                         [filter]="true" optionValue="id" placeholder="Selecione o Posto" [showClear]="true">
-                     </p-select>
-                 </div>
-                 <div class="mb-6 col-span-12 md:col-span-6">
-                     <label for="municipio" class="font-medium  mb-2 block">
-                         Municipio
-                     </label>
-                     <input formControlName="municipio" id="municipio" type="text" pInputText fluid />
-                 </div> -->
                  <div class="mb-6 col-span-12 md:col-span-6">
                      <label for="tipoDocumento" class="font-medium  mb-2 block">
                          Tipo de Documento de Identificação
@@ -251,7 +232,7 @@
                      <div formGroupName="residencia" class="grid grid-cols-12">
                          <div class="mb-6 col-span-12">
                              <label for="local" class="font-medium  mb-2 block">
-                                 Local do Estabelecimento
+                                 Residência
                              </label>
                              <input formControlName="local" id="local" type="text" pInputText fluid
                                  placeholder="ex. Av. Pres. Nicolau Lobato" />
@@ -967,7 +948,7 @@
              <div class="mb-6 col-span-12">
                  <p class="leading-relaxed">
                      Considerando a complexidade das deficiências a regularizar é concedido o prazo de
-                     <input formControlName="prazo" id="prazo" type="text" pInputText variant="filled"/>
+                     <input formControlName="prazo" id="prazo" type="text" pInputText variant="filled" />
                      dias, a fim
                      do requerente proceder, querendo, à sua regularização.
                  </p>
@@ -1025,7 +1006,7 @@
          </p-fileupload>
          <div class="flex justify-content-end mt-6 mb-6">
              <p-button label="Guardar" icon="pi pi-save" (click)="save(autoVistoriaForm)" [loading]="loading"
-                 [disabled]="!autoVistoriaForm.valid" severity="success" />
+                 [disabled]="disabledSubmitButton()" severity="success" />
          </div>
      </form>
  </div>

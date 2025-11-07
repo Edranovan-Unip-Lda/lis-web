@@ -186,7 +186,7 @@
                         {{autoVistoria.requerente.naturalidade}}
                     </span>
                 </div>
-                <div class="col-span-2">
+                <!-- <div class="col-span-2">
                     <span class="text-label text-gray-600">Posto Administrativo:</span>
                     <span class="text-value font-bold">
                         {{autoVistoria.requerente.postoAdministrativo.nome}}
@@ -197,7 +197,7 @@
                     <span class="text-value font-bold">
                         {{autoVistoria.requerente.postoAdministrativo.municipio.nome}}
                     </span>
-                </div>
+                </div> -->
                 <div class="col-span-2">
                     <span class="text-label text-gray-600">Tipo de Documento de Identificação:</span>
                     <span class="text-value font-bold">
@@ -227,26 +227,42 @@
             <h3 class="text-center font-bold border-b border-gray-200 mb-3">
                 PARTICIPANTES
             </h3>
-            <div class="grid grid-cols-3 gap-y-2">
-                @for (item of autoVistoria.membrosEquipaVistoria; track $index) {
+            @for (item of autoVistoria.membrosEquipaVistoria; track $index) {
+            <div class="grid grid-cols-6 gap-y-2 border-b border-gray-200 pb-2 mb-2">
                 <div class="col-span-2">
-                    <span class="text-label text-gray-600">
+                    <span class="text-label text-gray-600 mr-1">
                         {{getAreaRepresentanteLabel(item.areaRepresentante).name}}
                     </span>
                     <span class="text-value font-bold">
                         {{item.nome}}
                     </span>
                 </div>
-                <div class="col-span-1">
-                    <span class="text-label text-gray-600">
+                <div class="col-span-1 flex justify-center">
+                    <span class="text-label text-gray-600 mr-1">
                         Cargo
                     </span>
                     <span class="text-value font-bold">
                         {{item.cargo}}
                     </span>
                 </div>
-                }
+                <div class="col-span-1">
+                    <span class="text-label text-gray-600 mr-1">
+                        Nº Telemóvel
+                    </span>
+                    <span class="text-value font-bold">
+                        {{item.telemovel}}
+                    </span>
+                </div>
+                <div class="col-span-2">
+                    <span class="text-label text-gray-600">
+                        Documento
+                    </span>
+                    <span class="text-value font-bold">
+                        {{item.tipoDocumento.replace('_', ' ') | titlecase}} - {{item.numeroDocumento}}
+                    </span>
+                </div>
             </div>
+            }
         </section>
 
         <section class="mt-8">
