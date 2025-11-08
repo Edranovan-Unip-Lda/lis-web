@@ -98,6 +98,7 @@ export enum TipoDocumento {
     passaporte = 'PASSAPORTE',
     cartaConducao = 'CARTA_CONDUCAO',
     eleitoral = 'ELEITORAL',
+    nif = 'NIF',
     outro = 'OUTRO',
 }
 

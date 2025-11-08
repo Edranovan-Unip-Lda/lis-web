@@ -533,6 +533,7 @@ export class Register {
             }),
             representante: this._fb.group({
                 tipo: [null, [Validators.required]],
+                nomeEmpresa: [null, [Validators.required]],
                 nome: [null, [Validators.required]],
                 pai: [null, [Validators.required]],
                 mae: [null, [Validators.required]],
