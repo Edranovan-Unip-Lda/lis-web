@@ -4,11 +4,12 @@ import { DataMasterService } from '@/core/services/data-master.service';
 import { EmpresaService } from '@/core/services/empresa.service';
 import { maxFileSizeUpload, tipoDocumentoOptions, tipoPropriedadeOptions, tipoRelacaoFamiliaOptions, tipoRepresentante } from '@/core/utils/global-function';
 import { LayoutService } from '@/layout/service/layout.service';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgClass } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
+import { NgxPrintModule } from 'ngx-print';
+import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
 import { Divider } from 'primeng/divider';
 import { FileSelectEvent, FileUpload } from 'primeng/fileupload';
@@ -34,7 +35,7 @@ interface Notification {
 @Component({
     selector: 'app-register',
     standalone: true,
-    imports: [ButtonModule, FileUpload, RouterLink, InputText, Fluid, Ripple, Password, ReactiveFormsModule, Select, Message, StepperModule, DatePicker, InputGroup, InputGroupAddonModule, InputNumber, Divider, Tooltip, DatePipe],
+    imports: [Button, FileUpload, RouterLink, InputText, Fluid, Ripple, Password, ReactiveFormsModule, Select, Message, StepperModule, DatePicker, InputGroup, InputGroupAddonModule, InputNumber, Divider, Tooltip, DatePipe, NgxPrintModule],
     templateUrl: './register.component.html',
 })
 export class Register {

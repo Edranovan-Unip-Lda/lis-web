@@ -676,12 +676,17 @@
                          <div class="text-white">
                              <div class="max-w-4xl mx-auto p-8">
                                  <header class="flex items-center justify-between mb-10">
-                                     <h1 class="text-3xl font-bold text-gray-100">Resumo da Inscrição</h1>
-                                     <button icon="pi pi-save" (click)="submit(empresaForm)" [loading]="loading"
+                                     <!-- <h1 class="text-3xl font-bold text-gray-100">Resumo da Inscrição</h1> -->
+                                     <div class="flex flex-row gap-2">
+                                         <h1 class="text-3xl font-bold text-gray-100">Resumo da Inscrição</h1>
+                                         <p-button icon="pi pi-file-pdf" size="large" severity="info" [raised]="true"
+                                             printSectionId="myDiv" [useExistingCss]="true" ngxPrint />
+                                     </div>
+                                     <p-button icon="pi pi-save" (click)="submit(empresaForm)" [loading]="loading"
                                          [disabled]="!empresaForm.valid" pButton pRipple label="Confirmar e Guardar"
-                                         class="w-auto"></button>
+                                         class="w-auto"></p-button>
                                  </header>
-                                 <main>
+                                 <main id="myDiv">
                                      <section class="bg-gray-800 p-8 rounded-2xl shadow-lg mb-8">
                                          <div class="flex items-center mb-6">
                                              <i class="bi bi-buildings mr-4" style="font-size: 2rem"></i>
@@ -959,14 +964,14 @@
                                              </div>
                                          </div>
                                      </section>
-                                     <div class="mt-6 mb-6 text-left flex justify-between items-center">
+                                 </main>
+                                  <div class="mt-6 mb-6 text-left flex justify-between items-center">
                                          <p-button label="Back" severity="secondary" icon="pi pi-arrow-left"
                                              iconPos="left" (onClick)="activateCallback(2)" />
-                                         <button icon="pi pi-save" (click)="submit(empresaForm)" [loading]="loading"
+                                         <p-button icon="pi pi-save" (click)="submit(empresaForm)" [loading]="loading"
                                              [disabled]="!empresaForm.valid" pButton pRipple label="Confirmar e Guardar"
-                                             class="w-auto"></button>
+                                             class="w-auto"></p-button>
                                      </div>
-                                 </main>
                              </div>
 
                          </div>
@@ -1023,12 +1028,12 @@
              </p-message>
              }
              <div class="mt-6 text-center flex items-center justify-center flex-col gap-4">
-                 <button icon="pi pi-send" (click)="submit(empresaForm)" [loading]="loading"
-                     [disabled]="empresaForm.valid" pButton label="Reenviar email" style="max-width:200px">
-                 </button>
-                 <button icon="pi pi-sign-in" pButton label="Logar" style="max-width:200px" routerLink="/auth/login"
+                 <p-button icon="pi pi-send" (click)="submit(empresaForm)" [loading]="loading"
+                     [disabled]="empresaForm.valid" pButton label="Reenviar email">
+                 </p-button>
+                 <p-button icon="pi pi-sign-in" pButton label="Logar" styleClass="max-width:200px" routerLink="/auth/login"
                      [rounded]="true" [outlined]="true">
-                 </button>
+                 </p-button>
              </div>
 
          </div>
