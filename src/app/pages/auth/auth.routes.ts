@@ -6,11 +6,12 @@ import { AccessDenied } from './accessdenied';
 import { ActivationComponent } from './activation/activation.component';
 import { AuthLayoutComponent } from './auth-layout/auth-layout.component';
 import { Error } from './error';
-import { ForgotPassword } from './forgotpassword';
+import { ForgotPassword } from './forgot-password/forgotpassword.component';
 import { LockScreen } from './lockscreen';
 import { Login } from './login/login';
 import { Register } from './register/register.component';
 import { Verification } from './verification/verification';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 export default [
     {
@@ -23,8 +24,10 @@ export default [
             },
             { path: 'error', component: Error },
             { path: 'access', component: AccessDenied },
-            { path: 'login', component: Login },
-            { path: 'forgotpassword', component: ForgotPassword },
+            {
+                path: 'forgotpassword',
+                component: ForgotPassword
+            },
             {
                 path: 'register',
                 component: Register,
@@ -45,6 +48,10 @@ export default [
                 path: 'verification',
                 component: Verification,
                 canActivate: [validateGuard],
+            },
+            {
+                path: 'resetpassword',
+                component: ResetPasswordComponent
             },
             { path: 'lockscreen', component: LockScreen },
             { path: '**', redirectTo: '/notfound' }

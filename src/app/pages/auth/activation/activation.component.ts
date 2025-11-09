@@ -1,17 +1,13 @@
 import { Status } from '@/core/models/enums';
 import { UserService } from '@/core/services';
 import { mustMatch } from '@/core/validators/must-match';
-import { AppConfigurator } from '@/layout/components/app.configurator';
-import { LayoutService } from '@/layout/service/layout.service';
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { Fluid } from 'primeng/fluid';
-import { IconField } from 'primeng/iconfield';
-import { InputIcon } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { RippleModule } from 'primeng/ripple';
@@ -24,7 +20,6 @@ import { RippleModule } from 'primeng/ripple';
     providers: [MessageService]
 })
 export class ActivationComponent {
-    layoutService = inject(LayoutService);
     activationForm: FormGroup;
     loading = false;
     token: string;
@@ -36,7 +31,6 @@ export class ActivationComponent {
         private _fb: FormBuilder,
         private route: ActivatedRoute,
         private userService: UserService,
-        private messageService: MessageService,
     ) {
         this.activationForm = this._fb.group({
             password: ['', [Validators.required, Validators.minLength(4)]],

@@ -84,6 +84,21 @@ export const getTokenActivationResolver: ResolveFn<any> = (route: ActivatedRoute
         return EMPTY;
     }
 }
+export const getTokenResetPasswordResolver: ResolveFn<any> = (route: ActivatedRouteSnapshot) => {
+    const router = inject(Router);
+    const token = route.queryParamMap.get('t');
+
+    // Basic UUID Regex
+    const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+
+    if (token && uuidRegex.test(token)) {
+        return of(token);
+    } else {
+        // If token is invalid or missing, navigate to the index route
+        router.navigate(['/']);
+        return EMPTY;
+    }
+}
 
 export const getPageAplicanteByUsernameResolver: ResolveFn<any> = () => {
     const authService = inject(AuthenticationService);
@@ -126,7 +141,7 @@ export const getPageCertificadosByUsername: ResolveFn<any> = (route: ActivatedRo
     const authService = inject(AuthenticationService);
     const service = inject(UserService);
     const user = authService.currentUserValue;
-    
+
     if (user) {
         return service.getPageCertificados(user.id, type, categoria);
     } else {

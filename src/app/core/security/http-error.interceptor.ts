@@ -30,7 +30,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (
                 errorMessage = error.error?.message || 'Unknown error';
             } else {
                 // Connection/network error
-                errorMessage = 'Something went wrong! Please try again later.';
+                errorMessage = 'Algo correu mal! Pode ser um problema de rede ou de conexão. Por favor, tente novamente mais tarde.';
             }
 
 

@@ -35,6 +35,14 @@ export class AuthenticationService {
     return this.http.put<User>(`${this.apiUrl}/otp/${username}`, { username });
   }
 
+  sendForgotPasswordEmail(email: string): Observable<any> {
+    return this.http.post<User>(`${this.apiUrl}/forgot-password?email=${email}`, { email });
+  }
+
+  resetPassword(data: any): Observable<any> {
+    return this.http.post<User>(`${this.apiUrl}/reset-password`, data);
+  }
+
   /**
    * Logs out the user, clears the session, and navigates to the login page.
    */
