@@ -54,6 +54,9 @@ export interface Gerente extends BaseModel {
     telefone: string;
     tipoDocumento: string;
     numeroDocumento: string;
+    naturalidade: string;
+    nacionalidade: string;
+    estadoCivil: string;
 }
 
 export interface Representante extends BaseModel {

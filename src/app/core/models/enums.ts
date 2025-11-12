@@ -73,9 +73,9 @@ export enum TipoAto {
 
 export enum TipoEmpresa {
     micro = 'MICROEMPRESA',
-    pequena = 'PEQUENA_EMPRESA',
-    media = 'MEDIA_EMPRESA',
-    grande = 'GRANDE_EMPRESA'
+    pequena = 'PEQUENA',
+    media = 'MÉDIA',
+    grande = 'GRANDE'
 }
 
 export enum QuantoAtividade {

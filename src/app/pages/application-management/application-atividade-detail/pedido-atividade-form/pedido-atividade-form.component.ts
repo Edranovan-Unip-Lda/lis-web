@@ -5,7 +5,7 @@ import { AuthenticationService } from '@/core/services';
 import { AplicanteService } from '@/core/services/aplicante.service';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { DocumentosService } from '@/core/services/documentos.service';
-import { formatDateForLocalDate, mapToIdAndNome, maxFileSizeUpload, stateOptions, tipoDocumentoOptions, tipoPedidoAtividadeComercialOptions, tipoPedidoAtividadeIndustrialOptions } from '@/core/utils/global-function';
+import { formatDateForLocalDate, mapToIdAndNome, maxFileSizeUpload, stateOptions, tipoArrendadorOptions, tipoDocumentoOptions, tipoPedidoAtividadeComercialOptions, tipoPedidoAtividadeIndustrialOptions } from '@/core/utils/global-function';
 import { Component, Input, output, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
@@ -36,7 +36,6 @@ export class PedidoAtividadeFormComponent {
   tipoPedidoAtividadeIndustrialOpts = tipoPedidoAtividadeIndustrialOptions;
   @Input() listaAldeia: any[] = [];
   @Input() listaClasseAtividade: any[] = [];
-  @Input() disabledForm!: boolean;
   @Input() disabledAllForm!: boolean;
   originalAldeias: any[] = [];
   listaAldeiaEmpresa: any[] = [];
@@ -52,6 +51,7 @@ export class PedidoAtividadeFormComponent {
   loadingRemoveButtons = new Set<string>();
   showArrendadorForm = false;
   tipoDocumentoOpts = tipoDocumentoOptions;
+  tipoArrendadorOpts = tipoArrendadorOptions;
 
   stateOpts = stateOptions;
   dataSent = output<any>();
@@ -395,6 +395,7 @@ export class PedidoAtividadeFormComponent {
       outrosDocumentos: [null],
       arrendador: this._fb.group({
         id: [null],
+        tipo: [null],
         nome: [null],
         endereco: this._fb.group({
           local: [null],
@@ -580,12 +581,17 @@ export class PedidoAtividadeFormComponent {
 
   private mapGerente(obj: Gerente): void {
     const newObj: any = {
-      ...obj
+      ...obj,
+      nacionalidade: obj.nacionalidade,
+      naturalidade: obj.naturalidade,
+      morada: {
+        ...obj.morada,
+        aldeia: obj.morada.aldeia.id,
+        suco: obj.morada.aldeia.suco.nome,
+        postoAdministrativo: obj.morada.aldeia.suco.postoAdministrativo.nome,
+        municipio: obj.morada.aldeia.suco.postoAdministrativo.municipio.nome,
+      }
     };
-    newObj.morada.suco = obj.morada.aldeia.suco.nome;
-    newObj.morada.postoAdministrativo = obj.morada.aldeia.suco.postoAdministrativo.nome;
-    newObj.morada.municipio = obj.morada.aldeia.suco.postoAdministrativo.municipio.nome;
-    newObj.morada.aldeia = obj.morada.aldeia.id;
     this.requestForm.patchValue({
       gerente: {
         ...newObj,
@@ -609,7 +615,8 @@ export class PedidoAtividadeFormComponent {
       }),
       telefone: new FormControl({ value: null, disabled: true }),
       email: new FormControl({ value: null, disabled: true }),
-    })
+      estadoCivil: new FormControl({ value: null, disabled: true }),
+    });
   }
 
   private addMessages(isSuccess: boolean, isNew: boolean, error?: any) {

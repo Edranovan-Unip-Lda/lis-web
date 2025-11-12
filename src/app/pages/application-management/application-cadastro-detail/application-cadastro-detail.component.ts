@@ -759,21 +759,6 @@ export class ApplicationCadastroDetailComponent {
     }
   }
 
-  // private enableSuperficieFormControl() {
-  //   this.faturaForm.get('taxas')?.valueChanges.subscribe({
-  //     next: value => {
-  //       console.log(value);
-
-  //       if (value && value.length > 0) {
-  //         this.faturaForm.get('superficie')?.enable();
-  //         this.faturaForm.get('superficie')?.addValidators([Validators.required])
-  //       } else {
-  //         this.faturaForm.get('superficie')?.disable();
-  //       }
-  //     }
-  //   })
-  // }
-
   /**
    * Subscribes to changes in the 'superficie' form control and updates the 'total' form control
    * with the calculated total based on the current superficie and selected taxas.

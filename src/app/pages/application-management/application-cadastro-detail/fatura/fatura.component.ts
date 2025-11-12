@@ -28,7 +28,7 @@ export class FaturaComponent {
 
   ngOnInit() {
     this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
-    this.selectFatura(this.router.snapshot.data['tipo']);
+    this.selectFatura(this.router.snapshot.data['type']);
   }
 
   selectFatura(tipo: string) {

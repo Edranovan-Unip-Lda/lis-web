@@ -464,8 +464,6 @@ export class Register {
     getCurrentPosition(): void {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
-                console.log(position.coords);
-
                 this.empresaForm.get('latitude')?.setValue(position.coords.latitude);
                 this.empresaForm.get('longitude')?.setValue(position.coords.longitude);
             });
@@ -524,6 +522,7 @@ export class Register {
                 numeroDocumento: [, [Validators.required]],
                 nacionalidade: [null, [Validators.required]],
                 naturalidade: [null, [Validators.required]],
+                estadoCivil: [null, [Validators.required]],
                 morada: this._fb.group({
                     local: [null, [Validators.required]],
                     municipio: new FormControl({ value: null, disabled: true }),

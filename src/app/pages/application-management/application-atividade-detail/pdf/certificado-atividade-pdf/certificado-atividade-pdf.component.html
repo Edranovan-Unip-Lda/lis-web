@@ -29,7 +29,7 @@
                 <div class="mt-4 font-extrabold text-5xl text-sky-600 tracking-wide">ALVARÁ DE LICENÇA</div>
                 <div class="text-3xl font-semibold text-sky-600">
                     PARA EXERCÍCIO DA ATIVIDADE
-                    {{certificadoData.pedidoLicencaAtividade.aplicante.categoria | titlecase}}
+                    {{certificadoData.pedidoLicencaAtividade.aplicante.categoria | uppercase}}
                 </div>
             </div>
         </div>
@@ -38,18 +38,18 @@
             <div class="col-span-6 text-xl my-4">
                 N.º <span class="font-bold">{{certificadoData.pedidoLicencaAtividade.aplicante.numero}}</span>
             </div>
-            <div class="col-span-6 text-xl my-4">
-                Sociedade Comercial <span
+            <div class="col-span-6 text-xl my-2">
+                Sociedade Comercial: <span
                     class="font-bold">{{certificadoData.pedidoLicencaAtividade.nomeEmpresa}}</span>
             </div>
-            <div class="col-span-6 text-xl my-4">
-                Nº Registo Comercial <span
+            <div class="col-span-6 text-xl my-2">
+                Nº Registo Comercial: <span
                     class="font-bold">{{certificadoData.pedidoLicencaAtividade.empresaNumeroRegistoComercial}}</span>
             </div>
-            <div class="col-span-6 text-xl my-4">
+            <div class="col-span-6 text-xl my-2">
                 NIF: <span class="font-bold">{{certificadoData.pedidoLicencaAtividade.empresaNif}}</span>
             </div>
-            <div class="col-span-6 text-xl my-4">
+            <div class="col-span-6 text-xl my-2">
                 Sede em: <span class="font-bold">
                     {{certificadoData.sede.local}},
                     {{certificadoData.sede.aldeia.nome}},
@@ -58,21 +58,21 @@
                     {{certificadoData.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
                 </span>
             </div>
-            <div class="col-span-6 text-xl my-4">
+            <div class="col-span-6 text-xl my-2">
                 Nível de risco: <span class="font-bold">{{certificadoData.pedidoLicencaAtividade.risco}}</span>
             </div>
-            <div class="col-span-3 text-xl my-4">
-                Atividade comercial declarada <span
+            <div class="col-span-4 text-xl my-2">
+                Atividade comercial declarada: <span
                     class="font-bold">{{certificadoData.pedidoLicencaAtividade.classeAtividade.descricao}}</span>
             </div>
-            <div class="col-span-3 text-xl my-4">
+            <div class="col-span-2 text-xl my-2">
                 Código: <span class="font-bold">{{certificadoData.pedidoLicencaAtividade.classeAtividade.codigo}}</span>
             </div>
-            <div class="col-span-6 text-xl my-4">
+            <div class="col-span-6 text-xl my-2">
                 Data de Emissão: <span class="font-bold">{{certificadoData.dataEmissao| date:'longDate'}}</span>
             </div>
-            <div class="col-span-6 text-xl my-4">
-                Validade até <span class="font-bold">{{certificadoData.dataValidade| date:'longDate'}}</span>
+            <div class="col-span-6 text-xl my-2">
+                Validade até: <span class="font-bold">{{certificadoData.dataValidade| date:'longDate'}}</span>
             </div>
         </div>
 

@@ -1,6 +1,6 @@
 import { CertificadoLicencaAtividade } from '@/core/models/entities.model';
 import { Categoria } from '@/core/models/enums';
-import { DatePipe, Location, NgStyle, TitleCasePipe } from '@angular/common';
+import { DatePipe, Location, NgStyle, TitleCasePipe, UpperCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import html2canvas from 'html2canvas-pro';
@@ -9,7 +9,7 @@ import { Button } from 'primeng/button';
 
 @Component({
   selector: 'app-certificado-atividade-pdf',
-  imports: [Button, TitleCasePipe, DatePipe, NgStyle],
+  imports: [Button, DatePipe, NgStyle, UpperCasePipe],
   templateUrl: './certificado-atividade-pdf.component.html',
   styleUrl: './certificado-atividade-pdf.component.scss'
 })

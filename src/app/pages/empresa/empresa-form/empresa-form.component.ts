@@ -126,8 +126,6 @@ export class EmpresaFormComponent implements OnInit {
       });
       formData.documentos = this.uploadedDocs;
 
-      console.log(formData);
-
       this.empresaService.update(this.authService.currentUserValue.username, formData).subscribe({
         next: (response) => {
           this.loading = false;

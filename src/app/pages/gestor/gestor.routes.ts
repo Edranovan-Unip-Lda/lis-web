@@ -109,7 +109,7 @@ export default [
             },
             {
                 path: ':id/fatura-inscricao',
-                data: { breadcrumb: 'Pré-Visualização do Fatura' },
+                data: { breadcrumb: 'Pré-Visualização do Fatura', type: 'CADASTRO' },
                 component: FaturaComponent,
                 resolve: {
                     aplicanteResolver: getByIdResolver,

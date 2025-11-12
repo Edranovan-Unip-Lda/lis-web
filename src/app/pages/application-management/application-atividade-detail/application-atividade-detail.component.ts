@@ -1,13 +1,12 @@
 import { Aplicante, AutoVistoria, Documento, Fatura, PedidoVistoria } from '@/core/models/entities.model';
 import { AplicanteStatus, Role } from '@/core/models/enums';
 import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
-import { AuthenticationService } from '@/core/services';
-import { EmpresaService } from '@/core/services/empresa.service';
+import { AuthenticationService, EmpresaService } from '@/core/services';
 import { PedidoService } from '@/core/services/pedido.service';
 import { mapToAtividadeEconomica, mapToIdAndNome, mapToTaxa } from '@/core/utils/global-function';
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -15,13 +14,14 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
 import { StepperModule } from 'primeng/stepper';
 import { Tag } from 'primeng/tag';
+import { Toast } from 'primeng/toast';
 import { FaturaVistoriaFormComponent } from './fatura-vistoria-form/fatura-vistoria-form.component';
 import { PedidoAtividadeFormComponent } from './pedido-atividade-form/pedido-atividade-form.component';
 import { PedidoVistoriaFormComponent } from './pedido-vistoria-form/pedido-vistoria-form.component';
 
 @Component({
   selector: 'app-application-atividade-detail',
-  imports: [ReactiveFormsModule, ButtonModule, StepperModule, InputTextModule, FileUploadModule, Tag, RouterLink, StatusSeverityPipe, DatePipe, TitleCasePipe, PedidoAtividadeFormComponent, FaturaVistoriaFormComponent, PedidoVistoriaFormComponent],
+  imports: [ReactiveFormsModule, ButtonModule, StepperModule, InputTextModule, FileUploadModule, Tag, RouterLink, StatusSeverityPipe, DatePipe, TitleCasePipe, PedidoAtividadeFormComponent, FaturaVistoriaFormComponent, PedidoVistoriaFormComponent, Toast],
   templateUrl: './application-atividade-detail.component.html',
   styleUrl: './application-atividade-detail.component.scss',
   providers: [MessageService]
@@ -59,7 +59,6 @@ export class ApplicationAtividadeDetailComponent {
 
 
   constructor(
-    private _fb: FormBuilder,
     private router: ActivatedRoute,
     private pedidoService: PedidoService,
     private empresaService: EmpresaService,
@@ -110,13 +109,13 @@ export class ApplicationAtividadeDetailComponent {
     }
 
     if (this.aplicanteData.estado === AplicanteStatus.emCurso || this.aplicanteData.estado === AplicanteStatus.rejeitado) {
-      this.disabledAllForm = true;
+      this.disabledAllForm = false;
     }
   }
 
 
   submitAplicante(callback: any) {
-    this.loading = true;
+    this.loading = false;
 
     const formData = {
       id: this.aplicanteData.id,
@@ -136,12 +135,14 @@ export class ApplicationAtividadeDetailComponent {
         });
         this.disabledForms(AplicanteStatus.submetido);
         this.route.navigate([`/application/${this.aplicanteData.tipo.toLowerCase()}`, this.aplicanteData.id], {
-          // this.router.navigate([`/application`, aplicante.id], {
           queryParams: {
             categoria: this.aplicanteData.categoria,
             tipo: this.aplicanteData.tipo
           }
         });
+
+        // Go to the first step
+        callback(1);
       },
       error: err => {
         this.loading = false;
@@ -205,12 +206,12 @@ export class ApplicationAtividadeDetailComponent {
     }
   }
 
-  isSubmitted(aplicanteData: Aplicante): boolean {
-    return aplicanteData.estado !== AplicanteStatus.submetido &&
-      aplicanteData.estado !== AplicanteStatus.revisao &&
-      aplicanteData.estado !== AplicanteStatus.aprovado &&
-      aplicanteData.estado !== AplicanteStatus.atribuido &&
-      aplicanteData.estado !== AplicanteStatus.revisto;
+  isSubmitted(aplicanteEstado: AplicanteStatus): boolean {
+    return aplicanteEstado !== AplicanteStatus.submetido &&
+      aplicanteEstado !== AplicanteStatus.revisao &&
+      aplicanteEstado !== AplicanteStatus.aprovado &&
+      aplicanteEstado !== AplicanteStatus.atribuido &&
+      aplicanteEstado !== AplicanteStatus.revisto;
   }
 
   private disabledForms(aplicanteEstado: AplicanteStatus): void {
@@ -235,6 +236,17 @@ export class ApplicationAtividadeDetailComponent {
         }
       }
     }
+  }
+
+  private async reloadComponent(): Promise<boolean> {
+    // 1. Get the current URL
+    const currentUrl = this.route.url;
+
+    // 2. Navigate away (to a dummy/temporary path, usually '/')
+    await this.route.navigateByUrl('/application/list', { skipLocationChange: true });
+
+    // 3. Navigate back to the original URL
+    return this.route.navigateByUrl(currentUrl);
   }
 
   private addMessages(isSuccess: boolean, isNew: boolean, error?: any) {

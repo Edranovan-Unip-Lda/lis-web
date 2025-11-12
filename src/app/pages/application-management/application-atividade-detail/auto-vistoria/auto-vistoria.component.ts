@@ -98,7 +98,6 @@ export class AutoVistoriaComponent implements OnInit {
     this.uploadUrl.set(`${environment.apiUrl}/documentos/${this.authService.currentUserValue.username}/upload`);
 
     this.mapAutoVistoriaForm(this.aplicante, this.pedidoVistoria);
-    console.log(this.pedidoVistoria);
 
     this.mapRequerenteForm(this.aplicante.empresa);
 
@@ -116,7 +115,6 @@ export class AutoVistoriaComponent implements OnInit {
       this.loading = true;
       const formData = this.mapFormToData(form);
 
-      console.log(formData);
       this.pedidoService.saveAutoVistoria(this.pedidoVistoria.id, formData).subscribe({
         next: () => {
           this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Auto Vistoria submetida com sucesso', life: 3000, key: 'tr' });

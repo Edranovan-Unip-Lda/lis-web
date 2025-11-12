@@ -208,7 +208,8 @@
              <label for="alteracoes" class="font-medium  mb-2 block">
                  Alteracoes a averbar
              </label>
-             <textarea rows="8" cols="30" variant="outlined" pTextarea formControlName="alteracoes"  id="alteracoes" fluid></textarea>
+             <textarea rows="8" cols="30" variant="outlined" pTextarea formControlName="alteracoes" id="alteracoes"
+                 fluid></textarea>
          </div>
          <div class="mb-6 col-span-12">
              <label for="observacao" class="font-medium  mb-2 block">
@@ -217,7 +218,7 @@
              <textarea rows="8" cols="30" variant="outlined" pTextarea formControlName="observacao" fluid></textarea>
          </div>
      </div>
-     <p-button (click)="submit(vistoriaRequestForm)" [label]="pedido? 'Actualizar' : 'Guardar'" severity="success"
-         [icon]="pedido? 'pi pi-sync' : 'pi pi-save'" />
+     <p-button (click)="submit(vistoriaRequestForm)" [disabled]="!vistoriaRequestForm.valid || disabledAllForm"
+         [label]="pedido? 'Actualizar' : 'Guardar'" severity="success" [icon]="pedido? 'pi pi-sync' : 'pi pi-save'" />
  </form>
  <p-toast position="bottom-center" />

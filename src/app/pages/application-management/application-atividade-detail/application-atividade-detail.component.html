@@ -6,7 +6,7 @@
     <p-stepper [value]="1" class="basis-[50rem]" [linear]="true">
         <p-step-list>
             <p-step [value]="1">Detalho da Aplicação</p-step>
-            @if (isSubmitted(aplicanteData)) {
+            @if (isSubmitted(aplicanteEstado)) {
             <p-step [value]="2">Pedido de Licenca</p-step>
             <!-- <p-step [value]="3">Fatura-Recibo Pedido de Licenca</p-step> -->
             <p-step [value]="3">Pedido de Vistoria</p-step>
@@ -416,7 +416,7 @@
 
                     </div>
                     <div class="flex pt-6 justify-end">
-                        @if (isSubmitted(aplicanteData)) {
+                        @if (isSubmitted(aplicanteEstado)) {
                         <p-button label="Continuar" icon="pi pi-arrow-right" iconPos="right"
                             (onClick)="activateCallback(2)" />
                         }
@@ -427,9 +427,10 @@
             <!-- Pedido de Licenca -->
             <p-step-panel [value]="2">
                 <ng-template #content let-activateCallback="activateCallback">
+                    {{disabledAllForm}}
                     <app-pedido-atividade-form [aplicanteData]="aplicanteData" [listaAldeia]="listaAldeia"
                         [listaClasseAtividade]="listaClasseAtividade" (dataSent)="onPedidoLicencaReceived($event)"
-                        [disabledForm]="disabledPedidoLicencaAndFatura">
+                        [disabledAllForm]="disabledAllForm">
                     </app-pedido-atividade-form>
                     <div class="flex pt-6 justify-between">
                         <p-button label="Back" severity="secondary" icon="pi pi-arrow-left"
@@ -459,7 +460,8 @@
             <p-step-panel [value]="3">
                 <ng-template #content let-activateCallback="activateCallback">
                     <app-pedido-vistoria-form [aplicanteData]="aplicanteData" [listaAldeia]="listaAldeia"
-                        [listaClasseAtividade]="listaClasseAtividade" (dataSent)="onPedidoVistoriaReceived($event)">
+                        [listaClasseAtividade]="listaClasseAtividade" (dataSent)="onPedidoVistoriaReceived($event)"
+                        [disabledAllForm]="disabledAllForm">
                     </app-pedido-vistoria-form>
                     <div class="flex pt-6 justify-between">
                         <p-button label="Back" severity="secondary" icon="pi pi-arrow-left"
@@ -474,7 +476,7 @@
             <p-step-panel [value]="4">
                 <ng-template #content let-activateCallback="activateCallback">
                     <app-fatura-vistoria-form [aplicanteData]="aplicanteData" [listaPedidoAto]="listaPedidoAto"
-                        (dataSent)="onPedidoVistoriaFaturaReceived($event)">
+                        (dataSent)="onPedidoVistoriaFaturaReceived($event)" [disabledAllForm]="disabledAllForm">
                     </app-fatura-vistoria-form>
                     <div class="flex pt-6 justify-between">
                         <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="right"
@@ -494,3 +496,4 @@
         </p-step-panels>
     </p-stepper>
 </div>
+<p-toast position="bottom-center" />

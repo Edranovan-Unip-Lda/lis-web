@@ -27,13 +27,13 @@ import { environment } from 'src/environments/environment';
 export class FaturaVistoriaFormComponent {
   @Input() aplicanteData!: Aplicante;
   @Input() listaPedidoAto: any[] = [];
+  @Input() disabledAllForm!: boolean;
   faturaForm!: FormGroup;
   uploadedFiles: any[] = [];
   downloadLoading = false;
   uploadUrl = signal(`${environment.apiUrl}/aplicantes`);
   deleteLoading = false;
   faturaLoading = false;
-  disableAllForm = false;
   maxFileSize = 20 * 1024 * 1024;
   pedidoId!: number;
   faturaId!: number;
@@ -61,19 +61,33 @@ export class FaturaVistoriaFormComponent {
           this.faturaId = this.pedidoVistoria.fatura.id;
           this.fatura = this.pedidoVistoria.fatura;
           this.mapEditFatura(this.pedidoVistoria.fatura);
+
+          if (this.disabledAllForm) {
+            this.faturaForm.disable();
+          }
+
         } else {
+          this.setTaxaAto(this.aplicanteData.pedidoLicencaAtividade.tipo, this.pedidoVistoria.tipoVistoria);
+
           // Set default superficie value from arrendador areaTotalConstrucao if arrendador exists
           if (this.aplicanteData.pedidoLicencaAtividade.arrendador) {
+            const taxas: number[] = this.faturaForm.get('taxas')?.value;
+            this.faturaForm.get('total')?.setValue(
+              this.getTotalFatura(this.aplicanteData.pedidoLicencaAtividade.arrendador.areaTotalConstrucao, taxas)
+            );
+
             this.faturaForm.patchValue({
               superficie: this.aplicanteData.pedidoLicencaAtividade.arrendador.areaTotalConstrucao
             });
           }
-          this.setTaxaAto(this.aplicanteData.pedidoLicencaAtividade.tipo, this.pedidoVistoria.tipoVistoria);
         }
       }
     }
     this.enableSuperficieFormControl();
     this.superficieOnChange();
+    if (this.disabledAllForm) {
+      this.faturaForm.disable();
+    }
   }
 
   submitFatura(form: FormGroup) {
@@ -225,15 +239,30 @@ export class FaturaVistoriaFormComponent {
         this.faturaForm.get('taxas')?.setValue(filtered);
         break;
 
-      case TipoPedidoLicenca.alteracao:
+      case TipoPedidoLicenca.instalacao:
         filtered = this.listaPedidoAto.filter(
-          t => t.ato && /mudan[cç]a ou altera[cç]ões/i.test(t.ato)
+          t => t.ato && /licen[cç]a para instala[cç]ão/i.test(t.ato)
         ).map(t => t.id);
         this.faturaForm.get('taxas')?.setValue(filtered);
         break;
+
+      case TipoPedidoLicenca.alteracao:
+        filtered = this.listaPedidoAto.filter(
+          t => t.ato && /Licen[cç]a de altera[cç]ão/i.test(t.ato)
+        ).map(t => t.id);
+        this.faturaForm.get('taxas')?.setValue(filtered);
+        break;
+
       case TipoPedidoLicenca.renovacao:
         filtered = this.listaPedidoAto.filter(
           t => t.ato && /renova[cç]ão/i.test(t.ato)
+        ).map(t => t.id);
+        this.faturaForm.get('taxas')?.setValue(filtered);
+        break;
+
+      case TipoPedidoLicenca.exploracao:
+        filtered = this.listaPedidoAto.filter(
+          t => t.ato && /licen[cç]a para explora[cç]ão/i.test(t.ato)
         ).map(t => t.id);
         this.faturaForm.get('taxas')?.setValue(filtered);
         break;
@@ -248,7 +277,7 @@ export class FaturaVistoriaFormComponent {
         break;
       case TipoPedidoVistoria.exploracao:
         filtered = filtered.concat(this.listaPedidoAto.filter(
-          t => t.ato && /explora[cç]ão/i.test(t.ato)
+          t => t.ato && /vistoria para explora[cç]ão/i.test(t.ato)
         ).map(t => t.id));
         this.faturaForm.get('taxas')?.setValue(filtered);
         break;

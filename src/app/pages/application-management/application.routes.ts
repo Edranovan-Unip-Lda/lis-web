@@ -49,7 +49,7 @@ export default [
             },
             {
                 path: ':id/fatura-inscricao',
-                data: { breadcrumb: 'Fatura PDF', tipo: 'CADASTRO', },
+                data: { breadcrumb: 'Pré-Visualização do Fatura', type: AplicanteType.cadastro },
                 component: FaturaComponent,
                 resolve: {
                     aplicanteResolver: getAplicante,
@@ -116,7 +116,7 @@ export default [
                 path: ':id/fatura-vistoria',
                 data: {
                     breadcrumb: 'Fatura PDF',
-                    tipo: 'VISTORIA',
+                    type: 'VISTORIA',
                 },
                 component: FaturaComponent,
                 resolve: {

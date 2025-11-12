@@ -26,6 +26,7 @@ export class PedidoVistoriaFormComponent {
   @Input() aplicanteData!: Aplicante;
   @Input() listaAldeia: any[] = [];
   @Input() listaClasseAtividade: any[] = [];
+  @Input() disabledAllForm!: boolean;
   tipoEmpresaOpts = tipoEmpresaOptions;
   tipoEstabelecimentoOpts = caraterizacaEstabelecimentoOptions;
   nivelRiscoOpts = nivelRiscoOptions;
@@ -49,19 +50,22 @@ export class PedidoVistoriaFormComponent {
   ngOnInit(): void {
     this.initForm();
 
-    if (this.aplicanteData.categoria == Categoria.comercial) {
-      this.tipoPedidoVistoriaOpts = tipoPedidoVistoriaComercialOptions;
-      this.categoria = Categoria.comercial;
-      this.vistoriaRequestForm.get('atividade')?.setValidators(Validators.required);
-    } else {
-      this.tipoPedidoVistoriaOpts = tipoPedidoVistoriaIndustrialOptions;
-      this.categoria = Categoria.industrial;
-      this.atividadesOpts = quantoAtividadeoptions;
-      this.vistoriaRequestForm.get('tipoAtividade')?.setValidators(Validators.required);
-      this.vistoriaRequestForm.patchValue({
-        tipoEmpresa: this.aplicanteData.empresa.tipoEmpresa
-      })
-      this.vistoriaRequestForm.get('tipoEmpresa')?.disable();
+    switch (this.aplicanteData.categoria) {
+      case Categoria.comercial:
+        this.tipoPedidoVistoriaOpts = tipoPedidoVistoriaComercialOptions;
+        this.categoria = Categoria.comercial;
+        this.vistoriaRequestForm.get('atividade')?.setValidators(Validators.required);
+        break;
+      case Categoria.industrial:
+        this.tipoPedidoVistoriaOpts = tipoPedidoVistoriaIndustrialOptions;
+        this.categoria = Categoria.industrial;
+        this.atividadesOpts = quantoAtividadeoptions;
+        this.vistoriaRequestForm.get('tipoAtividade')?.setValidators(Validators.required);
+        this.vistoriaRequestForm.patchValue({
+          tipoEmpresa: this.aplicanteData.empresa.tipoEmpresa
+        })
+        this.vistoriaRequestForm.get('tipoEmpresa')?.disable();
+        break;
     }
 
     if (this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria) {
@@ -70,14 +74,40 @@ export class PedidoVistoriaFormComponent {
 
     this.mapEmpresaForm(this.aplicanteData.empresa);
 
-    if (this.pedido) {
-      this.mapPedidoForm(this.pedido);
-    }
-
+    // Map data from Pedido Licenca Atividade (New Form)
     this.vistoriaRequestForm.patchValue({
       tipoEmpresa: this.aplicanteData.empresa.tipoEmpresa
     });
+    const request = this.aplicanteData.pedidoLicencaAtividade;
+    this.vistoriaRequestForm.patchValue({
+      risco: request.risco,
+      classeAtividade: {
+        id: request.classeAtividade.id,
+        codigo: request.classeAtividade.codigo,
+        descricao: request.classeAtividade.descricao,
+        tipoRisco: request.classeAtividade.tipoRisco,
+        grupoAtividade: {
+          id: request.classeAtividade.grupoAtividade.id,
+          codigo: request.classeAtividade.grupoAtividade.codigo,
+          descricao: request.classeAtividade.grupoAtividade.descricao,
+        }
+      },
+      classeAtividadeCodigo: request.classeAtividade.descricao,
+      grupoAtividade: request.classeAtividade.grupoAtividade.codigo,
+      grupoAtividadeCodigo: request.classeAtividade.grupoAtividade.descricao,
+    });
+
+    if (this.pedido) {
+      this.mapPedidoForm(this.pedido);
+      if (this.disabledAllForm) {
+        this.vistoriaRequestForm.disable();
+      }
+    }
+
     this.listaAldeia = mapToIdAndNome(this.route.snapshot.data['aldeiasResolver']._embedded.aldeias);
+    if (this.disabledAllForm) {
+      this.vistoriaRequestForm.disable();
+    }
   }
 
   submit(form: FormGroup): void {
@@ -92,7 +122,7 @@ export class PedidoVistoriaFormComponent {
         }
       },
       classeAtividade: {
-        id: form.value.classeAtividade.id
+        id: form.getRawValue().classeAtividade.id
       },
     }
 
@@ -286,7 +316,7 @@ export class PedidoVistoriaFormComponent {
       risco: new FormControl({ value: null, disabled: true }),
       atividade: [null],
       tipoAtividade: [null],
-      classeAtividade: [null, Validators.required],
+      classeAtividade: new FormControl({ value: null, disabled: true }),
       classeAtividadeCodigo: new FormControl({ value: null, disabled: true }),
       grupoAtividade: new FormControl({ value: null, disabled: true }),
       grupoAtividadeCodigo: new FormControl({ value: null, disabled: true }),

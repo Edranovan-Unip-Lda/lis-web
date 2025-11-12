@@ -230,6 +230,21 @@ export const tipoPedidoAtividadeComercialOptions: any[] = [
         name: 'Pedido de Renovação de Licença',
         value: TipoPedidoLicenca.renovacao
     }
+];
+
+export const tipoArrendadorOptions: any[] =  [
+    {
+        name: 'Estado',
+        value: 'Estado'
+    },
+     {
+        name: 'Empresa',
+        value: 'Empresa'
+    },
+     {
+        name: 'Individual',
+        value: 'Individual'
+    },
 ]
 
 export const tipoPedidoAtividadeIndustrialOptions: any[] = [
