@@ -39,3 +39,36 @@ export function mustMatch(passwordControlName: string, confirmPasswordControlNam
         return null;
     };
 }
+
+export function pedidoAtividadeWithFilesValidator(): ValidatorFn {
+    return (group: AbstractControl): ValidationErrors | null => {
+        const errors: any = {};
+
+        const get = (name: string) => group.get(name)?.value;
+
+        // 1️⃣ All main fields except "documentoPropriedade" must be true + have file
+        ['planta', 'documentoImovel', 'planoEmergencia', 'estudoAmbiental'].forEach(field => {
+            if (get(field) !== true) errors[`${field}Required`] = true;
+            if (get(`${field}File`) == null) errors[`${field}FileRequired`] = true;
+        });
+
+        // 2️⃣ documentoPropriedade
+        if (get('documentoPropriedade') === true) {
+            if (get('documentoPropriedadeFile') == null) {
+                errors.documentoPropriedadeFileRequired = true;
+            }
+        }
+
+        // 3️⃣ contratoArrendamento required if documentoPropriedade is false
+        if (get('documentoPropriedade') === false) {
+            if (get('contratoArrendamento') !== true) {
+                errors.contratoArrendamentoRequired = true;
+            }
+            if (get('contratoArrendamentoFile') == null) {
+                errors.contratoArrendamentoFileRequired = true;
+            }
+        }
+
+        return Object.keys(errors).length ? errors : null;
+    };
+}

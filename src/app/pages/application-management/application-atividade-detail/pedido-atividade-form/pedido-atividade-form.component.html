@@ -19,11 +19,17 @@
          REQUERENTE
      </span>
      <section id="requerente" class="grid grid-cols-12 gap-4">
-         <div class="mb-6 col-span-12 md:col-span-6">
+         <div class="mb-6 col-span-12">
              <label for="nomeEmpresa" class="font-medium  mb-2 block">
                  Firma ou denominacao social
              </label>
              <input formControlName="nomeEmpresa" id="nomeEmpresa" type="text" pInputText fluid />
+         </div>
+         <div class="mb-6 col-span-12 md:col-span-6">
+             <label for="empresaNif" class="font-medium  mb-2 block">
+                 NIF
+             </label>
+             <input formControlName="empresaNif" id="empresaNif" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="empresaNumeroRegistoComercial" class="font-medium  mb-2 block">
@@ -113,19 +119,6 @@
                  Nivel de Risco
              </label>
              <input formControlName="risco" id="risco" type="text" pInputText fluid />
-         </div>
-         <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="estatutoSociedadeComercial" class="font-medium  mb-2 block">
-                 Estatuto da sociedade comercial
-             </label>
-             <p-selectbutton [options]="stateOpts" formControlName="estatutoSociedadeComercial" optionLabel="label"
-                 optionValue="value" />
-         </div>
-         <div class="mb-6 col-span-12">
-             <label for="empresaNif" class="font-medium  mb-2 block">
-                 NIF
-             </label>
-             <input formControlName="empresaNif" id="empresaNif" type="text" pInputText fluid />
          </div>
      </section>
 
@@ -303,36 +296,123 @@
 
      <div class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="numeroRegistoComercial" class="font-medium  mb-2 block text-xl uppercase">
-                 Planta de Localizacao do Estabelecimento Comercial
+             <label for="planta" class="font-medium  mb-2 block text-xl uppercase">
+                 Planta de Localizacao do Estabelecimento Comercial (Documento)
              </label>
              <p-selectbutton [options]="stateOpts" formControlName="planta" optionLabel="label" optionValue="value" />
+             @if(requestForm.get('planta')?.value === true) {
+             @if (loadingUploadButtons.has('planta')) {
+             <div class="w-1/2">
+                 <p-progressbar mode="indeterminate" [style]="{ height: '6px' }" />
+             </div>
+             }
+             <div class="flex justify-start pt-2">
+                 <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
+                     [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUploadDocs($event, 'planta')"
+                     (onProgress)="uploadOnProgress($event, 'planta')" [maxFileSize]="maxFileSize"
+                     accept="application/pdf" mode="basic" [url]="uploadURLDocs()"
+                     [disabled]="disabledAllForm || getFileByField('planta')" [auto]="true">
+                 </p-fileupload>
+             </div>
+             @if (getFileByField('planta')) {
+             <div>
+                 <a class="cursor-pointer hover:underline hover:text-teal-300 ms-4">
+                     {{getFileByField('planta').nome}}
+                 </a>
+                 @if (getFileByField('planta').id) {
+                 <p-button (click)="downloadDoc(getFileByField('planta'))"
+                     [loading]="loadingDownloadButtons.has(getFileByField('planta').nome)" icon="pi pi-download"
+                     [rounded]="true" [text]="true" severity="success" />
+                 }
+                 <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
+                     [loading]="loadingRemoveButtons.has(getFileByField('planta').nome)" severity="danger"
+                     [disabled]="disabledAllForm" (click)="removeDoc(getFileByField('planta'))" />
+             </div>
+             }
+             }
          </div>
      </div>
      <span class="text-xl font-bold mt-6 mb-3 block">
          DOCUMENTO COMPROVATIVO DE PROPRIEDADE, POSSE DE IMOVEL OU OUTRO CONTRATO DE ARRENDAMENTO
      </span>
      <div class="grid grid-cols-12 gap-4">
+         @for (item of pedidoLicencaDocumentsFields; track $index) {
          <div class="mb-6 col-span-12">
-             <label for="documentoPropriedade" class="font-medium  mb-2 block">
-                 Documento comprovativo do direito de propriedade
+             <label [for]="item.name" class="font-medium  mb-2 block">
+                 {{item.label}}
              </label>
-             <p-selectbutton [options]="stateOpts" formControlName="documentoPropriedade" optionLabel="label"
+             <p-selectbutton [options]="stateOpts" [formControlName]="item.name" optionLabel="label"
                  optionValue="value" />
+
+             @if(requestForm.get(item.name)?.value === true) {
+             @if (loadingUploadButtons.has(item.name)) {
+             <div class="w-1/2">
+                 <p-progressbar mode="indeterminate" [style]="{ height: '6px' }" />
+             </div>
+             }
+             <div class="flex justify-start pt-2">
+                 <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
+                     [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUploadDocs($event, item.name)"
+                     [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadURLDocs()"
+                     (onProgress)="uploadOnProgress($event, item.name)"
+                     [disabled]="disabledAllForm || getFileByField(item.name)" [auto]="true">
+                 </p-fileupload>
+             </div>
+             @if (getFileByField(item.name)) {
+             <div>
+                 <a class="cursor-pointer hover:underline hover:text-teal-300 ms-4">
+                     {{getFileByField(item.name).nome}}
+                 </a>
+                 @if (getFileByField(item.name).id) {
+                 <p-button (click)="downloadDoc(getFileByField(item.name))"
+                     [loading]="loadingDownloadButtons.has(getFileByField(item.name).nome)" icon="pi pi-download"
+                     [rounded]="true" [text]="true" severity="success" />
+                 }
+                 <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
+                     [loading]="loadingRemoveButtons.has(getFileByField(item.name).nome)" severity="danger"
+                     [disabled]="disabledAllForm" (click)="removeDoc(getFileByField(item.name))" />
+             </div>
+             }
+             }
          </div>
-         <div class="mb-6 col-span-12">
-             <label for="documentoImovel" class="font-medium  mb-2 block">
-                 Documento comprovativo de posse de imovel
-             </label>
-             <p-selectbutton [options]="stateOpts" formControlName="documentoImovel" optionLabel="label"
-                 optionValue="value" />
-         </div>
+         }
+         @if (requestForm.get('documentoPropriedade')?.value === false) {
          <div class="mb-6 col-span-12">
              <label for="contratoArrendamento" class="font-medium  mb-2 block">
                  Contrato de arrendamento
              </label>
              <p-selectbutton [options]="stateOpts" (onChange)="contratoArrendamentoOnChange($event)"
                  formControlName="contratoArrendamento" optionLabel="label" optionValue="value" />
+             @if(requestForm.get('contratoArrendamento')?.value === true) {
+             @if (loadingUploadButtons.has('contratoArrendamento')) {
+             <div class="w-1/2">
+                 <p-progressbar mode="indeterminate" [style]="{ height: '6px' }" />
+             </div>
+             }
+             <div class="flex justify-start pt-2">
+                 <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
+                     (onUpload)="onUploadDocs($event, 'contratoArrendamento')" [chooseIcon]="'pi pi-file-arrow-up'"
+                     (onProgress)="uploadOnProgress($event, 'contratoArrendamento')" [maxFileSize]="maxFileSize"
+                     accept="application/pdf" mode="basic" [url]="uploadURLDocs()"
+                     [disabled]="disabledAllForm || getFileByField('contratoArrendamento')" [auto]="true">
+                 </p-fileupload>
+             </div>
+             @if (getFileByField('contratoArrendamento')) {
+             <div>
+                 <a class="cursor-pointer hover:underline hover:text-teal-300 ms-4">
+                     {{getFileByField('contratoArrendamento').nome}}
+                 </a>
+                 @if (getFileByField('contratoArrendamento').id) {
+                 <p-button (click)="downloadDoc(getFileByField('contratoArrendamento'))"
+                     [loading]="loadingDownloadButtons.has(getFileByField('contratoArrendamento').nome)"
+                     icon="pi pi-download" [rounded]="true" [text]="true" severity="success" />
+                 }
+                 <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
+                     [loading]="loadingRemoveButtons.has(getFileByField('contratoArrendamento').nome)" severity="danger"
+                     [disabled]="disabledAllForm" (click)="removeDoc(getFileByField('contratoArrendamento'))" />
+             </div>
+             }
+             }
          </div>
          @if (showArrendadorForm) {
          <div class="col-span-12 mb-6 bg-gray-800 p-6 rounded-lg">
@@ -468,20 +548,7 @@
 
          </div>
          }
-         <div class="mb-6 col-span-12">
-             <label for="planoEmergencia" class="font-medium  mb-2 block">
-                 PLANO DE EMERGENCIA
-             </label>
-             <p-selectbutton [options]="stateOpts" formControlName="planoEmergencia" optionLabel="label"
-                 optionValue="value" />
-         </div>
-         <div class="mb-6 col-span-12">
-             <label for="estudoAmbiental" class="font-medium  mb-2 block">
-                 ESTUDO DE IMPACTO AMBIENTAL
-             </label>
-             <p-selectbutton [options]="stateOpts" formControlName="estudoAmbiental" optionLabel="label"
-                 optionValue="value" />
-         </div>
+         }
      </div>
      <span class="text-xl font-bold mt-6 mb-3 block">
          Nº DE POSTOS DE EMPREGO CRIADOS OU A CRIAR
@@ -500,83 +567,7 @@
              <input formControlName="numEmpregadosCriar" id="numEmpregadosCriar" type="number" pInputText fluid />
          </div>
      </div>
-     <div class="grid grid-cols-12 gap-4">
-         <div class="mb-6 col-span-12">
-             <label for="outrosDocumentos" class="font-medium  mb-2 block">
-                 DOCUMENTOS
-             </label>
-             <ul class="list-decimal list-inside mb-2">
-                 @if (requestForm.get('planta')?.value === true) {
-                 <li>
-                     Planta de Localização do Estabelecimento
-                 </li>
-                 }
-
-                 @if (requestForm.get('documentoPropriedade')?.value === true) {
-                 <li>
-                     Documento comprovativo do direito de propriedade
-                 </li>
-                 }
-
-                 @if (requestForm.get('documentoImovel')?.value === true) {
-                 <li>
-                     Documento comprovativo de posse de imovel
-                 </li>
-                 }
-
-                 @if (showArrendadorForm === true) {
-                 <li>
-                     Contrato de arrendamento
-                 </li>
-                 }
-
-                 @if (requestForm.get('planoEmergencia')?.value === true) {
-                 <li>
-                     Plano de Emergência
-                 </li>
-                 }
-
-                 @if (requestForm.get('estudoAmbiental')?.value === true) {
-                 <li>
-                     Estudo de Impacto Ambiental
-                 </li>
-                 }
-
-             </ul>
-             <p-fileupload name="files" method="post" (onUpload)="onUploadDocs($event)" [maxFileSize]="maxFileSize"
-                 [multiple]="true" accept="application/pdf" mode="advanced" [url]="uploadURLDocs()" [fileLimit]=""
-                 [disabled]="disabledAllForm">
-                 <ng-template #empty>
-                     @if (uploadedDocs.length === 0) {
-                     Arraste e largue os ficheiros aqui para carregar.
-                     }
-                 </ng-template>
-                 <ng-template #content>
-                     @if (uploadedDocs.length > 0) {
-                     <ul>
-                         @for (item of uploadedDocs; track $index) {
-                         <li>
-                             <a class="cursor-pointer hover:underline hover:text-teal-300">
-                                 {{ item.nome }} - {{ bytesToMBs(item.tamanho) }}
-                             </a>
-                             &nbsp;
-                             @if (item.id) {
-                             <p-button (click)="downloadDoc(item)" [loading]="loadingDownloadButtons.has(item.nome)"
-                                 icon="pi pi-download" [rounded]="true" [text]="true" severity="success" />
-                             }
-                             &nbsp;
-                             <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
-                                 [loading]="loadingRemoveButtons.has(item.nome)" severity="danger"
-                                 [disabled]="!requestForm.valid || disabledAllForm" (click)="removeDoc(item)" />
-                         </li>
-                         }
-                     </ul>
-                     }
-                 </ng-template>
-             </p-fileupload>
-         </div>
-     </div>
-     <p-button [disabled]="disabledSubmitButton()" (click)="isNew? save(requestForm): update(requestForm)"
+     <p-button [disabled]="!requestForm.valid" (click)="isNew? save(requestForm): update(requestForm)"
          [loading]="isLoading" [label]="isNew? 'Guardar' : 'Actualizar'" severity="success"
          [icon]="isNew? 'pi pi-save' : 'pi pi-sync'" />
  </form>

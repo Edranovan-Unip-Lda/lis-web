@@ -252,6 +252,7 @@ export interface Documento extends BaseModel {
     descricao: string;
     tipo: string;
     tamanho: string;
+    coluna: string;
 }
 
 export interface HistoricoEstadoAplicante extends BaseModel {

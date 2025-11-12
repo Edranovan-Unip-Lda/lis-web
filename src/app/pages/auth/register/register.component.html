@@ -502,27 +502,37 @@
                                      <label for="tipo" class="font-medium  mb-2 block">
                                          Tipo
                                      </label>
-                                     <p-select fluid formControlName="tipo" [options]="tipoRepresentanteOptions"
-                                         optionLabel="name" optionValue="value"
+                                     <p-select (onChange)="onRepresentanteTipoChange($event)" fluid
+                                         formControlName="tipo" [options]="tipoRepresentanteOptions" optionLabel="name"
+                                         [showClear]="true" optionValue="value"
                                          placeholder="Selecione o tipo de Representante">
                                      </p-select>
                                  </div>
+
+                                 @if (empresaForm.get('representante.tipo')?.value) {
+
                                  @if (empresaForm.get('representante.tipo')?.value === 'Empresa') {
                                  <div class="mb-6 col-span-12">
                                      <label for="nomeEmpresa" class="font-medium  mb-2 block">
-                                         Nome da Emresa
+                                         Nome da Empresa
                                      </label>
                                      <input formControlName="nomeEmpresa" id="nomeEmpresa" type="text" pInputText fluid
                                          placeholder="Ex. Empresa Unip. lda" />
                                  </div>
                                  }
+
                                  <div class="mb-6 col-span-12">
                                      <label for="nome" class="font-medium  mb-2 block">
+                                         @if (empresaForm.get('representante.tipo')?.value === 'Empresa'){
                                          Nome do funcionário
+                                         }@else {
+                                         Nome do Individual
+                                         }
                                      </label>
                                      <input formControlName="nome" id="nome" type="text" pInputText fluid
                                          placeholder="Ex: Joao da Silva" />
                                  </div>
+
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="tipoDocumento" class="font-medium  mb-2 block">
                                          Tipo Documento
@@ -638,6 +648,7 @@
                                      </label>
                                      <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
                                  </div>
+                                 }
                              </div>
                              <div class="mt-6 mb-6 text-left flex justify-between">
                                  <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="left"

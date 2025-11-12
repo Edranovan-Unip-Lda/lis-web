@@ -1,30 +1,32 @@
 import { Aldeia } from '@/core/models/data-master.model';
 import { Aplicante, Documento, Empresa, Gerente, PedidoAtividadeLicenca, Representante } from '@/core/models/entities.model';
 import { Categoria } from '@/core/models/enums';
-import { AuthenticationService } from '@/core/services';
+import { AuthenticationService, EmpresaService } from '@/core/services';
 import { AplicanteService } from '@/core/services/aplicante.service';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { DocumentosService } from '@/core/services/documentos.service';
-import { formatDateForLocalDate, mapToIdAndNome, maxFileSizeUpload, stateOptions, tipoArrendadorOptions, tipoDocumentoOptions, tipoPedidoAtividadeComercialOptions, tipoPedidoAtividadeIndustrialOptions } from '@/core/utils/global-function';
+import { formatDateForLocalDate, mapToIdAndNome, maxFileSizeUpload, pedidoLicencaDocumentsFields, stateOptions, tipoArrendadorOptions, tipoDocumentoOptions, tipoPedidoAtividadeComercialOptions, tipoPedidoAtividadeIndustrialOptions } from '@/core/utils/global-function';
+import { pedidoAtividadeWithFilesValidator } from '@/core/validators/must-match';
 import { Component, Input, output, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
-import { FileUpload } from 'primeng/fileupload';
+import { FileProgressEvent, FileUpload } from 'primeng/fileupload';
 import { InputGroup } from 'primeng/inputgroup';
 import { InputGroupAddon } from 'primeng/inputgroupaddon';
 import { InputNumber } from 'primeng/inputnumber';
 import { InputText } from 'primeng/inputtext';
+import { ProgressBar } from 'primeng/progressbar';
 import { Select, SelectFilterEvent } from 'primeng/select';
 import { SelectButton, SelectButtonChangeEvent } from 'primeng/selectbutton';
 import { Toast } from 'primeng/toast';
-import { forkJoin, map } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-pedido-atividade-form',
-  imports: [ReactiveFormsModule, Select, SelectButton, InputText, Button, Toast, FileUpload, DatePicker, InputGroup, InputGroupAddon, InputNumber],
+  imports: [ReactiveFormsModule, Select, SelectButton, InputText, Button, Toast, FileUpload, DatePicker, InputGroup, InputGroupAddon, InputNumber, ProgressBar],
   templateUrl: './pedido-atividade-form.component.html',
   styleUrl: './pedido-atividade-form.component.scss',
   providers: [MessageService]
@@ -47,23 +49,17 @@ export class PedidoAtividadeFormComponent {
   uploadedDocs: any[] = [];
   uploadURLDocs = signal(`${environment.apiUrl}/documentos`);
   maxFileSize = maxFileSizeUpload;
+  loadingUploadButtons = new Set<String>();
   loadingDownloadButtons = new Set<string>();
   loadingRemoveButtons = new Set<string>();
   showArrendadorForm = false;
   tipoDocumentoOpts = tipoDocumentoOptions;
   tipoArrendadorOpts = tipoArrendadorOptions;
+  pedidoLicencaDocumentsFields = pedidoLicencaDocumentsFields;
 
   stateOpts = stateOptions;
   dataSent = output<any>();
-  fileLimit = 0;
-  fileFields = [
-    'planta',
-    'documentoPropriedade',
-    'documentoImovel',
-    'arrendador',
-    'planoEmergencia',
-    'estudoAmbiental'
-  ];
+  invalidRequiredFields: string[] = [];
 
   constructor(
     private _fb: FormBuilder,
@@ -72,6 +68,7 @@ export class PedidoAtividadeFormComponent {
     private messageService: MessageService,
     private documentoService: DocumentosService,
     private authService: AuthenticationService,
+    private empresaService: EmpresaService,
   ) { }
 
   ngOnInit(): void {
@@ -79,26 +76,67 @@ export class PedidoAtividadeFormComponent {
 
     this.copyAldeiaList(this.listaAldeia);
 
-    if (this.aplicanteData.pedidoLicencaAtividade) {
-      this.mapRequestFormData(this.aplicanteData.pedidoLicencaAtividade);
-      if (this.disabledAllForm) {
-        this.requestForm.disable();
+    this.empresaService.getAplicanteByEmpresaIdAndAplicanteId(this.aplicanteData.empresa.id, this.aplicanteData.id).subscribe({
+      next: (aplicante: Aplicante) => {
+        this.aplicanteData = aplicante;
+        
+        if (this.aplicanteData.pedidoLicencaAtividade) {
+          this.mapRequestFormData(this.aplicanteData.pedidoLicencaAtividade);
+          if (this.disabledAllForm) {
+            this.requestForm.disable();
+          }
+        } else {
+          this.isNew = true;
+          this.mapFormEmpresa(this.aplicanteData.empresa);
+        }
       }
-    } else {
-      this.isNew = true;
-      this.mapFormEmpresa(this.aplicanteData.empresa);
-    }
+    });
+
+
 
     this.uploadURLDocs.set(`${environment.apiUrl}/documentos/${this.authService.currentUserValue.username}/upload`);
     if (this.disabledAllForm) {
       this.requestForm.disable();
     }
 
-    this.requestForm.valueChanges
-      .pipe(
-        map(value => this.fileFields.filter(field => value[field]).length)
-      )
-      .subscribe(count => this.fileLimit = count);
+
+    const contratoArrendamentoCtrl = this.requestForm.get('contratoArrendamento');
+    const arrendadorGroup = this.requestForm.get('arrendador') as FormGroup;
+    const tipoCtrl = arrendadorGroup.get('tipo');
+    const nomeCtrl = arrendadorGroup.get('nome');
+    const tipoDocumentoCtrl = arrendadorGroup.get('tipoDocumento');
+    const numeroDocumentoCtrl = arrendadorGroup.get('numeroDocumento');
+
+
+    // 🔹 When contratoArrendamento changes
+    contratoArrendamentoCtrl?.valueChanges.subscribe((value) => {
+      const arrendadorGroup = this.requestForm.get('arrendador') as FormGroup;
+      if (value === true) {
+        // ✅ Add required validators when contratoArrendamento is TRUE
+        this.setArrendadorValidators(arrendadorGroup, true);
+      } else {
+        // ❌ Clear validators when contratoArrendamento is FALSE
+        this.setArrendadorValidators(arrendadorGroup, false);
+      }
+    });
+
+    // 🔹 When tipo changes (to control nome requirement)
+    tipoCtrl?.valueChanges.subscribe((tipoValue) => {
+      if (contratoArrendamentoCtrl?.value === true) {
+        if (tipoValue === 'Estado') {
+          nomeCtrl?.clearValidators();
+          tipoDocumentoCtrl?.clearValidators();
+          numeroDocumentoCtrl?.clearValidators();
+        } else {
+          nomeCtrl?.setValidators([Validators.required]);
+          tipoDocumentoCtrl?.setValidators([Validators.required]);
+          numeroDocumentoCtrl?.setValidators([Validators.required]);
+        }
+        nomeCtrl?.updateValueAndValidity({ emitEvent: false });
+        tipoDocumentoCtrl?.updateValueAndValidity({ emitEvent: false });
+        numeroDocumentoCtrl?.updateValueAndValidity({ emitEvent: false });
+      }
+    });
   }
 
 
@@ -281,8 +319,20 @@ export class PedidoAtividadeFormComponent {
     }
   }
 
-  onUploadDocs(event: any) {
-    if (event.originalEvent.body) {
+  onUploadDocs(event: any, field?: string): void {
+    if (event.originalEvent.body && event.originalEvent.body.length > 0) {
+      const uploadedFiles: Documento[] = event.originalEvent.body;
+      if (field) {
+        const file = uploadedFiles[0];
+        file.coluna = field;
+        uploadedFiles.forEach(doc => {
+          doc.coluna = field;
+          return true;
+        });
+        this.requestForm.get(`${field}File`)?.setValue(file);
+        this.requestForm.get(`${field}File`)?.updateValueAndValidity();
+        this.loadingUploadButtons.delete(field);
+      }
       this.uploadedDocs = [...this.uploadedDocs, ...event.originalEvent.body];
     }
     this.messageService.add({
@@ -290,6 +340,14 @@ export class PedidoAtividadeFormComponent {
       summary: 'Sucesso',
       detail: 'Arquivos carregado com sucesso!'
     });
+  }
+
+  getFileByField(field: string): Documento {
+    return this.uploadedDocs.find(doc => doc.coluna === field) || null;
+  }
+
+  uploadOnProgress(event: FileProgressEvent, field: string): void {
+    this.loadingUploadButtons.add(field);
   }
 
   downloadDoc(file: Documento): void {
@@ -314,6 +372,7 @@ export class PedidoAtividadeFormComponent {
           summary: 'Erro',
           detail: 'Falha no download do arquivo!'
         });
+        this.loadingDownloadButtons.delete(file.nome);
       },
       complete: () => {
         this.loadingDownloadButtons.delete(file.nome);
@@ -327,6 +386,9 @@ export class PedidoAtividadeFormComponent {
     if (index !== -1) {
       if (!file.id) {
         this.uploadedDocs.splice(index, 1);
+        file
+        this.requestForm.get(`${file.coluna}File`)?.setValue(null);
+        this.requestForm.get(`${file.coluna}File`)?.updateValueAndValidity();
         return;
       }
       this.documentoService.deleteById(file.id).subscribe({
@@ -337,6 +399,7 @@ export class PedidoAtividadeFormComponent {
             summary: 'Sucesso',
             detail: 'Arquivo foi removido com sucesso!'
           });
+          this.loadingRemoveButtons.delete(file.nome);
         },
         error: error => {
           this.loadingRemoveButtons.delete(file.nome);
@@ -348,11 +411,6 @@ export class PedidoAtividadeFormComponent {
         },
       });
     }
-  }
-
-  disabledSubmitButton(): boolean {
-    const { length } = this.uploadedDocs;
-    return !this.requestForm.valid || length === 0 || length > this.fileLimit;
   }
 
   bytesToMBs(value: number): string {
@@ -368,13 +426,14 @@ export class PedidoAtividadeFormComponent {
       nomeEmpresa: new FormControl({ value: null, disabled: true }),
       empresaNumeroRegistoComercial: new FormControl({ value: null, disabled: true }),
       empresaSede: this._fb.group({
+        id: [null],
         local: new FormControl({ value: null, disabled: true }),
         aldeia: new FormControl({ value: null, disabled: true }),
         suco: new FormControl({ value: null, disabled: true }),
         postoAdministrativo: new FormControl({ value: null, disabled: true }),
         municipio: new FormControl({ value: null, disabled: true }),
       }),
-      classeAtividade: [null],
+      classeAtividade: [null, [Validators.required]],
       classeAtividadeCodigo: new FormControl({ value: null, disabled: true }),
       tipoAtividade: new FormControl({ value: null, disabled: true }),
       tipoAtividadeCodigo: new FormControl({ value: null, disabled: true }),
@@ -384,20 +443,25 @@ export class PedidoAtividadeFormComponent {
       representante: this.initPersonForm(),
       gerente: this.initPersonForm(),
       planta: [null],
+      plantaFile: [null],
       documentoPropriedade: [null],
+      documentoPropriedadeFile: [null],
       documentoImovel: [null],
+      documentoImovelFile: [null],
       contratoArrendamento: [null],
+      contratoArrendamentoFile: [null],
       planoEmergencia: [null],
+      planoEmergenciaFile: [null],
       estudoAmbiental: [null],
+      estudoAmbientalFile: [null],
       numEmpregosCriados: new FormControl({ value: this.aplicanteData.empresa.totalTrabalhadores, disabled: true }),
-      numEmpregadosCriar: [null, [Validators.min(0)]],
-      reciboPagamento: [null],
-      outrosDocumentos: [null],
+      numEmpregadosCriar: [null, [Validators.required, Validators.min(1)]],
       arrendador: this._fb.group({
         id: [null],
         tipo: [null],
         nome: [null],
         endereco: this._fb.group({
+          id: [null],
           local: [null],
           aldeia: [null],
           suco: new FormControl({ value: null, disabled: true }),
@@ -411,7 +475,9 @@ export class PedidoAtividadeFormComponent {
         dataInicio: [null],
         dataFim: [null],
         valorRendaMensal: [null],
-      })
+      }),
+    }, {
+      validators: [pedidoAtividadeWithFilesValidator()]
     });
   }
 
@@ -457,6 +523,10 @@ export class PedidoAtividadeFormComponent {
       }
     });
     this.uploadedDocs = [...request.documentos];
+    this.uploadedDocs.forEach(doc => {
+      this.requestForm.get(`${doc.coluna}File`)?.setValue(doc);
+    })
+
     const empresaSedeService = this.dataMasterService.getAldeiasBySuco(request.empresaSede.aldeia.suco.id);
     const representanteService = this.dataMasterService.getAldeiasBySuco(request.representante.morada.aldeia.suco.id);
     const gerenteService = this.dataMasterService.getAldeiasBySuco(request.gerente.morada.aldeia.suco.id);
@@ -616,6 +686,25 @@ export class PedidoAtividadeFormComponent {
       telefone: new FormControl({ value: null, disabled: true }),
       email: new FormControl({ value: null, disabled: true }),
       estadoCivil: new FormControl({ value: null, disabled: true }),
+    });
+  }
+
+  private setArrendadorValidators(group: FormGroup, required: boolean) {
+    Object.keys(group.controls).forEach((key) => {
+      if (key === 'id') return;
+      const control = group.get(key);
+
+      if (control instanceof FormGroup) {
+        // Recursive for nested address group
+        this.setArrendadorValidators(control, required);
+      } else {
+        if (required) {
+          control?.setValidators([Validators.required]);
+        } else {
+          control?.clearValidators();
+        }
+        control?.updateValueAndValidity({ emitEvent: false });
+      }
     });
   }
 

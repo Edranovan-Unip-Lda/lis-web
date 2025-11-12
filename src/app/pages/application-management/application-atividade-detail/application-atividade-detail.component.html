@@ -427,7 +427,6 @@
             <!-- Pedido de Licenca -->
             <p-step-panel [value]="2">
                 <ng-template #content let-activateCallback="activateCallback">
-                    {{disabledAllForm}}
                     <app-pedido-atividade-form [aplicanteData]="aplicanteData" [listaAldeia]="listaAldeia"
                         [listaClasseAtividade]="listaClasseAtividade" (dataSent)="onPedidoLicencaReceived($event)"
                         [disabledAllForm]="disabledAllForm">

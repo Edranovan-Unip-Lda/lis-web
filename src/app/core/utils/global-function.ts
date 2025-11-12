@@ -1,3 +1,4 @@
+import { FormGroup, Validators } from "@angular/forms";
 import { AplicanteType, AreaRepresentante, CaraterizacaoEstabelecimento, Categoria, NivelRisco, QuantoAtividade, Role, Status, TipoAto, TipoDocumento, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro, TipoPedidoLicenca, TipoPedidoVistoria, TipoPropriedade } from "../models/enums";
 
 export const maxFileSizeUpload = 20 * 1024 * 1024;
@@ -232,16 +233,16 @@ export const tipoPedidoAtividadeComercialOptions: any[] = [
     }
 ];
 
-export const tipoArrendadorOptions: any[] =  [
+export const tipoArrendadorOptions: any[] = [
     {
         name: 'Estado',
         value: 'Estado'
     },
-     {
+    {
         name: 'Empresa',
         value: 'Empresa'
     },
-     {
+    {
         name: 'Individual',
         value: 'Individual'
     },
@@ -396,3 +397,10 @@ export function formatDateForLocalDate(date: Date): string {
 
     return corrected.toISOString().split('T')[0];
 }
+
+export const pedidoLicencaDocumentsFields = [
+    { name: 'documentoPropriedade', label: 'Documento comprovativo do direito de propriedade ' },
+    { name: 'documentoImovel', label: 'Documento comprovativo de posse de imovel ' },
+    { name: 'planoEmergencia', label: 'Plano de Emergência ' },
+    { name: 'estudoAmbiental', label: 'Estudo de Impacto Ambiental' },
+]

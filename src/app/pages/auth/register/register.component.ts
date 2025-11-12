@@ -470,6 +470,24 @@ export class Register {
         }
     }
 
+    onRepresentanteTipoChange({ value }: SelectChangeEvent): void {
+        switch (value) {
+            case 'Empresa':
+                this.empresaForm.get('representante')?.get('nomeEmpresa')?.setValidators([Validators.required, Validators.minLength(3)]);
+                this.empresaForm.get('representante')?.get('nome')?.setValidators([Validators.required, Validators.minLength(3)]);
+                break;
+
+            case 'Individual':
+                this.empresaForm.get('representante')?.get('nome')?.setValidators([Validators.required, Validators.minLength(3)]);
+                this.empresaForm.get('representante')?.get('nomeEmpresa')?.clearValidators();
+                this.empresaForm.get('representante')?.get('nomeEmpresa')?.setValue(null);
+                break;
+        }
+
+        this.empresaForm.get('representante')?.get('nomeEmpresa')?.updateValueAndValidity();
+        this.empresaForm.get('representante')?.get('nome')?.updateValueAndValidity();
+    }
+
     private formatDateForLocalDate(date: Date): string {
         // Adjust for timezone offset so that local date is preserved
         const offsetMs = date.getTimezoneOffset() * 60 * 1000;
@@ -533,8 +551,8 @@ export class Register {
             }),
             representante: this._fb.group({
                 tipo: [null, [Validators.required]],
-                nomeEmpresa: [null, [Validators.required]],
-                nome: [null, [Validators.required]],
+                nomeEmpresa: [null],
+                nome: [null],
                 pai: [null, [Validators.required]],
                 mae: [null, [Validators.required]],
                 dataNascimento: [null, [Validators.required]],
