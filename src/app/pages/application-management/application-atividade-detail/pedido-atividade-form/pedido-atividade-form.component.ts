@@ -79,7 +79,7 @@ export class PedidoAtividadeFormComponent {
     this.empresaService.getAplicanteByEmpresaIdAndAplicanteId(this.aplicanteData.empresa.id, this.aplicanteData.id).subscribe({
       next: (aplicante: Aplicante) => {
         this.aplicanteData = aplicante;
-        
+
         if (this.aplicanteData.pedidoLicencaAtividade) {
           this.mapRequestFormData(this.aplicanteData.pedidoLicencaAtividade);
           if (this.disabledAllForm) {
@@ -438,7 +438,7 @@ export class PedidoAtividadeFormComponent {
       tipoAtividade: new FormControl({ value: null, disabled: true }),
       tipoAtividadeCodigo: new FormControl({ value: null, disabled: true }),
       risco: new FormControl({ value: null, disabled: true }),
-      estatutoSociedadeComercial: [null],
+      estatutoSociedadeComercial: [null, [Validators.required]],
       empresaNif: new FormControl({ value: null, disabled: true }),
       representante: this.initPersonForm(),
       gerente: this.initPersonForm(),

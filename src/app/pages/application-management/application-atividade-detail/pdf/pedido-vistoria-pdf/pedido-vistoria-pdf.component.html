@@ -22,8 +22,8 @@
         <div class="text-center mb-4">
             <h1 class="font-semibold uppercase text-title">Ministério do Comércio e Indústria</h1>
             <h2 class="font-medium text-title">Direção-Geral da Indústria</h2>
-            <h3 class="font-bold text-title mt-2">Inscrição no Cadastro Industrial</h3>
-            <div class="text-xs text-gray-500 mt-1">(Decreto-Lei n.º 90/2023, de 27 de dezembro)</div>
+            <h3 class="font-bold text-title mt-2">PEDIDO DE VISTORIA PARA LICENCA DE EXERCICIO DE ATIVIDADE INDUSTRIAL</h3>
+            <div class="text-xs text-gray-500 mt-1">(Artigo 14º do Decreto-Lei n.º 90/2023, de 27 de dezembro)</div>
         </div>
         }@else {
         <div class="text-center mb-4">
@@ -53,41 +53,41 @@
 
             <div class="mb-2 flex gap-2">
                 <span class="w-1/4 text-label text-gray-600">Nome da Empresa:</span>
-                <span class="flex-1 text-value text-black">{{aplicanteData.empresa.nome}}</span>
+                <span class="flex-1 text-value text-black">{{pedido.nomeEmpresa}}</span>
             </div>
 
             <div class="mb-2 flex gap-2">
                 <span class="w-1/4 text-label text-gray-600">Sede:</span>
                 <span class="flex-1 text-value text-black">
-                    {{aplicanteData.empresa.sede.local}} -
-                    {{aplicanteData.empresa.sede.aldeia.nome}},
-                    {{aplicanteData.empresa.sede.aldeia.suco.nome}},
-                    {{aplicanteData.empresa.sede.aldeia.suco.postoAdministrativo.nome}},
-                    {{aplicanteData.empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
+                    {{pedido.empresaSede.local}} -
+                    {{pedido.empresaSede.aldeia.nome}},
+                    {{pedido.empresaSede.aldeia.suco.nome}},
+                    {{pedido.empresaSede.aldeia.suco.postoAdministrativo.nome}},
+                    {{pedido.empresaSede.aldeia.suco.postoAdministrativo.municipio.nome}}
                 </span>
             </div>
 
             <div class="mb-2 flex gap-4">
                 <div class="mb-2 flex gap-2">
                     <span class="w-1/4 text-label text-gray-600">NIF:</span>
-                    <span class="w-1/3 text-value text-black">{{aplicanteData.empresa.nif}}</span>
+                    <span class="w-1/3 text-value text-black">{{pedido.empresaNif}}</span>
                 </div>
 
                 <div class="mb-2 flex gap-2 grow">
                     <span class="text-label text-gray-600">N.º de Registo Comercial:</span>
-                    <span class="w-1/3 text-value text-black">{{aplicanteData.empresa.numeroRegistoComercial}}</span>
+                    <span class="w-1/3 text-value text-black">{{pedido.empresaNumeroRegistoComercial}}</span>
                 </div>
             </div>
 
             <div class="mb-2 flex gap-4">
                 <div class="mb-2 flex gap-2">
                     <span class="w-1/2 text-label text-gray-600">Telemóvel:</span>
-                    <span class="w-1/3 text-value text-black">{{aplicanteData.empresa.telemovel}}</span>
+                    <span class="w-1/3 text-value text-black">{{pedido.empresaTelemovel}}</span>
                 </div>
 
                 <div class="mb-2 flex gap-2">
                     <span class="w-1/2 text-label text-gray-600">Telefone:</span>
-                    <span class="w-1/3 text-value text-black">{{aplicanteData.empresa.telefone}}</span>
+                    <span class="w-1/3 text-value text-black">{{pedido.empresaTelefone}}</span>
                 </div>
             </div>
 
@@ -98,7 +98,7 @@
 
             <div class="mb-2 flex gap-2">
                 <span class="w-1/4 text-label text-gray-600">Identificação do administrador/gerente:</span>
-                <span class="flex-1 text-value text-black">{{aplicanteData.empresa.gerente.nome}}</span>
+                <span class="flex-1 text-value text-black">{{pedido.empresaGerente}}</span>
             </div>
         </div>
 
@@ -123,23 +123,7 @@
                 </span>
             </div>
 
-            @if (aplicanteData.categoria === 'INDUSTRIAL') {
-            <div class="mb-2 flex items-center gap-2">
-                <span class="w-1/4 text-label text-gray-600">Tipo de Empresa:</span>
-                <span
-                    class="text-label inline-flex items-center px-2 py-1 rounded border border-gray-300 bg-gray-100 text-black text-value">
-                    ✓ {{selectedTipoEmpresa}}
-                </span>
-            </div>
-            }@else {
-            <div class="mb-2 flex items-center gap-2">
-                <span class="w-1/4 text-label text-gray-600">Tipo do Estabelecimento:</span>
-                <span
-                    class="text-label inline-flex items-center px-2 py-1 rounded border border-gray-300 bg-gray-100 text-black text-value">
-                    ✓ {{selectedTipoEstabelecimento}}
-                </span>
-            </div>
-            }
+
         </div>
 
         <div class="mb-8">
@@ -154,13 +138,15 @@
                 </span>
             </div>
 
+            @if (aplicanteData.categoria === 'COMERCIAL') {
             <div class="mb-2 flex items-center gap-2">
-                <span class="w-1/4 text-label text-gray-600">Tipo de Estabelecimento:</span>
+                <span class="w-1/4 text-label text-gray-600">Tipo do Estabelecimento:</span>
                 <span
                     class="text-label inline-flex items-center px-2 py-1 rounded border border-gray-300 bg-gray-100 text-black text-value">
                     ✓ {{selectedTipoEstabelecimento}}
                 </span>
             </div>
+            }
         </div>
 
         <!-- Caracterização da Atividade -->
@@ -183,7 +169,7 @@
                     ✓ {{selectedAtividade}}
                 </span>
             </div>
-            
+
             <div class="mb-2 flex gap-2 items-center">
                 <span class="w-1/4 text-label text-gray-600">Tipo de atividade no estabelecimento:</span>
                 <span class="flex-1 text-value text-black">{{pedido.classeAtividade.grupoAtividade.descricao}}</span>

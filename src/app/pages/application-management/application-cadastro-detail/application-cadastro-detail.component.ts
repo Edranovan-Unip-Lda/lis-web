@@ -119,7 +119,6 @@ export class ApplicationCadastroDetailComponent {
       this.requestForm.patchValue({
         tipoEmpresa: this.aplicanteData.empresa.tipoEmpresa
       });
-      this.requestForm.get('tipoEmpresa')?.disable();
     } else {
       this.isNew = false;
       this.pedidoActive = true;
@@ -315,7 +314,17 @@ export class ApplicationCadastroDetailComponent {
   submit(form: FormGroup, callback: any): void {
     this.pedidoLoading = true;
 
-    let formData: PedidoInscricaoCadastro = form.value;
+
+    let formData: any = {
+      ...form.getRawValue(),
+      nomeEmpresa: this.aplicanteData.empresa.nome,
+      empresaNif: this.aplicanteData.empresa.nif,
+      empresaGerente: this.aplicanteData.empresa.gerente.nome,
+      empresaNumeroRegistoComercial: this.aplicanteData.empresa.numeroRegistoComercial,
+      empresaEmail: this.aplicanteData.empresa.email,
+      empresaTelefone: this.aplicanteData.empresa.telefone,
+      empresaTelemovel: this.aplicanteData.empresa.telemovel,
+    }
 
     formData.tipoPedidoCadastro = form.value.tipoPedidoCadastro.value;
     formData.caraterizacaoEstabelecimento = form.value.caraterizacaoEstabelecimento.value;
@@ -323,14 +332,19 @@ export class ApplicationCadastroDetailComponent {
     formData.documentos = this.uploadedDocs;
 
     if (this.aplicanteData.categoria === Categoria.comercial) {
-      formData.tipoEstabelecimento = form.value.tipoEstabelecimento.value;
-      formData.ato = form.value.ato.value;
+      formData.tipoEstabelecimento = form.getRawValue().tipoEstabelecimento.value;
+      formData.ato = form.getRawValue().ato.value;
     } else {
-      formData.tipoEmpresa = form.value.tipoEmpresa;
-      formData.quantoAtividade = form.value.quantoAtividade;
+      formData.tipoEmpresa = form.getRawValue().tipoEmpresa;
+      formData.quantoAtividade = form.getRawValue().quantoAtividade;
     }
 
     if (this.isNew) {
+      formData.empresaSede = {
+        local: this.aplicanteData.empresa.sede.local,
+        aldeia: { id: this.aplicanteData.empresa.sede.aldeia.id }
+      }
+
       this.aplicanteService.savePedidoCadastro(this.aplicanteData.id, formData).subscribe({
         next: (response) => {
           this.addMessages(true, true);
@@ -628,7 +642,7 @@ export class ApplicationCadastroDetailComponent {
         municipio: new FormControl({ value: null, disabled: true }),
       }),
       tipoEstabelecimento: [null],
-      tipoEmpresa: [null],
+      tipoEmpresa: new FormControl({ value: null, disabled: true }),
       quantoAtividade: [null],
       caraterizacaoEstabelecimento: [null],
       risco: new FormControl({ value: null, disabled: true }),
@@ -653,6 +667,7 @@ export class ApplicationCadastroDetailComponent {
         nif: new FormControl({ value: null, disabled: true }),
         numeroRegistoComercial: new FormControl({ value: null, disabled: true }),
         telemovel: new FormControl({ value: null, disabled: true }),
+        telefone: new FormControl({ value: null, disabled: true }),
         email: new FormControl({ value: null, disabled: true }),
         gerente: new FormControl({ value: null, disabled: true }),
       }),

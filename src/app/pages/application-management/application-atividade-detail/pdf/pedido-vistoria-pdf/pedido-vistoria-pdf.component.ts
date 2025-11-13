@@ -1,5 +1,5 @@
 import { Aplicante, PedidoVistoria } from '@/core/models/entities.model';
-import { AplicanteStatus, Categoria, NivelRisco, TipoAto, TipoEmpresa, TipoEstabelecimento } from '@/core/models/enums';
+import { AplicanteStatus, Categoria, NivelRisco, QuantoAtividade, TipoAto, TipoEmpresa, TipoEstabelecimento } from '@/core/models/enums';
 import { caraterizacaEstabelecimentoOptions, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEmpresaOptions, tipoPedidoVistoriaComercialOptions, tipoPedidoVistoriaIndustrialOptions } from '@/core/utils/global-function';
 import { DatePipe, Location } from '@angular/common';
 import { Component } from '@angular/core';
@@ -19,7 +19,8 @@ export class PedidoVistoriaPdfComponent {
   tipoVistoria!: string;
   selectedTipoEmpresa!: TipoEmpresa;
   seletedNivelRisco!: NivelRisco;
-  selectedAtividade!: TipoAto;
+  selectedAtividade!: any;
+  selectedQuantoAtividade!: QuantoAtividade;
   selectedTipoEstabelecimento!: TipoEstabelecimento;
   quantoAtividadeOpts = quantoAtividadeoptions;
   tipoEstabelecimentoOpts = caraterizacaEstabelecimentoOptions;
@@ -38,15 +39,21 @@ export class PedidoVistoriaPdfComponent {
     this.pedido = this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
 
     if (this.pedido) {
-      this.tipoVistoria = this.aplicanteData.categoria === Categoria.comercial
-        ? tipoPedidoVistoriaComercialOptions.find(item => item.value === this.pedido?.tipoVistoria)?.name
-        : tipoPedidoVistoriaIndustrialOptions.find(item => item.value === this.pedido?.tipoVistoria)?.name;
+      switch (this.aplicanteData.categoria) {
+        case Categoria.comercial:
+          this.tipoVistoria = tipoPedidoVistoriaComercialOptions.find(item => item.value === this.pedido?.tipoVistoria)?.name;
+          this.selectedTipoEstabelecimento = this.tipoEstabelecimentoOpts.find(item => item.value === this.pedido?.tipoEstabelecimento).name;
+          this.selectedAtividade = this.tipoAtoOpts.find(item => item.value === this.pedido?.atividade).name;
+          break;
+
+        case Categoria.industrial:
+          this.tipoVistoria = tipoPedidoVistoriaIndustrialOptions.find(item => item.value === this.pedido?.tipoVistoria)?.name;
+          this.selectedAtividade = this.quantoAtividadeOpts.find(item => item.value === this.pedido?.tipoAtividade).name;
+          break;
+      }
 
       this.seletedNivelRisco = this.nivelRiscoOpts.find(item => item.value === this.pedido?.risco).name;
       this.selectedTipoEmpresa = this.tipoEmpresaOpts.find(item => item.value === this.pedido?.tipoEmpresa).name;
-      this.selectedTipoEstabelecimento = this.tipoEstabelecimentoOpts.find(item => item.value === this.pedido?.tipoEstabelecimento).name;
-      this.selectedAtividade = this.tipoAtoOpts.find(item => item.value === this.pedido?.atividade).name;
-
     }
   }
 

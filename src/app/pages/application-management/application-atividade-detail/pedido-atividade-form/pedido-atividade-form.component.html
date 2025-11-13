@@ -120,6 +120,14 @@
              </label>
              <input formControlName="risco" id="risco" type="text" pInputText fluid />
          </div>
+         <div class="mb-6 col-span-12 md:col-span-6">
+             <label for="estatutoSociedadeComercial" class="font-medium  mb-2 block">
+                 Estatuto da sociedade comercial
+             </label>
+             <p-selectbutton [options]="stateOpts" formControlName="estatutoSociedadeComercial" optionLabel="label"
+                 optionValue="value" />
+         </div>
+
      </section>
 
      <span class="text-xl font-bold mt-6 mb-3 block">

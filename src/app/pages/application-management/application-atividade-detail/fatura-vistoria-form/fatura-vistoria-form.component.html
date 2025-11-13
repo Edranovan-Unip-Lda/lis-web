@@ -55,9 +55,10 @@
              Carregar Recibo
          </span>
          <div class="card">
-             <p-fileupload name="file" [disabled]="uploadedFiles.length > 0" method="put"
-                 (onUpload)="onUpload($event, 'advanced')" [maxFileSize]="maxFileSize" [multiple]="false"
-                 accept="application/pdf" mode="advanced" [url]="uploadUrl()">
+             <p-fileupload name="file" [disabled]="uploadedFiles.length > 0" method="put" [chooseLabel]="'Selecione'"
+                 [uploadLabel]="'Carregar'" [cancelLabel]="'Cancelar'" (onUpload)="onUpload($event, 'advanced')"
+                 [maxFileSize]="maxFileSize" [multiple]="false" accept="application/pdf" mode="advanced"
+                 [url]="uploadUrl()">
                  <ng-template #empty>
                      @if (uploadedFiles.length === 0) {
                      Arraste e largue os ficheiros aqui para carregar.

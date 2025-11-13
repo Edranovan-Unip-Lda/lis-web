@@ -1,6 +1,7 @@
 import { Aldeia } from '@/core/models/data-master.model';
 import { Aplicante, Empresa, PedidoVistoria } from '@/core/models/entities.model';
 import { AplicanteStatus, Categoria } from '@/core/models/enums';
+import { EmpresaService } from '@/core/services';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { PedidoService } from '@/core/services/pedido.service';
 import { caraterizacaEstabelecimentoOptions, mapToIdAndNome, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEmpresaOptions, tipoPedidoVistoriaComercialOptions, tipoPedidoVistoriaIndustrialOptions } from '@/core/utils/global-function';
@@ -44,65 +45,77 @@ export class PedidoVistoriaFormComponent {
     private route: ActivatedRoute,
     private dataMasterService: DataMasterService,
     private pedidoService: PedidoService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private empresaService: EmpresaService,
   ) { }
 
   ngOnInit(): void {
     this.initForm();
 
-    switch (this.aplicanteData.categoria) {
-      case Categoria.comercial:
-        this.tipoPedidoVistoriaOpts = tipoPedidoVistoriaComercialOptions;
-        this.categoria = Categoria.comercial;
-        this.vistoriaRequestForm.get('atividade')?.setValidators(Validators.required);
-        break;
-      case Categoria.industrial:
-        this.tipoPedidoVistoriaOpts = tipoPedidoVistoriaIndustrialOptions;
-        this.categoria = Categoria.industrial;
-        this.atividadesOpts = quantoAtividadeoptions;
-        this.vistoriaRequestForm.get('tipoAtividade')?.setValidators(Validators.required);
+    this.empresaService.getAplicanteByEmpresaIdAndAplicanteId(
+      this.aplicanteData.empresa.id,
+      this.aplicanteData.id
+    ).subscribe({
+      next: (aplicante: Aplicante) => {
+        this.aplicanteData = aplicante;
+
+        switch (this.aplicanteData.categoria) {
+          case Categoria.comercial:
+            this.tipoPedidoVistoriaOpts = tipoPedidoVistoriaComercialOptions;
+            this.categoria = Categoria.comercial;
+            this.vistoriaRequestForm.get('atividade')?.setValidators(Validators.required);
+            break;
+          case Categoria.industrial:
+            this.tipoPedidoVistoriaOpts = tipoPedidoVistoriaIndustrialOptions;
+            this.categoria = Categoria.industrial;
+            this.atividadesOpts = quantoAtividadeoptions;
+            this.vistoriaRequestForm.get('tipoAtividade')?.setValidators(Validators.required);
+            this.vistoriaRequestForm.patchValue({
+              tipoEmpresa: this.aplicanteData.empresa.tipoEmpresa
+            })
+            this.vistoriaRequestForm.get('tipoEmpresa')?.disable();
+            break;
+        }
+
+        if (this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria) {
+          this.pedido = this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
+        }
+
+        this.mapEmpresaForm(this.aplicanteData.empresa);
+
+        // Map data from Pedido Licenca Atividade (New Form)
         this.vistoriaRequestForm.patchValue({
           tipoEmpresa: this.aplicanteData.empresa.tipoEmpresa
-        })
-        this.vistoriaRequestForm.get('tipoEmpresa')?.disable();
-        break;
-    }
+        });
+        const request = this.aplicanteData.pedidoLicencaAtividade;
+        this.vistoriaRequestForm.patchValue({
+          risco: request.risco,
+          classeAtividade: {
+            id: request.classeAtividade.id,
+            codigo: request.classeAtividade.codigo,
+            descricao: request.classeAtividade.descricao,
+            tipoRisco: request.classeAtividade.tipoRisco,
+            grupoAtividade: {
+              id: request.classeAtividade.grupoAtividade.id,
+              codigo: request.classeAtividade.grupoAtividade.codigo,
+              descricao: request.classeAtividade.grupoAtividade.descricao,
+            }
+          },
+          classeAtividadeCodigo: request.classeAtividade.descricao,
+          grupoAtividade: request.classeAtividade.grupoAtividade.codigo,
+          grupoAtividadeCodigo: request.classeAtividade.grupoAtividade.descricao,
+        });
 
-    if (this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria) {
-      this.pedido = this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
-    }
-
-    this.mapEmpresaForm(this.aplicanteData.empresa);
-
-    // Map data from Pedido Licenca Atividade (New Form)
-    this.vistoriaRequestForm.patchValue({
-      tipoEmpresa: this.aplicanteData.empresa.tipoEmpresa
-    });
-    const request = this.aplicanteData.pedidoLicencaAtividade;
-    this.vistoriaRequestForm.patchValue({
-      risco: request.risco,
-      classeAtividade: {
-        id: request.classeAtividade.id,
-        codigo: request.classeAtividade.codigo,
-        descricao: request.classeAtividade.descricao,
-        tipoRisco: request.classeAtividade.tipoRisco,
-        grupoAtividade: {
-          id: request.classeAtividade.grupoAtividade.id,
-          codigo: request.classeAtividade.grupoAtividade.codigo,
-          descricao: request.classeAtividade.grupoAtividade.descricao,
+        if (this.pedido) {
+          this.mapPedidoForm(this.pedido);
+          if (this.disabledAllForm) {
+            this.vistoriaRequestForm.disable();
+          }
         }
-      },
-      classeAtividadeCodigo: request.classeAtividade.descricao,
-      grupoAtividade: request.classeAtividade.grupoAtividade.codigo,
-      grupoAtividadeCodigo: request.classeAtividade.grupoAtividade.descricao,
+
+      }
     });
 
-    if (this.pedido) {
-      this.mapPedidoForm(this.pedido);
-      if (this.disabledAllForm) {
-        this.vistoriaRequestForm.disable();
-      }
-    }
 
     this.listaAldeia = mapToIdAndNome(this.route.snapshot.data['aldeiasResolver']._embedded.aldeias);
     if (this.disabledAllForm) {
@@ -112,9 +125,22 @@ export class PedidoVistoriaFormComponent {
 
   submit(form: FormGroup): void {
     this.loading = true;
-
+    const values = form.getRawValue();
     let formData = {
-      ...form.getRawValue(),
+      ...values,
+      nomeEmpresa: values.empresa.nome,
+      empresaNif: values.empresa.nif,
+      empresaGerente: values.empresa.gerente,
+      empresaNumeroRegistoComercial: values.empresa.numeroRegistoComercial,
+      empresaEmail: values.empresa.email,
+      empresaTelemovel: values.empresa.telemovel,
+      empresaTelefone: values.empresa.telefone,
+      empresaSede: {
+        local: this.aplicanteData.empresa.sede.local,
+        aldeia: {
+          id: this.aplicanteData.empresa.sede.aldeia.id,
+        }
+      },
       localEstabelecimento: {
         ...form.getRawValue().localEstabelecimento,
         aldeia: {
@@ -244,6 +270,7 @@ export class PedidoVistoriaFormComponent {
         nif: empresa.nif,
         numeroRegistoComercial: empresa.numeroRegistoComercial,
         telemovel: empresa.telemovel,
+        telefone: empresa.telefone,
         email: empresa.email,
         gerente: empresa.gerente.nome,
       }
@@ -299,6 +326,7 @@ export class PedidoVistoriaFormComponent {
         nif: new FormControl({ value: null, disabled: true }),
         numeroRegistoComercial: new FormControl({ value: null, disabled: true }),
         telemovel: new FormControl({ value: null, disabled: true }),
+        telefone: new FormControl({ value: null, disabled: true }),
         email: new FormControl({ value: null, disabled: true }),
         gerente: new FormControl({ value: null, disabled: true }),
       }),
@@ -311,7 +339,7 @@ export class PedidoVistoriaFormComponent {
         postoAdministrativo: new FormControl({ value: null, disabled: true }),
         municipio: new FormControl({ value: null, disabled: true }),
       }),
-      tipoEmpresa: [null],
+      tipoEmpresa: new FormControl({ value: null, disabled: true }),
       tipoEstabelecimento: [null],
       risco: new FormControl({ value: null, disabled: true }),
       atividade: [null],
