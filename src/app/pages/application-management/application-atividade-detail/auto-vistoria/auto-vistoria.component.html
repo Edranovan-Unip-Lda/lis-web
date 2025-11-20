@@ -331,8 +331,7 @@
              }
              <div class=" mt-6">
                  <p-button label="Adicionar Participante" icon="pi pi-plus" (click)="addParticipanteForm()"
-                     [disabled]="membrosEquipaVistoria.length >= this.maxLengthParticipantes" severity="success"
-                     class="mt-2">
+                     [disabled]="minimalParticipante()" severity="success" class="mt-2">
                  </p-button>
              </div>
          </div>
@@ -370,8 +369,49 @@
                  </label>
                  <p-selectbutton [options]="stateOptions" formControlName="legislacaoUrbanistica" optionLabel="label"
                      optionValue="value" />
+
+                 @if(autoVistoriaForm.get('legislacaoUrbanistica')?.value === true) {
+                 @if (loadingUploadButtons.has('legislacaoUrbanistica')) {
+                 <div class="w-1/2">
+                     <p-progressbar mode="indeterminate" [style]="{ height: '6px' }" />
+                 </div>
+                 }
+                 <div class="flex justify-start pt-2">
+                     <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
+                         [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, 'legislacaoUrbanistica')"
+                         [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadUrl()"
+                         (onProgress)="uploadOnProgress($event, 'legislacaoUrbanistica')"
+                         [disabled]="getFileByField('legislacaoUrbanistica')" [auto]="true">
+                     </p-fileupload>
+                 </div>
+                 @if (getFileByField('legislacaoUrbanistica')) {
+                 <div>
+                     <a class="cursor-pointer hover:underline hover:text-teal-300 ms-4">
+                         {{getFileByField('legislacaoUrbanistica').nome}}
+                     </a>
+                     @if (getFileByField('legislacaoUrbanistica').id) {
+                     <p-button (click)="downloadDoc(getFileByField('legislacaoUrbanistica'))"
+                         [loading]="loadingDownloadButtons.has(getFileByField('legislacaoUrbanistica').nome)"
+                         icon="pi pi-download" [rounded]="true" [text]="true" severity="success" />
+                     }
+                     <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
+                         [loading]="loadingRemoveButtons.has(getFileByField('legislacaoUrbanistica').nome)"
+                         severity="danger" (click)="removeDoc(getFileByField('legislacaoUrbanistica'))" />
+                 </div>
+                 }
+                 }
+
+                 @if(autoVistoriaForm.get('legislacaoUrbanistica')?.value === false) {
+                 <div class="mb-12 col-span-12 pt-1">
+                     <label for="legislacaoUrbanisticaDescricao" class="font-medium  mb-2 block">
+                         Descrição:
+                     </label>
+                     <textarea id="legislacaoUrbanisticaDescricao" rows="4" cols="15" variant="outlined" pTextarea
+                         formControlName="legislacaoUrbanisticaDescricao" fluid></textarea>
+                 </div>
+                 }
              </div>
-             @if (autoVistoriaForm.get('legislacaoUrbanistica')?.value) {
+             @if (autoVistoriaForm.get('legislacaoUrbanistica')?.value === true) {
              <div class="mb-6 col-span-12 md:col-span-6">
                  <label for="tipoLocal" class="font-medium  mb-2 block">
                      Tipo de Localidade
@@ -387,17 +427,55 @@
          </span>
          <div class="grid grid-cols-12 gap-4 pl-4">
              <div class="mb-3 col-span-12">
-                 <label for="accessoEstrada" class="font-medium  mb-2 block">
+                 <label for="acessoEstrada" class="font-medium  mb-2 block">
                      a) De acesso por estrada:
                  </label>
-                 <p-selectbutton [options]="stateOptions" formControlName="accessoEstrada" optionLabel="label"
+                 <p-selectbutton [options]="stateOptions" formControlName="acessoEstrada" optionLabel="label"
                      optionValue="value" />
+                 @if(autoVistoriaForm.get('acessoEstrada')?.value === true) {
+                 @if (loadingUploadButtons.has('acessoEstrada')) {
+                 <div class="w-1/2">
+                     <p-progressbar mode="indeterminate" [style]="{ height: '6px' }" />
+                 </div>
+                 }
+                 <div class="flex justify-start pt-2">
+                     <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
+                         [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, 'acessoEstrada')"
+                         [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadUrl()"
+                         (onProgress)="uploadOnProgress($event, 'acessoEstrada')"
+                         [disabled]="getFileByField('acessoEstrada')" [auto]="true">
+                     </p-fileupload>
+                 </div>
+                 @if (getFileByField('acessoEstrada')) {
+                 <div>
+                     <a class="cursor-pointer hover:underline hover:text-teal-300 ms-4">
+                         {{getFileByField('acessoEstrada').nome}}
+                     </a>
+                     @if (getFileByField('acessoEstrada').id) {
+                     <p-button (click)="downloadDoc(getFileByField('acessoEstrada'))"
+                         [loading]="loadingDownloadButtons.has(getFileByField('acessoEstrada').nome)"
+                         icon="pi pi-download" [rounded]="true" [text]="true" severity="success" />
+                     }
+                     <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
+                         [loading]="loadingRemoveButtons.has(getFileByField('acessoEstrada').nome)" severity="danger"
+                         (click)="removeDoc(getFileByField('acessoEstrada'))" />
+                 </div>
+                 }
+                 }
              </div>
-             @if (autoVistoriaForm.get('accessoEstrada')?.value) {
+             @if(autoVistoriaForm.get('acessoEstrada')?.value === false) {
+             <div class="mb-12 col-span-12">
+                 <label for="acessoEstradaDescricao" class="font-medium  mb-2 block">
+                     Descrição:
+                 </label>
+                 <textarea id="acessoEstradaDescricao" rows="4" cols="15" variant="outlined" pTextarea
+                     formControlName="acessoEstradaDescricao" fluid></textarea>
+             </div>
+             }
+             @if (autoVistoriaForm.get('acessoEstrada')?.value === true) {
              <div class="mb-6 col-span-12 md:col-span-6">
                  <label for="superficie" class="font-medium  mb-2 block">
                      Largura da Estrada
-                     <!-- <span class="">(&#13217;)</span> -->
                  </label>
                  <p-inputgroup>
                      <p-inputnumber formControlName="superficie" mode="decimal" [minFractionDigits]="2"
@@ -416,6 +494,45 @@
                  </label>
                  <p-selectbutton [options]="stateOptions" formControlName="escoamentoAguas" optionLabel="label"
                      optionValue="value" />
+                 @if(autoVistoriaForm.get('escoamentoAguas')?.value === true) {
+                 @if (loadingUploadButtons.has('escoamentoAguas')) {
+                 <div class="w-1/2">
+                     <p-progressbar mode="indeterminate" [style]="{ height: '6px' }" />
+                 </div>
+                 }
+                 <div class="flex justify-start pt-2">
+                     <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
+                         [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, 'escoamentoAguas')"
+                         [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadUrl()"
+                         (onProgress)="uploadOnProgress($event, 'escoamentoAguas')"
+                         [disabled]="getFileByField('escoamentoAguas')" [auto]="true">
+                     </p-fileupload>
+                 </div>
+                 @if (getFileByField('escoamentoAguas')) {
+                 <div>
+                     <a class="cursor-pointer hover:underline hover:text-teal-300 ms-4">
+                         {{getFileByField('escoamentoAguas').nome}}
+                     </a>
+                     @if (getFileByField('escoamentoAguas').id) {
+                     <p-button (click)="downloadDoc(getFileByField('escoamentoAguas'))"
+                         [loading]="loadingDownloadButtons.has(getFileByField('escoamentoAguas').nome)"
+                         icon="pi pi-download" [rounded]="true" [text]="true" severity="success" />
+                     }
+                     <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
+                         [loading]="loadingRemoveButtons.has(getFileByField('escoamentoAguas').nome)" severity="danger"
+                         (click)="removeDoc(getFileByField('escoamentoAguas'))" />
+                 </div>
+                 }
+                 }
+                 @if(autoVistoriaForm.get('escoamentoAguas')?.value === false) {
+                 <div class="mb-12 col-span-12">
+                     <label for="escoamentoAguasDescricao" class="font-medium  mb-2 block">
+                         Descrição:
+                     </label>
+                     <textarea id="escoamentoAguasDescricao" rows="4" cols="15" variant="outlined" pTextarea
+                         formControlName="escoamentoAguasDescricao" fluid></textarea>
+                 </div>
+                 }
              </div>
              <div class="mb-3 col-span-12">
                  <label for="alimentacaoEnergia" class="font-medium  mb-2 block">
@@ -424,8 +541,38 @@
                  </label>
                  <p-selectbutton [options]="stateOptions" formControlName="alimentacaoEnergia" optionLabel="label"
                      optionValue="value" />
+                 @if(autoVistoriaForm.get('alimentacaoEnergia')?.value === true) {
+                 @if (loadingUploadButtons.has('alimentacaoEnergia')) {
+                 <div class="w-1/2">
+                     <p-progressbar mode="indeterminate" [style]="{ height: '6px' }" />
+                 </div>
+                 }
+                 <div class="flex justify-start pt-2">
+                     <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
+                         [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, 'alimentacaoEnergia')"
+                         [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadUrl()"
+                         (onProgress)="uploadOnProgress($event, 'alimentacaoEnergia')"
+                         [disabled]="getFileByField('alimentacaoEnergia')" [auto]="true">
+                     </p-fileupload>
+                 </div>
+                 @if (getFileByField('alimentacaoEnergia')) {
+                 <div>
+                     <a class="cursor-pointer hover:underline hover:text-teal-300 ms-4">
+                         {{getFileByField('alimentacaoEnergia').nome}}
+                     </a>
+                     @if (getFileByField('alimentacaoEnergia').id) {
+                     <p-button (click)="downloadDoc(getFileByField('alimentacaoEnergia'))"
+                         [loading]="loadingDownloadButtons.has(getFileByField('alimentacaoEnergia').nome)"
+                         icon="pi pi-download" [rounded]="true" [text]="true" severity="success" />
+                     }
+                     <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
+                         [loading]="loadingRemoveButtons.has(getFileByField('alimentacaoEnergia').nome)"
+                         severity="danger" (click)="removeDoc(getFileByField('alimentacaoEnergia'))" />
+                 </div>
+                 }
+                 }
              </div>
-             @if (autoVistoriaForm.get('alimentacaoEnergia')?.value) {
+             @if (autoVistoriaForm.get('alimentacaoEnergia')?.value === true) {
              <div class="mb-6 col-span-12 md:col-span-6">
                  <label for="tipoLocal" class="font-medium  mb-2 block">
                      Tipo de Eletricidade
@@ -435,478 +582,133 @@
                  </p-select>
              </div>
              }
+             @if(autoVistoriaForm.get('alimentacaoEnergia')?.value === false) {
+             <div class="mb-12 col-span-12">
+                 <label for="alimentacaoEnergiaDescricao" class="font-medium  mb-2 block">
+                     Descrição:
+                 </label>
+                 <textarea id="alimentacaoEnergiaDescricao" rows="4" cols="15" variant="outlined" pTextarea
+                     formControlName="alimentacaoEnergiaDescricao" fluid></textarea>
+             </div>
+             }
          </div>
 
-         <!-- COMERCIAL Content -->
-         @if (categoria === 'COMERCIAL') {
          <span class="text-lg font-bold mt-6 mb-3 block">
              II - Instalacoes
          </span>
          <span class="text-md font-bold mt-6 mb-3 block">
-             1.&nbsp;&nbsp;Obrigatorias:
+             Obrigatorias:
          </span>
          <span class="text-md font-bold mt-6 mb-3 block">
-             a)&nbsp;&nbsp;Instalacoes sanitarias de utilizacao comum dotadas de agua corrente
+             Instalacoes sanitarias de utilizacao comum dotadas de agua corrente
          </span>
+
+         @switch (categoria) {
+         @case (COMERCIAL) {
          <div class="grid grid-cols-12 gap-4 pl-4">
+             @for (item of comercialFormFields; track $index) {
              <div class="mb-6 col-span-12">
-                 <label for="seperadosSexo" class="font-medium  mb-2 block">
-                     i.&nbsp;&nbsp; Separados por sexo
+                 <label [for]="item.name" class="font-medium  mb-2 block">
+                     {{item.label}}
                  </label>
-                 <p-selectbutton [options]="stateOptions" id="seperadosSexo" formControlName="seperadosSexo"
+                 <p-selectbutton [options]="stateOptions" [id]="item.name" [formControlName]="item.name"
                      optionLabel="label" optionValue="value" />
+                 @if(autoVistoriaForm.get(item.name)?.value === true) {
+                 @if (loadingUploadButtons.has(item.name)) {
+                 <div class="w-1/2">
+                     <p-progressbar mode="indeterminate" [style]="{ height: '6px' }" />
+                 </div>
+                 }
+                 <div class="flex justify-start pt-2">
+                     <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
+                         [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, item.name)"
+                         [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadUrl()"
+                         (onProgress)="uploadOnProgress($event, item.name)" [disabled]="getFileByField(item.name)"
+                         [auto]="true">
+                     </p-fileupload>
+                 </div>
+                 @if (getFileByField(item.name)) {
+                 <div>
+                     <a class="cursor-pointer hover:underline hover:text-teal-300 ms-4">
+                         {{getFileByField(item.name).nome}}
+                     </a>
+                     @if (getFileByField(item.name).id) {
+                     <p-button (click)="downloadDoc(getFileByField(item.name))"
+                         [loading]="loadingDownloadButtons.has(getFileByField(item.name).nome)" icon="pi pi-download"
+                         [rounded]="true" [text]="true" severity="success" />
+                     }
+                     <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
+                         [loading]="loadingRemoveButtons.has(getFileByField(item.name).nome)" severity="danger"
+                         (click)="removeDoc(getFileByField(item.name))" />
+                 </div>
+                 }
+                 }
+                 @if(autoVistoriaForm.get(item.name)?.value === false) {
+                 <div class="mb-12 col-span-12 pt-2">
+                     <label for="{{item.name}}Descricao" class="font-medium block">
+                         Descrição:
+                     </label>
+                     <textarea id="{{item.name}}Descricao" rows="4" cols="15" variant="outlined" pTextarea
+                         formControlName="{{item.name}}Descricao" fluid></textarea>
+                 </div>
+                 }
              </div>
-             <div class="mb-6 col-span-12">
-                 <label for="lavatoriosComEspelho" class="font-medium  mb-2 block">
-                     ii.&nbsp;&nbsp; Dispor de lavatorios com espelho:
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="lavatoriosComEspelho"
-                     formControlName="lavatoriosComEspelho" optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="comunicacaoVentilacao" class="font-medium  mb-2 block">
-                     iii.&nbsp;&nbsp;Comunicacao direta para o exterior ou serem adotadas de dispositivos
-                     ventilacao
-                     artificial com continua renovacao do ar adequados a sua dimensao:
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="comunicacaoVentilacao"
-                     formControlName="comunicacaoVentilacao" optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="esgotoAguas" class="font-medium  mb-2 block">
-                     iv.&nbsp;&nbsp; Ligadas a uma rede interna de esgotos que conduzzam as aguas
-                     residuais a sistemas
-                     adequados ao seu escoamento, nomeadamente atraves da rede publica ou, se esta nao
-                     existir, de um sistema de recolha e tratamento adequado ao volume e natureza dessas
-                     aguas:
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="esgotoAguas" formControlName="esgotoAguas"
-                     optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="paredesPavimentos" class="font-medium  mb-2 block">
-                     vi.&nbsp;&nbsp; As paredes, pavimentos e tetos das instalacoes sanitarias devem ser
-                     revestidas de
-                     materiais resistentes, impermeaveis, nao inflamaveis e de facil limpeza:
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="paredesPavimentos" formControlName="paredesPavimentos"
-                     optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="zonasDestinadas" class="font-medium  mb-2 block">
-                     vii.&nbsp;&nbsp;Nao podem situar-se junto das zonas destinadas a preparar e cozinhar
-                     alimentos ou a
-                     tomar refeicoes
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="zonasDestinadas" formControlName="zonasDestinadas"
-                     optionLabel="label" optionValue="value" />
-             </div>
-         </div>
-         <div class="grid grid-cols-12 gap-4">
-             <div class="mb-6 col-span-12">
-                 <label for="instalacoesFrigorificas" class="font-medium  mb-2 block">
-                     b)&nbsp;&nbsp;Instalacoes sanitarias de utilizacao comum dotadas de agua corrente
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="instalacoesFrigorificas"
-                     formControlName="instalacoesFrigorificas" optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="sectoresLimpos" class="font-medium  mb-2 block">
-                     c)&nbsp;&nbsp;Separação de sectores limpos e sujos
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="sectoresLimpos" formControlName="sectoresLimpos"
-                     optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="pisosParedes" class="font-medium  mb-2 block">
-                     d)&nbsp;&nbsp;Pisos e paredes - os edifícios devem ser providos de dispositivos de
-                     proteção
-                     contra insetos e roedores e
-                     concebidos de modo a permitir uma aplicação fácil das normas de higienização, e para
-                     esse efeito
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="pisosParedes" formControlName="pisosParedes"
-                     optionLabel="label" optionValue="value" />
-             </div>
-         </div>
-         <div class="grid grid-cols-12 gap-4 pl-4">
-             <div class="mb-6 col-span-12">
-                 <label for="pisosResistentes" class="font-medium  mb-2 block">
-                     i.&nbsp;&nbsp;Os pisos devem ser resistentes, perfeitamente estanques,
-                     antiderrapantes e
-                     com inclinações da ordem
-                     dos 3 % e rede de esgotos apropriada para escoamento de líquido
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="pisosResistentes" formControlName="pisosResistentes"
-                     optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="paredesInteriores" class="font-medium  mb-2 block">
-                     ii.&nbsp;&nbsp;As paredes interiores e o piso devem possuir um revestimento lavável;
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="paredesInteriores" formControlName="paredesInteriores"
-                     optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="paredes3metros" class="font-medium  mb-2 block">
-                     iii.&nbsp;&nbsp;As paredes vem possuir até 3 metros de altura e um revestimento
-                     resistente
-                     ao choque, impermeáveis,
-                     liso e imputrescível
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="paredes3metros" formControlName="paredes3metros"
-                     optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="unioesParedes" class="font-medium  mb-2 block">
-                     iv.&nbsp;&nbsp;As uniões das paredes com os tetos e os pisos devem ser
-                     arredondadas.
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="unioesParedes" formControlName="unioesParedes"
-                     optionLabel="label" optionValue="value" />
-             </div>
-         </div>
-         <div class="grid grid-cols-12 gap-4">
-             <div class="mb-6 col-span-12">
-                 <label for="ventilacoesNecessarias" class="font-medium  mb-2 block">
-                     e)&nbsp;&nbsp;Em todos os locais deve ser assegurada a ventilação necessária
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="ventilacoesNecessarias"
-                     formControlName="ventilacoesNecessarias" optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="iluminacao" class="font-medium  mb-2 block">
-                     f)&nbsp;&nbsp;A iluminação, natural ou artificial, deve ser adequada às
-                     características de cada local
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="iluminacao" formControlName="iluminacao"
-                     optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="aguaPotavel" class="font-medium  mb-2 block">
-                     g)&nbsp;&nbsp;O estabelecimento deve ser provido de uma rede de água potável sob
-                     pressão, fria e/ou quente, em
-                     quantidade suficiente para cobrir as suas necessidades
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="aguaPotavel" formControlName="aguaPotavel"
-                     optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="distribuicaoAgua" class="font-medium  mb-2 block">
-                     h)&nbsp;&nbsp;A rede de distribuição de águas deve ter o número necessário de
-                     dispositivos de saída de água para
-                     assegurar a limpeza e lavagem em todas as suas atividades, incluindo a higiene do
-                     pessoal
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="distribuicaoAgua" formControlName="distribuicaoAgua"
-                     optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="redeDistribuicao" class="font-medium  mb-2 block">
-                     i)&nbsp;&nbsp;Pode existir uma rede de distribuição, devidamente sinalizada, de água
-                     não potável para geradores de
-                     vapor, instalações comerciais frigoríficas, bocas de incêndio, jardinagem e outros
-                     serviços auxiliares, desde
-                     que não haja comunicação entre esta e a de água potável
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="redeDistribuicao" formControlName="redeDistribuicao"
-                     optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="redeEsgotos" class="font-medium  mb-2 block">
-                     j)&nbsp;&nbsp;A rede de esgotos, fossas ou tanques sépticos tem de permitir a fácil
-                     observação, limpeza e desinfeção e
-                     possuir válvulas sifonadas grelhas de proteção e caixas de recolha de gorduras;
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="redeEsgotos" formControlName="redeEsgotos"
-                     optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="equipamentoUtensilios" class="font-medium  mb-2 block">
-                     k)&nbsp;&nbsp;Todo o equipamento e utensílios devem ser em material inalterável e de
-                     fácil limpeza e desinfeção.
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="equipamentoUtensilios"
-                     formControlName="equipamentoUtensilios" optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="equipamentoPrimeirosSocorros" class="font-medium  mb-2 block">
-                     l)&nbsp;&nbsp;Equipados com equipamento de primeiros socorros
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="equipamentoPrimeirosSocorros"
-                     formControlName="equipamentoPrimeirosSocorros" optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="recipientesLixo" class="font-medium  mb-2 block">
-                     m)&nbsp;&nbsp;Dispor de recipientes para o lixo, com tampa, colocados em locais de
-                     fácil acesso e devidamente
-                     sinalizados.
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="recipientesLixo" formControlName="recipientesLixo"
-                     optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="limpezaDiaria" class="font-medium  mb-2 block">
-                     n)&nbsp;&nbsp;A limpeza e desinfeção diária dos contentores é obrigatória e o lixo e
-                     demais resíduos devem ser
-                     removidos diariamente para local adequado de forma a serem transportados pelos
-                     serviços públicos de
-                     recolha de lixo:
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="limpezaDiaria" formControlName="limpezaDiaria"
-                     optionLabel="label" optionValue="value" />
-             </div>
-         </div>
-         <div class="mb-12 col-span-12">
-             <label for="descreverIrregularidades" class="font-medium  mb-2 block">
-                 Verificou-se que (descrever as irregularidades e/ou omissões)
-             </label>
-             <textarea id="descreverIrregularidades" rows="5" cols="30" variant="outlined" pTextarea
-                 formControlName="descreverIrregularidades" fluid></textarea>
+             }
          </div>
          }
 
-         <!-- INDUSTRIAL Content -->
-         @if (categoria === 'INDUSTRIAL') {
-         <span class="text-lg font-bold mt-6 mb-3 block">
-             II - Instalacoes
-         </span>
-         <span class="text-md font-bold mt-6 mb-3 block">
-             1.&nbsp;&nbsp;Instalacoes sanitarias de utilizacao comum dotadas de agua corrente
-         </span>
+         @case (INDUSTRIAL) {
          <div class="grid grid-cols-12 gap-4 pl-4">
+             @for (item of industrialFormFields; track $index) {
              <div class="mb-6 col-span-12">
-                 <label for="seperadosSexo" class="font-medium  mb-2 block">
-                     a&#41;&nbsp;&nbsp; Separados por sexo
+                 <label [for]="item.name" class="font-medium  mb-2 block">
+                     {{item.label}}
                  </label>
-                 <p-selectbutton [options]="stateOptions" id="seperadosSexo" formControlName="seperadosSexo"
+                 <p-selectbutton [options]="stateOptions" [id]="item.name" [formControlName]="item.name"
                      optionLabel="label" optionValue="value" />
+                 @if(autoVistoriaForm.get(item.name)?.value === true) {
+                 @if (loadingUploadButtons.has(item.name)) {
+                 <div class="w-1/2">
+                     <p-progressbar mode="indeterminate" [style]="{ height: '6px' }" />
+                 </div>
+                 }
+                 <div class="flex justify-start pt-2">
+                     <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
+                         [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, item.name)"
+                         [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadUrl()"
+                         (onProgress)="uploadOnProgress($event, item.name)" [disabled]="getFileByField(item.name)"
+                         [auto]="true">
+                     </p-fileupload>
+                 </div>
+                 @if (getFileByField(item.name)) {
+                 <div>
+                     <a class="cursor-pointer hover:underline hover:text-teal-300 ms-4">
+                         {{getFileByField(item.name).nome}}
+                     </a>
+                     @if (getFileByField(item.name).id) {
+                     <p-button (click)="downloadDoc(getFileByField(item.name))"
+                         [loading]="loadingDownloadButtons.has(getFileByField(item.name).nome)" icon="pi pi-download"
+                         [rounded]="true" [text]="true" severity="success" />
+                     }
+                     <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
+                         [loading]="loadingRemoveButtons.has(getFileByField(item.name).nome)" severity="danger"
+                         (click)="removeDoc(getFileByField(item.name))" />
+                 </div>
+                 }
+                 }
+                 @if(autoVistoriaForm.get(item.name)?.value === false) {
+                 <div class="mb-12 col-span-12 pt-2">
+                     <label [for]="item.name" class="font-medium block">
+                         Descrição:
+                     </label>
+                     <textarea [id]="item.name" rows="4" cols="15" variant="outlined" pTextarea
+                         [formControlName]="item.name" fluid></textarea>
+                 </div>
+                 }
              </div>
-             <div class="mb-6 col-span-12">
-                 <label for="lavatoriosComEspelho" class="font-medium  mb-2 block">
-                     b&#41;&nbsp;&nbsp; Dispor de lavatorios com espelho:
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="lavatoriosComEspelho"
-                     formControlName="lavatoriosComEspelho" optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="sanitasAutomaticaAgua" class="font-medium  mb-2 block">
-                     c&#41;&nbsp;&nbsp; Dispor de sanitas, dotadas de descarga automatica de agua:
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="sanitasAutomaticaAgua"
-                     formControlName="sanitasAutomaticaAgua" optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="comunicacaoVentilacao" class="font-medium  mb-2 block">
-                     d&#41;&nbsp;&nbsp;Comunicacao direta para o exterior ou serem adotadas de dispositivos
-                     ventilacao
-                     artificial com continua renovacao do ar adequados a sua dimensao:
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="comunicacaoVentilacao"
-                     formControlName="comunicacaoVentilacao" optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="esgotoAguas" class="font-medium  mb-2 block">
-                     e&#41;&nbsp;&nbsp; Ligadas a uma rede interna de esgotos que conduzzam as aguas
-                     residuais a sistemas
-                     adequados ao seu escoamento, nomeadamente atraves da rede publica ou, se esta nao
-                     existir, de um sistema de recolha e tratamento adequado ao volume e natureza dessas
-                     aguas:
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="esgotoAguas" formControlName="esgotoAguas"
-                     optionLabel="label" optionValue="value" />
-             </div>
+             }
          </div>
-         <div class="mb-6 col-span-12">
-             <label for="paredesPavimentos" class="font-medium  mb-2 block">
-                 2.&nbsp;&nbsp; As paredes, pavimentos e tetos das instalacoes sanitarias devem ser
-                 revestidas de
-                 materiais resistentes, impermeaveis, nao inflamaveis e de facil limpeza:
-             </label>
-             <p-selectbutton [options]="stateOptions" id="paredesPavimentos" formControlName="paredesPavimentos"
-                 optionLabel="label" optionValue="value" />
-         </div>
-
-         <div class="mb-6 col-span-12">
-             <label for="pisosParedes" class="font-medium  mb-2 block">
-                 3.&nbsp;&nbsp;Pisos e paredes - os edifícios devem ser providos de dispositivos de
-                 proteção
-                 contra insetos e roedores e
-                 concebidos de modo a permitir uma aplicação fácil das normas de higienização, e para
-                 esse efeito
-             </label>
-             <p-selectbutton [options]="stateOptions" id="pisosParedes" formControlName="pisosParedes"
-                 optionLabel="label" optionValue="value" />
-         </div>
-         <div class="mb-6 col-span-12">
-             <label for="paredesInteriores" class="font-medium  mb-2 block">
-                 4.&nbsp;&nbsp;As paredes interiores e o piso devem possuir um revestimento lavável;
-             </label>
-             <p-selectbutton [options]="stateOptions" id="paredesInteriores" formControlName="paredesInteriores"
-                 optionLabel="label" optionValue="value" />
-         </div>
-         <div class="mb-6 col-span-12">
-             <label for="paredes3metros" class="font-medium  mb-2 block">
-                 5.&nbsp;&nbsp;As paredes vem possuir até 3 metros de altura e um revestimento
-                 resistente
-                 ao choque, impermeáveis,
-                 liso e imputrescível
-             </label>
-             <p-selectbutton [options]="stateOptions" id="paredes3metros" formControlName="paredes3metros"
-                 optionLabel="label" optionValue="value" />
-         </div>
-         <div class="mb-6 col-span-12">
-             <label for="ventilacoesNecessarias" class="font-medium  mb-2 block">
-                 6.&nbsp;&nbsp;Em todos os locais deve ser assegurada a ventilação necessária
-             </label>
-             <p-selectbutton [options]="stateOptions" id="ventilacoesNecessarias"
-                 formControlName="ventilacoesNecessarias" optionLabel="label" optionValue="value" />
-         </div>
-         <div class="mb-6 col-span-12">
-             <label for="iluminacao" class="font-medium  mb-2 block">
-                 7.&nbsp;&nbsp;A iluminação, natural ou artificial, deve ser adequada às
-                 características de cada local
-             </label>
-             <p-selectbutton [options]="stateOptions" id="iluminacao" formControlName="iluminacao" optionLabel="label"
-                 optionValue="value" />
-         </div>
-         <div class="mb-6 col-span-12">
-             <label for="aguaPotavel" class="font-medium  mb-2 block">
-                 8.&nbsp;&nbsp;O estabelecimento deve ser provido de uma rede de água potável sob
-                 pressão, fria e/ou quente, em
-                 quantidade suficiente para cobrir as suas necessidades
-             </label>
-             <p-selectbutton [options]="stateOptions" id="aguaPotavel" formControlName="aguaPotavel" optionLabel="label"
-                 optionValue="value" />
-         </div>
-         <div class="mb-6 col-span-12">
-             <label for="distribuicaoAgua" class="font-medium  mb-2 block">
-                 9.&nbsp;&nbsp;A rede de distribuição de águas deve ter o número necessário de
-                 dispositivos de saída de água para
-                 assegurar a limpeza e lavagem em todas as suas atividades, incluindo a higiene do
-                 pessoal
-             </label>
-             <p-selectbutton [options]="stateOptions" id="distribuicaoAgua" formControlName="distribuicaoAgua"
-                 optionLabel="label" optionValue="value" />
-         </div>
-         <div class="mb-6 col-span-12">
-             <label for="redeDistribuicao" class="font-medium  mb-2 block">
-                 10.&nbsp;&nbsp;Pode existir uma rede de distribuição, devidamente sinalizada, de água
-                 não potável para geradores de
-                 vapor, instalações comerciais frigoríficas, bocas de incêndio, jardinagem e outros
-                 serviços auxiliares, desde
-                 que não haja comunicação entre esta e a de água potável
-             </label>
-             <p-selectbutton [options]="stateOptions" id="redeDistribuicao" formControlName="redeDistribuicao"
-                 optionLabel="label" optionValue="value" />
-         </div>
-         <div class="mb-6 col-span-12">
-             <label for="redeEsgotos" class="font-medium  mb-2 block">
-                 11.&nbsp;&nbsp;A rede de esgotos, fossas ou tanques sépticos tem de permitir a fácil
-                 observação, limpeza e desinfeção e
-                 possuir válvulas sifonadas grelhas de proteção e caixas de recolha de gorduras;
-             </label>
-             <p-selectbutton [options]="stateOptions" id="redeEsgotos" formControlName="redeEsgotos" optionLabel="label"
-                 optionValue="value" />
-         </div>
-         <div class="mb-6 col-span-12">
-             <label for="maximoHigieneSeguranca" class="font-medium  mb-2 block">
-                 12.&nbsp;&nbsp;Garantir o maximo de higiene e seguranva dos trabalhadores;
-             </label>
-             <p-selectbutton [options]="stateOptions" id="maximoHigieneSeguranca"
-                 formControlName="maximoHigieneSeguranca" optionLabel="label" optionValue="value" />
-         </div>
-         <div class="mb-6 col-span-12">
-             <label for="equipamentoPrimeirosSocorros" class="font-medium  mb-2 block">
-                 13.&nbsp;&nbsp;Equipados com equipamento de primeiros socorros
-             </label>
-             <p-selectbutton [options]="stateOptions" id="equipamentoPrimeirosSocorros"
-                 formControlName="equipamentoPrimeirosSocorros" optionLabel="label" optionValue="value" />
-         </div>
-         <div class="mb-6 col-span-12">
-             <label for="recipientesLixo" class="font-medium  mb-2 block">
-                 14.&nbsp;&nbsp;Dispor de recipientes para o lixo, com tampa, colocados em locais de
-                 fácil acesso e devidamente
-                 sinalizados.
-             </label>
-             <p-selectbutton [options]="stateOptions" id="recipientesLixo" formControlName="recipientesLixo"
-                 optionLabel="label" optionValue="value" />
-         </div>
-         <div class="grid grid-cols-12 gap-4">
-             <div class="mb-6 col-span-12">
-                 <label for="zonasDestinadas" class="font-medium  mb-2 block">
-                     a)&nbsp;&nbsp;Nao podem situar-se junto das zonas destinadas a preparar e cozinhar
-                     alimentos ou a
-                     tomar refeicoes
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="zonasDestinadas" formControlName="zonasDestinadas"
-                     optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="instalacoesFrigorificas" class="font-medium  mb-2 block">
-                     b)&nbsp;&nbsp;Instalacoes sanitarias de utilizacao comum dotadas de agua corrente
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="instalacoesFrigorificas"
-                     formControlName="instalacoesFrigorificas" optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="sectoresLimpos" class="font-medium  mb-2 block">
-                     c)&nbsp;&nbsp;Separação de sectores limpos e sujos
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="sectoresLimpos" formControlName="sectoresLimpos"
-                     optionLabel="label" optionValue="value" />
-             </div>
-         </div>
-         <div class="grid grid-cols-12 gap-4 pl-4">
-             <div class="mb-6 col-span-12">
-                 <label for="pisosResistentes" class="font-medium  mb-2 block">
-                     i.&nbsp;&nbsp;Os pisos devem ser resistentes, perfeitamente estanques,
-                     antiderrapantes e
-                     com inclinações da ordem
-                     dos 3 % e rede de esgotos apropriada para escoamento de líquido
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="pisosResistentes" formControlName="pisosResistentes"
-                     optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="unioesParedes" class="font-medium  mb-2 block">
-                     iv.&nbsp;&nbsp;As uniões das paredes com os tetos e os pisos devem ser
-                     arredondadas.
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="unioesParedes" formControlName="unioesParedes"
-                     optionLabel="label" optionValue="value" />
-             </div>
-         </div>
-         <div class="grid grid-cols-12 gap-4">
-
-
-             <div class="mb-6 col-span-12">
-                 <label for="equipamentoUtensilios" class="font-medium  mb-2 block">
-                     k)&nbsp;&nbsp;Todo o equipamento e utensílios devem ser em material inalterável e de
-                     fácil limpeza e desinfeção.
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="equipamentoUtensilios"
-                     formControlName="equipamentoUtensilios" optionLabel="label" optionValue="value" />
-             </div>
-             <div class="mb-6 col-span-12">
-                 <label for="limpezaDiaria" class="font-medium  mb-2 block">
-                     n)&nbsp;&nbsp;A limpeza e desinfeção diária dos contentores é obrigatória e o lixo e
-                     demais resíduos devem ser
-                     removidos diariamente para local adequado de forma a serem transportados pelos
-                     serviços públicos de
-                     recolha de lixo:
-                 </label>
-                 <p-selectbutton [options]="stateOptions" id="limpezaDiaria" formControlName="limpezaDiaria"
-                     optionLabel="label" optionValue="value" />
-             </div>
-         </div>
-         <div class="mb-12 col-span-12">
-             <label for="descreverIrregularidades" class="font-medium  mb-2 block">
-                 Verificou-se que (descrever as irregularidades e/ou omissões)
-             </label>
-             <textarea id="descreverIrregularidades" rows="5" cols="30" variant="outlined" pTextarea
-                 formControlName="descreverIrregularidades" fluid></textarea>
-         </div>
+         }
          }
          <span class="text-xl font-bold mb-3 block text-center">
              CONCLUSÃO
@@ -965,45 +767,6 @@
                  </p>
              </div>
          </div>
-         <span class="text-xl font-bold mb-3 block text-center">
-             PROVAS
-         </span>
-         <div class="mb-3">
-             <span class="text-md font-bold">
-                 DOCUMENTAL
-             </span>
-         </div>
-         <p-fileupload name="files" method="post" (onUpload)="onUpload($event, 'advanced')" [maxFileSize]="maxFileSize"
-             [multiple]="true" accept="application/pdf" mode="advanced" [url]="uploadUrl()">
-             <ng-template #empty>
-                 @if (uploadedFiles.length === 0) {
-                 Arraste e largue os ficheiros aqui para carregar.
-                 }
-             </ng-template>
-             <ng-template #content>
-                 @if (uploadedFiles.length > 0) {
-                 <ul>
-                     @for (item of uploadedFiles; track $index) {
-                     <li>
-                         <a class="cursor-pointer hover:underline hover:text-teal-300">
-                             {{ item.nome }} - {{ bytesToMBs(item.tamanho) }}
-                         </a>
-                         &nbsp;
-                         @if (item.id) {
-                         <p-button (click)="downloadDoc(item)" [loading]="loadingDownloadButtons.has(item.nome)"
-                             icon="pi pi-download" [rounded]="true" [text]="true" severity="success" />
-                         }
-
-                         &nbsp;
-                         <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
-                             [loading]="loadingRemoveButtons.has(item.nome)" severity="danger"
-                             (click)="removeDoc(item)" />
-                     </li>
-                     }
-                 </ul>
-                 }
-             </ng-template>
-         </p-fileupload>
          <div class="flex justify-content-end mt-6 mb-6">
              <p-button label="Guardar" icon="pi pi-save" (click)="save(autoVistoriaForm)" [loading]="loading"
                  [disabled]="disabledSubmitButton()" severity="success" />

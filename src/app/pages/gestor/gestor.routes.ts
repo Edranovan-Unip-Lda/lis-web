@@ -137,7 +137,7 @@ export default [
             },
             {
                 path: ':id/fatura-atividade',
-                data: { breadcrumb: 'Pré-Visualização da Fatura', tipo: 'ATIVIDADE', },
+                data: { breadcrumb: 'Pré-Visualização da Fatura', type: 'ATIVIDADE', },
                 component: FaturaComponent,
                 resolve: {
                     aplicanteResolver: getByIdResolver,
@@ -168,7 +168,7 @@ export default [
                 path: ':id/fatura-vistoria',
                 data: {
                     breadcrumb: 'Pré-Visualização da Fatura',
-                    tipo: 'VISTORIA',
+                    type: 'VISTORIA',
                 },
                 component: FaturaComponent,
                 resolve: {

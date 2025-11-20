@@ -15,7 +15,7 @@
 
 
      <div class="w-full px-8">
-         <p-stepper [value]="1" class="basis-[50rem]" [linear]="true">
+         <p-stepper [value]="1" class="basis-[50rem]" [linear]="false">
              <p-step-list>
                  <p-step [value]="1">Empresa</p-step>
                  <p-step [value]="2">Proprietário(a) / Titular da empresa</p-step>
@@ -169,7 +169,7 @@
                                      </label>
                                      <input formControlName="telemovel" id="telemovel" type="tel" pInputText fluid />
                                  </div>
-                                  <div class="mb-6 col-span-12 md:col-span-6">
+                                 <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="telefone" class="font-medium mb-2 block">
                                          Nº Telefone
                                      </label>
@@ -441,9 +441,27 @@
                                      <label for="nacionalidade" class="font-medium  mb-2 block">
                                          Nacionalidade
                                      </label>
-                                     <input formControlName="nacionalidade" id="nacionalidade" type="text" pInputText
+                                     <p-select fluid formControlName="nacionalidade" [options]="tipoNacionalidadeOpts"
+                                         (onChange)="nacionalidadeOnChange($event, 'gerente')" optionLabel="name"
+                                         optionValue="value" placeholder="Selecione a nacionalidade" [showClear]="true">
+                                     </p-select>
+                                 </div>
+                                 @if (gerenteForeigner) {
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="numeroVisto" class="font-medium  mb-2 block">
+                                         Nº de Visto
+                                     </label>
+                                     <input formControlName="numeroVisto" id="numeroVisto" type="text" pInputText
                                          fluid />
                                  </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="validadeVisto" class="font-medium  mb-2 block">
+                                         Data Validade de Visto
+                                     </label>
+                                     <p-datepicker formControlName="validadeVisto" id="validadeVisto" appendTo="body"
+                                         [showButtonBar]="true" fluid />
+                                 </div>
+                                 }
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="naturalidade" class="font-medium  mb-2 block">
                                          Naturalidade
@@ -572,9 +590,28 @@
                                      <label for="nacionalidade" class="font-medium  mb-2 block">
                                          Nacionalidade
                                      </label>
-                                     <input formControlName="nacionalidade" id="nacionalidade" type="text" pInputText
-                                         fluid />
+                                     <p-select fluid formControlName="nacionalidade" [options]="tipoNacionalidadeOpts"
+                                         (onChange)="nacionalidadeOnChange($event, 'representante')" optionLabel="name"
+                                         optionValue="value" placeholder="Selecione a nacionalidade" [showClear]="true">
+                                     </p-select>
                                  </div>
+                                 @if (representanteForeigner) {
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="numeroVisto" class="font-medium  mb-2 block">
+                                         Nº de Visto
+                                     </label>
+                                      <input formControlName="numeroVisto" id="numeroVisto" type="text" pInputText
+                                         fluid />
+                                     
+                                 </div>
+                                 <div class="mb-6 col-span-12 md:col-span-6">
+                                     <label for="validadeVisto" class="font-medium  mb-2 block">
+                                         Data Validade de Visto
+                                     </label>
+                                    <p-datepicker formControlName="validadeVisto" id="validadeVisto" appendTo="body"
+                                         [showButtonBar]="true" fluid />
+                                 </div>
+                                 }
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="naturalidade" class="font-medium  mb-2 block">
                                          Naturalidade

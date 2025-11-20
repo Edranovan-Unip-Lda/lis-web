@@ -1,8 +1,8 @@
 import { Aldeia, Role } from '@/core/models/data-master.model';
-import { TipoPropriedade } from '@/core/models/enums';
+import { TipoNacionalidade, TipoPropriedade } from '@/core/models/enums';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { EmpresaService } from '@/core/services/empresa.service';
-import { maxFileSizeUpload, tipoDocumentoOptions, tipoPropriedadeOptions, tipoRelacaoFamiliaOptions, tipoRepresentante } from '@/core/utils/global-function';
+import { maxFileSizeUpload, tipoDocumentoOptions, tipoNacionalidadeOptions, tipoPropriedadeOptions, tipoRelacaoFamiliaOptions, tipoRepresentante } from '@/core/utils/global-function';
 import { LayoutService } from '@/layout/service/layout.service';
 import { DatePipe, NgClass } from '@angular/common';
 import { Component, inject } from '@angular/core';
@@ -60,12 +60,15 @@ export class Register {
     tipoProriedadeOpts = tipoPropriedadeOptions;
     tipoDocumentoOpts = tipoDocumentoOptions;
     tipoRelacaoFamiliaOpts = tipoRelacaoFamiliaOptions;
+    tipoNacionalidadeOpts = tipoNacionalidadeOptions;
     showAddBtnAcionistas = false;
     selectedRole!: Role;
     listaAldeiaAcionista: any[][] = [];
     uploadedDocs: any[] = [];
     maxFileSize = maxFileSizeUpload;
     tipoRepresentanteOptions = tipoRepresentante;
+    gerenteForeigner: boolean = false;
+    representanteForeigner: boolean = false;
 
     constructor(
         private _fb: FormBuilder,
@@ -298,6 +301,27 @@ export class Register {
         this.empresaForm.get(formControl)?.get('morada')?.reset();
     }
 
+    nacionalidadeOnChange(event: SelectChangeEvent, formControl: string): void {
+        if (event.value) {
+            const value: TipoNacionalidade = event.value;
+            if (value === TipoNacionalidade.estrangeiro) {
+                this.setForeigner(formControl, true);
+                this.empresaForm.get(`${formControl}.numeroVisto`)?.addValidators(Validators.required);
+                this.empresaForm.get(`${formControl}.validadeVisto`)?.addValidators(Validators.required);
+            } else {
+                this.setForeigner(formControl, false);
+                this.empresaForm.get(`${formControl}.numeroVisto`)?.removeValidators(Validators.required);
+                this.empresaForm.get(`${formControl}.validadeVisto`)?.removeValidators(Validators.required);
+            }
+        } else {
+            this.setForeigner(formControl, false);
+            this.empresaForm.get(`${formControl}.numeroVisto`)?.removeValidators(Validators.required);
+            this.empresaForm.get(`${formControl}.validadeVisto`)?.removeValidators(Validators.required);
+        }
+        this.empresaForm.get(`${formControl}.numeroVisto`)?.updateValueAndValidity();
+        this.empresaForm.get(`${formControl}.validadeVisto`)?.updateValueAndValidity();
+    }
+
     sociedadeComercialOnChange({ value }: SelectChangeEvent): void {
         const tipo = this.getTipoFromNome(value?.nome);
         this.empresaForm.patchValue({
@@ -508,6 +532,11 @@ export class Register {
         });
     }
 
+    setForeigner(field: string, value: boolean) {
+        const key = `${field}Foreigner` as keyof Register;
+        (this as any)[key] = value;
+    }
+
     private initForm(): void {
         this.empresaForm = this._fb.group({
             nome: [null, [Validators.required, Validators.minLength(3)]],
@@ -524,6 +553,7 @@ export class Register {
             capitalSocial: [null, [Validators.required]],
             dataRegisto: [null, [Validators.required]],
             telemovel: [null, [Validators.required]],
+            telefone: [null],
             tipoPropriedade: [null, [Validators.required]],
             acionistas: this._fb.array([]),
             totalTrabalhadores: [null],
@@ -539,6 +569,8 @@ export class Register {
                 tipoDocumento: [null, [Validators.required]],
                 numeroDocumento: [, [Validators.required]],
                 nacionalidade: [null, [Validators.required]],
+                numeroVisto: [null],
+                validadeVisto: [null],
                 naturalidade: [null, [Validators.required]],
                 estadoCivil: [null, [Validators.required]],
                 morada: this._fb.group({
@@ -558,6 +590,8 @@ export class Register {
                 dataNascimento: [null, [Validators.required]],
                 estadoCivil: [null, [Validators.required]],
                 nacionalidade: [null, [Validators.required]],
+                numeroVisto: [null],
+                validadeVisto: [null],
                 naturalidade: [null, [Validators.required]],
                 telefone: [null, [Validators.required]],
                 email: [null, [Validators.email]],

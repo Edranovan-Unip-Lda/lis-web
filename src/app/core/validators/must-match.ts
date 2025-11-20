@@ -1,4 +1,6 @@
 import { ValidatorFn, AbstractControl, FormGroup, ValidationErrors } from '@angular/forms';
+import { Categoria } from '../models/enums';
+import { autoVistoriaCommonFields } from '../utils/global-function';
 
 export function mustMatch(passwordControlName: string, confirmPasswordControlName: string): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -46,26 +48,56 @@ export function pedidoAtividadeWithFilesValidator(): ValidatorFn {
 
         const get = (name: string) => group.get(name)?.value;
 
-        // 1️⃣ All main fields except "documentoPropriedade" must be true + have file
-        ['planta', 'documentoImovel', 'planoEmergencia', 'estudoAmbiental'].forEach(field => {
-            if (get(field) !== true) errors[`${field}Required`] = true;
-            if (get(`${field}File`) == null) errors[`${field}FileRequired`] = true;
-        });
-
-        // 2️⃣ documentoPropriedade
+        // 1️⃣ documentoPropriedade
         if (get('documentoPropriedade') === true) {
             if (get('documentoPropriedadeFile') == null) {
                 errors.documentoPropriedadeFileRequired = true;
             }
         }
 
-        // 3️⃣ contratoArrendamento required if documentoPropriedade is false
+        // 2️⃣ contratoArrendamento required if documentoPropriedade is false
         if (get('documentoPropriedade') === false) {
             if (get('contratoArrendamento') !== true) {
                 errors.contratoArrendamentoRequired = true;
             }
             if (get('contratoArrendamentoFile') == null) {
                 errors.contratoArrendamentoFileRequired = true;
+            }
+        }
+
+        return Object.keys(errors).length ? errors : null;
+    };
+}
+
+export function autoVistoriaWithFilesValidator(
+    fields: { name: string, label: string }[]
+): ValidatorFn {
+    return (group: AbstractControl): ValidationErrors | null => {
+        const errors: any = {};
+
+        for (const field of fields) {
+            const value = group.get(field.name)?.value;           // true | false | null
+            const file = group.get(`${field.name}File`)?.value;   // file object or null
+            const desc = group.get(`${field.name}Descricao`)?.value; // descricao text
+
+            // 1️⃣ User must choose Yes/No (true/false)
+            if (value === null || value === undefined) {
+                errors[`${field.name}MissingYesNo`] = true;
+                continue;
+            }
+
+            // 2️⃣ If YES → file required
+            if (value === true) {
+                if (!file || !file.nome) {
+                    errors[`${field.name}FileRequired`] = true;
+                }
+            }
+
+            // 3️⃣ If NO → descricao required
+            if (value === false) {
+                if (!desc || desc.trim() === '') {
+                    errors[`${field.name}DescricaoRequired`] = true;
+                }
             }
         }
 

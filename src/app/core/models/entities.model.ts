@@ -251,7 +251,7 @@ export interface Documento extends BaseModel {
     extensao: string;
     descricao: string;
     tipo: string;
-    tamanho: string;
+    tamanho: number;
     coluna: string;
 }
 
@@ -301,10 +301,10 @@ export interface AutoVistoria extends BaseModel {
     membrosEquipaVistoria: Participante[];
     nomeAtuante: string;
     legislacaoUrbanistica: boolean;
-    accessoEstrada: boolean;
+    acessoEstrada: boolean;
     escoamentoAguas: boolean;
     alimentacaoEnergia: boolean;
-    seperadosSexo: boolean;
+    separadosSexo: boolean;
     lavatoriosComEspelho: boolean;
     sanitasAutomaticaAgua: boolean;
     comunicacaoVentilacao: boolean;

@@ -52,6 +52,7 @@ export class PedidoAtividadeFormComponent {
   loadingUploadButtons = new Set<String>();
   loadingDownloadButtons = new Set<string>();
   loadingRemoveButtons = new Set<string>();
+  showcontratoArrendamentoForm = false;
   showArrendadorForm = false;
   tipoDocumentoOpts = tipoDocumentoOptions;
   tipoArrendadorOpts = tipoArrendadorOptions;
@@ -310,6 +311,12 @@ export class PedidoAtividadeFormComponent {
     return categoria === Categoria.comercial ? tipoPedidoAtividadeComercialOptions : tipoPedidoAtividadeIndustrialOptions;
   }
 
+  documentoPropriedadeOnChange(event: SelectButtonChangeEvent): void {
+    if (event.value === false) {
+      this.showcontratoArrendamentoForm = true;
+    }
+  }
+
   contratoArrendamentoOnChange(event: SelectButtonChangeEvent): void {
     if (event.value) {
       this.showArrendadorForm = true;
@@ -329,6 +336,7 @@ export class PedidoAtividadeFormComponent {
           doc.coluna = field;
           return true;
         });
+        this.requestForm.get(field)?.setValue(true); // Set true if file is uploaded
         this.requestForm.get(`${field}File`)?.setValue(file);
         this.requestForm.get(`${field}File`)?.updateValueAndValidity();
         this.loadingUploadButtons.delete(field);
@@ -454,6 +462,8 @@ export class PedidoAtividadeFormComponent {
       planoEmergenciaFile: [null],
       estudoAmbiental: [null],
       estudoAmbientalFile: [null],
+      provasMOPFile: [null],
+      provasANLAFile: [null],
       numEmpregosCriados: new FormControl({ value: this.aplicanteData.empresa.totalTrabalhadores, disabled: true }),
       numEmpregadosCriar: [null, [Validators.required, Validators.min(1)]],
       arrendador: this._fb.group({

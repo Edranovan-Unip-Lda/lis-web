@@ -95,7 +95,7 @@ export default [
             },
             {
                 path: ':id/fatura-atividade',
-                data: { breadcrumb: 'Fatura PDF', tipo: 'ATIVIDADE', },
+                data: { breadcrumb: 'Fatura PDF', type: 'ATIVIDADE', },
                 component: FaturaComponent,
                 resolve: {
                     aplicanteResolver: getAplicante,

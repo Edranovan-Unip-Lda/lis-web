@@ -79,9 +79,20 @@
         <div class="grid grid-cols-4 mt-16">
             <div class="col-span-3 flex items-center justify-center text-center">
                 <div class="mb-2 text-black">
+                    @if (certificadoData.pedidoLicencaAtividade.aplicante.categoria === 'COMERCIAL') {
                     <p>O Diretor-Geral do Comércio</p>
                     <br>
-                    <p class="text-gray-600">Donald Trump</p>
+                    <p class="text-gray-600">
+                        Nelito Lima de Araújo
+                    </p>
+                    } @else {
+                    <p>O Diretor-Geral da Indústria</p>
+                    <br>
+                    <p class="text-gray-600">
+                        Martins Magno
+                    </p>
+                    }
+
                 </div>
             </div>
             <div class="col-span-1">

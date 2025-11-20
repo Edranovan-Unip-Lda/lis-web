@@ -108,7 +108,8 @@
             </div>
 
         </div>
-
+        @switch (aplicanteData.categoria) {
+        @case ('COMERCIAL') {
         <div class="mb-4 border-t-4 border-double border-gray-400 pt-2">
             <div class="mb-2 flex gap-2">
                 <span class="w-1/4 text-label text-gray-600">
@@ -159,7 +160,8 @@
                 </span>
             </div>
         </div>
-
+        }
+        @case ('INDUSTRIAL') {
         <div class="mb-6 border-t-4 border-double border-gray-400 pt-2">
             <div class="mb-2 flex gap-2">
                 <span class="w-1/4 text-label text-gray-600">
@@ -210,6 +212,9 @@
                 </span>
             </div>
         </div>
+        }
+        }
+
 
         <div class="mb-6">
             <p-table [value]="fatura.taxas">

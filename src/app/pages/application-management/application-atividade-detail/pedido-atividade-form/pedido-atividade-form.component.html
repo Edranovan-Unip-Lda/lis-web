@@ -199,16 +199,16 @@
              </div>
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="telefone" class="font-medium  mb-2 block">
+             <label for="representanteTelefone" class="font-medium  mb-2 block">
                  Telefone
              </label>
-             <input formControlName="telefone" id="telefone" type="text" pInputText fluid />
+             <input formControlName="telefone" id="representanteTelefone" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="email" class="font-medium  mb-2 block">
+             <label for="representanteEmail" class="font-medium  mb-2 block">
                  Email
              </label>
-             <input formControlName="email" id="email" type="text" pInputText fluid />
+             <input formControlName="email" id="representanteEmail" type="email" pInputText fluid />
          </div>
      </section>
 
@@ -288,16 +288,16 @@
              </div>
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="telefone" class="font-medium  mb-2 block">
+             <label for="gerenteTelefone" class="font-medium  mb-2 block">
                  Telefone
              </label>
-             <input formControlName="telefone" id="telefone" type="text" pInputText fluid />
+             <input formControlName="telefone" id="gerenteTelefone" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
-             <label for="email" class="font-medium  mb-2 block">
+             <label for="gerenteEmail" class="font-medium  mb-2 block">
                  Email
              </label>
-             <input formControlName="email" id="email" type="text" pInputText fluid />
+             <input formControlName="email" id="gerenteEmail" type="email" pInputText fluid />
          </div>
      </section>
 
@@ -307,15 +307,13 @@
              <label for="planta" class="font-medium  mb-2 block text-xl uppercase">
                  Planta de Localizacao do Estabelecimento Comercial (Documento)
              </label>
-             <p-selectbutton [options]="stateOpts" formControlName="planta" optionLabel="label" optionValue="value" />
-             @if(requestForm.get('planta')?.value === true) {
              @if (loadingUploadButtons.has('planta')) {
              <div class="w-1/2">
                  <p-progressbar mode="indeterminate" [style]="{ height: '6px' }" />
              </div>
              }
              <div class="flex justify-start pt-2">
-                 <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
+                 <p-fileupload [chooseLabel]="'Carregar'" name="files" method="post"
                      [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUploadDocs($event, 'planta')"
                      (onProgress)="uploadOnProgress($event, 'planta')" [maxFileSize]="maxFileSize"
                      accept="application/pdf" mode="basic" [url]="uploadURLDocs()"
@@ -337,68 +335,61 @@
                      [disabled]="disabledAllForm" (click)="removeDoc(getFileByField('planta'))" />
              </div>
              }
-             }
          </div>
      </div>
      <span class="text-xl font-bold mt-6 mb-3 block">
          DOCUMENTO COMPROVATIVO DE PROPRIEDADE, POSSE DE IMOVEL OU OUTRO CONTRATO DE ARRENDAMENTO
      </span>
      <div class="grid grid-cols-12 gap-4">
-         @for (item of pedidoLicencaDocumentsFields; track $index) {
-         <div class="mb-6 col-span-12">
-             <label [for]="item.name" class="font-medium  mb-2 block">
-                 {{item.label}}
+         <div class="mb-6 col-span-12 md:col-span-6">
+             <label for="documentoPropriedade" class="font-medium  mb-2 block">
+                 Documento comprovativo do direito de propriedade
              </label>
-             <p-selectbutton [options]="stateOpts" [formControlName]="item.name" optionLabel="label"
-                 optionValue="value" />
-
-             @if(requestForm.get(item.name)?.value === true) {
-             @if (loadingUploadButtons.has(item.name)) {
+             <p-selectbutton (onChange)="documentoPropriedadeOnChange($event)" [options]="stateOpts"
+                 formControlName="documentoPropriedade" optionLabel="label" optionValue="value" />
+             @if(requestForm.get('documentoPropriedade')?.value === true) {
+             @if (loadingUploadButtons.has('documentoPropriedade')) {
              <div class="w-1/2">
                  <p-progressbar mode="indeterminate" [style]="{ height: '6px' }" />
              </div>
              }
              <div class="flex justify-start pt-2">
-                 <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
-                     [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUploadDocs($event, item.name)"
-                     [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadURLDocs()"
-                     (onProgress)="uploadOnProgress($event, item.name)"
-                     [disabled]="disabledAllForm || getFileByField(item.name)" [auto]="true">
+                 <p-fileupload [chooseLabel]="'Carregar'" name="files" method="post"
+                     [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUploadDocs($event, 'documentoPropriedade')"
+                     (onProgress)="uploadOnProgress($event, 'documentoPropriedade')" [maxFileSize]="maxFileSize"
+                     accept="application/pdf" mode="basic" [url]="uploadURLDocs()"
+                     [disabled]="disabledAllForm || getFileByField('documentoPropriedade')" [auto]="true">
                  </p-fileupload>
              </div>
-             @if (getFileByField(item.name)) {
+             @if (getFileByField('documentoPropriedade')) {
              <div>
                  <a class="cursor-pointer hover:underline hover:text-teal-300 ms-4">
-                     {{getFileByField(item.name).nome}}
+                     {{getFileByField('documentoPropriedade').nome}}
                  </a>
-                 @if (getFileByField(item.name).id) {
-                 <p-button (click)="downloadDoc(getFileByField(item.name))"
-                     [loading]="loadingDownloadButtons.has(getFileByField(item.name).nome)" icon="pi pi-download"
-                     [rounded]="true" [text]="true" severity="success" />
+                 @if (getFileByField('documentoPropriedade').id) {
+                 <p-button (click)="downloadDoc(getFileByField('documentoPropriedade'))"
+                     [loading]="loadingDownloadButtons.has(getFileByField('documentoPropriedade').nome)"
+                     icon="pi pi-download" [rounded]="true" [text]="true" severity="success" />
                  }
                  <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
-                     [loading]="loadingRemoveButtons.has(getFileByField(item.name).nome)" severity="danger"
-                     [disabled]="disabledAllForm" (click)="removeDoc(getFileByField(item.name))" />
+                     [loading]="loadingRemoveButtons.has(getFileByField('documentoPropriedade').nome)" severity="danger"
+                     [disabled]="disabledAllForm" (click)="removeDoc(getFileByField('documentoPropriedade'))" />
              </div>
              }
              }
          </div>
-         }
-         @if (requestForm.get('documentoPropriedade')?.value === false) {
+         @if (showcontratoArrendamentoForm) {
          <div class="mb-6 col-span-12">
              <label for="contratoArrendamento" class="font-medium  mb-2 block">
                  Contrato de arrendamento
              </label>
-             <p-selectbutton [options]="stateOpts" (onChange)="contratoArrendamentoOnChange($event)"
-                 formControlName="contratoArrendamento" optionLabel="label" optionValue="value" />
-             @if(requestForm.get('contratoArrendamento')?.value === true) {
              @if (loadingUploadButtons.has('contratoArrendamento')) {
              <div class="w-1/2">
                  <p-progressbar mode="indeterminate" [style]="{ height: '6px' }" />
              </div>
              }
              <div class="flex justify-start pt-2">
-                 <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
+                 <p-fileupload [chooseLabel]="'Carregar'" name="files" method="post"
                      (onUpload)="onUploadDocs($event, 'contratoArrendamento')" [chooseIcon]="'pi pi-file-arrow-up'"
                      (onProgress)="uploadOnProgress($event, 'contratoArrendamento')" [maxFileSize]="maxFileSize"
                      accept="application/pdf" mode="basic" [url]="uploadURLDocs()"
@@ -419,7 +410,6 @@
                      [loading]="loadingRemoveButtons.has(getFileByField('contratoArrendamento').nome)" severity="danger"
                      [disabled]="disabledAllForm" (click)="removeDoc(getFileByField('contratoArrendamento'))" />
              </div>
-             }
              }
          </div>
          @if (showArrendadorForm) {
@@ -556,6 +546,111 @@
 
          </div>
          }
+         }
+     </div>
+     <div class="grid grid-cols-12 gap-4">
+         @for (item of pedidoLicencaDocumentsFields; track $index) {
+         <div class="mb-6 col-span-12">
+             <label [for]="item.name" class="font-medium  mb-2 block">
+                 {{item.label}}
+             </label>
+             @if (loadingUploadButtons.has(item.name)) {
+             <div class="w-1/2">
+                 <p-progressbar mode="indeterminate" [style]="{ height: '6px' }" />
+             </div>
+             }
+             <div class="flex justify-start pt-2">
+                 <p-fileupload [chooseLabel]="'Carregar'" name="files" method="post"
+                     [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUploadDocs($event, item.name)"
+                     [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadURLDocs()"
+                     (onProgress)="uploadOnProgress($event, item.name)"
+                     [disabled]="disabledAllForm || getFileByField(item.name)" [auto]="true">
+                 </p-fileupload>
+             </div>
+             @if (getFileByField(item.name)) {
+             <div>
+                 <a class="cursor-pointer hover:underline hover:text-teal-300 ms-4">
+                     {{getFileByField(item.name).nome}}
+                 </a>
+                 @if (getFileByField(item.name).id) {
+                 <p-button (click)="downloadDoc(getFileByField(item.name))"
+                     [loading]="loadingDownloadButtons.has(getFileByField(item.name).nome)" icon="pi pi-download"
+                     [rounded]="true" [text]="true" severity="success" />
+                 }
+                 <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
+                     [loading]="loadingRemoveButtons.has(getFileByField(item.name).nome)" severity="danger"
+                     [disabled]="disabledAllForm" (click)="removeDoc(getFileByField(item.name))" />
+             </div>
+             }
+         </div>
+         }
+         @if (aplicanteData.categoria === 'INDUSTRIAL') {
+         <div class="mb-6 col-span-12">
+             <label for="provasMOPFile" class="font-medium  mb-2 block">
+                 Provas ou justificação do Ministério das Obras Públicas
+             </label>
+             @if (loadingUploadButtons.has('provasMOPFile')) {
+             <div class="w-1/2">
+                 <p-progressbar mode="indeterminate" [style]="{ height: '6px' }" />
+             </div>
+             }
+             <div class="flex justify-start pt-2">
+                 <p-fileupload [chooseLabel]="'Carregar'" name="provasMOPFile" method="post"
+                     [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUploadDocs($event, 'provasMOPFile')"
+                     (onProgress)="uploadOnProgress($event, 'provasMOPFile')" [maxFileSize]="maxFileSize"
+                     accept="application/pdf" mode="basic" [url]="uploadURLDocs()"
+                     [disabled]="disabledAllForm || getFileByField('provasMOPFile')" [auto]="true">
+                 </p-fileupload>
+             </div>
+             @if (getFileByField('provasMOPFile')) {
+             <div>
+                 <a class="cursor-pointer hover:underline hover:text-teal-300 ms-4">
+                     {{getFileByField('provasMOPFile').nome}}
+                 </a>
+                 @if (getFileByField('provasMOPFile').id) {
+                 <p-button (click)="downloadDoc(getFileByField('provasMOPFile'))"
+                     [loading]="loadingDownloadButtons.has(getFileByField('provasMOPFile').nome)" icon="pi pi-download"
+                     [rounded]="true" [text]="true" severity="success" />
+                 }
+                 <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
+                     [loading]="loadingRemoveButtons.has(getFileByField('provasMOPFile').nome)" severity="danger"
+                     [disabled]="disabledAllForm" (click)="removeDoc(getFileByField('provasMOPFile'))" />
+             </div>
+             }
+         </div>
+         <div class="mb-6 col-span-12">
+             <label for="provasANLAFile" class="font-medium  mb-2 block">
+                 Provas ou justificação da Autoridade Nacional de Licenciamento Ambiental
+             </label>
+             @if (loadingUploadButtons.has('provasANLAFile')) {
+             <div class="w-1/2">
+                 <p-progressbar mode="indeterminate" [style]="{ height: '6px' }" />
+             </div>
+             }
+             <div class="flex justify-start pt-2">
+                 <p-fileupload [chooseLabel]="'Carregar'" name="provasANLAFile" method="post"
+                     [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUploadDocs($event, 'provasANLAFile')"
+                     (onProgress)="uploadOnProgress($event, 'provasANLAFile')" [maxFileSize]="maxFileSize"
+                     accept="application/pdf" mode="basic" [url]="uploadURLDocs()"
+                     [disabled]="disabledAllForm || getFileByField('provasANLAFile')" [auto]="true">
+                 </p-fileupload>
+             </div>
+             @if (getFileByField('provasANLAFile')) {
+             <div>
+                 <a class="cursor-pointer hover:underline hover:text-teal-300 ms-4">
+                     {{getFileByField('provasANLAFile').nome}}
+                 </a>
+                 @if (getFileByField('provasANLAFile').id) {
+                 <p-button (click)="downloadDoc(getFileByField('provasANLAFile'))"
+                     [loading]="loadingDownloadButtons.has(getFileByField('provasANLAFile').nome)" icon="pi pi-download"
+                     [rounded]="true" [text]="true" severity="success" />
+                 }
+                 <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
+                     [loading]="loadingRemoveButtons.has(getFileByField('provasANLAFile').nome)" severity="danger"
+                     [disabled]="disabledAllForm" (click)="removeDoc(getFileByField('provasANLAFile'))" />
+             </div>
+             }
+         </div>
          }
      </div>
      <span class="text-xl font-bold mt-6 mb-3 block">

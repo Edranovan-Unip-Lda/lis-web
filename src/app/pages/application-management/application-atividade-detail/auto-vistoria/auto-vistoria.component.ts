@@ -4,18 +4,20 @@ import { AplicanteStatus, Categoria } from '@/core/models/enums';
 import { AuthenticationService, DataMasterService } from '@/core/services';
 import { DocumentosService } from '@/core/services/documentos.service';
 import { PedidoService } from '@/core/services/pedido.service';
-import { stateOptions, tipoAreaRepresentanteComercial, tipoAreaRepresentanteIndustrial, tipoDocumentoOptions, tipoEletricidadeOptions, tipoLocalOptions } from '@/core/utils/global-function';
+import { autoVistoriaComercialFields, autoVistoriaIndustrialFields, mapToAtividadeEconomica, stateOptions, tipoAreaRepresentanteComercial, tipoAreaRepresentanteIndustrial, tipoDocumentoOptions, tipoEletricidadeOptions, tipoLocalOptions } from '@/core/utils/global-function';
+import { autoVistoriaWithFilesValidator } from '@/core/validators/must-match';
 import { Component, OnInit, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
-import { FileUpload } from 'primeng/fileupload';
+import { FileProgressEvent, FileUpload } from 'primeng/fileupload';
 import { InputGroup } from 'primeng/inputgroup';
 import { InputGroupAddon } from 'primeng/inputgroupaddon';
 import { InputNumber } from 'primeng/inputnumber';
 import { InputText } from 'primeng/inputtext';
+import { ProgressBar } from 'primeng/progressbar';
 import { Select, SelectFilterEvent } from 'primeng/select';
 import { SelectButton } from 'primeng/selectbutton';
 import { Textarea } from 'primeng/textarea';
@@ -24,7 +26,7 @@ import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-auto-vistoria',
-  imports: [ReactiveFormsModule, SelectButton, Textarea, DatePicker, FileUpload, InputText, Select, Button, Toast, InputGroup, InputGroupAddon, InputNumber],
+  imports: [ReactiveFormsModule, SelectButton, Textarea, DatePicker, FileUpload, InputText, Select, Button, Toast, InputGroup, InputGroupAddon, InputNumber, ProgressBar],
   templateUrl: './auto-vistoria.component.html',
   styleUrl: './auto-vistoria.component.scss',
   providers: [MessageService]
@@ -52,9 +54,16 @@ export class AutoVistoriaComponent implements OnInit {
   loading = false;
   loadingDownloadButtons = new Set<string>();
   loadingRemoveButtons = new Set<string>();
-  maxLengthParticipantes = 5;
+  minLengthParticipantes = 1;
+  maxLengthParticipantes = 0;
   tipoLocalOpts = tipoLocalOptions;
   tipoEletricidadeOpts = tipoEletricidadeOptions;
+  COMERCIAL = Categoria.comercial;
+  INDUSTRIAL = Categoria.industrial;
+  comercialFormFields = autoVistoriaComercialFields;
+  industrialFormFields = autoVistoriaIndustrialFields;
+  loadingUploadButtons = new Set<String>();
+  protected readonly TRINTA_DIAS: number = 30;
 
   constructor(
     private _fb: FormBuilder,
@@ -67,13 +76,13 @@ export class AutoVistoriaComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.aplicante = this.route.snapshot.data['aplicanteResolver'];
     this.initForm();
 
-    this.aplicante = this.route.snapshot.data['aplicanteResolver'];
     this.categoria = this.aplicante.categoria;
     this.pedidoVistoria = this.aplicante.pedidoLicencaAtividade.listaPedidoVistoria.find(p => p.status === AplicanteStatus.submetido)!;
 
-    this.listaClassificacaoAtividade = this.route.snapshot.data['listaClasseAtividadeResolver']._embedded.classeAtividade;
+    this.listaClassificacaoAtividade = mapToAtividadeEconomica(this.route.snapshot.data['listaClasseAtividadeResolver']._embedded.classeAtividade);
 
     this.listaPostoAdministrativo = this.route.snapshot.data['listaPostoAdministrativoResolver']._embedded.postos;
     this.listaPostoAdministrativoOriginal = [...this.listaPostoAdministrativo];
@@ -103,11 +112,29 @@ export class AutoVistoriaComponent implements OnInit {
 
     this.autoVistoriaForm.valueChanges.subscribe(() => {
       if (!this.isAllOptionsTrue()) {
-        this.autoVistoriaForm.get('prazo')?.setValue(30, { emitEvent: false });
+        this.autoVistoriaForm.get('prazo')?.setValue(this.TRINTA_DIAS, { emitEvent: false });
       } else {
         this.autoVistoriaForm.get('prazo')?.setValue(0, { emitEvent: false });
       }
-    })
+    });
+
+    this.logInvalidControls(this.autoVistoriaForm);
+
+  }
+
+  logInvalidControls(form: FormGroup, parentKey = ''): void {
+    Object.keys(form.controls).forEach(key => {
+      const control = form.get(key);
+      const fieldPath = parentKey ? `${parentKey}.${key}` : key;
+
+      if (control instanceof FormGroup) {
+        this.logInvalidControls(control, fieldPath);
+      } else {
+        if (control?.invalid) {
+          console.warn(`❌ INVALID → ${fieldPath}`, control.errors);
+        }
+      }
+    });
   }
 
   save(form: FormGroup) {
@@ -247,6 +274,37 @@ export class AutoVistoriaComponent implements OnInit {
     return this.tipoAreaRepresentanteOpts.filter(p => !picked.has(p.value));
   }
 
+  onUpload(event: any, arg: string) {
+    if (event.originalEvent.body) {
+      const files: Documento[] = event.originalEvent.body;
+      if (arg) {
+        const file = files[0];
+        file.coluna = arg;
+        files.forEach(doc => {
+          doc.coluna = arg;
+          return true;
+        });
+        this.autoVistoriaForm.get(`${arg}File`)?.setValue(file);
+        this.autoVistoriaForm.get(`${arg}File`)?.updateValueAndValidity();
+        this.loadingUploadButtons.delete(arg);
+      }
+      this.uploadedFiles = [...this.uploadedFiles, ...event.originalEvent.body];
+    }
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Sucesso',
+      detail: 'Arquivo carregado com sucesso!'
+    });
+  }
+
+  getFileByField(field: string): Documento {
+    return this.uploadedFiles.find(doc => doc.coluna === field) || null;
+  }
+
+  uploadOnProgress(event: FileProgressEvent, field: string): void {
+    this.loadingUploadButtons.add(field);
+  }
+
   downloadDoc(file: Documento): void {
     this.loadingDownloadButtons.add(file.nome);
     this.documentoService.downloadById(file.id).subscribe({
@@ -324,8 +382,7 @@ export class AutoVistoriaComponent implements OnInit {
   }
 
   disabledSubmitButton(): boolean {
-    const { length } = this.uploadedFiles;
-    return !this.autoVistoriaForm.valid || length === 0 || this.autoVistoriaForm.disabled;
+    return !this.autoVistoriaForm.valid || this.autoVistoriaForm.disabled;
   }
 
   classeAtividadeChange(event: any): void {
@@ -393,7 +450,7 @@ export class AutoVistoriaComponent implements OnInit {
         gerente: new FormControl({ value: null, disabled: true }),
         telefone: new FormControl({ value: null, disabled: true }),
         email: new FormControl({ value: null, disabled: true }),
-        classeAtividade: [null],
+        classeAtividade: new FormControl({ value: null, disabled: true }),
         classeAtividadeCodigo: new FormControl({ value: null, disabled: true }),
         nomeRepresentante: new FormControl({ value: null, disabled: true }),
         pai: new FormControl({ value: null, disabled: true }),
@@ -415,37 +472,25 @@ export class AutoVistoriaComponent implements OnInit {
       nomeAtuante: new FormControl({ value: null, disabled: true }),
       legislacaoUrbanistica: [null],
       tipoLocal: [null],
-      accessoEstrada: [null],
+      legislacaoUrbanisticaFile: [null],
+      legislacaoUrbanisticaDescricao: [null],
+
+      acessoEstrada: [null],
+      acesoEstradaFile: [null],
+      acessoEstradaDescricao: [null],
       superficie: [null],
       larguraEstrada: [null],
+
       escoamentoAguas: [null],
+      escoamentoAguasFile: [null],
+      escoamentoAguasDescricao: [null],
+
       alimentacaoEnergia: [null],
+      alimentacaoEnergiaFile: [null],
+      alimentacaoEnergiaDescricao: [null],
       tipoEletricidade: [null],
-      seperadosSexo: [null],
-      lavatoriosComEspelho: [null],
-      sanitasAutomaticaAgua: [null],
-      comunicacaoVentilacao: [null],
-      esgotoAguas: [null],
-      paredesPavimentos: [null],
-      zonasDestinadas: [null],
-      instalacoesFrigorificas: [null],
-      sectoresLimpos: [null],
-      pisosParedes: [null],
-      pisosResistentes: [null],
-      paredesInteriores: [null],
-      paredes3metros: [null],
-      unioesParedes: [null],
-      ventilacoesNecessarias: [null],
-      iluminacao: [null],
-      aguaPotavel: [null],
-      distribuicaoAgua: [null],
-      redeDistribuicao: [null],
-      redeEsgotos: [null],
-      maximoHigieneSeguranca: [null],
-      equipamentoUtensilios: [null],
-      equipamentoPrimeirosSocorros: [null],
-      recipientesLixo: [null],
-      limpezaDiaria: [null],
+      tipoEletricidadeFile: [null],
+
       descreverIrregularidades: [null, [Validators.required, Validators.minLength(3)]],
       aptoAberto: [null, [Validators.required]],
       comDeficiencias: [null, [Validators.required]],
@@ -454,6 +499,41 @@ export class AutoVistoriaComponent implements OnInit {
       documental: [null],
       membrosEquipaVistoria: this._fb.array([]),
     });
+
+    switch (this.aplicante.categoria) {
+      case Categoria.comercial:
+        autoVistoriaComercialFields.forEach(field => {
+          // Add Yes/No selectbutton control
+          this.autoVistoriaForm.addControl(field.name, new FormControl(null, Validators.required));
+
+          // Add matching file upload control
+          this.autoVistoriaForm.addControl(`${field.name}File`, new FormControl(null));
+
+          const descricao = `${field.name}Descricao`;
+          // Add matching description control
+          this.autoVistoriaForm.addControl(descricao, new FormControl(null));
+
+        });
+        this.autoVistoriaForm.addValidators(autoVistoriaWithFilesValidator(autoVistoriaComercialFields));
+        break;
+
+      case Categoria.industrial:
+        autoVistoriaIndustrialFields.forEach(field => {
+          // Add Yes/No selectbutton control
+          this.autoVistoriaForm.addControl(field.name, new FormControl(null, Validators.required));
+
+          // Add matching file upload control
+          this.autoVistoriaForm.addControl(`${field.name}File`, new FormControl(null));
+
+          // Add matching description control
+          const descricao = `${field.name}Descricao`;
+          this.autoVistoriaForm.addControl(descricao, new FormControl(null));
+        });
+        this.autoVistoriaForm.addValidators(autoVistoriaWithFilesValidator(autoVistoriaIndustrialFields));
+        break;
+    }
+    this.autoVistoriaForm.updateValueAndValidity();
+
   }
 
   /**
@@ -463,67 +543,35 @@ export class AutoVistoriaComponent implements OnInit {
    * @return boolean - True se todas as opcoes estiverem como true, false caso contrario.
    */
   private isAllOptionsTrue(): boolean {
-    if (this.categoria === Categoria.comercial) {
-      return this.autoVistoriaForm.get('legislacaoUrbanistica')?.value &&
-        this.autoVistoriaForm.get('accessoEstrada')?.value &&
-        this.autoVistoriaForm.get('escoamentoAguas')?.value &&
-        this.autoVistoriaForm.get('alimentacaoEnergia')?.value &&
-        this.autoVistoriaForm.get('tipoEletricidade')?.value &&
+    const commonFields = [
+      'legislacaoUrbanistica',
+      'acessoEstrada',
+      'escoamentoAguas',
+      'alimentacaoEnergia'
+    ];
 
-        this.autoVistoriaForm.get('seperadosSexo')?.value &&
-        this.autoVistoriaForm.get('lavatoriosComEspelho')?.value &&
-        this.autoVistoriaForm.get('comunicacaoVentilacao')?.value &&
-        this.autoVistoriaForm.get('esgotoAguas')?.value &&
-        this.autoVistoriaForm.get('paredesPavimentos')?.value &&
-        this.autoVistoriaForm.get('zonasDestinadas')?.value &&
-        this.autoVistoriaForm.get('instalacoesFrigorificas')?.value &&
-        this.autoVistoriaForm.get('sectoresLimpos')?.value &&
-        this.autoVistoriaForm.get('pisosParedes')?.value &&
-        this.autoVistoriaForm.get('pisosResistentes')?.value &&
-        this.autoVistoriaForm.get('paredesInteriores')?.value &&
-        this.autoVistoriaForm.get('paredes3metros')?.value &&
-        this.autoVistoriaForm.get('unioesParedes')?.value &&
-        this.autoVistoriaForm.get('iluminacao')?.value &&
-        this.autoVistoriaForm.get('aguaPotavel')?.value &&
-        this.autoVistoriaForm.get('distribuicaoAgua')?.value &&
-        this.autoVistoriaForm.get('redeDistribuicao')?.value &&
-        this.autoVistoriaForm.get('redeEsgotos')?.value &&
-        this.autoVistoriaForm.get('equipamentoUtensilios')?.value &&
-        this.autoVistoriaForm.get('equipamentoPrimeirosSocorros')?.value &&
-        this.autoVistoriaForm.get('recipientesLixo')?.value &&
-        this.autoVistoriaForm.get('limpezaDiaria')?.value
-    } else {
-      return this.autoVistoriaForm.get('legislacaoUrbanistica')?.value &&
-        this.autoVistoriaForm.get('accessoEstrada')?.value &&
-        this.autoVistoriaForm.get('escoamentoAguas')?.value &&
-        this.autoVistoriaForm.get('alimentacaoEnergia')?.value &&
-        this.autoVistoriaForm.get('tipoEletricidade')?.value &&
+    // Check common required fields first
+    const allCommonTrue = commonFields.every(
+      f => this.autoVistoriaForm.get(f)?.value === true
+    );
 
-        this.autoVistoriaForm.get('seperadosSexo')?.value &&
-        this.autoVistoriaForm.get('lavatoriosComEspelho')?.value &&
-        this.autoVistoriaForm.get('sanitasAutomaticaAgua')?.value &&
-        this.autoVistoriaForm.get('comunicacaoVentilacao')?.value &&
-        this.autoVistoriaForm.get('esgotoAguas')?.value &&
-        this.autoVistoriaForm.get('paredesPavimentos')?.value &&
-        this.autoVistoriaForm.get('pisosParedes')?.value &&
-        this.autoVistoriaForm.get('paredesInteriores')?.value &&
-        this.autoVistoriaForm.get('paredes3metros')?.value &&
-        this.autoVistoriaForm.get('ventilacoesNecessarias')?.value &&
-        this.autoVistoriaForm.get('iluminacao')?.value &&
-        this.autoVistoriaForm.get('aguaPotavel')?.value &&
-        this.autoVistoriaForm.get('distribuicaoAgua')?.value &&
-        this.autoVistoriaForm.get('redeDistribuicao')?.value &&
-        this.autoVistoriaForm.get('redeEsgotos')?.value &&
-        this.autoVistoriaForm.get('maximoHigieneSeguranca')?.value &&
-        this.autoVistoriaForm.get('equipamentoPrimeirosSocorros')?.value &&
-        this.autoVistoriaForm.get('recipientesLixo')?.value &&
-        this.autoVistoriaForm.get('zonasDestinadas')?.value &&
-        this.autoVistoriaForm.get('instalacoesFrigorificas')?.value &&
-        this.autoVistoriaForm.get('sectoresLimpos')?.value &&
-        this.autoVistoriaForm.get('pisosResistentes')?.value &&
-        this.autoVistoriaForm.get('unioesParedes')?.value &&
-        this.autoVistoriaForm.get('equipamentoUtensilios')?.value &&
-        this.autoVistoriaForm.get('limpezaDiaria')?.value
+    if (!allCommonTrue) return false;
+
+    // Category-specific additional fields:
+    switch (this.categoria) {
+
+      case Categoria.comercial:
+        return autoVistoriaComercialFields.every(
+          field => this.autoVistoriaForm.get(field.name)?.value === true
+        );
+
+      case Categoria.industrial:
+        return autoVistoriaIndustrialFields.every(
+          field => this.autoVistoriaForm.get(field.name)?.value === true
+        );
+
+      default:
+        return false;
     }
   }
 
@@ -536,17 +584,6 @@ export class AutoVistoriaComponent implements OnInit {
       tipoDocumento: [null, Validators.required],
       numeroDocumento: [null, Validators.required],
       telemovel: [null, Validators.required],
-    });
-  }
-
-  onUpload(event: any, arg: string) {
-    if (event.originalEvent.body) {
-      this.uploadedFiles = [...this.uploadedFiles, ...event.originalEvent.body];
-    }
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Sucesso',
-      detail: 'Arquivo carregado com sucesso!'
     });
   }
 
@@ -572,6 +609,20 @@ export class AutoVistoriaComponent implements OnInit {
         postoAdministrativo: pedidoVistoria.localEstabelecimento.aldeia.suco.postoAdministrativo.nome,
         municipio: pedidoVistoria.localEstabelecimento.aldeia.suco.postoAdministrativo.municipio.nome,
       },
+      requerente: {
+        classeAtividade: {
+          id: pedidoVistoria.classeAtividade.id,
+          codigo: pedidoVistoria.classeAtividade.codigo,
+          descricao: pedidoVistoria.classeAtividade.descricao,
+          tipoRisco: pedidoVistoria.classeAtividade.tipoRisco,
+          grupoAtividade: {
+            id: pedidoVistoria.classeAtividade.grupoAtividade.id,
+            codigo: pedidoVistoria.classeAtividade.grupoAtividade.codigo,
+            descricao: pedidoVistoria.classeAtividade.grupoAtividade.descricao,
+          }
+        },
+        classeAtividadeCodigo: pedidoVistoria.classeAtividade.descricao,
+      }
     });
   }
 
@@ -610,5 +661,9 @@ export class AutoVistoriaComponent implements OnInit {
       },
       nomeAtuante: empresa.nome,
     });
+  }
+
+  minimalParticipante(): boolean {
+    return (this.membrosEquipaVistoria.length < this.minLengthParticipantes) || (this.membrosEquipaVistoria.length > this.maxLengthParticipantes)
   }
 }

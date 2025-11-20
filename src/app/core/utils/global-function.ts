@@ -1,5 +1,5 @@
 import { FormGroup, Validators } from "@angular/forms";
-import { AplicanteType, AreaRepresentante, CaraterizacaoEstabelecimento, Categoria, NivelRisco, QuantoAtividade, Role, Status, TipoAto, TipoDocumento, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro, TipoPedidoLicenca, TipoPedidoVistoria, TipoPropriedade } from "../models/enums";
+import { AplicanteType, AreaRepresentante, CaraterizacaoEstabelecimento, Categoria, NivelRisco, QuantoAtividade, Role, Status, TipoAto, TipoDocumento, TipoEmpresa, TipoEstabelecimento, TipoNacionalidade, TipoPedidoCadastro, TipoPedidoLicenca, TipoPedidoVistoria, TipoPropriedade } from "../models/enums";
 
 export const maxFileSizeUpload = 20 * 1024 * 1024;
 
@@ -165,6 +165,17 @@ export const tipoEmpresaOptions: any[] = [
     {
         name: 'Grande Empresa',
         value: TipoEmpresa.grande
+    },
+];
+
+export const tipoNacionalidadeOptions: any[] = [
+    {
+        name: 'Timorense',
+        value: TipoNacionalidade.timorense
+    },
+    {
+        name: 'Estrangeiro',
+        value: TipoNacionalidade.estrangeiro
     },
 ];
 
@@ -399,8 +410,212 @@ export function formatDateForLocalDate(date: Date): string {
 }
 
 export const pedidoLicencaDocumentsFields = [
-    { name: 'documentoPropriedade', label: 'Documento comprovativo do direito de propriedade ' },
     { name: 'documentoImovel', label: 'Documento comprovativo de posse de imovel ' },
     { name: 'planoEmergencia', label: 'Plano de Emergência ' },
-    { name: 'estudoAmbiental', label: 'Estudo de Impacto Ambiental' },
-]
+];
+
+export const autoVistoriaCommonFields: { name: string, label: string }[] = [
+    {
+        name: 'tipoLocal',
+        label: 'A escolha do local deve staisfazer as exigencias da legislacao urbanistica, tendo em conta especialmente os planos urbanisticos existentes ou as indicacoes dadas pelas autoridades locais competentes:'
+    },
+    {
+        name: 'acessoEstrada',
+        label: ''
+    },
+    {
+        name: 'superficie',
+        label: ''
+    },
+    {
+        name: 'larguraEstrada',
+        label: ''
+    },
+    {
+        name: 'escoamentoAguas',
+        label: ''
+    },
+    {
+        name: 'escoamentoAguas',
+        label: ''
+    },
+    {
+        name: 'tipoEletricidade',
+        label: ''
+    },
+];
+
+export const autoVistoriaComercialFields: { name: string, label: string }[] = [
+    {
+        name: 'separadosSexo',
+        label: 'Separados por sexo:'
+    },
+    {
+        name: 'lavatoriosComEspelho',
+        label: 'Dispor de lavatorios com espelho:'
+    },
+    {
+        name: 'comunicacaoVentilacao',
+        label: 'Comunicacao direta para o exterior ou serem adotadas de dispositivos ventilacao artificial com continua renovacao do ar adequados a sua dimensao: '
+    },
+    {
+        name: 'esgotoAguas',
+        label: 'Ligadas a uma rede interna de esgotos que conduzzam as aguas residuais a sistemas adequados ao seu escoamento, nomeadamente atraves da rede publica ou, se esta nao existir, de um sistema de recolha e tratamento adequado ao volume e natureza dessas aguas: '
+    },
+    {
+        name: 'paredesPavimentos',
+        label: 'As paredes, pavimentos e tetos das instalacoes sanitarias devem ser revestidas demateriais resistentes, impermeaveis, nao inflamaveis e de facil limpeza:'
+    },
+    {
+        name: 'zonasDestinadas',
+        label: 'Nao podem situar-se junto das zonas destinadas a preparar e cozinhar alimentos ou a tomar refeicoes:'
+    },
+    {
+        name: 'instalacoesFrigorificas',
+        label: 'Instalações frigoríficas para refrigeração e conservação, caso aplicável:'
+    },
+    {
+        name: 'sectoresLimpos',
+        label: 'Separação de sectores limpos e sujos:'
+    },
+    {
+        name: 'pisosParedes',
+        label: 'Pisos e paredes - os edifícios devem ser providos de dispositivos de proteção contra insetos e roedores e concebidos de modo a permitir uma aplicação fácil das normas de higienização, e para esse efeito:'
+    },
+    {
+        name: 'pisosResistentes',
+        label: 'Os pisos devem ser resistentes, perfeitamente estanques, antiderrapantes e com inclinações da ordem dos 3 % e rede de esgotos apropriada para escoamento de líquido:'
+    },
+    {
+        name: 'paredesInteriores',
+        label: 'As paredes interiores e o piso devem possuir um revestimento lavável:'
+    },
+    {
+        name: 'paredes3metros',
+        label: 'As paredes vem possuir até 3 metros de altura e um revestimento resistente ao choque, impermeáveis, liso e imputrescível:'
+    },
+    {
+        name: 'unioesParedes',
+        label: 'As uniões das paredes com os tetos e os pisos devem ser arredondadas:'
+    },
+    {
+        name: 'ventilacoesNecessarias',
+        label: 'Em todos os locais deve ser assegurada a ventilação necessária:'
+    },
+    {
+        name: 'iluminacao',
+        label: 'A iluminação, natural ou artificial, deve ser adequada às características de cada local:'
+    },
+    {
+        name: 'aguaPotavel',
+        label: 'O estabelecimento deve ser provido de uma rede de água potável sob pressão, fria e/ou quente, em quantidade suficiente para cobrir as suas necessidades:'
+    },
+    {
+        name: 'distribuicaoAgua',
+        label: 'A rede de distribuição de águas deve ter o número necessário de dispositivos de saída de água para assegurar a limpeza e lavagem em todas as suas atividades, incluindo a higiene do pessoal:'
+    },
+    {
+        name: 'redeDistribuicao',
+        label: 'Pode existir uma rede de distribuição, devidamente sinalizada, de água não potável para geradores de vapor, instalações comerciais frigoríficas, bocas de incêndio, jardinagem e outros serviços auxiliares, desde que não haja comunicação entre esta e a de água potável:'
+    },
+    {
+        name: 'redeEsgotos',
+        label: 'A rede de esgotos, fossas ou tanques sépticos tem de permitir a fácil observação, limpeza e desinfeção e possuir válvulas sifonadas grelhas de proteção e caixas de recolha de gorduras:'
+    },
+    {
+        name: 'equipamentoUtensilios',
+        label: 'Todo o equipamento e utensílios devem ser em material inalterável e de fácil limpeza e desinfeção:'
+    },
+    {
+        name: 'equipamentoPrimeirosSocorros',
+        label: 'Equipados com equipamento de primeiros socorros:'
+    },
+    {
+        name: 'recipientesLixo',
+        label: 'Dispor de recipientes para o lixo, com tampa, colocados em locais de fácil acesso e devidamente sinalizados:'
+    },
+    {
+        name: 'limpezaDiaria',
+        label: 'A limpeza e desinfeção diária dos contentores é obrigatória e o lixo e demais resíduos devem ser removidos diariamente para local adequado de forma a serem transportados pelos serviços públicos de recolha de lixo:'
+    },
+];
+
+
+export const autoVistoriaIndustrialFields: { name: string, label: string }[] = [
+    {
+        name: 'separadosSexo',
+        label: 'Separados por sexo:'
+    },
+    {
+        name: 'lavatoriosComEspelho',
+        label: 'Dispor de lavatorios com espelho:'
+    },
+    {
+        name: 'sanitasAutomaticaAgua',
+        label: 'Dispor de sanitas, dotadas de descarga automatica de agua:'
+    },
+    {
+        name: 'comunicacaoVentilacao',
+        label: 'Comunicacao direta para o exterior ou serem adotadas de dispositivos ventilacao artificial com continua renovacao do ar adequados a sua dimensao:'
+    },
+    {
+        name: 'esgotoAguas',
+        label: 'Ligadas a uma rede interna de esgotos que conduzzam as aguas residuais a sistemas adequados ao seu escoamento, nomeadamente atraves da rede publica ou, se esta nao existir, de um sistema de recolha e tratamento adequado ao volume e natureza dessas aguas: '
+    },
+    {
+        name: 'paredesPavimentos',
+        label: 'As paredes, pavimentos e tetos das instalacoes sanitarias devem ser revestidas demateriais resistentes, impermeaveis, nao inflamaveis e de facil limpeza:'
+    },
+    {
+        name: 'pisosParedes',
+        label: 'Pisos e paredes - os edifícios devem ser providos de dispositivos de proteção contra insetos e roedores e concebidos de modo a permitir uma aplicação fácil das normas de higienização, e para esse efeito:'
+    },
+    {
+        name: 'paredesInteriores',
+        label: 'As paredes interiores e o piso devem possuir um revestimento lavável:'
+    },
+    {
+        name: 'paredes3metros',
+        label: 'As paredes vem possuir até 3 metros de altura e um revestimento resistente ao choque, impermeáveis, liso e imputrescível:'
+    },
+    {
+        name: 'ventilacoesNecessarias',
+        label: 'Em todos os locais deve ser assegurada a ventilação necessária:'
+    },
+    {
+        name: 'iluminacao',
+        label: 'A iluminação, natural ou artificial, deve ser adequada às características de cada local:'
+    },
+    {
+        name: 'aguaPotavel',
+        label: 'O estabelecimento deve ser provido de uma rede de água potável sob pressão, fria e/ou quente, em quantidade suficiente para cobrir as suas necessidades:'
+    },
+    {
+        name: 'distribuicaoAgua',
+        label: 'A rede de distribuição de águas deve ter o número necessário de dispositivos de saída de água para assegurar a limpeza e lavagem em todas as suas atividades, incluindo a higiene do pessoal:'
+    },
+    {
+        name: 'redeDistribuicao',
+        label: 'Pode existir uma rede de distribuição, devidamente sinalizada, de água não potável para geradores de vapor, instalações comerciais frigoríficas, bocas de incêndio, jardinagem e outros serviços auxiliares, desde que não haja comunicação entre esta e a de água potável:'
+    },
+    {
+        name: 'redeEsgotos',
+        label: 'A rede de esgotos, fossas ou tanques sépticos tem de permitir a fácil observação, limpeza e desinfeção e possuir válvulas sifonadas grelhas de proteção e caixas de recolha de gorduras:'
+    },
+    {
+        name: 'maximoHigieneSeguranca',
+        label: 'Garantir o maximo de higiene e seguranva dos trabalhadores:'
+    },
+    {
+        name: 'equipamentoPrimeirosSocorros',
+        label: 'Equipados com equipamento de primeiros socorros:'
+    },
+    {
+        name: 'recipientesLixo',
+        label: 'Dispor de recipientes para o lixo, com tampa, colocados em locais de fácil acesso e devidamente sinalizados:'
+    },
+    {
+        name: 'limpezaDiaria',
+        label: 'A limpeza e desinfeção diária dos contentores é obrigatória e o lixo e demais resíduos devem ser removidos diariamente para local adequado de forma a serem transportados pelos serviços públicos de recolha de lixo:'
+    },
+];

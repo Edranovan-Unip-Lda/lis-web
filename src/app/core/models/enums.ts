@@ -123,3 +123,8 @@ export enum AreaRepresentante {
     mop = 'MOP',
     anla = 'ANLA'
 }
+
+export enum TipoNacionalidade {
+    timorense = 'TIMORENSE',
+    estrangeiro = 'ESTRANGEIRO'
+}
