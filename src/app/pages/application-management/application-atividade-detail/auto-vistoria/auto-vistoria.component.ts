@@ -1,5 +1,5 @@
 import { Aldeia } from '@/core/models/data-master.model';
-import { Aplicante, Documento, Empresa, PedidoVistoria } from '@/core/models/entities.model';
+import { Aplicante, AutoVistoria, Documento, Empresa, PedidoVistoria } from '@/core/models/entities.model';
 import { AplicanteStatus, Categoria } from '@/core/models/enums';
 import { AuthenticationService, DataMasterService } from '@/core/services';
 import { DocumentosService } from '@/core/services/documentos.service';
@@ -33,6 +33,7 @@ import { environment } from 'src/environments/environment';
 })
 export class AutoVistoriaComponent implements OnInit {
   autoVistoriaForm!: FormGroup;
+  autoVistoria!: AutoVistoria | undefined;
   aplicante!: Aplicante;
   pedidoVistoria!: PedidoVistoria;
   stateOptions = stateOptions;
@@ -138,6 +139,8 @@ export class AutoVistoriaComponent implements OnInit {
   }
 
   save(form: FormGroup) {
+    console.log(form.value);
+
     if (form.valid) {
       this.loading = true;
       const formData = this.mapFormToData(form);
@@ -155,8 +158,28 @@ export class AutoVistoriaComponent implements OnInit {
         }
       });
     } else {
-      form.markAllAsTouched();
+      // form.markAllAsTouched();
+      const invalidControls = this.findInvalidControls(this.autoVistoriaForm);
+      console.log('Invalid controls:', invalidControls);
+      return;
     }
+  }
+
+  private findInvalidControls(formGroup: FormGroup, parentKey: string = ''): string[] {
+    const invalid: string[] = [];
+
+    Object.keys(formGroup.controls).forEach(key => {
+      const control = formGroup.get(key);
+      const controlPath = parentKey ? `${parentKey}.${key}` : key;
+
+      if (control instanceof FormGroup) {
+        invalid.push(...this.findInvalidControls(control, controlPath));
+      } else if (control?.invalid) {
+        invalid.push(controlPath);
+      }
+    });
+
+    return invalid;
   }
 
   aldeiaFilter(event: SelectFilterEvent, parentControlName?: string, childControlName?: string) {
@@ -491,7 +514,7 @@ export class AutoVistoriaComponent implements OnInit {
       tipoEletricidade: [null],
       tipoEletricidadeFile: [null],
 
-      descreverIrregularidades: [null, [Validators.required, Validators.minLength(3)]],
+      descreverIrregularidades: [null],
       aptoAberto: [null, [Validators.required]],
       comDeficiencias: [null, [Validators.required]],
       recomendacoes: [null],
@@ -504,14 +527,14 @@ export class AutoVistoriaComponent implements OnInit {
       case Categoria.comercial:
         autoVistoriaComercialFields.forEach(field => {
           // Add Yes/No selectbutton control
-          this.autoVistoriaForm.addControl(field.name, new FormControl(null, Validators.required));
+          this.autoVistoriaForm.addControl(field.name, new FormControl(false));
 
           // Add matching file upload control
           this.autoVistoriaForm.addControl(`${field.name}File`, new FormControl(null));
 
           const descricao = `${field.name}Descricao`;
           // Add matching description control
-          this.autoVistoriaForm.addControl(descricao, new FormControl(null));
+          this.autoVistoriaForm.addControl(descricao, new FormControl('null'));
 
         });
         this.autoVistoriaForm.addValidators(autoVistoriaWithFilesValidator(autoVistoriaComercialFields));
@@ -520,7 +543,7 @@ export class AutoVistoriaComponent implements OnInit {
       case Categoria.industrial:
         autoVistoriaIndustrialFields.forEach(field => {
           // Add Yes/No selectbutton control
-          this.autoVistoriaForm.addControl(field.name, new FormControl(null, Validators.required));
+          this.autoVistoriaForm.addControl(field.name, new FormControl(null));
 
           // Add matching file upload control
           this.autoVistoriaForm.addControl(`${field.name}File`, new FormControl(null));
@@ -583,7 +606,7 @@ export class AutoVistoriaComponent implements OnInit {
       cargo: [null, [Validators.required, Validators.minLength(3)]],
       tipoDocumento: [null, Validators.required],
       numeroDocumento: [null, Validators.required],
-      telemovel: [null, Validators.required],
+      telemovel: [null],
     });
   }
 
@@ -623,6 +646,21 @@ export class AutoVistoriaComponent implements OnInit {
         },
         classeAtividadeCodigo: pedidoVistoria.classeAtividade.descricao,
       }
+    });
+
+    this.autoVistoria = this.getAutoVistoriaData(aplicanteData);
+    if (this.autoVistoria) {
+      this.mapAutoVistoriaEdit(this.autoVistoria);
+    }
+
+  }
+
+  private mapAutoVistoriaEdit(autoVistoria: AutoVistoria): void {
+    console.log(autoVistoria);
+
+    this.autoVistoriaForm.patchValue({
+      ...autoVistoria,
+      dataHora: new Date(autoVistoria.updatedAt)
     });
   }
 
@@ -665,5 +703,15 @@ export class AutoVistoriaComponent implements OnInit {
 
   minimalParticipante(): boolean {
     return (this.membrosEquipaVistoria.length < this.minLengthParticipantes) || (this.membrosEquipaVistoria.length > this.maxLengthParticipantes)
+  }
+
+  private getAutoVistoriaData(aplicante: Aplicante): AutoVistoria | undefined {
+    if (aplicante.pedidoLicencaAtividade.listaPedidoVistoria && aplicante.pedidoLicencaAtividade.listaPedidoVistoria.length > 0) {
+      const pedidoVistoria = aplicante.pedidoLicencaAtividade.listaPedidoVistoria.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
+      if (pedidoVistoria && pedidoVistoria.fatura && pedidoVistoria.fatura.recibo) {
+        return pedidoVistoria.autoVistoria;
+      }
+    }
+    return undefined;
   }
 }
