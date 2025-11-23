@@ -25,6 +25,8 @@ export enum AplicanteStatus {
     atribuido = 'ATRIBUIDO',
     revisao = 'REVISAO',
     revisto = 'REVISTO',
+    suspende = 'SUSPENDE',
+    expirado = 'EXPIRADO'
 }
 
 export enum Categoria {

@@ -595,7 +595,7 @@
              </div>
              }
              <div class="flex justify-start pt-2">
-                 <p-fileupload [chooseLabel]="'Carregar'" name="provasMOPFile" method="post"
+                 <p-fileupload [chooseLabel]="'Carregar'" name="files" method="post"
                      [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUploadDocs($event, 'provasMOPFile')"
                      (onProgress)="uploadOnProgress($event, 'provasMOPFile')" [maxFileSize]="maxFileSize"
                      accept="application/pdf" mode="basic" [url]="uploadURLDocs()"
@@ -628,7 +628,7 @@
              </div>
              }
              <div class="flex justify-start pt-2">
-                 <p-fileupload [chooseLabel]="'Carregar'" name="provasANLAFile" method="post"
+                 <p-fileupload [chooseLabel]="'Carregar'" name="files" method="post"
                      [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUploadDocs($event, 'provasANLAFile')"
                      (onProgress)="uploadOnProgress($event, 'provasANLAFile')" [maxFileSize]="maxFileSize"
                      accept="application/pdf" mode="basic" [url]="uploadURLDocs()"

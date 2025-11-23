@@ -446,13 +446,14 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    @if (autoVistoria) {
+                    @if (autoVistoria && autoVistoria.prazo === 0) {
                     <p-tag [value]="'SUBMETIDO'" [severity]="'SUBMETIDO'| statusSeverity" />
                     <p-button routerLink="/gestor/application/{{aplicanteData.id}}/auto-vistoria" icon="pi pi-eye"
                         label="Pré-visualização" [raised]="true" severity="info" />
                     }
                     @else {
-                    @if (aplicanteData.estado === 'ATRIBUIDO' && user.role.name === 'ROLE_STAFF') {
+                    @if ((aplicanteData.estado === 'ATRIBUIDO' || aplicanteData.estado === 'SUSPENDE') && user.role.name
+                    === 'ROLE_STAFF') {
                     <p-button [routerLink]="['auto-vistoria']" icon="pi pi-pencil" label="Preencher" [raised]="true"
                         severity="warn" />
                     }@else {

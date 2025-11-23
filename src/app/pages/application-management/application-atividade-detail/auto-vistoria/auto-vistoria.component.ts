@@ -527,14 +527,14 @@ export class AutoVistoriaComponent implements OnInit {
       case Categoria.comercial:
         autoVistoriaComercialFields.forEach(field => {
           // Add Yes/No selectbutton control
-          this.autoVistoriaForm.addControl(field.name, new FormControl(false));
+          this.autoVistoriaForm.addControl(field.name, new FormControl(null));
 
           // Add matching file upload control
           this.autoVistoriaForm.addControl(`${field.name}File`, new FormControl(null));
 
           const descricao = `${field.name}Descricao`;
           // Add matching description control
-          this.autoVistoriaForm.addControl(descricao, new FormControl('null'));
+          this.autoVistoriaForm.addControl(descricao, new FormControl(null));
 
         });
         this.autoVistoriaForm.addValidators(autoVistoriaWithFilesValidator(autoVistoriaComercialFields));
