@@ -8,7 +8,7 @@ import { autoVistoriaComercialFields, autoVistoriaIndustrialFields, mapToAtivida
 import { autoVistoriaWithFilesValidator } from '@/core/validators/must-match';
 import { Component, OnInit, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
@@ -74,6 +74,7 @@ export class AutoVistoriaComponent implements OnInit {
     private messageService: MessageService,
     private pedidoService: PedidoService,
     private documentoService: DocumentosService,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -139,8 +140,6 @@ export class AutoVistoriaComponent implements OnInit {
   }
 
   save(form: FormGroup) {
-    console.log(form.value);
-
     if (form.valid) {
       this.loading = true;
       const formData = this.mapFormToData(form);
@@ -151,6 +150,12 @@ export class AutoVistoriaComponent implements OnInit {
           this.autoVistoriaForm.disable();
           this.uploadedFiles = [];
           this.loading = false;
+          this.router.navigate([`/gestor/application/task/${this.aplicante.tipo.toLowerCase()}`, this.aplicante.id], {
+            queryParams: {
+              categoria: this.aplicante.categoria,
+              tipo: this.aplicante.tipo
+            }
+          });
         },
         error: () => {
           this.loading = false;

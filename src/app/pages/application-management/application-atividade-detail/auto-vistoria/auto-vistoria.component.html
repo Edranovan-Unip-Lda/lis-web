@@ -381,7 +381,8 @@
                          [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, 'legislacaoUrbanistica')"
                          [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadUrl()"
                          (onProgress)="uploadOnProgress($event, 'legislacaoUrbanistica')"
-                         [disabled]="getFileByField('legislacaoUrbanistica')" [auto]="true">
+                         [disabled]="this.autoVistoriaForm.disable" [disabled]="getFileByField('legislacaoUrbanistica')"
+                         [auto]="true">
                      </p-fileupload>
                  </div>
                  @if (getFileByField('legislacaoUrbanistica')) {
@@ -443,7 +444,8 @@
                          [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, 'acessoEstrada')"
                          [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadUrl()"
                          (onProgress)="uploadOnProgress($event, 'acessoEstrada')"
-                         [disabled]="getFileByField('acessoEstrada')" [auto]="true">
+                         [disabled]="this.autoVistoriaForm.disable" [disabled]="getFileByField('acessoEstrada')"
+                         [auto]="true">
                      </p-fileupload>
                  </div>
                  @if (getFileByField('acessoEstrada')) {
@@ -505,7 +507,8 @@
                          [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, 'escoamentoAguas')"
                          [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadUrl()"
                          (onProgress)="uploadOnProgress($event, 'escoamentoAguas')"
-                         [disabled]="getFileByField('escoamentoAguas')" [auto]="true">
+                         [disabled]="this.autoVistoriaForm.disable" [disabled]="getFileByField('escoamentoAguas')"
+                         [auto]="true">
                      </p-fileupload>
                  </div>
                  @if (getFileByField('escoamentoAguas')) {
@@ -552,7 +555,8 @@
                          [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, 'alimentacaoEnergia')"
                          [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadUrl()"
                          (onProgress)="uploadOnProgress($event, 'alimentacaoEnergia')"
-                         [disabled]="getFileByField('alimentacaoEnergia')" [auto]="true">
+                         [disabled]="this.autoVistoriaForm.disable" [disabled]="getFileByField('alimentacaoEnergia')"
+                         [auto]="true">
                      </p-fileupload>
                  </div>
                  @if (getFileByField('alimentacaoEnergia')) {
@@ -622,9 +626,9 @@
                  <div class="flex justify-start pt-2">
                      <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
                          [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, item.name)"
-                         [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadUrl()"
-                         (onProgress)="uploadOnProgress($event, item.name)" [disabled]="getFileByField(item.name)"
-                         [auto]="true">
+                         [disabled]="this.autoVistoriaForm.disable" [maxFileSize]="maxFileSize" accept="application/pdf"
+                         mode="basic" [url]="uploadUrl()" (onProgress)="uploadOnProgress($event, item.name)"
+                         [disabled]="getFileByField(item.name)" [auto]="true">
                      </p-fileupload>
                  </div>
                  @if (getFileByField(item.name)) {
@@ -677,7 +681,7 @@
                          [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, item.name)"
                          [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadUrl()"
                          (onProgress)="uploadOnProgress($event, item.name)" [disabled]="getFileByField(item.name)"
-                         [auto]="true">
+                         [disabled]="this.autoVistoriaForm.disable" [auto]="true">
                      </p-fileupload>
                  </div>
                  @if (getFileByField(item.name)) {
@@ -713,7 +717,7 @@
          <div class="grid grid-cols-12 gap-4 mb-12">
              <div class="mb-12 col-span-12">
                  <label for="descreverIrregularidades" class="font-medium  mb-2 block">
-                    Verificou-se que (descrever as irregularidades e/ou omissões):
+                     Verificou-se que (descrever as irregularidades e/ou omissões):
                  </label>
                  <textarea id="descreverIrregularidades" rows="5" cols="30" variant="outlined" pTextarea
                      formControlName="descreverIrregularidades" fluid></textarea>
