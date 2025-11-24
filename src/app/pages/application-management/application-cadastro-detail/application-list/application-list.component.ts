@@ -45,6 +45,7 @@ export class ApplicationListComponent {
     this.currentRole = this.authService.currentRole.name;
 
     this.applications = this.route.snapshot.data['applicationPage'].content;
+    this.applications = this.applications.filter(item => item.categoria === this.authService.currentUserValue.direcao.nome);
     this.totalData = this.route.snapshot.data['applicationPage'].totalElements;
   }
 
