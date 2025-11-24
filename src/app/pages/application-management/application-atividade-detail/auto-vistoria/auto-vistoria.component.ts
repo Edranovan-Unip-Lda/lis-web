@@ -150,7 +150,7 @@ export class AutoVistoriaComponent implements OnInit {
           this.autoVistoriaForm.disable();
           this.uploadedFiles = [];
           this.loading = false;
-          this.router.navigate([`/gestor/application/task/${this.aplicante.tipo.toLowerCase()}`, this.aplicante.id], {
+          this.router.navigate(['/gestor/application/task/', this.aplicante.id], {
             queryParams: {
               categoria: this.aplicante.categoria,
               tipo: this.aplicante.tipo
