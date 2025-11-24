@@ -626,9 +626,9 @@
                  <div class="flex justify-start pt-2">
                      <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
                          [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, item.name)"
-                         [disabled]="this.autoVistoriaForm.disable" [maxFileSize]="maxFileSize" accept="application/pdf"
-                         mode="basic" [url]="uploadUrl()" (onProgress)="uploadOnProgress($event, item.name)"
-                         [disabled]="getFileByField(item.name)" [auto]="true">
+                         [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadUrl()"
+                         (onProgress)="uploadOnProgress($event, item.name)" [disabled]="getFileByField(item.name)"
+                         [auto]="true">
                      </p-fileupload>
                  </div>
                  @if (getFileByField(item.name)) {
@@ -681,7 +681,7 @@
                          [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, item.name)"
                          [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadUrl()"
                          (onProgress)="uploadOnProgress($event, item.name)" [disabled]="getFileByField(item.name)"
-                         [disabled]="this.autoVistoriaForm.disable" [auto]="true">
+                         [auto]="true">
                      </p-fileupload>
                  </div>
                  @if (getFileByField(item.name)) {

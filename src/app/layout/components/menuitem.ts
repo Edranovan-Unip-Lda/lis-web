@@ -303,18 +303,6 @@ export const model_staff: MenuItem[] = [
         ]
     },
     {
-        label: 'Empresa',
-        icon: 'bi bi-fw bi-building-fill',
-        items: [
-            {
-                label: 'Lista',
-                icon: 'pi pi-fw pi-list',
-                routerLink: ['empresa/list']
-
-            },
-        ]
-    },
-    {
         label: 'Aplicantes',
         icon: 'pi pi-fw pi-briefcase',
         items: [
@@ -365,22 +353,6 @@ export const model_staff: MenuItem[] = [
                         routerLink: ['gestor/licencas/industria']
                     }
                 ]
-            }
-        ]
-    },
-    {
-        label: 'Utilizador',
-        icon: 'pi pi-fw pi-user',
-        items: [
-            {
-                label: 'Lista',
-                icon: 'pi pi-fw pi-list',
-                routerLink: ['utilizador/list']
-            },
-            {
-                label: 'Criar',
-                icon: 'pi pi-fw pi-plus',
-                routerLink: ['utilizador/create']
             }
         ]
     },
