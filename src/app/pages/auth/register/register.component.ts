@@ -181,9 +181,13 @@ export class Register {
                     }
                 }
             });
-            const [firstName, ...rest] = form.value.gerente.nome.split(' ');
-            formData.utilizador.firstName = firstName;
-            formData.utilizador.lastName = rest.join(' ');
+            // const [firstName, ...rest] = form.value.gerente.nome.split(' ');
+            // formData.utilizador.firstName = firstName;
+            // formData.utilizador.lastName = rest.join(' ');
+            const parts = form.value.gerente.nome.trim().split(/\s+/);
+            formData.utilizador.firstName = parts[0];
+            formData.utilizador.lastName = parts.slice(1).join(' ') || parts[0];
+            
             formData.utilizador.username = formData.gerente.email.split('@')[0] + new Date().getUTCMilliseconds().toString();
             formData.utilizador.role = this.selectedRole;
             formData.utilizador.email = formData.gerente.email;
