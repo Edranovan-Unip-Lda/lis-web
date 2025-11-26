@@ -46,10 +46,10 @@ export class ApplicationListComponent {
 
     this.applications = this.route.snapshot.data['applicationPage'].content;
 
-    if (this.authService.currentRole.name !== Role.client) {
+    if (this.authService.currentRole.name === Role.manager || this.authService.currentRole.name === Role.chief || this.authService.currentRole.name === Role.staff) {
       this.applications = this.applications.filter(item => item.categoria === this.authService.currentUserValue.direcao.nome);
     }
-    
+
     this.totalData = this.route.snapshot.data['applicationPage'].totalElements;
   }
 
@@ -62,7 +62,7 @@ export class ApplicationListComponent {
 
     if (user.role.name === Role.client) {
       this.router.navigate([`/application/${aplicante.tipo.toLowerCase()}`, aplicante.id], {
-      // this.router.navigate([`/application`, aplicante.id], {
+        // this.router.navigate([`/application`, aplicante.id], {
         queryParams: {
           categoria: aplicante.categoria,
           tipo: aplicante.tipo

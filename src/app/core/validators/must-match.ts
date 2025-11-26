@@ -1,6 +1,4 @@
-import { ValidatorFn, AbstractControl, FormGroup, ValidationErrors } from '@angular/forms';
-import { Categoria } from '../models/enums';
-import { autoVistoriaCommonFields } from '../utils/global-function';
+import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export function mustMatch(passwordControlName: string, confirmPasswordControlName: string): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {

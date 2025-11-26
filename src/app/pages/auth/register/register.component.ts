@@ -69,6 +69,7 @@ export class Register {
     tipoRepresentanteOptions = tipoRepresentante;
     gerenteForeigner: boolean = false;
     representanteForeigner: boolean = false;
+    errorMessage: any;
 
     constructor(
         private _fb: FormBuilder,
@@ -201,9 +202,10 @@ export class Register {
                 error: (error) => {
                     this.loading = false;
                     this.isError = true;
-                    // this.empresaForm.reset();
+
                     // Handle error response
                     console.error('Error saving empresa:', error);
+                    this.errorMessage = error;
                 }
             });
 
