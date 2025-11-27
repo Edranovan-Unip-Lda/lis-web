@@ -40,7 +40,9 @@
             </div>
             <div class="col-span-6 text-xl my-2">
                 Sociedade Comercial: <span
-                    class="font-bold">{{certificadoData.pedidoLicencaAtividade.nomeEmpresa}}</span>
+                    class="font-bold">
+                    {{certificadoData.pedidoLicencaAtividade.nomeEmpresa}} {{certificadoData.pedidoLicencaAtividade.aplicante.empresa.sociedadeComercial.nome}}
+                </span>
             </div>
             <div class="col-span-6 text-xl my-2">
                 Nº Registo Comercial: <span
