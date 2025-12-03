@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, take } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { User } from '../models/entities.model';
+import { Empresa, User } from '../models/entities.model';
 import { AplicanteType, Categoria, Role } from '../models/enums';
 
 @Injectable({
@@ -137,6 +137,17 @@ export class UserService {
       .append('page', page)
       .append('size', size);
     return this.http.get<any>(`${this.apiUrl}/${username}/certificados`, { params }).pipe(take(1));
+  }
+
+  /**
+   * Retrieves an empresa object associated with the given utilizadorUsername from the current user's empresas.
+   *
+   * @param username The username of the current user.
+   * @param utilizadorUsername The username of the utilizador associated with the empresa.
+   * @returns An observable containing the empresa object associated with the given utilizadorUsername.
+   */
+  getEmpresaByUtilizadorUsername(username: string, utilizadorUsername: string): Observable<Empresa> {
+    return this.http.get<Empresa>(`${this.apiUrl}/${username}/empresas/${utilizadorUsername}`).pipe(take(1));
   }
 
 }

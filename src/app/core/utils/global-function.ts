@@ -98,6 +98,25 @@ export const nivelRiscoOptions: any[] = [
     { name: 'Alto', value: NivelRisco.alto }
 ];
 
+export const estadoCivilOptions: any[] = [
+    {
+        name: 'Solteiro(a)',
+        value: 'Solteiro(a)'
+    },
+    {
+        name: 'Casado(a)',
+        value: 'Casado(a)'
+    },
+    {
+        name: 'Divorciado(a)',
+        value: 'Divorciado(a)'
+    },
+    {
+        name: 'Viúvo(a)',
+        value: 'Viúvo(a)'
+    },
+];
+
 export const applicationTypesOptions: any[] = [
     {
         name: 'Inscrição no Cadastro',

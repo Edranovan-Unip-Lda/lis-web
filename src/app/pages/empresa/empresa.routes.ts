@@ -4,6 +4,7 @@ import { Routes } from '@angular/router';
 import { EmpresaDetailComponent } from './empresa-detail/empresa-detail.component';
 import { EmpresaFormComponent } from './empresa-form/empresa-form.component';
 import { EmpresaListComponent } from './empresa-list/empresa-list.component';
+import { Role } from '@/core/models/enums';
 
 export default [
     { path: '', redirectTo: 'list', pathMatch: 'full' },
@@ -29,6 +30,7 @@ export default [
         data: { breadcrumb: 'Edit' },
         component: EmpresaFormComponent,
         resolve: {
+            role: [Role.client],
             aldeiasResolver: getAllAldeiasResolver,
             listaSociedadeComercial: getSociedadeComercialResolver,
             roleListResolver: getRolesResolver,

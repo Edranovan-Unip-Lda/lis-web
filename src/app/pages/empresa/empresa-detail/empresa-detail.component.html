@@ -12,11 +12,13 @@
         </div>
     </div>
     <div class="flex items-center space-x-3">
+        @if (this.role === 'ROLE_CLIENT') {
         <button routerLink="/empresa/{{empresa.utilizador.username}}"
             class="flex items-center justify-center bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 hover:cursor-pointer">
             <i class="bi bi-pencil mr-2"></i>
             Edit
         </button>
+        }
         <!-- <button
             class="flex items-center justify-center bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 hover:cursor-pointer">
             <i class="bi bi-printer mr-2"></i>

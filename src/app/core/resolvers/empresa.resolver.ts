@@ -2,7 +2,7 @@ import { inject } from "@angular/core";
 import { EmpresaService } from "../services/empresa.service";
 import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 import { of } from "rxjs";
-import { AuthenticationService } from "../services";
+import { AuthenticationService, UserService } from "../services";
 import { AplicanteType, Categoria, Role } from "../models/enums";
 import { AplicanteService } from "../services/aplicante.service";
 
@@ -13,10 +13,27 @@ export const getPageEmpresaResolver: ResolveFn<any> = () => {
 }
 
 export const getByUsernameResolver: ResolveFn<any> = (route: ActivatedRouteSnapshot) => {
-    const username = route.paramMap.get('username') || inject(AuthenticationService).currentUserValue.username;
-    const service = inject(EmpresaService);
-    if (username) {
-        return service.getByUsername(username);
+    const user = inject(AuthenticationService).currentUserValue;
+    if (user) {
+        switch (user.role.name) {
+            case Role.client:
+                const empresaService = inject(EmpresaService);
+                return empresaService.getByUsername(user.username);
+
+            case Role.admin:
+            case Role.manager:
+            case Role.chief:
+            case Role.staff:
+                const utilizadorUsername = route.paramMap.get('username');
+                if (utilizadorUsername) {
+                    const userService = inject(UserService);
+                    return userService.getEmpresaByUtilizadorUsername(user.username, utilizadorUsername);
+                } else {
+                    return of(null);
+                }
+            default:
+                return of(null);
+        }
     } else {
         return of(null);
     }

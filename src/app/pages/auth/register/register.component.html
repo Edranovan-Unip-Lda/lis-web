@@ -33,6 +33,11 @@
                                          Nome da Empresa
                                      </label>
                                      <input formControlName="nome" id="nome" type="text" pInputText fluid />
+                                     @if (empresaForm.get('nome')?.touched && empresaForm.get('nome')?.invalid) {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="sociedadeComercial" class="font-medium  mb-2 block">
@@ -43,12 +48,24 @@
                                          (onChange)="sociedadeComercialOnChange($event)"
                                          placeholder="Selecione o tipo de sociedade" [showClear]="true">
                                      </p-select>
+                                     @if (empresaForm.get('sociedadeComercial')?.touched &&
+                                     empresaForm.get('sociedadeComercial')?.invalid) {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="nif" class="font-medium  mb-2 block">
                                          NIF da Empresa
                                      </label>
                                      <input formControlName="nif" id="nif" type="text" pInputText fluid />
+                                     @if (empresaForm.get('nif')?.touched &&
+                                     empresaForm.get('nif')?.invalid) {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="numeroRegistoComercial" class="font-medium  mb-2 block">
@@ -56,6 +73,12 @@
                                      </label>
                                      <input formControlName="numeroRegistoComercial" id="numeroRegistoComercial"
                                          type="text" pInputText fluid />
+                                     @if (empresaForm.get('numeroRegistoComercial')?.touched &&
+                                     empresaForm.get('numeroRegistoComercial')?.invalid) {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="capitalSocial" class="font-medium  mb-2 block">
@@ -66,6 +89,12 @@
                                          <p-inputnumber formControlName="capitalSocial" mode="decimal"
                                              [minFractionDigits]="2" [maxFractionDigits]="2" />
                                      </p-inputgroup>
+                                     @if (empresaForm.get('capitalSocial')?.touched &&
+                                     empresaForm.get('capitalSocial')?.invalid) {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="dataRegisto" class="font-medium  mb-2 block">
@@ -73,6 +102,12 @@
                                      </label>
                                      <p-date-picker formControlName="dataRegisto" id="dataRegisto" [showIcon]="true"
                                          [showButtonBar]="true" fluid dateFormat="dd/mm/yy" inputStyleClass="w-full" />
+                                     @if (empresaForm.get('dataRegisto')?.touched &&
+                                     empresaForm.get('dataRegisto')?.invalid) {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="totalTrabalhadores" class="font-medium mb-2 block">
@@ -80,6 +115,12 @@
                                      </label>
                                      <input formControlName="totalTrabalhadores" id="totalTrabalhadores" type="text"
                                          pInputText fluid />
+                                     @if (empresaForm.get('totalTrabalhadores')?.touched &&
+                                     empresaForm.get('totalTrabalhadores')?.invalid) {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="volumeNegocioAnual" class="font-medium mb-2 block">
@@ -90,6 +131,12 @@
                                          <p-inputnumber formControlName="volumeNegocioAnual" mode="decimal"
                                              [minFractionDigits]="2" [maxFractionDigits]="2" />
                                      </p-inputgroup>
+                                     @if (empresaForm.get('volumeNegocioAnual')?.touched &&
+                                     empresaForm.get('volumeNegocioAnual')?.invalid) {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="balancoTotalAnual" class="font-medium  mb-2 block">
@@ -100,6 +147,12 @@
                                          <p-inputnumber formControlName="balancoTotalAnual" mode="decimal"
                                              [minFractionDigits]="2" [maxFractionDigits]="2" />
                                      </p-inputgroup>
+                                     @if (empresaForm.get('balancoTotalAnual')?.touched &&
+                                     empresaForm.get('balancoTotalAnual')?.invalid) {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="col-span-12">
                                      <div formGroupName="sede" class="grid grid-cols-12">
@@ -109,6 +162,12 @@
                                              </label>
                                              <input formControlName="local" id="local" type="text" pInputText fluid
                                                  placeholder="ex. Av. Pres. Nicolau Lobato" />
+                                             @if (empresaForm.get('sede.local')?.touched &&
+                                             empresaForm.get('sede.local')?.invalid) {
+                                             <p class="text-red-500 text-sm mt-1">
+                                                 Este campo é obrigatório e deve ser válido.
+                                             </p>
+                                             }
                                          </div>
                                          <div class="mb-6 col-span-12">
                                              <div class="flex flex-col sm:flex-row sm:items-center gap-6">
@@ -122,6 +181,12 @@
                                                          (onFilter)="aldeiaFilter($event)" (onpanelHide)="onPanelHide()"
                                                          (onChange)="aldeiaOnChange($event)" (onClear)="onPanelHide()">
                                                      </p-select>
+                                                     @if (empresaForm.get('sede.aldeia')?.touched &&
+                                                     empresaForm.get('sede.aldeia')?.invalid) {
+                                                     <p class="text-red-500 text-sm mt-1">
+                                                         Este campo é obrigatório e deve ser válido.
+                                                     </p>
+                                                     }
                                                  </div>
                                                  <div class="flex-auto">
                                                      <label for="suco" class="font-medium  mb-2 block">
@@ -156,30 +221,60 @@
                                          Longitude
                                      </label>
                                      <input formControlName="longitude" id="longitude" type="number" pInputText fluid />
+                                     @if (empresaForm.get('longitude')?.touched &&
+                                     empresaForm.get('longitude')?.invalid) {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-5">
                                      <label for="latitude" class="font-medium mb-2 block">
                                          Latitude
                                      </label>
                                      <input formControlName="latitude" id="latitude" type="number" pInputText fluid />
+                                     @if (empresaForm.get('latitude')?.touched &&
+                                     empresaForm.get('latitude')?.invalid) {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="telemovel" class="font-medium mb-2 block">
                                          Nº Telemóvel
                                      </label>
                                      <input formControlName="telemovel" id="telemovel" type="tel" pInputText fluid />
+                                     @if (empresaForm.get('telemovel')?.touched &&
+                                     empresaForm.get('telemovel')?.invalid) {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="telefone" class="font-medium mb-2 block">
                                          Nº Telefone
                                      </label>
                                      <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
+                                     @if (empresaForm.get('telefone')?.touched &&
+                                     empresaForm.get('telefone')?.invalid) {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="email" class="font-medium  mb-2 block">
                                          Email
                                      </label>
                                      <input formControlName="email" id="email" type="email" pInputText fluid />
+                                     @if (empresaForm.get('email')?.touched &&
+                                     empresaForm.get('email')?.invalid) {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12">
                                      <label for="outrosDocumentos" class="font-medium  mb-2 block">
@@ -244,6 +339,12 @@
                                      <p-select fluid formControlName="tipoPropriedade" [options]="tipoProriedadeOpts"
                                          optionLabel="name" placeholder="Selecione o tipo" [showClear]="true">
                                      </p-select>
+                                     @if (empresaForm.get('tipoPropriedade')?.touched &&
+                                     empresaForm.get('tipoPropriedade')?.invalid) {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                              </div>
 
@@ -263,6 +364,11 @@
                                              Nome do titular da empresa
                                          </label>
                                          <input formControlName="nome" id="nome" type="text" pInputText fluid />
+                                         @if (item.get('nome')?.touched && item.get('nome')?.invalid) {
+                                         <p class="text-red-500 text-sm mt-1">
+                                             Este campo é obrigatório e deve ser válido.
+                                         </p>
+                                         }
                                      </div>
                                      <div class="mb-6 col-span-12 md:col-span-6">
                                          <label for="acoes" class="font-medium  mb-2 block">
@@ -273,12 +379,22 @@
                                              <p-inputnumber formControlName="acoes" mode="decimal" [max]="100"
                                                  [minFractionDigits]="2" [maxFractionDigits]="2" />
                                          </p-inputgroup>
+                                         @if (item.get('acoes')?.touched && item.get('acoes')?.invalid) {
+                                         <p class="text-red-500 text-sm mt-1">
+                                             Este campo é obrigatório e deve ser válido.
+                                         </p>
+                                         }
                                      </div>
                                      <div class="mb-6 col-span-12 md:col-span-6">
                                          <label for="nif" class="font-medium  mb-2 block">
                                              NIF
                                          </label>
                                          <input formControlName="nif" id="nif" type="text" pInputText fluid />
+                                         @if (item.get('nif')?.touched && item.get('nif')?.invalid) {
+                                         <p class="text-red-500 text-sm mt-1">
+                                             Este campo é obrigatório e deve ser válido.
+                                         </p>
+                                         }
                                      </div>
                                      <div class="mb-6 col-span-12 md:col-span-6">
                                          <label for="tipoDocumento" class="font-medium  mb-2 block">
@@ -288,6 +404,12 @@
                                              optionLabel="name" placeholder="Selecione o tipo documento"
                                              [showClear]="true">
                                          </p-select>
+                                         @if (item.get('tipoDocumento')?.touched && item.get('tipoDocumento')?.invalid)
+                                         {
+                                         <p class="text-red-500 text-sm mt-1">
+                                             Este campo é obrigatório e deve ser válido.
+                                         </p>
+                                         }
                                      </div>
                                      <div class="mb-6 col-span-12 md:col-span-6">
                                          <label for="numeroDocumento" class="font-medium  mb-2 block">
@@ -295,6 +417,13 @@
                                          </label>
                                          <input formControlName="numeroDocumento" id="numeroDocumento" type="text"
                                              pInputText fluid />
+                                         @if (item.get('numeroDocumento')?.touched &&
+                                         item.get('numeroDocumento')?.invalid)
+                                         {
+                                         <p class="text-red-500 text-sm mt-1">
+                                             Este campo é obrigatório e deve ser válido.
+                                         </p>
+                                         }
                                      </div>
                                      <div class="mb-6 col-span-12">
                                          <label for="local" class="font-medium  mb-2 block">
@@ -302,6 +431,13 @@
                                          </label>
                                          <input formControlName="local" id="local" type="text" pInputText fluid
                                              placeholder="ex. Av. Pres. Nicolau Lobato" />
+                                         @if (item.get('local')?.touched &&
+                                         item.get('local')?.invalid)
+                                         {
+                                         <p class="text-red-500 text-sm mt-1">
+                                             Este campo é obrigatório e deve ser válido.
+                                         </p>
+                                         }
                                      </div>
                                      <div class="mb-6 col-span-12">
                                          <div class="flex flex-col sm:flex-row sm:items-center gap-6">
@@ -317,6 +453,13 @@
                                                      (onChange)="aldeiaAcionistaOnChange($event, i)"
                                                      (onClear)="onPanelHideAcionista(i)">
                                                  </p-select>
+                                                 @if (item.get('aldeia')?.touched &&
+                                                 item.get('aldeia')?.invalid)
+                                                 {
+                                                 <p class="text-red-500 text-sm mt-1">
+                                                     Este campo é obrigatório e deve ser válido.
+                                                 </p>
+                                                 }
                                              </div>
                                              <div class="flex-auto">
                                                  <label for="suco" class="font-medium  mb-2 block">
@@ -345,12 +488,26 @@
                                              Nº Telefone
                                          </label>
                                          <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
+                                         @if (item.get('telefone')?.touched &&
+                                         item.get('telefone')?.invalid)
+                                         {
+                                         <p class="text-red-500 text-sm mt-1">
+                                             Este campo é obrigatório e deve ser válido.
+                                         </p>
+                                         }
                                      </div>
                                      <div class="mb-6 col-span-12 md:col-span-6">
                                          <label for="email" class="font-medium  mb-2 block">
                                              Email
                                          </label>
                                          <input formControlName="email" id="email" type="email" pInputText fluid />
+                                         @if (item.get('email')?.touched &&
+                                         item.get('email')?.invalid)
+                                         {
+                                         <p class="text-red-500 text-sm mt-1">
+                                             Este campo é obrigatório e deve ser válido.
+                                         </p>
+                                         }
                                      </div>
                                      <div class="mb-6 col-span-12 md:col-span-6">
                                          <label for="agregadoFamilia" class="font-medium  mb-2 block">
@@ -358,6 +515,13 @@
                                          </label>
                                          <input formControlName="agregadoFamilia" id="agregadoFamilia" pInputText
                                              fluid />
+                                         @if (item.get('agregadoFamilia')?.touched &&
+                                         item.get('agregadoFamilia')?.invalid)
+                                         {
+                                         <p class="text-red-500 text-sm mt-1">
+                                             Este campo é obrigatório e deve ser válido.
+                                         </p>
+                                         }
                                      </div>
                                      <div class="mb-6 col-span-12 md:col-span-6">
                                          <label for="relacaoFamilia" class="font-medium  mb-2 block">
@@ -367,6 +531,13 @@
                                              [options]="tipoRelacaoFamiliaOpts" optionLabel="name" optionValue="value"
                                              placeholder="Selecione o tipo" [showClear]="true">
                                          </p-select>
+                                         @if (item.get('relacaoFamilia')?.touched &&
+                                         item.get('relacaoFamilia')?.invalid)
+                                         {
+                                         <p class="text-red-500 text-sm mt-1">
+                                             Este campo é obrigatório e deve ser válido.
+                                         </p>
+                                         }
                                      </div>
                                  </div>
                                  @if (acionistasArray.length > 1) {
@@ -402,6 +573,13 @@
                                      </label>
                                      <input formControlName="nome" id="nome" type="text" pInputText fluid
                                          placeholder="Ex: Joao da Silva" />
+                                     @if (empresaForm.get('gerente.nome')?.touched &&
+                                     empresaForm.get('gerente.nome')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="tipoDocumento" class="font-medium  mb-2 block">
@@ -410,6 +588,13 @@
                                      <p-select fluid formControlName="tipoDocumento" [options]="tipoDocumentoOpts"
                                          optionLabel="name" placeholder="Selecione o tipo documento" [showClear]="true">
                                      </p-select>
+                                     @if (empresaForm.get('gerente.tipoDocumento')?.touched &&
+                                     empresaForm.get('gerente.tipoDocumento')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="numeroDocumento" class="font-medium  mb-2 block">
@@ -417,25 +602,55 @@
                                      </label>
                                      <input formControlName="numeroDocumento" id="numeroDocumento" type="text"
                                          pInputText fluid />
+                                     @if (empresaForm.get('gerente.numeroDocumento')?.touched &&
+                                     empresaForm.get('gerente.numeroDocumento')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="estadoCivil" class="font-medium  mb-2 block">
                                          Estado Civil
                                      </label>
-                                     <input formControlName="estadoCivil" id="estadoCivil" type="text" pInputText
-                                         fluid />
+                                     <p-select fluid formControlName="estadoCivil" [options]="tipoEstadoCivilOpts"
+                                         optionLabel="name" optionValue="value" placeholder="Selecione o tipo documento"
+                                         [showClear]="true">
+                                     </p-select>
+                                     @if (empresaForm.get('gerente.estadoCivil')?.touched &&
+                                     empresaForm.get('gerente.estadoCivil')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="email" class="font-medium  mb-2 block">
                                          Email
                                      </label>
                                      <input formControlName="email" id="email" type="email" pInputText fluid />
+                                     @if (empresaForm.get('gerente.email')?.touched &&
+                                     empresaForm.get('gerente.email')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="telefone" class="font-medium mb-2 block">
                                          Nº Telefone
                                      </label>
                                      <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
+                                     @if (empresaForm.get('gerente.telefone')?.touched &&
+                                     empresaForm.get('gerente.telefone')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="nacionalidade" class="font-medium  mb-2 block">
@@ -445,6 +660,13 @@
                                          (onChange)="nacionalidadeOnChange($event, 'gerente')" optionLabel="name"
                                          optionValue="value" placeholder="Selecione a nacionalidade" [showClear]="true">
                                      </p-select>
+                                     @if (empresaForm.get('gerente.nacionalidade')?.touched &&
+                                     empresaForm.get('gerente.nacionalidade')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  @if (gerenteForeigner) {
                                  <div class="mb-6 col-span-12 md:col-span-6">
@@ -453,6 +675,13 @@
                                      </label>
                                      <input formControlName="numeroVisto" id="numeroVisto" type="text" pInputText
                                          fluid />
+                                     @if (empresaForm.get('gerente.numeroVisto')?.touched &&
+                                     empresaForm.get('gerente.numeroVisto')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="validadeVisto" class="font-medium  mb-2 block">
@@ -460,6 +689,13 @@
                                      </label>
                                      <p-datepicker formControlName="validadeVisto" id="validadeVisto" appendTo="body"
                                          [showButtonBar]="true" fluid />
+                                     @if (empresaForm.get('gerente.validadeVisto')?.touched &&
+                                     empresaForm.get('gerente.validadeVisto')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  }
                                  <div class="mb-6 col-span-12 md:col-span-6">
@@ -468,6 +704,13 @@
                                      </label>
                                      <input formControlName="naturalidade" id="naturalidade" type="text" pInputText
                                          fluid />
+                                     @if (empresaForm.get('gerente.naturalidade')?.touched &&
+                                     empresaForm.get('gerente.naturalidade')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12">
                                      <div formGroupName="morada" class="flex flex-col gap-6 w-full sm:w-auto mb-6">
@@ -477,6 +720,13 @@
                                              </label>
                                              <input formControlName="local" id="local" type="text" pInputText fluid
                                                  placeholder="ex. Av. Pres. Nicolau Lobato" />
+                                             @if (empresaForm.get('gerente.morada.local')?.touched &&
+                                             empresaForm.get('gerente.morada.local')?.invalid)
+                                             {
+                                             <p class="text-red-500 text-sm mt-1">
+                                                 Este campo é obrigatório e deve ser válido.
+                                             </p>
+                                             }
                                          </div>
                                          <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                                              <div class="flex-auto">
@@ -491,6 +741,13 @@
                                                      (onpanelHide)="gerenteRepresentanteOnPanelHide('gerente')"
                                                      (onClear)="gerenteRepresentanteOnPanelHide('gerente')">
                                                  </p-select>
+                                                 @if (empresaForm.get('gerente.morada.aldeia')?.touched &&
+                                                 empresaForm.get('gerente.morada.aldeia')?.invalid)
+                                                 {
+                                                 <p class="text-red-500 text-sm mt-1">
+                                                     Este campo é obrigatório e deve ser válido.
+                                                 </p>
+                                                 }
                                              </div>
                                              <div class="flex-auto">
                                                  <label for="suco" class="font-medium  mb-2 block">
@@ -531,6 +788,13 @@
                                          [showClear]="true" optionValue="value"
                                          placeholder="Selecione o tipo de Representante">
                                      </p-select>
+                                     @if (empresaForm.get('representante.tipo')?.touched &&
+                                     empresaForm.get('representante.tipo')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
 
                                  @if (empresaForm.get('representante.tipo')?.value) {
@@ -542,6 +806,13 @@
                                      </label>
                                      <input formControlName="nomeEmpresa" id="nomeEmpresa" type="text" pInputText fluid
                                          placeholder="Ex. Empresa Unip. lda" />
+                                     @if (empresaForm.get('representante.nomeEmpresa')?.touched &&
+                                     empresaForm.get('representante.nomeEmpresa')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  }
 
@@ -555,6 +826,13 @@
                                      </label>
                                      <input formControlName="nome" id="nome" type="text" pInputText fluid
                                          placeholder="Ex: Joao da Silva" />
+                                     @if (empresaForm.get('representante.nome')?.touched &&
+                                     empresaForm.get('representante.nome')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
 
                                  <div class="mb-6 col-span-12 md:col-span-6">
@@ -564,6 +842,13 @@
                                      <p-select fluid formControlName="tipoDocumento" [options]="tipoDocumentoOpts"
                                          optionLabel="name" placeholder="Selecione o tipo documento" [showClear]="true">
                                      </p-select>
+                                     @if (empresaForm.get('representante.tipoDocumento')?.touched &&
+                                     empresaForm.get('representante.tipoDocumento')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="numeroDocumento" class="font-medium  mb-2 block">
@@ -571,6 +856,13 @@
                                      </label>
                                      <input formControlName="numeroDocumento" id="numeroDocumento" type="text"
                                          pInputText fluid />
+                                     @if (empresaForm.get('representante.numeroDocumento')?.touched &&
+                                     empresaForm.get('representante.numeroDocumento')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="dataNascimento" class="font-medium  mb-2 block">
@@ -578,13 +870,29 @@
                                      </label>
                                      <p-datepicker formControlName="dataNascimento" id="dataNascimento" appendTo="body"
                                          [showButtonBar]="true" fluid />
+                                     @if (empresaForm.get('representante.dataNascimento')?.touched &&
+                                     empresaForm.get('representante.dataNascimento')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="estadoCivil" class="font-medium  mb-2 block">
                                          Estado Civil
                                      </label>
-                                     <input formControlName="estadoCivil" id="estadoCivil" type="text" pInputText
-                                         fluid />
+                                     <p-select fluid formControlName="estadoCivil" [options]="tipoEstadoCivilOpts"
+                                         optionLabel="name" optionValue="value" placeholder="Selecione o tipo documento"
+                                         [showClear]="true">
+                                     </p-select>
+                                     @if (empresaForm.get('representante.estadoCivil')?.touched &&
+                                     empresaForm.get('representante.estadoCivil')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="nacionalidade" class="font-medium  mb-2 block">
@@ -594,22 +902,42 @@
                                          (onChange)="nacionalidadeOnChange($event, 'representante')" optionLabel="name"
                                          optionValue="value" placeholder="Selecione a nacionalidade" [showClear]="true">
                                      </p-select>
+                                     @if (empresaForm.get('representante.nacionalidade')?.touched &&
+                                     empresaForm.get('representante.nacionalidade')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  @if (representanteForeigner) {
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="numeroVisto" class="font-medium  mb-2 block">
                                          Nº de Visto
                                      </label>
-                                      <input formControlName="numeroVisto" id="numeroVisto" type="text" pInputText
+                                     <input formControlName="numeroVisto" id="numeroVisto" type="text" pInputText
                                          fluid />
-                                     
+                                     @if (empresaForm.get('representante.numeroVisto')?.touched &&
+                                     empresaForm.get('representante.numeroVisto')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="validadeVisto" class="font-medium  mb-2 block">
                                          Data Validade de Visto
                                      </label>
-                                    <p-datepicker formControlName="validadeVisto" id="validadeVisto" appendTo="body"
+                                     <p-datepicker formControlName="validadeVisto" id="validadeVisto" appendTo="body"
                                          [showButtonBar]="true" fluid />
+                                     @if (empresaForm.get('representante.validadeVisto')?.touched &&
+                                     empresaForm.get('representante.validadeVisto')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  }
                                  <div class="mb-6 col-span-12 md:col-span-6">
@@ -618,18 +946,39 @@
                                      </label>
                                      <input formControlName="naturalidade" id="naturalidade" type="text" pInputText
                                          fluid />
+                                     @if (empresaForm.get('representante.naturalidade')?.touched &&
+                                     empresaForm.get('representante.naturalidade')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="pai" class="font-medium  mb-2 block">
                                          Pai
                                      </label>
                                      <input formControlName="pai" id="pai" pInputText fluid />
+                                     @if (empresaForm.get('representante.pai')?.touched &&
+                                     empresaForm.get('representante.naturalidade')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="mae" class="font-medium  mb-2 block">
                                          Mãe
                                      </label>
                                      <input formControlName="mae" id="mae" pInputText fluid />
+                                     @if (empresaForm.get('representante.mae')?.touched &&
+                                     empresaForm.get('representante.mae')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12">
                                      <div formGroupName="morada" class="flex flex-col gap-6 w-full sm:w-auto mb-6">
@@ -639,6 +988,13 @@
                                              </label>
                                              <input formControlName="local" id="local" type="text" pInputText fluid
                                                  placeholder="ex. Av. Pres. Nicolau Lobato" />
+                                             @if (empresaForm.get('representante.morada.local')?.touched &&
+                                             empresaForm.get('representante.morada.local')?.invalid)
+                                             {
+                                             <p class="text-red-500 text-sm mt-1">
+                                                 Este campo é obrigatório e deve ser válido.
+                                             </p>
+                                             }
                                          </div>
                                          <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                                              <div class="flex-auto">
@@ -653,6 +1009,13 @@
                                                      (onpanelHide)="gerenteRepresentanteOnPanelHide('representante')"
                                                      (onClear)="gerenteRepresentanteOnPanelHide('representante')">
                                                  </p-select>
+                                                 @if (empresaForm.get('representante.morada.aldeia')?.touched &&
+                                                 empresaForm.get('representante.morada.aldeia')?.invalid)
+                                                 {
+                                                 <p class="text-red-500 text-sm mt-1">
+                                                     Este campo é obrigatório e deve ser válido.
+                                                 </p>
+                                                 }
                                              </div>
                                              <div class="flex-auto">
                                                  <label for="suco" class="font-medium  mb-2 block">
@@ -684,12 +1047,26 @@
                                          Email
                                      </label>
                                      <input formControlName="email" id="email" type="email" pInputText fluid />
+                                     @if (empresaForm.get('representante.email')?.touched &&
+                                     empresaForm.get('representante.email')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="telefone" class="font-medium mb-2 block">
                                          Nº Telefone
                                      </label>
                                      <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
+                                     @if (empresaForm.get('representante.telefone')?.touched &&
+                                     empresaForm.get('representante.telefone')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                                  }
                              </div>
@@ -719,6 +1096,13 @@
                                      </label>
                                      <p-password formControlName="password" fluid [feedback]="true"
                                          [toggleMask]="true" />
+                                     @if (empresaForm.get('utilizador.password')?.touched &&
+                                     empresaForm.get('utilizador.password')?.invalid)
+                                     {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     }
                                  </div>
                              </div>
                              <div class="mt-6 mb-6 text-left flex justify-between">

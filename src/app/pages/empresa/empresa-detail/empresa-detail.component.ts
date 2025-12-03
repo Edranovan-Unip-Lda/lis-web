@@ -1,4 +1,6 @@
+import { Role } from '@/core/models/data-master.model';
 import { Documento, Empresa } from '@/core/models/entities.model';
+import { AuthenticationService } from '@/core/services';
 import { DocumentosService } from '@/core/services/documentos.service';
 import { CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
@@ -16,15 +18,18 @@ import { Button } from 'primeng/button';
 export class EmpresaDetailComponent implements OnInit {
   empresa!: Empresa;
   loadingDownloadButtons = new Set<string>();
+  role!: string;
 
   constructor(
     private documentoService: DocumentosService,
     private messageService: MessageService,
     private router: ActivatedRoute,
+    private authService: AuthenticationService
   ) { }
 
   ngOnInit(): void {
     this.empresa = this.router.snapshot.data['empresaResolver'];
+    this.role = this.authService.currentRole.name;
   }
 
   downloadDoc(file: Documento): void {

@@ -2,7 +2,7 @@ import { Aldeia, Role } from '@/core/models/data-master.model';
 import { TipoNacionalidade, TipoPropriedade } from '@/core/models/enums';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { EmpresaService } from '@/core/services/empresa.service';
-import { maxFileSizeUpload, tipoDocumentoOptions, tipoNacionalidadeOptions, tipoPropriedadeOptions, tipoRelacaoFamiliaOptions, tipoRepresentante } from '@/core/utils/global-function';
+import { estadoCivilOptions, maxFileSizeUpload, tipoDocumentoOptions, tipoNacionalidadeOptions, tipoPropriedadeOptions, tipoRelacaoFamiliaOptions, tipoRepresentante } from '@/core/utils/global-function';
 import { LayoutService } from '@/layout/service/layout.service';
 import { DatePipe, NgClass } from '@angular/common';
 import { Component, inject } from '@angular/core';
@@ -61,6 +61,7 @@ export class Register {
     tipoDocumentoOpts = tipoDocumentoOptions;
     tipoRelacaoFamiliaOpts = tipoRelacaoFamiliaOptions;
     tipoNacionalidadeOpts = tipoNacionalidadeOptions;
+    tipoEstadoCivilOpts = estadoCivilOptions;
     showAddBtnAcionistas = false;
     selectedRole!: Role;
     listaAldeiaAcionista: any[][] = [];
@@ -557,19 +558,19 @@ export class Register {
             capitalSocial: [null, [Validators.required]],
             dataRegisto: [null, [Validators.required]],
             telemovel: [null, [Validators.required]],
-            telefone: [null],
+            telefone: [null, Validators.required],
             tipoPropriedade: [null, [Validators.required]],
             acionistas: this._fb.array([]),
-            totalTrabalhadores: [null],
-            volumeNegocioAnual: [null],
+            totalTrabalhadores: [null, [Validators.required, Validators.min(1)]],
+            volumeNegocioAnual: [null, Validators.required],
             balancoTotalAnual: [null, [Validators.required]],
             latitude: [null, [Validators.required, Validators.min(-90), Validators.max(90)]],
             longitude: [null, [Validators.required, Validators.min(-180), Validators.max(180)]],
             email: [null, [Validators.required, Validators.email]],
             gerente: this._fb.group({
-                nome: [null],
-                telefone: [null],
-                email: [null, [Validators.email]],
+                nome: [null, Validators.required],
+                telefone: [null, Validators.required],
+                email: [null, [Validators.required, Validators.email]],
                 tipoDocumento: [null, [Validators.required]],
                 numeroDocumento: [, [Validators.required]],
                 nacionalidade: [null, [Validators.required]],
@@ -598,7 +599,7 @@ export class Register {
                 validadeVisto: [null],
                 naturalidade: [null, [Validators.required]],
                 telefone: [null, [Validators.required]],
-                email: [null, [Validators.email]],
+                email: [null, [Validators.required, Validators.email]],
                 tipoDocumento: [null, [Validators.required]],
                 numeroDocumento: [, [Validators.required]],
                 morada: this._fb.group({
