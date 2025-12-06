@@ -1,0 +1,140 @@
+import { Empresa } from '@/core/models/entities.model';
+import { ExportService } from '@/core/services/export.service';
+import { ReportService } from '@/core/services/report.service';
+import { tipoEmpresaOptions, tipoPropriedadeOptions } from '@/core/utils/global-function';
+import { DatePipe } from '@angular/common';
+import { Component, signal } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { MessageService } from 'primeng/api';
+import { Button } from 'primeng/button';
+import { Message } from 'primeng/message';
+import { Paginator } from 'primeng/paginator';
+import { Select } from 'primeng/select';
+import { TableModule } from 'primeng/table';
+
+@Component({
+  selector: 'app-empresa',
+  imports: [ReactiveFormsModule, Select, Button, DatePipe, TableModule, Message, Paginator],
+  templateUrl: './empresa.component.html',
+  styleUrl: './empresa.component.scss',
+  providers: [MessageService]
+})
+export class EmpresaComponent {
+  reportForm!: FormGroup;
+  listaSociedadeComercial = [];
+  listaTipoPropriedade = tipoPropriedadeOptions;
+  listaTipoEmpresa = tipoEmpresaOptions;
+  listaMunicipios = [];
+  listaPostosAdministrativos = [];
+  listaSucos = [];
+  data: any[] = [];
+  page = 0;
+  size = 50;
+  totalData = 0;
+  dataIsFetching = false;
+  messages = signal<any[]>([]);
+
+
+  constructor(
+    private _fb: FormBuilder,
+    private route: ActivatedRoute,
+    private reportService: ReportService,
+    private exportService: ExportService,
+  ) { }
+
+  ngOnInit() {
+    this.initForm();
+    this.listaSociedadeComercial = this.route.snapshot.data['listaSociedadeComercial']._embedded.sociedadeComercial.map((s: any) => ({ name: s.nome, value: s.id }));
+    this.listaMunicipios = this.route.snapshot.data['listaMunicipios']._embedded.municipios.map((m: any) => ({ name: m.nome, value: m.id }));
+    this.listaPostosAdministrativos = this.route.snapshot.data['listaPostosAdministrativos']._embedded.postos.map((p: any) => ({ name: p.nome, value: p.id }));
+    this.listaSucos = this.route.snapshot.data['listaSucos']._embedded.sucos.map((s: any) => ({ name: s.nome, value: s.id }));
+  }
+
+  onSubmit() {
+    this.dataIsFetching = true;
+    this.reportService.getEmpresaReport(this.reportForm.value, this.page, this.size).subscribe({
+      next: (response) => {
+        this.data = response.content;
+        this.totalData = response.totalElements;
+        this.dataIsFetching = false;
+        this.addEmptyMessage();
+      },
+      error: (error) => {
+        this.dataIsFetching = false;
+        console.error('Error fetching report:', error);
+      }
+    });
+  }
+
+  isFormEmpty(form: FormGroup): boolean {
+    return Object.values(form.value)
+      .every(v => !v || (typeof v === 'string' && v.trim() === ''));
+  }
+
+  clearFilter(): void {
+    this.reportForm.reset();
+    this.data = [];
+    this.messages.set([]);
+  }
+
+  onPageChange(event: any): void {
+    this.dataIsFetching = true;
+    this.page = event.page;
+    this.size = event.rows;
+    this.getPaginationData(this.page, this.size);
+  }
+
+  exportToExcel(): void {
+    this.reportService.getEmpresaReport(this.reportForm.value).subscribe({
+      next: (response) => {
+        const mappedData = response.content.map((item: Empresa) => ({
+          'Empresa': item.nome,
+          'Email': item.email,
+          'Local': `${item.sede.local} - ${item.sede.aldeia.nome}, ${item.sede.aldeia.suco.nome}, ${item.sede.aldeia.suco.postoAdministrativo.nome}, ${item.sede.aldeia.suco.postoAdministrativo.municipio.nome}`,
+          'Tipo de Propriedade': item.tipoPropriedade,
+          'Tipo de Empresa': item.tipoEmpresa,
+          'Sociedade Comercial': item.sociedadeComercial?.nome || 'N/A',
+          'Gerente': item.gerente?.nome || 'N/A',
+          'Telefone do Gerente': item.gerente?.telefone || 'N/A',
+          'Data de Criação': new DatePipe('pt-PT').transform(item.createdAt, 'dd/MM/yyyy') || 'N/A',
+        }));
+        const fileName = `Relatório de Empresas_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
+        this.exportService.toExcel(mappedData, fileName);
+      },
+      error: (error) => {
+        console.error('Error fetching data for export:', error);
+      }
+    });
+
+  }
+
+  private getPaginationData(page: number, size: number): void {
+    this.reportService.getEmpresaReport(this.reportForm.value, page, size).subscribe({
+      next: (response) => {
+        this.data = response.content;
+        this.totalData = response.totalElements;
+        this.dataIsFetching = false;
+      },
+      error: (error) => {
+        this.dataIsFetching = false;
+        console.error('Error fetching paginated data:', error);
+      }
+    });
+  }
+
+  private addEmptyMessage(): void {
+    this.messages.set([{ icon: 'pi pi-info-circle', size: 'large', severity: 'info', content: 'Não existem dados disponíveis para o relatório selecionado.' }]);
+  }
+
+  initForm() {
+    this.reportForm = this._fb.group({
+      tipoPropriedade: [null],
+      tipoEmpresa: [null],
+      sociedadeComercialId: [null],
+      municipioId: [null],
+      postoAdministrativoId: [null],
+      sucoId: [null]
+    });
+  }
+}

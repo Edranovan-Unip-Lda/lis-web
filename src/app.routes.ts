@@ -74,6 +74,11 @@ export const appRoutes: Routes = [
                 loadChildren: () => import('@/pages/usermanagement/usermanagement.routes')
             },
             {
+                path: 'relatorios',
+                data: { breadcrumb: 'Relatórios' },
+                loadChildren: () => import('@/pages/reports/report.route')
+            },
+            {
                 path: 'dados-mestre',
                 data: { breadcrumb: 'Dados Mestre' },
                 loadChildren: () => import('@/pages/dados-mestre/dados-mestre.route')

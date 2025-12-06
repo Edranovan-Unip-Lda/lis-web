@@ -1,4 +1,3 @@
-import { AplicanteType, Categoria } from "@/core/models/enums";
 
 interface MenuItem {
     label?: string;
@@ -116,6 +115,27 @@ export const model_admin: MenuItem[] = [
                 label: 'Criar',
                 icon: 'pi pi-fw pi-plus',
                 routerLink: ['utilizador/create']
+            }
+        ]
+    },
+    {
+        label: 'Relatórios',
+        icon: 'pi pi-fw pi-chart-bar',
+        items: [
+            {
+                label: 'Empresas',
+                icon: 'bi bi-fw bi-building',
+                routerLink: ['relatorios/empresa']
+            },
+            {
+                label: 'Aplicantes',
+                icon: 'bi bi-fw bi-briefcase',
+                routerLink: ['relatorios/aplicante']
+            },
+            {
+                label: 'Licenças e Certificados',
+                icon: 'bi bi-fw bi-journal-check',
+                routerLink: ['relatorios/licencas-certificados']
             }
         ]
     },
@@ -272,6 +292,27 @@ export const model_manager: MenuItem[] = [
                         routerLink: ['gestor/licencas/industria']
                     }
                 ]
+            }
+        ]
+    },
+    {
+        label: 'Relatórios',
+        icon: 'pi pi-fw pi-chart-bar',
+        items: [
+            {
+                label: 'Empresas',
+                icon: 'bi bi-fw bi-building',
+                routerLink: ['relatorios/empresa']
+            },
+            {
+                label: 'Aplicantes',
+                icon: 'bi bi-fw bi-briefcase',
+                routerLink: ['relatorios/aplicante']
+            },
+            {
+                label: 'Licenças e Certificados',
+                icon: 'bi bi-fw bi-journal-check',
+                routerLink: ['relatorios/licencas-certificados']
             }
         ]
     },

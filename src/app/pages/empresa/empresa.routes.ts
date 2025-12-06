@@ -27,10 +27,12 @@ export default [
     // },
     {
         path: ':username',
-        data: { breadcrumb: 'Edit' },
+        data: {
+            breadcrumb: 'Edit',
+            role: [Role.client],
+        },
         component: EmpresaFormComponent,
         resolve: {
-            role: [Role.client],
             aldeiasResolver: getAllAldeiasResolver,
             listaSociedadeComercial: getSociedadeComercialResolver,
             roleListResolver: getRolesResolver,
