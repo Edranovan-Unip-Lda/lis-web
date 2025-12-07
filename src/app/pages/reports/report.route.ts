@@ -1,4 +1,5 @@
 import { getMunicipiosResolver, getPostosResolver, getSociedadeComercialResolver, getSucosResolver } from "@/core/resolvers/data-master.resolver";
+import { getPageEmpresaResolver } from "@/core/resolvers/empresa.resolver";
 import { Routes } from "@angular/router";
 
 
@@ -17,7 +18,10 @@ export default [
     {
         path: 'aplicante',
         data: { breadcrumb: 'Aplicante' },
-        loadComponent: () => import('./aplicante/aplicante.component').then(m => m.AplicanteComponent)
+        loadComponent: () => import('./aplicante/aplicante.component').then(m => m.AplicanteComponent),
+        resolve: {
+            listaEmpresa: getPageEmpresaResolver,
+        }
     },
     {
         path: 'licencas-certificados',

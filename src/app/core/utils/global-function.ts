@@ -1,5 +1,4 @@
-import { FormGroup, Validators } from "@angular/forms";
-import { AplicanteType, AreaRepresentante, CaraterizacaoEstabelecimento, Categoria, NivelRisco, QuantoAtividade, Role, Status, TipoAto, TipoDocumento, TipoEmpresa, TipoEstabelecimento, TipoNacionalidade, TipoPedidoCadastro, TipoPedidoLicenca, TipoPedidoVistoria, TipoPropriedade } from "../models/enums";
+import { AplicanteStatus, AplicanteType, AreaRepresentante, CaraterizacaoEstabelecimento, Categoria, NivelRisco, QuantoAtividade, Role, Status, TipoAto, TipoDocumento, TipoEmpresa, TipoEstabelecimento, TipoNacionalidade, TipoPedidoCadastro, TipoPedidoLicenca, TipoPedidoVistoria, TipoPropriedade } from "../models/enums";
 
 export const maxFileSizeUpload = 20 * 1024 * 1024;
 
@@ -137,6 +136,17 @@ export const categoryTpesOptions: any[] = [
         value: Categoria.industrial
     }
 ];
+
+export const aplicanteStatusOptions: any[] = [
+    {
+        name: AplicanteStatus.aprovado.toString(),
+        value: AplicanteStatus.aprovado
+    },
+    {
+        name: AplicanteStatus.rejeitado.toString(),
+        value: AplicanteStatus.rejeitado
+    }
+]
 
 export const tipoPedidoCadastroOptions: any[] = [
     {

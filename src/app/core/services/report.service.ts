@@ -23,4 +23,15 @@ export class ReportService {
             return this.http.post<any>(`${this.apiUrl}/empresas`, filter);
         }
     }
+
+    getAplicanteReport(filter: any, page?: number, size?: number): Observable<any> {
+        let params = new HttpParams();
+        if (page != null && size != null) {
+            params = params.append('page', page);
+            params = params.append('size', size);
+            return this.http.post<any>(`${this.apiUrl}/aplicantes`, filter, { params });
+        } else {
+            return this.http.post<any>(`${this.apiUrl}/aplicantes`, filter);
+        }
+    }
 }
