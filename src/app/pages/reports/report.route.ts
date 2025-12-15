@@ -1,4 +1,4 @@
-import { getMunicipiosResolver, getPostosResolver, getSociedadeComercialResolver, getSucosResolver } from "@/core/resolvers/data-master.resolver";
+import { getAllClasseAtividadeResolver, getMunicipiosResolver, getPostosResolver, getSociedadeComercialResolver, getSucosResolver } from "@/core/resolvers/data-master.resolver";
 import { getPageEmpresaResolver } from "@/core/resolvers/empresa.resolver";
 import { Routes } from "@angular/router";
 
@@ -26,6 +26,13 @@ export default [
     {
         path: 'licencas-certificados',
         data: { breadcrumb: 'Licenças e Certificados' },
-        loadComponent: () => import('./licencas-certificados/licencas-certificados.component').then(m => m.LicencasCertificadosComponent)
+        loadComponent: () => import('./licencas-certificados/licencas-certificados.component').then(m => m.LicencasCertificadosComponent),
+        resolve: {
+            listaEmpresa: getPageEmpresaResolver,
+            listaMunicipios: getMunicipiosResolver,
+            listaPostosAdministrativos: getPostosResolver,
+            listaSucos: getSucosResolver,
+            classeAtividadeResolver: getAllClasseAtividadeResolver,
+        }
     },
 ] as Routes;

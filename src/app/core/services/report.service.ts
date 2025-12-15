@@ -34,4 +34,26 @@ export class ReportService {
             return this.http.post<any>(`${this.apiUrl}/aplicantes`, filter);
         }
     }
+
+    getCertificadoInscricaoReport(filter: any, page?: number, size?: number): Observable<any> {
+        let params = new HttpParams();
+        if (page != null && size != null) {
+            params = params.append('page', page);
+            params = params.append('size', size);
+            return this.http.post<any>(`${this.apiUrl}/certificados-inscricao-cadastro`, filter, { params });
+        } else {
+            return this.http.post<any>(`${this.apiUrl}/certificados-inscricao-cadastro`, filter);
+        }
+    }
+
+    getCertficadoLicencaAtividadeReport(filter: any, page?: number, size?: number): Observable<any> {
+        let params = new HttpParams();
+        if (page != null && size != null) {
+            params = params.append('page', page);
+            params = params.append('size', size);
+            return this.http.post<any>(`${this.apiUrl}/certificados-licenca-atividade`, filter, { params });
+        } else {
+            return this.http.post<any>(`${this.apiUrl}/certificados-licenca-atividade`, filter);
+        }
+    }
 }

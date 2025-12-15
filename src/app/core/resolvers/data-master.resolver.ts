@@ -55,6 +55,11 @@ export const getAllClasseAtividadeByTipoResolver: ResolveFn<any> = (route) => {
     return service.getAllClasseAtividadeByTipo(categoria);
 }
 
+export const getAllClasseAtividadeResolver: ResolveFn<any> = () => {
+    const service = inject(DataMasterService);
+    return service.getAllClasseAtividade();
+}
+
 export const getTipoRiscoResolver: ResolveFn<any> = () => {
     const service = inject(DataMasterService);
     return service.getTipoRisco();
