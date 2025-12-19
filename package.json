@@ -25,6 +25,8 @@
         "@tailwindcss/postcss": "^4.1.11",
         "bootstrap-icons": "^1.13.1",
         "chart.js": "4.4.2",
+        "highcharts": "^12.4.0",
+        "highcharts-angular": "^5.2.0",
         "html2canvas": "^1.4.1",
         "html2canvas-pro": "^1.5.12",
         "jspdf": "^3.0.3",

@@ -74,8 +74,8 @@
                 <label for="risco" class="font-medium  mb-2 block">
                     Risco
                 </label>
-                <p-select fluid formControlName="risco" [options]="listaRisco" optionLabel="name"
-                    optionValue="value" placeholder="Selecione o risco" [showClear]="true">
+                <p-select fluid formControlName="risco" [options]="listaRisco" optionLabel="name" optionValue="value"
+                    placeholder="Selecione o risco" [showClear]="true">
                 </p-select>
             </div>
             <div class="col-span-1">
@@ -314,19 +314,15 @@
                 <td>
                     {{ item.sociedadeComercial }}
                 </td>
-                @switch (tipoAplicante) {
-                @case('CADASTRO') {
+                @if (item.pedidoInscricaoCadastro) {
                 <td>
                     {{item.pedidoInscricaoCadastro.aplicante.numero}}
                 </td>
-                }
-                @case ('ATIVIDADE') {
+                }@else {
                 <td>
                     {{item.pedidoLicencaAtividade.aplicante.numero}}
                 </td>
                 }
-                }
-
                 <td>
                     {{item.sede.local}} - {{item.sede.aldeia.suco.nome}},
                     {{item.sede.aldeia.suco.postoAdministrativo.nome}},

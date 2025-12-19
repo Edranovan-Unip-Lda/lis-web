@@ -1,0 +1,64 @@
+<div class="card">
+    <div class="font-medium leading-loose">
+        {{title}}
+    </div>
+    <div class="flex justify-center mb-8">
+        <highcharts-chart [options]="chartOptions" style="width: 100%; max-height: 300px; display: block;">
+        </highcharts-chart>
+    </div>
+    <ul class="m-0 p-0 border-0 outline-0 list-none">
+        @for (item of data.series; track $index) {
+        <li class="flex justify-between items-center py-2 border-b border-surface-200 dark:border-surface-700">
+            <div class="flex justify-between items-center">
+                <div class="w-8 h-8 rounded mr-2" [style]="itemColors[$index]"></div>
+                <span>
+                    {{item.name}}
+                </span>
+            </div>
+            <span>
+                {{item.y}}
+            </span>
+        </li>
+        }
+    </ul>
+    <!-- <li class="flex justify-between items-center py-2 border-b border-surface-200 dark:border-surface-700">
+            <div class="flex justify-between items-center">
+                <div class="w-8 h-8 rounded mr-2"
+                    style="background-color: var(--p-cyan-400); box-shadow: 0px 0px 10px rgba(0, 208, 222, 0.3)"></div>
+                <span>Dili</span>
+            </div>
+            <span>25%</span>
+        </li>
+        <li class="flex justify-between items-center py-2 border-b border-surface-200 dark:border-surface-700">
+            <div class="flex justify-between items-center">
+                <div class="w-8 h-8 rounded mr-2"
+                    style="background-color: var(--p-red-400); box-shadow: 0px 0px 10px rgba(252, 97, 97, 0.3)"></div>
+                <span>Baucau</span>
+            </div>
+            <span>17%</span>
+        </li>
+        <li class="flex justify-between items-center py-2 border-b border-surface-200 dark:border-surface-700">
+            <div class="flex justify-between items-center">
+                <div class="w-8 h-8 rounded mr-2"
+                    style="background-color: var(--p-yellow-400); box-shadow: 0px 0px 10px rgba(238, 229, 0, 0.3)">
+                </div>
+                <span>Maliana</span>
+            </div>
+            <span>15%</span>
+        </li>
+        <li class="flex justify-between items-center py-2 border-b border-surface-200 dark:border-surface-700">
+            <div class="flex justify-between items-center">
+                <div class="w-8 h-8 rounded mr-2"
+                    style="background-color: var(--p-blue-400); box-shadow: 0px 0px 10px rgba(15, 139, 253, 0.3)"></div>
+                <span>Liquica</span>
+            </div>
+            <span>8%</span>
+        </li>
+        <li class="flex justify-between items-center py-2 border-b border-surface-200 dark:border-surface-700">
+            <div class="flex justify-between items-center">
+                <div class="w-8 h-8 rounded mr-2" style="background-color: var(--p-gray-400)"></div>
+                <span>Aileu</span>
+            </div>
+            <span>5%</span>
+        </li> -->
+</div>

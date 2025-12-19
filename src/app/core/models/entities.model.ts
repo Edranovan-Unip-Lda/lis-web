@@ -369,3 +369,70 @@ export interface Participante extends BaseModel {
     tipoDocumento: string;
     numeroDocumento: string;
 }
+
+export interface Kpis {
+    aplicantesEmCurso: number;
+    licencasAtivas: number;
+    empresasRegistradas: number;
+}
+
+export interface ChartSeriesDto {
+    name: string
+    type: string;
+    data: number[];
+    color: string;
+}
+export interface LicensesPerMonthDto {
+    year: number;
+    categories: string[];
+    series: ChartSeriesDto[];
+}
+export interface CategoryDistributionDto {
+    title: string;
+    series: {
+        name: string;
+        y: number;
+    }[];
+}
+export interface LicensesStatusPerMonthDto {
+    period: string;
+    categories: string[];
+    series: ChartSeriesDto[];
+}
+
+export interface DashboardResponse {
+    kpis: Kpis;
+
+    licensesPerMonth: LicensesPerMonthDto;
+    licensesByMunicipio: BarChartDto;
+    licensesStatusPerMonth: CategoryDistributionDto;
+
+    certificatesPerMonth: LicensesPerMonthDto;
+    certificatesByMunicipio: BarChartDto;
+    certificatesStatusPerMonth: CategoryDistributionDto;
+
+    empresasByMunicipio: CategoryDistributionDto;
+    empresasBySociedadeComercial: CategoryDistributionDto;
+    empresasByTipoEmpresa: CategoryDistributionDto;
+}
+
+export interface BarChartDto {
+    title: string;
+    name: string;
+    categories: string[];
+    series: {
+        name: string;
+        data: number[];
+    }
+}
+
+export interface MapDataDto {
+    title: string;
+    data: MapDataPointDto[];
+}
+
+export interface MapDataPointDto {
+    name: string;
+    code: string;
+    value: number;
+}

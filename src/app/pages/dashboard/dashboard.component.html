@@ -1,0 +1,74 @@
+ <div class="col-span-12 mb-4">
+     <div class="grid grid-cols-3">
+         <div class="col-span-3 lg:col-span-1">
+             <label for="yearFilter" class="text-md font-semibold text-gray-50">
+                 Filtrar dados por ano de referência:
+             </label>
+             <p-select (ngModelChange)="yearChange($event)" inputId="yearFilter" [(ngModel)]="yearCtrl" [options]="visitorYear" optionLabel="name"
+                 [fluid]="true" [showClear]="true" placeholder="Selecione o ano" styleClass="w-32">
+             </p-select>
+         </div>
+     </div>
+ </div>
+
+ <div class="grid grid-cols-12 gap-8">
+     <stats-widget [kpisData]="kpisData" />
+
+     <div class="col-span-12">
+         <app-empresa-map [data]="empresasByMunicipio"></app-empresa-map>
+     </div>
+
+     <div class="col-span-12 xl:col-span-6">
+         <app-certificado-licenca-municipio-pie [title]="'Empresa por Sociedade Comercial'"
+             [data]="empresasBySociedadeComercial" />
+     </div>
+
+     <div class="col-span-12 xl:col-span-6">
+         <app-certificado-licenca-municipio-pie [title]="'Empresa por Tipo de Empresa'"
+             [data]="empresasByTipoEmpresa" />
+     </div>
+
+     <!-- Certificado de Inscrição -->
+     <div class="col-span-12 mb-2">
+         <h2 class="text-xl font-semibold pb-2 border-b-2 border-blue-500">
+             Certificados de Inscrição
+         </h2>
+     </div>
+
+     <div class="col-span-12 xl:col-span-8">
+         <app-certificado-licenca-categoria-charts [title]="'Certificados de Inscrição emitidos por mês'"
+             [licensesPerMonth]="certificatesPerMonth" />
+     </div>
+
+     <div class="col-span-12 xl:col-span-4">
+         <app-certificado-licenca-municipio-pie [title]="'Certificados de Inscrição (Ativos/Expirados)'"
+             [data]="certificatesStatusPerMonth" />
+     </div>
+
+     <div class="col-span-12 mb-8">
+         <app-certificado-licenca-estado [title]="'Certificados de Inscrição (Distribuição dos Municípios)'"
+             [data]="certificatesByMunicipio" />
+     </div>
+
+     <!-- Alvará de Licenças -->
+     <div class="col-span-12 mb-2">
+         <h2 class="text-xl font-semibold pb-2 border-b-2 border-green-500">
+             Alvará de Licenças
+         </h2>
+     </div>
+
+     <div class="col-span-12 xl:col-span-8">
+         <app-certificado-licenca-categoria-charts [title]="'Alvará de Licenças emitidos por mês'"
+             [licensesPerMonth]="licensesPerMonth" />
+     </div>
+
+     <div class="col-span-12 xl:col-span-4">
+         <app-certificado-licenca-municipio-pie [title]="'Alvará de Licenças (Distribuição dos Municípios)'"
+             [data]="licensesStatusPerMonth" />
+     </div>
+
+     <div class="col-span-12">
+         <app-certificado-licenca-estado [title]="'Alvará de Licenças (Ativos/Expirados)'"
+             [data]="licensesByMunicipio" />
+     </div>
+ </div>

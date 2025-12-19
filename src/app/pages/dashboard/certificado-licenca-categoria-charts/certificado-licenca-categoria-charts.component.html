@@ -1,0 +1,22 @@
+<div class="card widget-visitor-graph">
+    <div class="card-header leading-loose">
+        <span class="text-xl">
+            {{title}}
+        </span>
+    </div>
+
+    <div class="graph-content grid grid-cols-12 gap-4 mt-6">
+        <div class="col-span-12 md:col-span-6">
+            <div class="text-3xl font-semibold">{{ totalComercial }}</div>
+            <div class="font-semibold my-4">COMERCIAL</div>
+        </div>
+        <div class="col-span-12 md:col-span-6">
+            <div class="text-3xl font-semibold">{{ totalIndustrial }}</div>
+            <div class="font-semibold my-4">INDUSTRIAL</div>
+        </div>
+    </div>
+
+    <div class="graph">
+        <highcharts-chart [options]="chartOptions" style="width: 100%; min-height: 400px; display: block;"></highcharts-chart>
+    </div>
+</div>

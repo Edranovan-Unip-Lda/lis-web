@@ -1,7 +1,9 @@
 import { Role } from '@/core/models/enums';
+import { getDashboardData } from '@/core/resolvers/dashboard.resolver';
 import { getByUsernameResolver } from '@/core/resolvers/empresa.resolver';
 import { authenticationCanActivate, canActivateByRole } from '@/core/security/route.guard';
 import { AppLayout } from '@/layout/components/app.layout';
+import { DashboardComponent } from '@/pages/dashboard/dashboard.component';
 import { Routes } from '@angular/router';
 
 export const appRoutes: Routes = [
@@ -19,7 +21,10 @@ export const appRoutes: Routes = [
             {
                 path: 'dashboard',
                 data: { breadcrumb: 'Painél' },
-                loadComponent: () => import('@/pages/dashboard/ecommercedashboard').then((c) => c.EcommerceDashboard),
+                component: DashboardComponent,
+                resolve: {
+                    dashboardResolver: getDashboardData,
+                },
             },
             {
                 path: 'home',

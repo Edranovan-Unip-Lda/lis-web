@@ -667,3 +667,23 @@ export const autoVistoriaIndustrialFields: { name: string, label: string }[] = [
         label: 'A limpeza e desinfeção diária dos contentores é obrigatória e o lixo e demais resíduos devem ser removidos diariamente para local adequado de forma a serem transportados pelos serviços públicos de recolha de lixo:'
     },
 ];
+
+export const randomColors: { [key: string]: { bg: string, shadow: string } } = {
+    'GRANDE': { bg: 'rgb(251, 191, 36)', shadow: 'rgba(251, 191, 36, 0.3)' },        // amber-400
+    'MÉDIA': { bg: 'rgb(34, 197, 94)', shadow: 'rgba(34, 197, 94, 0.3)' },          // green-500
+    'PEQUENA': { bg: 'rgb(59, 130, 246)', shadow: 'rgba(59, 130, 246, 0.3)' },      // blue-500
+    'MICRO': { bg: 'rgb(234, 179, 8)', shadow: 'rgba(234, 179, 8, 0.3)' },          // yellow-500
+    'ENIN': { bg: 'rgb(168, 85, 247)', shadow: 'rgba(168, 85, 247, 0.3)' },      // purple-500
+    'LDA': { bg: 'rgb(236, 72, 153)', shadow: 'rgba(236, 72, 153, 0.3)' },      // pink-500
+    'Empresa Pública': { bg: 'rgb(14, 165, 233)', shadow: 'rgba(14, 165, 233, 0.3)' }, // sky-500
+    'Sociedade Anonima': { bg: 'rgb(99, 102, 241)', shadow: 'rgba(99, 102, 241, 0.3)' }, // indigo-500
+    'Unipessoal Lda': { bg: 'rgb(249, 115, 22)', shadow: 'rgba(249, 115, 22, 0.3)' }, // orange-500
+    'Ativos': { bg: 'rgb(34, 197, 94)', shadow: 'rgba(34, 197, 94, 0.3)' },          // green-500
+    'Expirados': { bg: 'rgb(239, 68, 68)', shadow: 'rgba(239, 68, 68, 0.3)' },      // red-500
+};
+
+export const listaMunicipios: [string, string, number][] = [
+    ['Aileu', 'tl-al', 0], ['Ainaro', 'tl-an', 0], ['Atauro', 'tl-at', 0], ['Baucau', 'tl-bc', 0], ['Bobonaro', 'tl-bb', 0],
+    ['Covalima', 'tl-cl', 0], ['Dili', 'tl-dl', 0], ['Ermera', 'tl-er', 0], ['Liquiça', 'tl-lq', 0],
+    ['Lautem', 'tl-bt', 0], ['Manatuto', 'tl-mt', 0], ['Manufahi', 'tl-mf', 0], ['Oecusse', 'tl-oe', 0], ['Viqueque', 'tl-vq', 0]
+]
