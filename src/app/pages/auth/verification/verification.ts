@@ -8,13 +8,13 @@ import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { InputNumber } from 'primeng/inputnumber';
 import { InputOtp } from 'primeng/inputotp';
-import { MessagesModule } from 'primeng/messages';
+import { Message } from 'primeng/message';
 import { Ripple } from 'primeng/ripple';
 
 @Component({
     selector: 'app-verification',
     standalone: true,
-    imports: [Ripple, RouterLink, InputOtp, MessagesModule, Button, ReactiveFormsModule],
+    imports: [Ripple, RouterLink, InputOtp, Message, Button, ReactiveFormsModule],
     templateUrl: './verification.component.html',
     providers: [MessageService]
 })
@@ -33,6 +33,7 @@ export class Verification {
         return elapsedTime >= 30000;
     });
     email!: string;
+    erroMessage: string | undefined;
 
     constructor(
         private router: Router,

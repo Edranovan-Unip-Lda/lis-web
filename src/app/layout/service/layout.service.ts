@@ -1,6 +1,7 @@
-import {computed, effect, Injectable, signal, Signal, WritableSignal} from '@angular/core';
-import {Subject} from 'rxjs';
-import {MenuItem} from 'primeng/api';
+import { computed, effect, Injectable, signal, Signal, WritableSignal } from '@angular/core';
+import { Subject } from 'rxjs';
+import { MenuItem } from 'primeng/api';
+import { NotificacaoDto } from '@/core/models/entities.model';
 
 export type MenuMode = 'static' | 'overlay' | 'horizontal' | 'slim' | 'slim-plus' | 'reveal' | 'drawer';
 
@@ -61,7 +62,7 @@ export class LayoutService {
         activeMenuItem: null,
         overlaySubmenuActive: false,
         rightMenuVisible: false,
-        searchBarActive: false
+        searchBarActive: false,
     };
 
     layoutConfig = signal<LayoutConfig>(this._config);
@@ -151,7 +152,7 @@ export class LayoutService {
             .then(() => {
                 this.onTransitionEnd();
             })
-            .catch(() => {});
+            .catch(() => { });
     }
 
     toggleDarkMode(config?: LayoutConfig): void {
@@ -236,6 +237,13 @@ export class LayoutService {
         this.layoutState.update((prev) => ({
             ...prev,
             configSidebarVisible: true
+        }));
+    }
+
+    showNotificationSidebar() {
+        this.layoutState.update((prev) => ({
+            ...prev,
+            notificationVisible: true
         }));
     }
 

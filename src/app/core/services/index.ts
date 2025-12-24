@@ -11,3 +11,4 @@ export * from './otp-session.service';
 export * from './pedido.service';
 export * from './report.service';
 export * from './user.service';
+export * from './notificacao.service';

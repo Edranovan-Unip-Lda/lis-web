@@ -20,7 +20,10 @@
                   </span>
               </div>
               <div class="mb-6">
-                  <p-messages></p-messages>
+                  @if (erroMessage) {
+                  <p-message severity="error" [text]="erroMessage" icon="pi pi-times-circle" closable>
+                  </p-message>
+                  }
               </div>
               <div class="flex justify-between w-full items-center gap-4">
                   <p-inputOtp [formControl]="otpInput" [length]="6" [variant]="'filled'" [autofocus]="true"

@@ -1,6 +1,7 @@
 import { Role } from '@/core/models/enums';
 import { getDashboardData } from '@/core/resolvers/dashboard.resolver';
 import { getByUsernameResolver } from '@/core/resolvers/empresa.resolver';
+import { getUnreadNotificationsResolver } from '@/core/resolvers/notificacao.resolver';
 import { authenticationCanActivate, canActivateByRole } from '@/core/security/route.guard';
 import { AppLayout } from '@/layout/components/app.layout';
 import { DashboardComponent } from '@/pages/dashboard/dashboard.component';
@@ -17,6 +18,9 @@ export const appRoutes: Routes = [
         path: '',
         component: AppLayout,
         canActivateChild: [authenticationCanActivate],
+        resolve: {
+            notifications: getUnreadNotificationsResolver
+        },
         children: [
             {
                 path: 'dashboard',
@@ -62,11 +66,6 @@ export const appRoutes: Routes = [
                 },
                 canActivate: [canActivateByRole],
                 loadChildren: () => import('@/pages/gestor/gestor.routes')
-            },
-            {
-                path: 'apps',
-                data: { breadcrumb: 'Apps' },
-                loadChildren: () => import('./app/apps/apps.routes')
             },
             {
                 path: 'ecommerce',

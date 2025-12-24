@@ -1,0 +1,95 @@
+<p-drawer [(visible)]="rightMenuVisible" header="Notificações" position="right"
+    styleClass="layout-profile-sidebar !w-full sm:!w-[28rem]"
+    [ngClass]="{ 'layout-rightmenu-active': rightMenuVisible }">
+    <div class="layout-rightmenu h-full overflow-y-auto overflow-x-hidden">
+        <!-- Notification List -->
+        <div class="flex-1 overflow-y-auto px-4 py-2 space-y-2 custom-scrollbar">
+            @if (notifications.length > 0) {
+            @for (item of notifications; track $index) {
+            @if (!item.visto) {
+            <div
+                class="group relative flex flex-col p-4 rounded-lg bg-white dark:bg-[#1a3323] hover:bg-gray-50 dark:hover:bg-[#244730] transition-all cursor-pointer border border-transparent hover:border-primary/30 shadow-sm">
+                <div class="flex items-start gap-4">
+                    <!-- ICON -->
+                    <div class="flex items-center justify-center rounded-full text-xl shrink-0 size-12 mt-1"
+                        [ngClass]="setClassByStatus(item)">
+                        <!-- Ícone por status -->
+                        <i *ngIf="item.aplicanteStatus === 'SUBMETIDO'" class="bi bi-file-earmark-plus"></i>
+                        <i *ngIf="item.aplicanteStatus === 'REVISAO'" class="bi bi-search"></i>
+                        <i *ngIf="item.aplicanteStatus === 'REVISTO'" class="bi bi-clipboard-check"></i>
+                        <i *ngIf="item.aplicanteStatus === 'ATRIBUIDO'" class="bi bi-person-check"></i>
+                        <i *ngIf="item.aplicanteStatus === 'REJEITADO'" class="bi bi-x-circle"></i>
+                        <i *ngIf="item.aplicanteStatus === 'APROVADO'" class="bi bi-check-circle"></i>
+                    </div>
+                    <!-- Content -->
+                    <div class="flex flex-col flex-1 min-w-0 gap-1">
+                        <div class="flex items-start justify-between">
+                            <p class="text-gray-900 dark:text-white text-base font-bold leading-normal truncate pr-2">
+                                {{item.title}}
+                            </p>
+                            <span
+                                class="flex size-2.5 rounded-full bg-primary shrink-0 mt-2 shadow-[0_0_8px_rgba(25,230,94,0.6)]"></span>
+                        </div>
+                        <p class="text-gray-600 dark:text-[#93c8a5] text-sm font-normal">
+                            {{item.description}}
+                        </p>
+                        <p class="text-gray-400 dark:text-gray-500 text-xs font-medium mt-1">
+                            {{item.createdAt | timeAgo}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            }
+            @else {
+            <div
+                class="group relative flex flex-col p-4 rounded-lg bg-gray-50 dark:bg-[#112217] hover:bg-gray-100 dark:hover:bg-[#1a3323] transition-all cursor-pointer border border-transparent">
+                <div class="flex items-start gap-4">
+                    <div class="flex items-center justify-center rounded-full text-xl shrink-0 size-12 mt-1"
+                        [ngClass]="setClassByStatus(item)">
+                        <!-- Ícone por status -->
+                        <i *ngIf="item.aplicanteStatus === 'SUBMETIDO'" class="bi bi-file-earmark-plus"></i>
+                        <i *ngIf="item.aplicanteStatus === 'REVISAO'" class="bi bi-search"></i>
+                        <i *ngIf="item.aplicanteStatus === 'REVISTO'" class="bi bi-clipboard-check"></i>
+                        <i *ngIf="item.aplicanteStatus === 'ATRIBUIDO'" class="bi bi-person-check"></i>
+                        <i *ngIf="item.aplicanteStatus === 'REJEITADO'" class="bi bi-x-circle"></i>
+                        <i *ngIf="item.aplicanteStatus === 'APROVADO'" class="bi bi-check-circle"></i>
+                    </div>
+                    <!-- Content -->
+                    <div
+                        class="flex flex-col flex-1 min-w-0 gap-1 opacity-70 group-hover:opacity-100 transition-opacity">
+                        <div class="flex items-start justify-between">
+                            <p class="text-gray-900 dark:text-white text-base font-medium leading-normal truncate pr-2">
+                                {{item.title}}
+                            </p>
+                        </div>
+                        <p class="text-gray-600 dark:text-[#93c8a5] text-sm font-normal leading-relaxed line-clamp-2">
+                            {{item.description}}
+                        </p>
+                        <p class="text-gray-400 dark:text-gray-500 text-xs font-medium mt-1">
+                            {{item.createdAt | timeAgo}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            }
+            }
+            }
+
+            <!-- Empty notifications -->
+            @else {
+            <div>
+                <div
+                    class="flex flex-col items-center justify-center mt-16 px-4 py-6 bg-gray-50 dark:bg-[#112217] rounded-lg">
+                    <div
+                        class="flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-800 text-gray-500 dark:text-gray-400 size-16 mb-4">
+                        <i class="bi bi-bell-slash text-4xl"></i>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 text-center text-sm">
+                        Você não tem notificações no momento.
+                    </p>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</p-drawer>

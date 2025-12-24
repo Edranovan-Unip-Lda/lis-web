@@ -50,6 +50,7 @@ export class CertificadoLicencaCategoriaChartsComponent {
       title: {
         text: '',
       },
+      credits: { enabled: false },
       legend: {
         // Define default style for each legend item.
         itemStyle: {

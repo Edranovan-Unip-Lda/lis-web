@@ -56,7 +56,6 @@ export class DashboardComponent {
 
     ngOnInit(): void {
         const dashboardData = this.route.snapshot.data['dashboardResolver'];
-        console.log('Dashboard Data:', dashboardData);
         this.kpisData = dashboardData.kpis;
         this.licensesPerMonth = dashboardData.licensesPerMonth;
         this.licensesByMunicipio = dashboardData.licensesByMunicipio;
@@ -70,7 +69,6 @@ export class DashboardComponent {
     }
 
     yearChange(value: any) {
-        console.log(value);
         if (!value || !value.code) {
             return;
         }
@@ -82,9 +80,6 @@ export class DashboardComponent {
                 this.certificatesPerMonth = dashboardData.certificatesPerMonth;
                 this.certificatesByMunicipio = dashboardData.certificatesByMunicipio;
                 this.certificatesStatusPerMonth = dashboardData.certificatesStatusPerMonth;
-            },
-            error: (err) => {
-                console.error('Error fetching dashboard data for year change:', err);
             }
         });
     }

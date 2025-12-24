@@ -1,8 +1,8 @@
 import { AppProfileMenu } from "@/layout/components/app.profilemenu";
 import { LayoutService } from '@/layout/service/layout.service';
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, Renderer2, ViewChild } from '@angular/core';
-import { Event, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterModule } from '@angular/router';
+import { Component, inject, OnDestroy, Renderer2, ViewChild } from '@angular/core';
+import { ActivatedRoute, Event, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterModule } from '@angular/router';
 import { NgxSpinnerComponent, NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
@@ -10,7 +10,7 @@ import { filter, Subscription } from 'rxjs';
 import { AppBreadcrumb } from './app.breadcrumb';
 import { AppConfigurator } from './app.configurator';
 import { AppSidebar } from './app.sidebar';
-import { AppTopbar } from './app.topbar';
+import { AppTopbar } from './topbar/app.topbar';
 
 
 @Component({
@@ -52,6 +52,7 @@ export class AppLayout implements OnDestroy {
     @ViewChild(AppTopbar) appTopbar!: AppTopbar;
 
     logo: string = `<img src="/images/rdtl.png" alt="logo" width="200" heigth="200" class="opacity-60">`;
+    notifications = inject(ActivatedRoute).snapshot.data['notifications'];
 
     constructor(
         public layoutService: LayoutService,

@@ -436,3 +436,22 @@ export interface MapDataPointDto {
     code: string;
     value: number;
 }
+
+export interface NotificacaoDto {
+    id: number;
+    title: string;
+    description: string;
+    notificacaoId: number;
+    visto: boolean;
+    vistoEm: string | null;
+    createdAt: string;
+    aplicanteId: number;
+    aplicanteNumero: string;
+    aplicanteStatus: string;
+    aplicanteTipo: string;
+    categoria: string;
+    empresaId: number;
+    empresaNome: string;
+    empresaNif: string;
+}
+

@@ -1,6 +1,5 @@
 import { User } from '@/core/models/entities.model';
 import { StatusIconPipe, StatusSeverityPipe } from '@/core/pipes/custom.pipe';
-import { Customer } from '@/types/customer';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -19,7 +18,6 @@ import { TagModule } from 'primeng/tag';
     templateUrl: './userlist.html',
 })
 export class UserList {
-    customers: Customer[] = [];
     users: User[] = [];
 
     constructor(
