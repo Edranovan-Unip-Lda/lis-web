@@ -3,7 +3,8 @@
         <p-step-list>
             <p-step [value]="1">Empresa</p-step>
             <p-step [value]="2">Proprietário(a) / Titular da empresa</p-step>
-            <p-step [value]="3">Confirmação</p-step>
+            <p-step [value]="3">Gerente & Representante</p-step>
+            <p-step [value]="4">Confirmação</p-step>
         </p-step-list>
         <p-step-panels>
             <p-step-panel [value]="1">
@@ -17,62 +18,13 @@
                                 <input formControlName="nome" id="nome" type="text" pInputText fluid />
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="sede" class="font-medium  mb-2 block">
-                                    Sede
-                                </label>
-                                <input formControlName="sede" id="sede" type="text" pInputText fluid />
-                            </div>
-                            <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="sociedadeComercial"
-                                    class="font-medium  mb-2 block">
+                                <label for="sociedadeComercial" class="font-medium  mb-2 block">
                                     Tipo de Sociedade Comercial
                                 </label>
                                 <p-select fluid formControlName="sociedadeComercial" [options]="listaSociedadeComercial"
                                     optionLabel="nome" placeholder="Selecione o tipo de sociedade" [showClear]="true">
                                 </p-select>
                             </div>
-                        </div>
-                        <div class="flex flex-col gap-6 w-full sm:w-auto mb-6">
-                            <div class="flex flex-col sm:flex-row sm:items-center gap-6">
-                                <div class="flex-auto">
-                                    <label for="aldeia"
-                                        class="font-medium  mb-2 block">
-                                        Aldeia
-                                    </label>
-                                    <p-select fluid formControlName="aldeia" [options]="aldeias" optionLabel="nome"
-                                        placeholder="Selecione a Aldeia" [filter]="true" filterBy="nome"
-                                        [showClear]="true" (onChange)="aldeiaOnChange($event)"
-                                        (onFilter)="aldeiaFilter($event)" (onpanelHide)="onPanelHide()"
-                                        (onClear)="onPanelHide()">
-                                    </p-select>
-                                </div>
-                                <div class="flex-auto">
-                                    <label for="suco"
-                                        class="font-medium  mb-2 block">
-                                        Suco
-                                    </label>
-                                    <input formControlName="suco" id="suco" type="text" pInputText fluid />
-                                </div>
-
-                                <div class="flex-auto">
-                                    <label for="posto"
-                                        class="font-medium  mb-2 block">
-                                        Posto Administrativo
-                                    </label>
-                                    <input formControlName="postoAdministrativo" id="postoAdministrativo" type="text"
-                                        pInputText fluid />
-                                </div>
-                                <div class="flex-auto">
-                                    <label for="municipio"
-                                        class="font-medium  mb-2 block">
-                                        Municipio
-                                    </label>
-                                    <input formControlName="municipio" id="municipio" type="text" pInputText fluid />
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-12 gap-4">
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="nif" class="font-medium  mb-2 block">
                                     NIF da Empresa
@@ -80,16 +32,14 @@
                                 <input formControlName="nif" id="nif" type="text" pInputText fluid />
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="numeroRegistoComercial"
-                                    class="font-medium  mb-2 block">
+                                <label for="numeroRegistoComercial" class="font-medium  mb-2 block">
                                     Nº Registo Comercial
                                 </label>
                                 <input formControlName="numeroRegistoComercial" id="numeroRegistoComercial" type="text"
                                     pInputText fluid />
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="capitalSocial"
-                                    class="font-medium  mb-2 block">
+                                <label for="capitalSocial" class="font-medium  mb-2 block">
                                     Capital Social
                                 </label>
                                 <p-inputgroup>
@@ -99,24 +49,21 @@
                                 </p-inputgroup>
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="dataRegisto"
-                                    class="font-medium  mb-2 block">
+                                <label for="dataRegisto" class="font-medium  mb-2 block">
                                     Data de Registo
                                 </label>
                                 <p-date-picker formControlName="dataRegisto" id="dataRegisto" [showIcon]="true"
                                     [showButtonBar]="true" fluid dateFormat="dd/mm/yy" inputStyleClass="w-full" />
                             </div>
-                            <div class="mb-6 col-span-12">
-                                <label for="totalTrabalhadores"
-                                    class="font-medium  mb-2 block">
+                            <div class="mb-6 col-span-12 md:col-span-6">
+                                <label for="totalTrabalhadores" class="font-medium  mb-2 block">
                                     Total Trabalhadores (Funcionários)
                                 </label>
                                 <input formControlName="totalTrabalhadores" id="totalTrabalhadores" type="text"
                                     pInputText fluid />
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="volumeNegocioAnual"
-                                    class="font-medium  mb-2 block">
+                                <label for="volumeNegocioAnual" class="font-medium mb-2 block">
                                     Volume de Negócios Anual
                                 </label>
                                 <p-inputgroup>
@@ -124,10 +71,15 @@
                                     <p-inputnumber formControlName="volumeNegocioAnual" mode="decimal"
                                         [minFractionDigits]="2" [maxFractionDigits]="2" />
                                 </p-inputgroup>
+                                @if (empresaForm.get('volumeNegocioAnual')?.touched &&
+                                empresaForm.get('volumeNegocioAnual')?.invalid) {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="balancoTotalAnual"
-                                    class="font-medium  mb-2 block">
+                                <label for="balancoTotalAnual" class="font-medium  mb-2 block">
                                     Balanço total Anual
                                 </label>
                                 <p-inputgroup>
@@ -135,60 +87,164 @@
                                     <p-inputnumber formControlName="balancoTotalAnual" mode="decimal"
                                         [minFractionDigits]="2" [maxFractionDigits]="2" />
                                 </p-inputgroup>
+                                @if (empresaForm.get('balancoTotalAnual')?.touched &&
+                                empresaForm.get('balancoTotalAnual')?.invalid) {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
                             </div>
+                            <div class="col-span-12">
+                                <div formGroupName="sede" class="grid grid-cols-12">
+                                    <div class="mb-6 col-span-12">
+                                        <label for="local" class="font-medium  mb-2 block">
+                                            Sede
+                                        </label>
+                                        <input formControlName="local" id="local" type="text" pInputText fluid
+                                            placeholder="ex. Av. Pres. Nicolau Lobato" />
+                                        @if (empresaForm.get('sede.local')?.touched &&
+                                        empresaForm.get('sede.local')?.invalid) {
+                                        <p class="text-red-500 text-sm mt-1">
+                                            Este campo é obrigatório e deve ser válido.
+                                        </p>
+                                        }
+                                    </div>
+                                    <div class="mb-6 col-span-12">
+                                        <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+                                            <div class="flex-auto">
+                                                <label for="aldeia" class="font-medium  mb-2 block">
+                                                    Aldeia
+                                                </label>
+                                                <p-select fluid formControlName="aldeia" [options]="aldeias"
+                                                    optionLabel="nome" placeholder="Selecione a Aldeia" [filter]="true"
+                                                    filterBy="nome" [showClear]="true" (onFilter)="aldeiaFilter($event)"
+                                                    (onpanelHide)="onPanelHide()" (onChange)="aldeiaOnChange($event)"
+                                                    (onClear)="onPanelHide()">
+                                                </p-select>
+                                                @if (empresaForm.get('sede.aldeia')?.touched &&
+                                                empresaForm.get('sede.aldeia')?.invalid) {
+                                                <p class="text-red-500 text-sm mt-1">
+                                                    Este campo é obrigatório e deve ser válido.
+                                                </p>
+                                                }
+                                            </div>
+                                            <div class="flex-auto">
+                                                <label for="suco" class="font-medium  mb-2 block">
+                                                    Suco
+                                                </label>
+                                                <input formControlName="suco" id="suco" type="text" pInputText fluid />
+                                            </div>
+                                            <div class="flex-auto">
+                                                <label for="posto" class="font-medium  mb-2 block">
+                                                    Posto Administrativo
+                                                </label>
+                                                <input formControlName="postoAdministrativo" id="postoAdministrativo"
+                                                    type="text" pInputText fluid />
+                                            </div>
+                                            <div class="flex-auto">
+                                                <label for="municipio" class="font-medium  mb-2 block">
+                                                    Municipio
+                                                </label>
+                                                <input formControlName="municipio" id="municipio" type="text" pInputText
+                                                    fluid />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-6 col-span-12 md:col-span-1 flex items-end justify-center">
+                                <p-button (click)="getCurrentPosition()" icon="pi pi-map-marker" />
+                            </div>
+                            <div class="mb-6 col-span-12 md:col-span-5">
+                                <label for="longitude" class="font-medium mb-2 block">
+                                    Longitude
+                                </label>
+                                <input formControlName="longitude" id="longitude" type="number" pInputText fluid />
+                                @if (empresaForm.get('longitude')?.touched &&
+                                empresaForm.get('longitude')?.invalid) {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            <div class="mb-6 col-span-12 md:col-span-5">
+                                <label for="latitude" class="font-medium mb-2 block">
+                                    Latitude
+                                </label>
+                                <input formControlName="latitude" id="latitude" type="number" pInputText fluid />
+                                @if (empresaForm.get('latitude')?.touched &&
+                                empresaForm.get('latitude')?.invalid) {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-12 gap-4">
                             <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="telefone"
-                                    class="font-medium  mb-2 block">
+                                <label for="telefone" class="font-medium  mb-2 block">
                                     Nº Telefone
                                 </label>
                                 <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
-                                <label for="telemovel"
-                                    class="font-medium  mb-2 block">
+                                <label for="telemovel" class="font-medium  mb-2 block">
                                     Nº Telemóvel
                                 </label>
                                 <input formControlName="telemovel" id="telemovel" type="tel" pInputText fluid />
                             </div>
+                            <div class="mb-6 col-span-12 md:col-span-6">
+                                <label for="email" class="font-medium  mb-2 block">
+                                    Email
+                                </label>
+                                <input formControlName="email" id="email" type="email" pInputText fluid />
+                                @if (empresaForm.get('email')?.touched &&
+                                empresaForm.get('email')?.invalid) {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
                             <div class="mb-6 col-span-12">
-                                <label for="outrosDocumentos"
-                                    class="font-medium  mb-2 block">
+                                <label for="outrosDocumentos" class="font-medium mb-2 block">
                                     DOCUMENTOS
                                 </label>
                                 <p-fileupload name="files" method="post" (onUpload)="onUploadDocs($event)"
                                     [maxFileSize]="maxFileSize" [multiple]="true" accept="application/pdf"
-                                    mode="advanced" (onRemove)="onFileRemove($event)" (onClear)="onFileClear()">
-
+                                    mode="advanced" [url]="uploadURLDocs()">
                                     <ng-template #empty>
-                                        @if (uploadedDocs.length === 0) {
                                         Arraste e largue os ficheiros aqui para carregar.
-                                        }
                                     </ng-template>
-                                    <ng-template #content>
-                                        @if (uploadedDocs.length > 0) {
-                                        <ul>
-                                            @for (item of uploadedDocs; track $index) {
-                                            <li>
-                                                <a class="cursor-pointer hover:underline hover:text-teal-300">
-                                                    {{ item.nome }} - {{ bytesToMBs(item.tamanho) }}
-                                                </a>
-                                                &nbsp;
+                                </p-fileupload>
+
+                                <!-- Display uploaded documents separately -->
+                                @if (uploadedDocs.length > 0) {
+                                <div class="mt-4 p-4 border border-gray-700 rounded-lg bg-gray-800">
+                                    <h4 class="font-medium mb-2 text-white">Arquivos Carregados
+                                        ({{uploadedDocs.length}})</h4>
+                                    <ul class="space-y-2">
+                                        @for (item of uploadedDocs; track item.id || $index) {
+                                        <li class="flex items-center justify-between p-2 bg-gray-700 rounded">
+                                            <span class="text-white">
+                                                {{ item.nome }} - {{ bytesToMBs(item.tamanho) }}
+                                            </span>
+                                            <div class="flex gap-2">
                                                 @if (item.id) {
                                                 <p-button (click)="downloadDoc(item)"
                                                     [loading]="loadingDownloadButtons.has(item.nome)"
                                                     icon="pi pi-download" [rounded]="true" [text]="true"
-                                                    severity="success" />
-                                                }
-                                                &nbsp;
+                                                    severity="success" size="small" />
                                                 <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
                                                     [loading]="loadingRemoveButtons.has(item.nome)" severity="danger"
-                                                    (click)="removeDoc(item)" />
-                                            </li>
-                                            }
-                                        </ul>
+                                                    (click)="removeDoc(item)" size="small" />
+                                                }
+                                            </div>
+                                        </li>
                                         }
-                                    </ng-template>
-                                </p-fileupload>
+                                    </ul>
+                                </div>
+                                }
                             </div>
                         </div>
                     </form>
@@ -204,8 +260,7 @@
                     <form [formGroup]="empresaForm" class="px-8">
                         <div class="grid grid-cols-12 gap-4">
                             <div class="mb-6 col-span-12">
-                                <label for="tipoPropriedade"
-                                    class="font-medium  mb-2 block">
+                                <label for="tipoPropriedade" class="font-medium  mb-2 block">
                                     Tipo propetário
                                 </label>
                                 <p-select fluid formControlName="tipoPropriedade" [options]="tipoProriedadeOpts"
@@ -226,15 +281,13 @@
                             }
                             <div class="grid grid-cols-12 gap-4" [formGroupName]="$index">
                                 <div class="mb-6 col-span-12">
-                                    <label for="nome"
-                                        class="font-medium  mb-2 block">
+                                    <label for="nome" class="font-medium  mb-2 block">
                                         Nome
                                     </label>
                                     <input formControlName="nome" id="nome" type="text" pInputText fluid />
                                 </div>
                                 <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="acoes"
-                                        class="font-medium  mb-2 block">
+                                    <label for="acoes" class="font-medium  mb-2 block">
                                         Ações
                                     </label>
                                     <p-inputgroup>
@@ -244,102 +297,97 @@
                                     </p-inputgroup>
                                 </div>
                                 <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="nif"
-                                        class="font-medium  mb-2 block">
+                                    <label for="nif" class="font-medium  mb-2 block">
                                         NIF
                                     </label>
                                     <input formControlName="nif" id="nif" type="text" pInputText fluid />
                                 </div>
                                 <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="tipoDocumento"
-                                        class="font-medium  mb-2 block">
+                                    <label for="tipoDocumento" class="font-medium  mb-2 block">
                                         Tipo Documento
                                     </label>
                                     <p-select fluid formControlName="tipoDocumento" [options]="tipoDocumentoOpts"
-                                        optionLabel="name" placeholder="Selecione o tipo documento" [showClear]="true">
+                                        optionLabel="name" optionValue="value" placeholder="Selecione o tipo documento"
+                                        [showClear]="true">
                                     </p-select>
                                 </div>
                                 <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="numeroDocumento"
-                                        class="font-medium  mb-2 block">
+                                    <label for="numeroDocumento" class="font-medium  mb-2 block">
                                         Nº Documento
                                     </label>
                                     <input formControlName="numeroDocumento" id="numeroDocumento" type="text" pInputText
                                         fluid />
                                 </div>
-                                <div class="mb-6 col-span-12">
-                                    <label for="local"
-                                        class="font-medium  mb-2 block">
-                                        Endereço
-                                    </label>
-                                    <input formControlName="local" id="local" type="text" pInputText fluid
-                                        placeholder="ex. Av. Pres. Nicolau Lobato" />
-                                </div>
-                                <div class="mb-6 col-span-12">
-                                    <div class="flex flex-col sm:flex-row sm:items-center gap-6">
-                                        <div class="flex-auto">
-                                            <label for="aldeia"
-                                                class="font-medium  mb-2 block">
-                                                Aldeia
+                                <div formGroupName="endereco" class="col-span-12">
+                                    <div class="grid grid-cols-12 gap-4">
+                                        <div class="mb-6 col-span-12">
+                                            <label for="local" class="font-medium  mb-2 block">
+                                                Endereço
                                             </label>
-                                            <p-select fluid formControlName="aldeia" [options]="listaAldeiaAcionista[i]"
-                                                optionLabel="nome" placeholder="Selecione a Aldeia" [filter]="true"
-                                                filterBy="nome" [showClear]="true"
-                                                (onFilter)="aldeiaAcionistaFilter($event,i)"
-                                                (onpanelHide)="onPanelHideAcionista(i)"
-                                                (onChange)="aldeiaAcionistaOnChange($event, i)"
-                                                (onClear)="onPanelHideAcionista(i)">
-                                            </p-select>
+                                            <input formControlName="local" id="local" type="text" pInputText fluid
+                                                placeholder="ex. Av. Pres. Nicolau Lobato" />
                                         </div>
-                                        <div class="flex-auto">
-                                            <label for="suco"
-                                                class="font-medium  mb-2 block">
-                                                Suco
-                                            </label>
-                                            <input formControlName="suco" id="suco" type="text" pInputText fluid />
-                                        </div>
-                                        <div class="flex-auto">
-                                            <label for="posto"
-                                                class="font-medium  mb-2 block">
-                                                Posto Administrativo
-                                            </label>
-                                            <input formControlName="postoAdministrativo" id="postoAdministrativo"
-                                                type="text" pInputText fluid />
-                                        </div>
-                                        <div class="flex-auto">
-                                            <label for="municipio"
-                                                class="font-medium  mb-2 block">
-                                                Municipio
-                                            </label>
-                                            <input formControlName="municipio" id="municipio" type="text" pInputText
-                                                fluid />
+                                        <div class="mb-6 col-span-12">
+                                            <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+                                                <div class="flex-auto">
+                                                    <label for="aldeia" class="font-medium  mb-2 block">
+                                                        Aldeia
+                                                    </label>
+                                                    <p-select fluid formControlName="aldeia"
+                                                        [options]="listaAldeiaAcionista[i]" optionLabel="nome"
+                                                        placeholder="Selecione a Aldeia" [filter]="true" filterBy="nome"
+                                                        [showClear]="true" (onFilter)="aldeiaAcionistaFilter($event,i)"
+                                                        (onpanelHide)="onPanelHideAcionista(i)"
+                                                        (onChange)="aldeiaAcionistaOnChange($event, i)"
+                                                        (onClear)="onPanelHideAcionista(i)">
+                                                    </p-select>
+                                                </div>
+                                                <div class="flex-auto">
+                                                    <label for="suco" class="font-medium  mb-2 block">
+                                                        Suco
+                                                    </label>
+                                                    <input formControlName="suco" id="suco" type="text" pInputText
+                                                        fluid />
+                                                </div>
+                                                <div class="flex-auto">
+                                                    <label for="posto" class="font-medium  mb-2 block">
+                                                        Posto Administrativo
+                                                    </label>
+                                                    <input formControlName="postoAdministrativo"
+                                                        id="postoAdministrativo" type="text" pInputText fluid />
+                                                </div>
+                                                <div class="flex-auto">
+                                                    <label for="municipio" class="font-medium  mb-2 block">
+                                                        Municipio
+                                                    </label>
+                                                    <input formControlName="municipio" id="municipio" type="text"
+                                                        pInputText fluid />
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="telefone"
-                                        class="font-medium  mb-2 block">
+                                    <label for="telefone" class="font-medium  mb-2 block">
                                         Nº Telefone
                                     </label>
                                     <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
                                 </div>
                                 <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="email"
-                                        class="font-medium  mb-2 block">
+                                    <label for="email" class="font-medium  mb-2 block">
                                         Email
                                     </label>
                                     <input formControlName="email" id="email" type="email" pInputText fluid />
                                 </div>
                                 <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="agregadoFamilia"
-                                        class="font-medium  mb-2 block">
+                                    <label for="agregadoFamilia" class="font-medium  mb-2 block">
                                         Agregado Familia
                                     </label>
                                     <input formControlName="agregadoFamilia" id="agregadoFamilia" pInputText fluid />
                                 </div>
                                 <div class="mb-6 col-span-12 md:col-span-6">
-                                    <label for="relacaoFamilia"
-                                        class="font-medium  mb-2 block">
+                                    <label for="relacaoFamilia" class="font-medium  mb-2 block">
                                         Relação Família
                                     </label>
                                     <p-select fluid formControlName="relacaoFamilia" [options]="tipoRelacaoFamiliaOpts"
@@ -369,16 +417,541 @@
 
             <p-step-panel [value]="3">
                 <ng-template #content let-activateCallback="activateCallback">
+                    <form [formGroup]="empresaForm" class="px-8">
+                        <h1 class="text-2xl font-bold text-white">
+                            Gerente
+                        </h1>
+                        <div formGroupName="gerente" class="grid grid-cols-12 gap-4 py-4">
+
+                            <div class="mb-6 col-span-12">
+                                <label for="nome" class="font-medium  mb-2 block">
+                                    Nome
+                                </label>
+                                <input formControlName="nome" id="nome" type="text" pInputText fluid
+                                    placeholder="Ex: Joao da Silva" />
+                                @if (empresaForm.get('gerente.nome')?.touched &&
+                                empresaForm.get('gerente.nome')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            <div class="mb-6 col-span-12 md:col-span-6">
+                                <label for="tipoDocumento" class="font-medium  mb-2 block">
+                                    Tipo Documento
+                                </label>
+                                <p-select fluid formControlName="tipoDocumento" [options]="tipoDocumentoOpts"
+                                    optionLabel="name" optionValue="value" placeholder="Selecione o tipo documento"
+                                    [showClear]="true">
+                                </p-select>
+                                @if (empresaForm.get('gerente.tipoDocumento')?.touched &&
+                                empresaForm.get('gerente.tipoDocumento')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            <div class="mb-6 col-span-12 md:col-span-6">
+                                <label for="numeroDocumento" class="font-medium  mb-2 block">
+                                    Nº Documento
+                                </label>
+                                <input formControlName="numeroDocumento" id="numeroDocumento" type="text" pInputText
+                                    fluid />
+                                @if (empresaForm.get('gerente.numeroDocumento')?.touched &&
+                                empresaForm.get('gerente.numeroDocumento')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            <div class="mb-6 col-span-12 md:col-span-6">
+                                <label for="estadoCivil" class="font-medium  mb-2 block">
+                                    Estado Civil
+                                </label>
+                                <p-select fluid formControlName="estadoCivil" [options]="tipoEstadoCivilOpts"
+                                    optionLabel="name" optionValue="value" placeholder="Selecione o tipo documento"
+                                    [showClear]="true">
+                                </p-select>
+                                @if (empresaForm.get('gerente.estadoCivil')?.touched &&
+                                empresaForm.get('gerente.estadoCivil')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            <div class="mb-6 col-span-12 md:col-span-6">
+                                <label for="email" class="font-medium  mb-2 block">
+                                    Email
+                                </label>
+                                <input formControlName="email" id="email" type="email" pInputText fluid />
+                                @if (empresaForm.get('gerente.email')?.touched &&
+                                empresaForm.get('gerente.email')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            <div class="mb-6 col-span-12 md:col-span-6">
+                                <label for="telefone" class="font-medium mb-2 block">
+                                    Nº Telefone
+                                </label>
+                                <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
+                                @if (empresaForm.get('gerente.telefone')?.touched &&
+                                empresaForm.get('gerente.telefone')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            <div class="mb-6 col-span-12 md:col-span-6">
+                                <label for="nacionalidade" class="font-medium  mb-2 block">
+                                    Nacionalidade
+                                </label>
+                                <p-select fluid formControlName="nacionalidade" [options]="tipoNacionalidadeOpts"
+                                    (onChange)="nacionalidadeOnChange($event, 'gerente')" optionLabel="name"
+                                    optionValue="value" placeholder="Selecione a nacionalidade" [showClear]="true">
+                                </p-select>
+                                @if (empresaForm.get('gerente.nacionalidade')?.touched &&
+                                empresaForm.get('gerente.nacionalidade')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            @if (gerenteForeigner) {
+                            <div class="mb-6 col-span-12 md:col-span-6">
+                                <label for="numeroVisto" class="font-medium  mb-2 block">
+                                    Nº de Visto
+                                </label>
+                                <input formControlName="numeroVisto" id="numeroVisto" type="text" pInputText fluid />
+                                @if (empresaForm.get('gerente.numeroVisto')?.touched &&
+                                empresaForm.get('gerente.numeroVisto')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            <div class="mb-6 col-span-12 md:col-span-6">
+                                <label for="validadeVisto" class="font-medium  mb-2 block">
+                                    Data Validade de Visto
+                                </label>
+                                <p-datepicker formControlName="validadeVisto" id="validadeVisto" appendTo="body"
+                                    [showButtonBar]="true" fluid />
+                                @if (empresaForm.get('gerente.validadeVisto')?.touched &&
+                                empresaForm.get('gerente.validadeVisto')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            }
+                            <div class="mb-6 col-span-12 md:col-span-6">
+                                <label for="naturalidade" class="font-medium  mb-2 block">
+                                    Naturalidade
+                                </label>
+                                <input formControlName="naturalidade" id="naturalidade" type="text" pInputText fluid />
+                                @if (empresaForm.get('gerente.naturalidade')?.touched &&
+                                empresaForm.get('gerente.naturalidade')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            <div class="mb-6 col-span-12">
+                                <div formGroupName="morada" class="flex flex-col gap-6 w-full sm:w-auto mb-6">
+                                    <div class="mb-6 col-span-12">
+                                        <label for="local" class="font-medium  mb-2 block">
+                                            Morada
+                                        </label>
+                                        <input formControlName="local" id="local" type="text" pInputText fluid
+                                            placeholder="ex. Av. Pres. Nicolau Lobato" />
+                                        @if (empresaForm.get('gerente.morada.local')?.touched &&
+                                        empresaForm.get('gerente.morada.local')?.invalid)
+                                        {
+                                        <p class="text-red-500 text-sm mt-1">
+                                            Este campo é obrigatório e deve ser válido.
+                                        </p>
+                                        }
+                                    </div>
+                                    <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+                                        <div class="flex-auto">
+                                            <label for="aldeia" class="font-medium  mb-2 block">
+                                                Aldeia
+                                            </label>
+                                            <p-select fluid formControlName="aldeia" [options]="aldeias"
+                                                optionLabel="nome" placeholder="Selecione a Aldeia" [filter]="true"
+                                                filterBy="nome" [showClear]="true"
+                                                (onChange)="gerenteRepresentanteAldeiaOnChange($event, 'gerente')"
+                                                (onFilter)="gerenteRepresentanteAldeiaFilter($event, 'gerente')"
+                                                (onpanelHide)="gerenteRepresentanteOnPanelHide('gerente')"
+                                                (onClear)="gerenteRepresentanteOnPanelHide('gerente')">
+                                            </p-select>
+                                            @if (empresaForm.get('gerente.morada.aldeia')?.touched &&
+                                            empresaForm.get('gerente.morada.aldeia')?.invalid)
+                                            {
+                                            <p class="text-red-500 text-sm mt-1">
+                                                Este campo é obrigatório e deve ser válido.
+                                            </p>
+                                            }
+                                        </div>
+                                        <div class="flex-auto">
+                                            <label for="suco" class="font-medium  mb-2 block">
+                                                Suco
+                                            </label>
+                                            <input formControlName="suco" id="suco" type="text" pInputText fluid />
+                                        </div>
+
+                                        <div class="flex-auto">
+                                            <label for="posto" class="font-medium  mb-2 block">
+                                                Posto Administrativo
+                                            </label>
+                                            <input formControlName="postoAdministrativo" id="postoAdministrativo"
+                                                type="text" pInputText fluid />
+                                        </div>
+                                        <div class="flex-auto">
+                                            <label for="municipio" class="font-medium  mb-2 block">
+                                                Municipio
+                                            </label>
+                                            <input formControlName="municipio" id="municipio" type="text" pInputText
+                                                fluid />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <h1 class="text-2xl font-bold text-white">
+                            Representante
+                        </h1>
+                        <div formGroupName="representante" class="grid grid-cols-12 gap-4 pt-4">
+                            <div class="mb-6 col-span-12">
+                                <label for="tipo" class="font-medium  mb-2 block">
+                                    Tipo
+                                </label>
+                                <p-select (onChange)="onRepresentanteTipoChange($event)" fluid formControlName="tipo"
+                                    [options]="tipoRepresentanteOptions" optionLabel="name" [showClear]="true"
+                                    optionValue="value" placeholder="Selecione o tipo de Representante">
+                                </p-select>
+                                @if (empresaForm.get('representante.tipo')?.touched &&
+                                empresaForm.get('representante.tipo')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+
+                            @if (empresaForm.get('representante.tipo')?.value) {
+
+                            @if (empresaForm.get('representante.tipo')?.value === 'Empresa') {
+                            <div class="mb-6 col-span-12">
+                                <label for="nomeEmpresa" class="font-medium  mb-2 block">
+                                    Nome da Empresa
+                                </label>
+                                <input formControlName="nomeEmpresa" id="nomeEmpresa" type="text" pInputText fluid
+                                    placeholder="Ex. Empresa Unip. lda" />
+                                @if (empresaForm.get('representante.nomeEmpresa')?.touched &&
+                                empresaForm.get('representante.nomeEmpresa')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            }
+
+                            <div class="mb-6 col-span-12">
+                                <label for="nome" class="font-medium  mb-2 block">
+                                    @if (empresaForm.get('representante.tipo')?.value === 'Empresa'){
+                                    Nome do funcionário
+                                    }@else {
+                                    Nome do Individual
+                                    }
+                                </label>
+                                <input formControlName="nome" id="nome" type="text" pInputText fluid
+                                    placeholder="Ex: Joao da Silva" />
+                                @if (empresaForm.get('representante.nome')?.touched &&
+                                empresaForm.get('representante.nome')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+
+                            <div class="mb-6 col-span-12 md:col-span-6">
+                                <label for="tipoDocumento" class="font-medium  mb-2 block">
+                                    Tipo Documento
+                                </label>
+                                <p-select fluid formControlName="tipoDocumento" [options]="tipoDocumentoOpts"
+                                    optionLabel="name" optionValue="value" placeholder="Selecione o tipo documento"
+                                    [showClear]="true">
+                                </p-select>
+                                @if (empresaForm.get('representante.tipoDocumento')?.touched &&
+                                empresaForm.get('representante.tipoDocumento')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            <div class="mb-6 col-span-12 md:col-span-6">
+                                <label for="numeroDocumento" class="font-medium  mb-2 block">
+                                    Nº Documento
+                                </label>
+                                <input formControlName="numeroDocumento" id="numeroDocumento" type="text" pInputText
+                                    fluid />
+                                @if (empresaForm.get('representante.numeroDocumento')?.touched &&
+                                empresaForm.get('representante.numeroDocumento')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            <div class="mb-6 col-span-12 md:col-span-6">
+                                <label for="dataNascimento" class="font-medium  mb-2 block">
+                                    Data Nascimento
+                                </label>
+                                <p-datepicker formControlName="dataNascimento" id="dataNascimento" appendTo="body"
+                                    [showButtonBar]="true" fluid />
+                                @if (empresaForm.get('representante.dataNascimento')?.touched &&
+                                empresaForm.get('representante.dataNascimento')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            <div class="mb-6 col-span-12 md:col-span-6">
+                                <label for="estadoCivil" class="font-medium  mb-2 block">
+                                    Estado Civil
+                                </label>
+                                <p-select fluid formControlName="estadoCivil" [options]="tipoEstadoCivilOpts"
+                                    optionLabel="name" optionValue="value" placeholder="Selecione o tipo documento"
+                                    [showClear]="true">
+                                </p-select>
+                                @if (empresaForm.get('representante.estadoCivil')?.touched &&
+                                empresaForm.get('representante.estadoCivil')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            <div class="mb-6 col-span-12 md:col-span-6">
+                                <label for="nacionalidade" class="font-medium  mb-2 block">
+                                    Nacionalidade
+                                </label>
+                                <p-select fluid formControlName="nacionalidade" [options]="tipoNacionalidadeOpts"
+                                    (onChange)="nacionalidadeOnChange($event, 'representante')" optionLabel="name"
+                                    optionValue="value" placeholder="Selecione a nacionalidade" [showClear]="true">
+                                </p-select>
+                                @if (empresaForm.get('representante.nacionalidade')?.touched &&
+                                empresaForm.get('representante.nacionalidade')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            @if (representanteForeigner) {
+                            <div class="mb-6 col-span-12 md:col-span-6">
+                                <label for="numeroVisto" class="font-medium  mb-2 block">
+                                    Nº de Visto
+                                </label>
+                                <input formControlName="numeroVisto" id="numeroVisto" type="text" pInputText fluid />
+                                @if (empresaForm.get('representante.numeroVisto')?.touched &&
+                                empresaForm.get('representante.numeroVisto')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            <div class="mb-6 col-span-12 md:col-span-6">
+                                <label for="validadeVisto" class="font-medium  mb-2 block">
+                                    Data Validade de Visto
+                                </label>
+                                <p-datepicker formControlName="validadeVisto" id="validadeVisto" appendTo="body"
+                                    [showButtonBar]="true" fluid />
+                                @if (empresaForm.get('representante.validadeVisto')?.touched &&
+                                empresaForm.get('representante.validadeVisto')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            }
+                            <div class="mb-6 col-span-12 md:col-span-6">
+                                <label for="naturalidade" class="font-medium  mb-2 block">
+                                    Naturalidade
+                                </label>
+                                <input formControlName="naturalidade" id="naturalidade" type="text" pInputText fluid />
+                                @if (empresaForm.get('representante.naturalidade')?.touched &&
+                                empresaForm.get('representante.naturalidade')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            <div class="mb-6 col-span-12 md:col-span-6">
+                                <label for="pai" class="font-medium  mb-2 block">
+                                    Pai
+                                </label>
+                                <input formControlName="pai" id="pai" pInputText fluid />
+                                @if (empresaForm.get('representante.pai')?.touched &&
+                                empresaForm.get('representante.naturalidade')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            <div class="mb-6 col-span-12 md:col-span-6">
+                                <label for="mae" class="font-medium  mb-2 block">
+                                    Mãe
+                                </label>
+                                <input formControlName="mae" id="mae" pInputText fluid />
+                                @if (empresaForm.get('representante.mae')?.touched &&
+                                empresaForm.get('representante.mae')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            <div class="mb-6 col-span-12">
+                                <div formGroupName="morada" class="flex flex-col gap-6 w-full sm:w-auto mb-6">
+                                    <div class="mb-6 col-span-12">
+                                        <label for="local" class="font-medium  mb-2 block">
+                                            Morada
+                                        </label>
+                                        <input formControlName="local" id="local" type="text" pInputText fluid
+                                            placeholder="ex. Av. Pres. Nicolau Lobato" />
+                                        @if (empresaForm.get('representante.morada.local')?.touched &&
+                                        empresaForm.get('representante.morada.local')?.invalid)
+                                        {
+                                        <p class="text-red-500 text-sm mt-1">
+                                            Este campo é obrigatório e deve ser válido.
+                                        </p>
+                                        }
+                                    </div>
+                                    <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+                                        <div class="flex-auto">
+                                            <label for="aldeia" class="font-medium  mb-2 block">
+                                                Aldeia
+                                            </label>
+                                            <p-select fluid formControlName="aldeia" [options]="aldeias"
+                                                optionLabel="nome" placeholder="Selecione a Aldeia" [filter]="true"
+                                                filterBy="nome" [showClear]="true"
+                                                (onChange)="gerenteRepresentanteAldeiaOnChange($event, 'representante')"
+                                                (onFilter)="gerenteRepresentanteAldeiaFilter($event, 'representante')"
+                                                (onpanelHide)="gerenteRepresentanteOnPanelHide('representante')"
+                                                (onClear)="gerenteRepresentanteOnPanelHide('representante')">
+                                            </p-select>
+                                            @if (empresaForm.get('representante.morada.aldeia')?.touched &&
+                                            empresaForm.get('representante.morada.aldeia')?.invalid)
+                                            {
+                                            <p class="text-red-500 text-sm mt-1">
+                                                Este campo é obrigatório e deve ser válido.
+                                            </p>
+                                            }
+                                        </div>
+                                        <div class="flex-auto">
+                                            <label for="suco" class="font-medium  mb-2 block">
+                                                Suco
+                                            </label>
+                                            <input formControlName="suco" id="suco" type="text" pInputText fluid />
+                                        </div>
+
+                                        <div class="flex-auto">
+                                            <label for="posto" class="font-medium  mb-2 block">
+                                                Posto Administrativo
+                                            </label>
+                                            <input formControlName="postoAdministrativo" id="postoAdministrativo"
+                                                type="text" pInputText fluid />
+                                        </div>
+                                        <div class="flex-auto">
+                                            <label for="municipio" class="font-medium  mb-2 block">
+                                                Municipio
+                                            </label>
+                                            <input formControlName="municipio" id="municipio" type="text" pInputText
+                                                fluid />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-6 col-span-12 md:col-span-6">
+                                <label for="email" class="font-medium  mb-2 block">
+                                    Email
+                                </label>
+                                <input formControlName="email" id="email" type="email" pInputText fluid />
+                                @if (empresaForm.get('representante.email')?.touched &&
+                                empresaForm.get('representante.email')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            <div class="mb-6 col-span-12 md:col-span-6">
+                                <label for="telefone" class="font-medium mb-2 block">
+                                    Nº Telefone
+                                </label>
+                                <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
+                                @if (empresaForm.get('representante.telefone')?.touched &&
+                                empresaForm.get('representante.telefone')?.invalid)
+                                {
+                                <p class="text-red-500 text-sm mt-1">
+                                    Este campo é obrigatório e deve ser válido.
+                                </p>
+                                }
+                            </div>
+                            }
+                        </div>
+                        <div class="mt-6 mb-6 text-left flex justify-between">
+                            <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
+                                (onClick)="activateCallback(2)" />
+                            <p-button [disabled]="disableStepGerente()" label="Continuar" icon="pi pi-arrow-right"
+                                iconPos="right" (onClick)="activateCallback(4)" />
+                        </div>
+                    </form>
+                </ng-template>
+            </p-step-panel>
+
+            <p-step-panel [value]="4">
+                <ng-template #content let-activateCallback="activateCallback">
 
                     <div class="text-white">
                         <div class="max-w-4xl mx-auto p-8">
                             <header class="flex items-center justify-between mb-10">
-                                <h1 class="text-3xl font-bold text-gray-100">Resumo da Inscrição</h1>
-                                <p-button icon="pi pi-sync" (click)="submit(empresaForm)" [loading]="loading"
-                                    [disabled]="!empresaForm.valid" pRipple label="Actualizar" class="w-auto">
-                                </p-button>
+                                <!-- <h1 class="text-3xl font-bold text-gray-100">Resumo da Inscrição</h1> -->
+                                <div class="flex flex-row gap-2">
+                                    <h1 class="text-3xl font-bold text-gray-100">
+                                        Resumo
+                                    </h1>
+                                    <p-button icon="pi pi-file-pdf" size="large" severity="info" [raised]="true"
+                                        printSectionId="myDiv" [useExistingCss]="true" ngxPrint />
+                                </div>
+                                <p-button icon="pi pi-save" (click)="submit(empresaForm)" [loading]="loading"
+                                    [disabled]="!empresaForm.valid" pButton pRipple label="Confirmar e Guardar"
+                                    class="w-auto"></p-button>
                             </header>
-                            <main>
+                            <main id="myDiv">
                                 <section class="bg-gray-800 p-8 rounded-2xl shadow-lg mb-8">
                                     <div class="flex items-center mb-6">
                                         <i class="bi bi-buildings mr-4" style="font-size: 2rem"></i>
@@ -434,11 +1007,11 @@
                                         <div class="md:col-span-2">
                                             <p class="text-sm text-gray-400">Localização:</p>
                                             <p class="text-lg text-gray-100">
-                                                {{ empresaForm.get('sede')?.value }},
-                                                {{ empresaForm.get('aldeia')?.value.nome }},
-                                                {{ empresaForm.get('suco')?.value }},
-                                                {{ empresaForm.get('postoAdministrativo')?.value }},
-                                                {{ empresaForm.get('municipio')?.value }}
+                                                {{ empresaForm.get('sede.local')?.value }} <br>
+                                                {{ empresaForm.get('sede.aldeia')?.value.nome }},
+                                                {{ empresaForm.get('sede.suco')?.value }},
+                                                {{ empresaForm.get('sede.postoAdministrativo')?.value }},
+                                                {{ empresaForm.get('sede.municipio')?.value }}
                                             </p>
                                         </div>
                                     </div>
@@ -464,7 +1037,7 @@
                                             </div>
                                             <div>
                                                 <p class="text-sm text-gray-400">Documento:</p>
-                                                <p class="text-lg text-gray-100">{{ a.tipoDocumento.name }} –
+                                                <p class="text-lg text-gray-100">{{ a.tipoDocumento }} –
                                                     {{ a.numeroDocumento }}
                                                 </p>
                                             </div>
@@ -492,25 +1065,157 @@
                                             <div class="md:col-span-2">
                                                 <p class="text-sm text-gray-400">Endereco:</p>
                                                 <p class="text-lg text-gray-100">
-                                                    {{ a.local }},
-                                                    {{ a.aldeia.nome }},
-                                                    {{ a.suco }},
-                                                    {{ a.postoAdministrativo }},
-                                                    {{ a.municipio }}
+                                                    {{ a.endereco.local }},
+                                                    {{ a.endereco.aldeia.nome }},
+                                                    {{ a.endereco.suco }},
+                                                    {{ a.endereco.postoAdministrativo }},
+                                                    {{ a.endereco.municipio }}
                                                 </p>
                                             </div>
                                         </div>
                                         }
                                     </div>
                                 </section>
-                                <div class="mt-6 mb-6 text-left flex justify-between items-center">
-                                    <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
-                                        (onClick)="activateCallback(2)" />
-                                    <p-button icon="pi pi-sync" (click)="submit(empresaForm)" [loading]="loading"
-                                        [disabled]="!empresaForm.valid" pRipple label="Actualizar" class="w-auto">
-                                    </p-button>
-                                </div>
+                                <section class="bg-gray-800 p-8 rounded-2xl shadow-lg mt-4 mb-8">
+                                    <div class="flex items-center mb-6">
+                                        <i class="bi bi-person-gear text-4xl mr-3"></i>
+                                        <h2 class="text-2xl font-semibold text-gray-200">Gerente
+                                        </h2>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                                        <div>
+                                            <p class="text-sm text-gray-400">Nome:</p>
+                                            <p class="text-lg text-gray-100">
+                                                {{ empresaForm.get('gerente.nome')?.value }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-400">Email:</p>
+                                            <p class="text-lg text-gray-100">
+                                                {{ empresaForm.get('gerente.email')?.value }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-400">Documento:</p>
+                                            <p class="text-lg text-gray-100">
+                                                {{ empresaForm.get('gerente.tipoDocumento')?.value }} -
+                                                {{ empresaForm.get('gerente.numeroDocumento')?.value }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-400">Telemovel:</p>
+                                            <p class="text-lg text-gray-100">
+                                                {{ empresaForm.get('gerente.email')?.value }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-400">Morada:</p>
+                                            <p class="text-lg text-gray-100">
+                                                {{ empresaForm.get('gerente.morada.local')?.value }} <br>
+                                                {{ empresaForm.get('gerente.morada.aldeia')?.value.nome }},
+                                                {{ empresaForm.get('gerente.morada.suco')?.value }},
+                                                {{ empresaForm.get('gerente.morada.postoAdministrativo')?.value }},
+                                                {{ empresaForm.get('gerente.morada.municipio')?.value }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </section>
+                                <section class="bg-gray-800 p-8 rounded-2xl shadow-lg mt-4 mb-8">
+                                    <div class="flex items-center mb-6">
+                                        <!-- <i class="bi bi-person-vcard mr-4" style="font-size: 2rem"></i> -->
+                                        <i class="bi bi-person-badge text-4xl mr-3"></i>
+                                        <h2 class="text-2xl font-semibold text-gray-200">Representante
+                                        </h2>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                                        <div>
+                                            <p class="text-sm text-gray-400">Nome:</p>
+                                            <p class="text-lg text-gray-100">
+                                                {{ empresaForm.get('representante.nome')?.value }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-400">Tipo:</p>
+                                            <p class="text-lg text-gray-100">
+                                                {{ empresaForm.get('representante.tipo')?.value }}
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <p class="text-sm text-gray-400">Documento:</p>
+                                            <p class="text-lg text-gray-100">
+                                                {{ empresaForm.get('representante.tipoDocumento')?.value }} -
+                                                {{ empresaForm.get('representante.numeroDocumento')?.value }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-400">Data Nascimento:</p>
+                                            <p class="text-lg text-gray-100">
+                                                {{ empresaForm.get('representante.dataNascimento')?.value | date: 'dd MMM yyyy' }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-400">Morada:</p>
+                                            <p class="text-lg text-gray-100">
+                                                {{ empresaForm.get('representante.morada.local')?.value }} <br>
+                                                {{ empresaForm.get('representante.morada.aldeia')?.value.nome }},
+                                                {{ empresaForm.get('representante.morada.suco')?.value }},
+                                                {{ empresaForm.get('representante.morada.postoAdministrativo')?.value }},
+                                                {{ empresaForm.get('representante.morada.municipio')?.value }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-400">Estado Civil:</p>
+                                            <p class="text-lg text-gray-100">
+                                                {{ empresaForm.get('representante.estadoCivil')?.value }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-400">Pai:</p>
+                                            <p class="text-lg text-gray-100">
+                                                {{ empresaForm.get('representante.pai')?.value }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-400">Mãe:</p>
+                                            <p class="text-lg text-gray-100">
+                                                {{ empresaForm.get('representante.mae')?.value }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-400">Nacionalidade:</p>
+                                            <p class="text-lg text-gray-100">
+                                                {{ empresaForm.get('representante.nacionalidade')?.value }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-400">Naturalidade:</p>
+                                            <p class="text-lg text-gray-100">
+                                                {{ empresaForm.get('representante.naturalidade')?.value }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-400">Email:</p>
+                                            <p class="text-lg text-gray-100">
+                                                {{ empresaForm.get('representante.email')?.value }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-400">Telemovel:</p>
+                                            <p class="text-lg text-gray-100">
+                                                {{ empresaForm.get('representante.telefone')?.value }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </section>
                             </main>
+                            <div class="mt-6 mb-6 text-left flex justify-between items-center">
+                                <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
+                                    (onClick)="activateCallback(2)" />
+                                <p-button icon="pi pi-save" (click)="submit(empresaForm)" [loading]="loading"
+                                    [disabled]="!empresaForm.valid" pButton pRipple label="Confirmar e Guardar"
+                                    class="w-auto"></p-button>
+                            </div>
                         </div>
 
                     </div>

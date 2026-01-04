@@ -1,13 +1,14 @@
 import { Aldeia, Role } from '@/core/models/data-master.model';
 import { Documento, Empresa } from '@/core/models/entities.model';
-import { TipoPropriedade } from '@/core/models/enums';
+import { TipoNacionalidade, TipoPropriedade } from '@/core/models/enums';
 import { AuthenticationService, DataMasterService, EmpresaService } from '@/core/services';
 import { DocumentosService } from '@/core/services/documentos.service';
-import { maxFileSizeUpload, tipoDocumentoOptions, tipoPropriedadeOptions, tipoRelacaoFamiliaOptions } from '@/core/utils/global-function';
+import { estadoCivilOptions, maxFileSizeUpload, tipoDocumentoOptions, tipoNacionalidadeOptions, tipoPropriedadeOptions, tipoRelacaoFamiliaOptions, tipoRepresentante } from '@/core/utils/global-function';
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { NgxPrintModule } from 'ngx-print';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
@@ -24,7 +25,7 @@ import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-empresa-form',
-  imports: [ReactiveFormsModule, InputText, Select, Button, StepPanel, FileUpload, InputGroup, InputGroupAddon, InputNumber, Stepper, DatePicker, Divider, DatePipe, StepPanels, StepList, Step, Toast],
+  imports: [ReactiveFormsModule, InputText, Select, Button, StepPanel, FileUpload, InputGroup, InputGroupAddon, InputNumber, Stepper, DatePicker, Divider, DatePipe, StepPanels, StepList, Step, Toast, NgxPrintModule],
   templateUrl: './empresa-form.component.html',
   styleUrl: './empresa-form.component.scss',
   providers: [MessageService]
@@ -35,6 +36,8 @@ export class EmpresaFormComponent implements OnInit {
   postos = [];
   sucos = [];
   aldeias: any = [];
+  gerenteListaAldeias: any[] = [];
+  representanteListaAldeias: any[] = [];
   listaSociedadeComercial = [];
   empresaForm!: FormGroup;
   loading = false;
@@ -46,6 +49,8 @@ export class EmpresaFormComponent implements OnInit {
   tipoProriedadeOpts = tipoPropriedadeOptions;
   tipoDocumentoOpts = tipoDocumentoOptions;
   tipoRelacaoFamiliaOpts = tipoRelacaoFamiliaOptions;
+  tipoNacionalidadeOpts = tipoNacionalidadeOptions;
+  tipoEstadoCivilOpts = estadoCivilOptions;
   showAddBtnAcionistas = false;
   selectedRole!: Role;
   listaAldeiaAcionista: any[][] = [];
@@ -55,6 +60,9 @@ export class EmpresaFormComponent implements OnInit {
   uploadURLDocs = signal(`${environment.apiUrl}/documentos`);
   loadingDownloadButtons = new Set<string>();
   loadingRemoveButtons = new Set<string>();
+  tipoRepresentanteOptions = tipoRepresentante;
+  gerenteForeigner: boolean = false;
+  representanteForeigner: boolean = false;
 
   constructor(
     private _fb: FormBuilder,
@@ -74,6 +82,8 @@ export class EmpresaFormComponent implements OnInit {
 
     this.listaSociedadeComercial = this.route.snapshot.data['listaSociedadeComercial']._embedded.sociedadeComercial.map((s: any) => ({ nome: s.nome, value: s.id }));
     this.originalAldeias = [...this.aldeias];
+    this.gerenteListaAldeias = [...this.aldeias];
+    this.representanteListaAldeias = [...this.aldeias];
 
     this.empresa = this.route.snapshot.data['empresaResolver'] as Empresa;
     if (this.empresa) {
@@ -83,85 +93,115 @@ export class EmpresaFormComponent implements OnInit {
     this.uploadURLDocs.set(`${environment.apiUrl}/documentos/${this.authService.currentUserValue.username}/upload`);
   }
 
-  submit(form: FormGroup) {
+  submit(form: FormGroup): void {
     this.loading = true;
-    if (this.empresaForm.valid) {
-
-      let formData = { ...form.value }
-      formData.sede = {
-        id: form.value.idSede,
-        local: form.value.sede,
-        aldeia: {
-          id: form.value.aldeia.value,
-          nome: form.value.aldeia.nome
-        },
-      };
-      formData.sociedadeComercial = {
-        id: formData.sociedadeComercial.value,
-        nome: formData.sociedadeComercial.nome
-      }
-
-      formData.tipoPropriedade = form.value.tipoPropriedade.value;
-      formData.dataRegisto = this.formatDateForLocalDate(form.value.dataRegisto);
-      formData.acionistas = form.value.acionistas.map((a: any) => {
-        return {
-          id: a.id,
-          nome: a.nome,
-          nif: a.nif,
-          tipoDocumento: a.tipoDocumento.value,
-          numeroDocumento: a.numeroDocumento,
-          telefone: a.telefone,
-          email: a.email,
-          acoes: a.acoes,
-          agregadoFamilia: a.agregadoFamilia,
-          relacaoFamilia: a.relacaoFamilia,
-          endereco: {
-            id: a.idLocal,
-            local: a.local,
-            aldeia: {
-              id: a.aldeia.value
-            }
-          }
-        }
-      });
-      formData.documentos = this.uploadedDocs;
-
-      this.empresaService.update(this.authService.currentUserValue.username, formData).subscribe({
-        next: (response) => {
-          this.loading = false;
-          this.isSuccess = true;
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Sucesso',
-            detail: 'A informação da Empresa actualizada com sucesso!'
-          });
-        },
-        error: (error) => {
-          this.loading = false;
-          this.isError = true;
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Desculpe, algo deu errado. Tente novamente ou procure o administrador do sistema para mais informações.'
-          });
-          console.error('Error updating empresa:', error);
-        }
-      });
-
-    } else {
+    if (!this.empresaForm.valid) {
       this.loading = false;
-      // Handle form errors
-      console.error('Form is invalid');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Por favor, verifique os campos obrigatórios e tente novamente.'
+      });
+      return;
     }
+
+    const formData = this.prepareFormData(form.value);
+
+    this.empresaService.update(this.authService.currentUserValue.username, formData).subscribe({
+      next: (response) => {
+        this.loading = false;
+        this.isSuccess = true;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: 'A informação da Empresa actualizada com sucesso!'
+        });
+      },
+      error: (error) => {
+        this.loading = false;
+        this.isError = true;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Desculpe, algo deu errado. Tente novamente ou procure o administrador do sistema para mais informações. ' + error
+        });
+      }
+    });
+  }
+
+  private prepareFormData(formValue: any): any {
+    return {
+      ...formValue,
+      sede: this.mapSedeData(formValue.sede),
+      sociedadeComercial: this.mapSociedadeComercial(formValue.sociedadeComercial),
+      tipoPropriedade: formValue.tipoPropriedade?.value,
+      dataRegisto: this.formatDateForLocalDate(formValue.dataRegisto),
+      acionistas: this.mapAcionistas(formValue.acionistas),
+      gerente: this.mapPessoaWithMorada(formValue.gerente),
+      representante: this.mapPessoaWithMorada(formValue.representante),
+      documentos: this.uploadedDocs
+    };
+  }
+
+  private mapSedeData(sede: any): any {
+    return {
+      ...sede,
+      aldeia: {
+        id: sede.aldeia?.value,
+        nome: sede.aldeia?.nome
+      }
+    };
+  }
+
+  private mapSociedadeComercial(sociedade: any): any {
+    return {
+      id: sociedade?.value,
+      nome: sociedade?.nome
+    };
+  }
+
+  private mapAcionistas(acionistas: any[]): any[] {
+    return acionistas.map(acionista => ({
+      id: acionista.id,
+      nome: acionista.nome,
+      nif: acionista.nif,
+      tipoDocumento: acionista.tipoDocumento,
+      numeroDocumento: acionista.numeroDocumento,
+      telefone: acionista.telefone,
+      email: acionista.email,
+      acoes: acionista.acoes,
+      agregadoFamilia: acionista.agregadoFamilia,
+      relacaoFamilia: acionista.relacaoFamilia,
+      endereco: {
+        ...acionista.endereco,
+        aldeia: {
+          id: acionista.endereco.aldeia?.value
+        }
+      }
+    }));
+  }
+
+  private mapPessoaWithMorada(pessoa: any): any {
+    return {
+      ...pessoa,
+      morada: {
+        ...pessoa.morada,
+        aldeia: {
+          id: pessoa.morada.aldeia?.value
+        }
+      }
+    };
   }
 
   aldeiaOnChange(event: SelectChangeEvent): void {
     if (event.value) {
       this.dataMasterService.getAldeiaById(event.value.value).subscribe((aldeia: Aldeia) => {
         this.empresaForm.patchValue({
-          municipio: aldeia.suco.postoAdministrativo.municipio.nome,
-          postoAdministrativo: aldeia.suco.postoAdministrativo.nome,
-          suco: aldeia.suco.nome
+          sede: {
+            municipio: aldeia.suco.postoAdministrativo.municipio.nome,
+            postoAdministrativo: aldeia.suco.postoAdministrativo.nome,
+            suco: aldeia.suco.nome
+          }
         });
 
       });
@@ -192,6 +232,93 @@ export class EmpresaFormComponent implements OnInit {
   onPanelHide() {
     this.aldeias = [...this.originalAldeias];
   }
+
+  gerenteRepresentanteAldeiaOnChange(event: SelectChangeEvent, formControl: string): void {
+    if (event.value) {
+      this.dataMasterService.getAldeiaById(event.value.value).subscribe((aldeia: Aldeia) => {
+        this.empresaForm.get(formControl)?.get('morada')?.patchValue({
+          municipio: aldeia.suco.postoAdministrativo.municipio.nome,
+          postoAdministrativo: aldeia.suco.postoAdministrativo.nome,
+          suco: aldeia.suco.nome
+        });
+
+      });
+    } else {
+      this.empresaForm.get(formControl)?.patchValue({
+        municipio: null,
+        postoAdministrativo: null,
+        suco: null
+      });
+    }
+  }
+
+  gerenteRepresentanteAldeiaFilter(event: SelectFilterEvent, formControl: string) {
+    const query = event.filter?.trim();
+    if (query && query.length) {
+      this.dataMasterService.searchAldeiasByNome(query)
+        .subscribe(resp => {
+          if (formControl === 'gerente') {
+            this.gerenteListaAldeias = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+          } else {
+            this.representanteListaAldeias = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+          }
+          this.loading = false;
+        });
+    } else {
+      // filter cleared — reset full list
+      if (formControl === 'gerente') {
+        this.gerenteListaAldeias = [...this.originalAldeias];
+      } else {
+        this.representanteListaAldeias = [...this.originalAldeias];
+      }
+
+    }
+  }
+
+
+  gerenteRepresentanteOnPanelHide(formControl: string) {
+    if (formControl === 'gerente') {
+      this.gerenteListaAldeias = [...this.originalAldeias];
+    } else {
+      this.representanteListaAldeias = [...this.originalAldeias];
+    }
+    this.empresaForm.get(formControl)?.get('morada')?.reset();
+  }
+
+  nacionalidadeOnChange(event: SelectChangeEvent, formControl: string): void {
+    if (event.value) {
+      const value: TipoNacionalidade = event.value;
+      if (value === TipoNacionalidade.estrangeiro) {
+        this.setForeigner(formControl, true);
+        this.empresaForm.get(`${formControl}.numeroVisto`)?.addValidators(Validators.required);
+        this.empresaForm.get(`${formControl}.validadeVisto`)?.addValidators(Validators.required);
+      } else {
+        this.setForeigner(formControl, false);
+        this.empresaForm.get(`${formControl}.numeroVisto`)?.removeValidators(Validators.required);
+        this.empresaForm.get(`${formControl}.validadeVisto`)?.removeValidators(Validators.required);
+      }
+    } else {
+      this.setForeigner(formControl, false);
+      this.empresaForm.get(`${formControl}.numeroVisto`)?.removeValidators(Validators.required);
+      this.empresaForm.get(`${formControl}.validadeVisto`)?.removeValidators(Validators.required);
+    }
+    this.empresaForm.get(`${formControl}.numeroVisto`)?.updateValueAndValidity();
+    this.empresaForm.get(`${formControl}.validadeVisto`)?.updateValueAndValidity();
+  }
+
+  sociedadeComercialOnChange({ value }: SelectChangeEvent): void {
+    const tipo = this.getTipoFromNome(value?.nome);
+    this.empresaForm.patchValue({
+      tipoPropriedade: tipoPropriedadeOptions.find(t => t.value === tipo)
+    });
+  }
+
+  private getTipoFromNome(nome?: unknown): TipoPropriedade {
+    const text = String(nome ?? '').toLowerCase();
+    const isUnipessoal = /\bunipessoal\b/.test(text);
+    return isUnipessoal ? TipoPropriedade.individual : TipoPropriedade.sociedade;
+  }
+
 
   tipoPropriedadeChange(event: SelectChangeEvent) {
     if (!event.value) {
@@ -280,16 +407,6 @@ export class EmpresaFormComponent implements OnInit {
     });
   }
 
-  onFileRemove(e: { file: any }) {
-    const key = e.file.__key ?? `${e.file.name}-${e.file.size}-${e.file.lastModified}`;
-    this.uploadedDocs = this.uploadedDocs.filter(f => (f.__key ?? `${f.name}-${f.size}-${f.lastModified}`) !== key);
-  }
-
-  // Fired when the "clear" button is pressed
-  onFileClear() {
-    this.uploadedDocs = [];
-  }
-
   disableStepEmpresa(): boolean {
     return !!(
       this.empresaForm.get('nome')?.invalid ||
@@ -307,6 +424,14 @@ export class EmpresaFormComponent implements OnInit {
     return !!(
       this.empresaForm.get('tipoPropriedade')?.invalid ||
       this.acionistasArray.invalid);
+  }
+
+  disableStepGerente(): boolean {
+    return !!(
+      this.empresaForm.get('gerente.nome')?.invalid ||
+      this.empresaForm.get('gerente.email')?.invalid ||
+      this.empresaForm.get('gerente.morada.local')?.invalid ||
+      this.empresaForm.get('gerente.morada.aldeia')?.invalid);
   }
 
   disableStepConta(): boolean {
@@ -380,6 +505,33 @@ export class EmpresaFormComponent implements OnInit {
     return `${mb.toFixed(2)} MB`;
   }
 
+  getCurrentPosition(): void {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.empresaForm.get('latitude')?.setValue(position.coords.latitude);
+        this.empresaForm.get('longitude')?.setValue(position.coords.longitude);
+      });
+    }
+  }
+
+  onRepresentanteTipoChange({ value }: SelectChangeEvent): void {
+    switch (value) {
+      case 'Empresa':
+        this.empresaForm.get('representante')?.get('nomeEmpresa')?.setValidators([Validators.required, Validators.minLength(3)]);
+        this.empresaForm.get('representante')?.get('nome')?.setValidators([Validators.required, Validators.minLength(3)]);
+        break;
+
+      case 'Individual':
+        this.empresaForm.get('representante')?.get('nome')?.setValidators([Validators.required, Validators.minLength(3)]);
+        this.empresaForm.get('representante')?.get('nomeEmpresa')?.clearValidators();
+        this.empresaForm.get('representante')?.get('nomeEmpresa')?.setValue(null);
+        break;
+    }
+
+    this.empresaForm.get('representante')?.get('nomeEmpresa')?.updateValueAndValidity();
+    this.empresaForm.get('representante')?.get('nome')?.updateValueAndValidity();
+  }
+
   get acionistasArray(): FormArray {
     return this.empresaForm.get('acionistas') as FormArray;
   }
@@ -405,13 +557,20 @@ export class EmpresaFormComponent implements OnInit {
       agregadoFamilia: [null, [Validators.required]],
       relacaoFamilia: [null, [Validators.required]],
       sectionTitle: [`Acionista n.º ${this.acionistasArray.length + 1}`],
-      idLocal: [null],
-      local: [null, [Validators.required]],
-      municipio: new FormControl({ value: null, disabled: true }),
-      postoAdministrativo: new FormControl({ value: null, disabled: true }),
-      suco: new FormControl({ value: null, disabled: true }),
-      aldeia: [null, [Validators.required]],
+      endereco: this._fb.group({
+        id: [null],
+        local: [null, [Validators.required]],
+        municipio: new FormControl({ value: null, disabled: true }),
+        postoAdministrativo: new FormControl({ value: null, disabled: true }),
+        suco: new FormControl({ value: null, disabled: true }),
+        aldeia: [null, [Validators.required]],
+      }),
     });
+  }
+
+  setForeigner(field: string, value: boolean) {
+    const key = `${field}Foreigner` as keyof EmpresaFormComponent;
+    (this as any)[key] = value;
   }
 
   private initForm(): void {
@@ -419,13 +578,15 @@ export class EmpresaFormComponent implements OnInit {
       id: [null],
       nome: [null, [Validators.required, Validators.minLength(3)]],
       nif: [null, [Validators.required]],
-      idSede: [null],
-      sede: [null, [Validators.required]],
+      sede: this._fb.group({
+        id: [null],
+        local: [null, [Validators.required]],
+        municipio: new FormControl({ value: null, disabled: true }),
+        postoAdministrativo: new FormControl({ value: null, disabled: true }),
+        suco: new FormControl({ value: null, disabled: true }),
+        aldeia: [null, [Validators.required]],
+      }),
       sociedadeComercial: [null, [Validators.required]],
-      municipio: new FormControl({ value: null, disabled: true }),
-      postoAdministrativo: new FormControl({ value: null, disabled: true }),
-      suco: new FormControl({ value: null, disabled: true }),
-      aldeia: [null, [Validators.required]],
       numeroRegistoComercial: [null, [Validators.required]],
       capitalSocial: [null, [Validators.required]],
       dataRegisto: [null, [Validators.required]],
@@ -433,10 +594,117 @@ export class EmpresaFormComponent implements OnInit {
       telemovel: [null, [Validators.required]],
       tipoPropriedade: [null, [Validators.required]],
       acionistas: this._fb.array([]),
-      totalTrabalhadores: [null],
-      volumeNegocioAnual: [null],
+      totalTrabalhadores: [null, [Validators.required, Validators.min(1)]],
+      volumeNegocioAnual: [null, Validators.required],
       balancoTotalAnual: [null, [Validators.required]],
+      latitude: [null, [Validators.required, Validators.min(-90), Validators.max(90)]],
+      longitude: [null, [Validators.required, Validators.min(-180), Validators.max(180)]],
+      email: [null, [Validators.required, Validators.email]],
+      gerente: this._fb.group({
+        id: [null],
+        nome: [null, Validators.required],
+        telefone: [null, Validators.required],
+        email: [null, [Validators.required, Validators.email]],
+        tipoDocumento: [null, [Validators.required]],
+        numeroDocumento: [, [Validators.required]],
+        nacionalidade: [null, [Validators.required]],
+        numeroVisto: [null],
+        validadeVisto: [null],
+        naturalidade: [null, [Validators.required]],
+        estadoCivil: [null, [Validators.required]],
+        morada: this._fb.group({
+          id: [null],
+          local: [null, [Validators.required]],
+          municipio: new FormControl({ value: null, disabled: true }),
+          postoAdministrativo: new FormControl({ value: null, disabled: true }),
+          suco: new FormControl({ value: null, disabled: true }),
+          aldeia: [null, [Validators.required]],
+        }),
+      }),
+      representante: this._fb.group({
+        id: [null],
+        tipo: [null, [Validators.required]],
+        nomeEmpresa: [null],
+        nome: [null],
+        pai: [null, [Validators.required]],
+        mae: [null, [Validators.required]],
+        dataNascimento: [null, [Validators.required]],
+        estadoCivil: [null, [Validators.required]],
+        nacionalidade: [null, [Validators.required]],
+        numeroVisto: [null],
+        validadeVisto: [null],
+        naturalidade: [null, [Validators.required]],
+        telefone: [null, [Validators.required]],
+        email: [null, [Validators.required, Validators.email]],
+        tipoDocumento: [null, [Validators.required]],
+        numeroDocumento: [, [Validators.required]],
+        morada: this._fb.group({
+          id: [null],
+          local: [null, [Validators.required]],
+          municipio: new FormControl({ value: null, disabled: true }),
+          postoAdministrativo: new FormControl({ value: null, disabled: true }),
+          suco: new FormControl({ value: null, disabled: true }),
+          aldeia: [null, [Validators.required]],
+        }),
+      })
     });
+  }
+
+  private mapGerenteForm(empresa: Empresa): void {
+    if (empresa.gerente) {
+      this.empresaForm.get('gerente')?.patchValue({
+        id: empresa.gerente.id,
+        nome: empresa.gerente.nome,
+        telefone: empresa.gerente.telefone,
+        email: empresa.gerente.email,
+        tipoDocumento: empresa.gerente.tipoDocumento ? this.tipoDocumentoOpts.find(td => td.value === empresa.gerente.tipoDocumento).value : null,
+        numeroDocumento: empresa.gerente.numeroDocumento,
+        nacionalidade: empresa.gerente.nacionalidade ? this.tipoNacionalidadeOpts.find(tn => tn.value === empresa.gerente.nacionalidade).value : null,
+        numeroVisto: empresa.gerente.numeroVisto,
+        validadeVisto: empresa.gerente.validadeVisto ? new Date(empresa.gerente.validadeVisto) : null,
+        naturalidade: empresa.gerente.naturalidade,
+        estadoCivil: empresa.gerente.estadoCivil ? this.tipoEstadoCivilOpts.find(ec => ec.value === empresa.gerente.estadoCivil).value : null,
+        morada: {
+          id: empresa.gerente.morada.id,
+          local: empresa.gerente.morada.local,
+          municipio: empresa.gerente.morada.aldeia?.suco.postoAdministrativo.municipio.nome,
+          postoAdministrativo: empresa.gerente.morada.aldeia?.suco.postoAdministrativo.nome,
+          suco: empresa.gerente.morada.aldeia?.suco.nome,
+          aldeia: empresa.gerente.morada.aldeia ? { nome: empresa.gerente.morada.aldeia.nome, value: empresa.gerente.morada.aldeia.id } : null,
+        },
+      });
+    }
+  }
+
+  private mapRepresentanteForm(empresa: Empresa): void {
+    if (empresa.representante) {
+      this.empresaForm.get('representante')?.patchValue({
+        id: empresa.representante.id,
+        tipo: empresa.representante.tipo,
+        nomeEmpresa: empresa.representante.nomeEmpresa,
+        nome: empresa.representante.nome,
+        pai: empresa.representante.pai,
+        mae: empresa.representante.mae,
+        dataNascimento: empresa.representante.dataNascimento ? new Date(empresa.representante.dataNascimento) : null,
+        estadoCivil: empresa.representante.estadoCivil ? this.tipoEstadoCivilOpts.find(ec => ec.value === empresa.representante.estadoCivil).value : null,
+        nacionalidade: empresa.representante.nacionalidade ? this.tipoNacionalidadeOpts.find(tn => tn.value === empresa.representante.nacionalidade).value : null,
+        numeroVisto: empresa.representante.numeroVisto,
+        validadeVisto: empresa.representante.validadeVisto ? new Date(empresa.representante.validadeVisto) : null,
+        naturalidade: empresa.representante.naturalidade,
+        telefone: empresa.representante.telefone,
+        email: empresa.representante.email,
+        tipoDocumento: empresa.representante.tipoDocumento ? this.tipoDocumentoOpts.find(td => td.value === empresa.representante.tipoDocumento).value : null,
+        numeroDocumento: empresa.representante.numeroDocumento,
+        morada: {
+          id: empresa.representante.morada.id,
+          local: empresa.representante.morada.local,
+          municipio: empresa.representante.morada.aldeia?.suco.postoAdministrativo.municipio.nome,
+          postoAdministrativo: empresa.representante.morada.aldeia?.suco.postoAdministrativo.nome,
+          suco: empresa.representante.morada.aldeia?.suco.nome,
+          aldeia: empresa.representante.morada.aldeia ? { nome: empresa.representante.morada.aldeia.nome, value: empresa.representante.morada.aldeia.id } : null,
+        },
+      });
+    }
   }
 
   private mapEmpresaForm(empresa: Empresa): void {
@@ -444,23 +712,31 @@ export class EmpresaFormComponent implements OnInit {
       id: empresa.id,
       nome: empresa.nome,
       nif: empresa.nif,
-      sede: empresa.sede.local,
-      idSede: empresa.sede.id,
       sociedadeComercial: empresa.sociedadeComercial ? { nome: empresa.sociedadeComercial.nome, value: empresa.sociedadeComercial.id } : null,
-      aldeia: empresa.sede.aldeia ? { nome: empresa.sede.aldeia.nome, value: empresa.sede.aldeia.id } : null,
-      municipio: empresa.sede.aldeia?.suco.postoAdministrativo.municipio.nome,
-      postoAdministrativo: empresa.sede.aldeia?.suco.postoAdministrativo.nome,
-      suco: empresa.sede.aldeia?.suco.nome,
       numeroRegistoComercial: empresa.numeroRegistoComercial,
       capitalSocial: empresa.capitalSocial,
       dataRegisto: empresa.dataRegisto ? new Date(empresa.dataRegisto) : null,
+      sede: {
+        id: empresa.sede.id,
+        local: empresa.sede.local,
+        municipio: empresa.sede.aldeia?.suco.postoAdministrativo.municipio.nome,
+        postoAdministrativo: empresa.sede.aldeia?.suco.postoAdministrativo.nome,
+        suco: empresa.sede.aldeia?.suco.nome,
+        aldeia: empresa.sede.aldeia ? { nome: empresa.sede.aldeia.nome, value: empresa.sede.aldeia.id } : null,
+      },
+      latitude: empresa.latitude,
+      longitude: empresa.longitude,
       telefone: empresa.telefone,
       telemovel: empresa.telemovel,
       tipoPropriedade: empresa.tipoPropriedade ? this.tipoProriedadeOpts.find(tp => tp.value === empresa.tipoPropriedade) : null,
       totalTrabalhadores: empresa.totalTrabalhadores,
       volumeNegocioAnual: empresa.volumeNegocioAnual,
       balancoTotalAnual: empresa.balancoTotalAnual,
+      email: empresa.email,
     });
+
+    this.mapGerenteForm(empresa);
+    this.mapRepresentanteForm(empresa);
 
     switch (empresa.tipoPropriedade) {
       case TipoPropriedade.individual:
@@ -473,19 +749,21 @@ export class EmpresaFormComponent implements OnInit {
             id: acionista.id,
             nome: acionista.nome,
             nif: acionista.nif,
-            tipoDocumento: acionista.tipoDocumento ? this.tipoDocumentoOpts.find(td => td.value === acionista.tipoDocumento) : null,
+            tipoDocumento: acionista.tipoDocumento ? this.tipoDocumentoOpts.find(td => td.value === acionista.tipoDocumento).value : null,
             numeroDocumento: acionista.numeroDocumento,
             telefone: acionista.telefone,
             email: acionista.email,
             acoes: acionista.acoes,
             agregadoFamilia: acionista.agregadoFamilia,
             relacaoFamilia: acionista.relacaoFamilia,
-            local: acionista.endereco.local,
-            idLocal: acionista.endereco.id,
-            municipio: acionista.endereco.aldeia?.suco.postoAdministrativo.municipio.nome,
-            postoAdministrativo: acionista.endereco.aldeia?.suco.postoAdministrativo.nome,
-            suco: acionista.endereco.aldeia?.suco.nome,
-            aldeia: acionista.endereco.aldeia ? { nome: acionista.endereco.aldeia.nome, value: acionista.endereco.aldeia.id } : null,
+            endereco: {
+              id: acionista.endereco.id,
+              local: acionista.endereco.local,
+              municipio: acionista.endereco.aldeia?.suco.postoAdministrativo.municipio.nome,
+              postoAdministrativo: acionista.endereco.aldeia?.suco.postoAdministrativo.nome,
+              suco: acionista.endereco.aldeia?.suco.nome,
+              aldeia: acionista.endereco.aldeia ? { nome: acionista.endereco.aldeia.nome, value: acionista.endereco.aldeia.id } : null,
+            },
           });
         }
         break;
@@ -502,19 +780,21 @@ export class EmpresaFormComponent implements OnInit {
               id: acionista.id,
               nome: acionista.nome,
               nif: acionista.nif,
-              tipoDocumento: acionista.tipoDocumento ? this.tipoDocumentoOpts.find(td => td.value === acionista.tipoDocumento) : null,
+              tipoDocumento: acionista.tipoDocumento ? this.tipoDocumentoOpts.find(td => td.value === acionista.tipoDocumento).value : null,
               numeroDocumento: acionista.numeroDocumento,
               telefone: acionista.telefone,
               email: acionista.email,
               acoes: acionista.acoes,
               agregadoFamilia: acionista.agregadoFamilia,
               relacaoFamilia: acionista.relacaoFamilia,
-              idLocal: acionista.endereco.id,
-              local: acionista.endereco.local,
-              municipio: acionista.endereco.aldeia?.suco.postoAdministrativo.municipio.nome,
-              postoAdministrativo: acionista.endereco.aldeia?.suco.postoAdministrativo.nome,
-              suco: acionista.endereco.aldeia?.suco.nome,
-              aldeia: acionista.endereco.aldeia ? { nome: acionista.endereco.aldeia.nome, value: acionista.endereco.aldeia.id } : null,
+              endereco: {
+                id: acionista.endereco.id,
+                local: acionista.endereco.local,
+                municipio: acionista.endereco.aldeia?.suco.postoAdministrativo.municipio.nome,
+                postoAdministrativo: acionista.endereco.aldeia?.suco.postoAdministrativo.nome,
+                suco: acionista.endereco.aldeia?.suco.nome,
+                aldeia: acionista.endereco.aldeia ? { nome: acionista.endereco.aldeia.nome, value: acionista.endereco.aldeia.id } : null,
+              },
             });
           });
         }

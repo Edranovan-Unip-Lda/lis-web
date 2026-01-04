@@ -48,7 +48,6 @@ export class Register {
     representanteListaAldeias: any[] = [];
     listaSociedadeComercial = [];
 
-    layoutService = inject(LayoutService);
     empresaForm!: FormGroup;
 
     loading = false;

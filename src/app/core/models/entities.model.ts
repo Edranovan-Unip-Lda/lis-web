@@ -57,11 +57,14 @@ export interface Gerente extends BaseModel {
     naturalidade: string;
     nacionalidade: string;
     estadoCivil: string;
+    numeroVisto: string;
+    validadeVisto: string;
 }
 
 export interface Representante extends BaseModel {
     tipo: string;
     nome: string;
+    nomeEmpresa: string;
     pai: string;
     mae: string;
     dataNascimento: string;
@@ -73,6 +76,8 @@ export interface Representante extends BaseModel {
     numeroDocumento: string;
     email: string;
     telefone: string;
+    numeroVisto: string;
+    validadeVisto: string;
 }
 
 export interface Acionista extends BaseModel {

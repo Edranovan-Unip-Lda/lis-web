@@ -121,6 +121,10 @@ export class CertificadoLicencaCategoriaChartsComponent {
           }
         },
         line: {
+           dataLabels: {
+            enabled: true,
+            color: '#e5e7eb'
+          },
           marker: {
             enabled: true,
             radius: 4

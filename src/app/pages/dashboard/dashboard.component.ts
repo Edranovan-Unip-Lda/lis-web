@@ -1,7 +1,6 @@
 import { BarChartDto, CategoryDistributionDto, Kpis, LicensesPerMonthDto, MapDataDto } from '@/core/models/entities.model';
 import { DashboardService } from '@/core/services';
 import { StatsWidget } from '@/pages/dashboard/components/statswidget';
-import { CustomerService } from '@/pages/service/customer.service';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -16,7 +15,7 @@ import { EmpresaMapComponent } from './empresa-map/empresa-map.component';
     selector: 'app-dashboard',
     standalone: true,
     imports: [FormsModule, Select, StatsWidget, EmpresaMapComponent, CertificadoLicencaCategoriaChartsComponent, CertificadoLicencaMunicipioPieComponent, CertificadoLicencaEstadoComponent],
-    providers: [CustomerService, providePartialHighcharts({ modules: () => [import('highcharts/esm/modules/map')] })],
+    providers: [providePartialHighcharts({ modules: () => [import('highcharts/esm/modules/map')] })],
     templateUrl: './dashboard.component.html',
     styleUrl: './dashboard.component.scss',
 })
