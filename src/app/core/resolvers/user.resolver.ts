@@ -60,6 +60,17 @@ export const getUserByUsernameResolver: ResolveFn<any> = (route: ActivatedRouteS
     }
 }
 
+export const getUserProfileResolver: ResolveFn<any> = () => {
+    const authService = inject(AuthenticationService);
+    const service = inject(UserService);
+    const user = authService.currentUserValue;
+    if (user && user.username) {
+        return service.getByProfileByUsername(user.username);
+    } else {
+        return of(null);
+    }
+}
+
 /**
  * Resolves the token from the query string and redirects to the index route
  * if the token is invalid or missing.

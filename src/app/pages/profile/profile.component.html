@@ -1,0 +1,74 @@
+<div class="card">
+    <span class="text-xl font-bold mb-6 block">
+        Perfil de Utilizadór
+    </span>
+
+    <!-- Success/Error Message -->
+    @for (message of messages(); track message; let first = $first) {
+    <p-message [severity]="message.severity" [text]="message.content" [icon]="message.icon" [life]="3000" closable />
+    }
+
+    <div class="grid grid-cols-12 gap-4">
+        <div class="col-span-12 lg:col-span-2">
+            <!-- <div class=" font-medium text-xl mb-4">Profile</div> -->
+            <p class="m-0 p-0 leading-normal mr-4">
+                Atualize suas informações de perfil e palavra-passe aqui.
+            </p>
+        </div>
+        <div class="col-span-12 lg:col-span-10">
+            <form [formGroup]="userForm">
+                <div class="grid grid-cols-12 gap-4">
+                    <div class="mb-6 col-span-12 md:col-span-6">
+                        <label for="firstName" class="font-medium  mb-2 block">
+                            Nome próprio
+                        </label>
+                        <input formControlName="firstName" id="firstName" type="text" pInputText fluid />
+                    </div>
+                    <div class="mb-6 col-span-12 md:col-span-6">
+                        <label for="lastName" class="font-medium  mb-2 block">
+                            Apelido
+                        </label>
+                        <input formControlName="lastName" id="lastName" type="text" pInputText fluid />
+                    </div>
+                    <div class="mb-6 col-span-12">
+                        <label for="email" class="font-medium  mb-2 block"> Email
+                        </label>
+                        <input formControlName="email" id="email" type="text" pInputText fluid />
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-6 col-span-12">
+                        <label for="currentPassword" class="font-medium  mb-2 block">
+                            Palavra-passe Atual
+                        </label>
+                        <p-password formControlName="currentPassword" id="currentPassword" [feedback]="true"
+                            [fluid]="true" [toggleMask]="true" />
+                    </div>
+                    <div class="mb-6 col-span-12 md:col-span-6">
+                        <label for="newPassword" class="font-medium  mb-2 block">
+                            Nova Palavra-passe
+                        </label>
+                        <p-password formControlName="newPassword" id="newPassword" [feedback]="true" [fluid]="true"
+                            [toggleMask]="true" />
+                    </div>
+                    <div class="mb-6 col-span-12 md:col-span-6">
+                        <label for="confirmPassword" class="font-medium  mb-2 block">
+                            Confirmar nova palavra-passe
+                        </label>
+                        <p-password formControlName="confirmPassword" id="confirmPassword" [feedback]="false"
+                            [fluid]="true" [toggleMask]="true" />
+                    </div>
+
+
+                    <div class="col-span-12">
+                        <p-button (click)="updateUser(userForm)" icon="pi pi-sync" [loading]="loading"
+                            [disabled]="!userForm.valid" pRipple label="Atualizar" class="w-auto mt-3">
+                        </p-button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<p-toast position="bottom-right" />

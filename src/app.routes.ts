@@ -2,7 +2,8 @@ import { Role } from '@/core/models/enums';
 import { getDashboardData } from '@/core/resolvers/dashboard.resolver';
 import { getByUsernameResolver } from '@/core/resolvers/empresa.resolver';
 import { getUnreadNotificationsResolver } from '@/core/resolvers/notificacao.resolver';
-import { authenticationCanActivate, canActivateByRole, loginGuard } from '@/core/security/route.guard';
+import { getUserProfileResolver } from '@/core/resolvers/user.resolver';
+import { authenticationCanActivate, canActivateByRole } from '@/core/security/route.guard';
 import { AppLayout } from '@/layout/components/app.layout';
 import { DashboardComponent } from '@/pages/dashboard/dashboard.component';
 import { Routes } from '@angular/router';
@@ -89,6 +90,14 @@ export const appRoutes: Routes = [
                 data: { breadcrumb: 'Dados Mestre', role: [Role.admin] },
                 loadChildren: () => import('@/pages/dados-mestre/dados-mestre.route'),
                 canActivate: [canActivateByRole],
+            },
+            {
+                path: 'profile',
+                data: { breadcrumb: 'Perfil' },
+                resolve: {
+                    userData: getUserProfileResolver,
+                },
+                loadComponent: () => import('@/pages/profile/profile.component').then((c) => c.ProfileComponent)
             }
         ]
     },

@@ -23,6 +23,10 @@ export class UserService {
     return this.http.put<User>(`${this.apiUrl}/${username}`, formData).pipe(take(1));
   }
 
+  updateProfile(username: string, formData: any): Observable<User> {
+    return this.http.patch<User>(`${this.apiUrl}/${username}/profile`, formData).pipe(take(1));
+  }
+
   deleteSignature(username: string): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/${username}/signature`).pipe(take(1));
   }
