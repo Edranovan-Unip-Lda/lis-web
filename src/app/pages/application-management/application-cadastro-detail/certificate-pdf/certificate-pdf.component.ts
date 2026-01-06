@@ -1,5 +1,6 @@
 import { CertificadoCadastro } from '@/core/models/entities.model';
 import { Categoria } from '@/core/models/enums';
+import { DocumentosService } from '@/core/services';
 import { DatePipe, Location, NgStyle } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -19,10 +20,12 @@ export class CertificatePdfComponent {
   dataValido = new Date();
   industrialCSS!: any;
   comercialCSS!: any;
+  imageUrl!: string;
 
   constructor(
     private router: ActivatedRoute,
-    private location: Location
+    private location: Location,
+    private documentoService: DocumentosService,
   ) { }
 
   ngOnInit(): void {
@@ -31,6 +34,8 @@ export class CertificatePdfComponent {
     this.certificadoData.updatedAt = new Date(this.certificadoData.updatedAt)
     this.certificadoData.updatedAt.setFullYear(this.certificadoData.updatedAt.getFullYear() + 1);
     this.dataValido = this.certificadoData.updatedAt;
+
+    this.loadImage(this.certificadoData.assinatura.id);
 
     this.industrialCSS = {
       'background-image': 'url("/images/bg-industrial.png")',
@@ -44,6 +49,16 @@ export class CertificatePdfComponent {
       'background-position': 'center',
       'background-repeat': 'no-repeat'
     }
+  }
+
+  loadImage(id: number) {
+    this.documentoService.downloadById(id).subscribe(blob => {
+      if (this.imageUrl) {
+        URL.revokeObjectURL(this.imageUrl);
+      }
+
+      this.imageUrl = URL.createObjectURL(blob);
+    });
   }
 
   getCategoriaStyle() {

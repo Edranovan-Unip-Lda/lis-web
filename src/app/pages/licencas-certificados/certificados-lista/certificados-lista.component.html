@@ -15,9 +15,7 @@
                 <th class="white-space-nowrap">Nº Certificado
                 </th>
                 <th pSortableColumn="email" class="white-space-nowrap">
-                    Nº Registo Comercial
-                    <p-sortIcon field="email">
-                    </p-sortIcon>
+                    Empresa
                 </th>
                 <th class="white-space-nowrap">
                     Sede
@@ -34,13 +32,13 @@
         <ng-template #body let-cert>
             <tr>
                 <td>
-                    {{ cert.pedidoInscricaoCadastro.aplicante.numero }}
+                    {{ cert.aplicanteNumero }}
                 </td>
                 <td>
-                    {{cert.numeroRegistoComercial}}
+                    {{cert.sociedadeComercial}}
                 </td>
                 <td>
-                    {{cert.sede.local}} - {{cert.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
+                    {{cert.sedeLocal}} - {{cert.sedeAldeiaNome}}, {{cert.sedeSucoNome}}, {{cert.sedePostoNome}}, {{cert.sedeMunicipioNome}}
                 </td>
                 <td>
                     {{ cert.dataValidade | date: 'dd/MM/yyyy'}}

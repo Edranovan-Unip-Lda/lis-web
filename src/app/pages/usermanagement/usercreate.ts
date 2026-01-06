@@ -1,7 +1,7 @@
-import { User } from '@/core/models/entities.model';
+import { Documento, User } from '@/core/models/entities.model';
 import { Role } from '@/core/models/enums';
-import { UserService } from '@/core/services';
-import { categoryTpesOptions, mapToIdAndName, mapToIdAndNome, roleOptions, statusOptions } from '@/core/utils/global-function';
+import { AuthenticationService, UserService } from '@/core/services';
+import { mapToIdAndName, mapToIdAndNome, maxFileSizeUpload, roleOptions, statusOptions } from '@/core/utils/global-function';
 import { mustMatch } from '@/core/validators/must-match';
 import { CommonModule } from '@angular/common';
 import { Component, signal } from '@angular/core';
@@ -18,11 +18,13 @@ import { RippleModule } from 'primeng/ripple';
 import { Select } from 'primeng/select';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TextareaModule } from 'primeng/textarea';
+import { Toast } from 'primeng/toast';
+import { environment } from 'src/environments/environment';
 
 @Component({
     selector: 'user-create',
     standalone: true,
-    imports: [Select, InputText, TextareaModule, CommonModule, FileUploadModule, ButtonModule, InputGroupModule, RippleModule, ReactiveFormsModule, PasswordModule, MessageModule, SelectButtonModule, InputTextModule],
+    imports: [Select, InputText, TextareaModule, CommonModule, FileUploadModule, ButtonModule, InputGroupModule, RippleModule, ReactiveFormsModule, PasswordModule, MessageModule, SelectButtonModule, InputTextModule, Toast],
     templateUrl: './user-form.html',
     providers: [MessageService]
 })
@@ -38,15 +40,23 @@ export class UserCreate {
     messages = signal<any[]>([]);
     username!: string;
     showCategoria = false;
+    isDirector = false;
+    maxFileSize = maxFileSizeUpload;
+    uploadURLDocs = signal(`${environment.apiUrl}/documentos`);
+    signatureDoc!: Documento;
+    loadingRemoveBtn = false;
 
     constructor(
         private _fb: FormBuilder,
         private userService: UserService,
         private route: ActivatedRoute,
+        private authService: AuthenticationService,
+        private messageService: MessageService,
     ) { }
 
     ngOnInit() {
         this.initForm();
+        this.uploadURLDocs.set(`${environment.apiUrl}/documentos/${this.authService.currentUserValue.username}/upload`);
 
         this.userData = this.route.snapshot.data['userData'];
 
@@ -79,6 +89,14 @@ export class UserCreate {
             if (this.userData.role.name === Role.client) {
                 this.userForm.get('role')?.disable();
             }
+
+            if (this.userData.role.name === Role.manager) {
+                this.isDirector = true
+                this.signatureDoc = this.userData.signature;
+            } else {
+                this.isDirector = false;
+            }
+
         } else {
             this.roleList = mapToIdAndName(this.route.snapshot.data['roleList']._embedded.roles || []).filter(item => item.name !== Role.client);
         }
@@ -90,6 +108,7 @@ export class UserCreate {
 
             const formData = form.value;
             formData.role = this.roleList.find(item => item.name === formData.role);
+            formData.signature = this.signatureDoc;
 
 
             if (formData.direcao) {
@@ -120,6 +139,7 @@ export class UserCreate {
             const formData = form.getRawValue();
             formData.role = this.roleList.find(item => item.name === formData.role);
             formData.username = this.username;
+            formData.signature = this.signatureDoc;
 
             if (formData.direcao) {
                 formData.direcao = {
@@ -161,6 +181,47 @@ export class UserCreate {
             this.userForm.get('direcao')?.clearAsyncValidators();
             this.showCategoria = false;
         }
+
+        event.value === Role.manager ? this.isDirector = true : this.isDirector = false;
+    }
+
+    onUploadDocs(event: any) {
+        if (event.originalEvent.body) {
+            this.signatureDoc = event.originalEvent.body[0];
+        }
+        this.messageService.add({
+            severity: 'info',
+            summary: 'Sucesso',
+            detail: 'Arquivos carregado com sucesso!'
+        });
+    }
+
+    removeDoc() {
+        this.loadingRemoveBtn = true;
+        this.userService.deleteSignature(this.userData.username).subscribe({
+            next: () => {
+                this.messageService.add({
+                    severity: 'info',
+                    summary: 'Sucesso',
+                    detail: 'Arquivo foi removido com sucesso!'
+                });
+                this.signatureDoc = undefined!;
+            },
+            error: error => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Falha no removero arquivo!'
+                });
+            },
+            complete: () => this.loadingRemoveBtn = false
+        });
+    }
+
+    bytesToMBs(value: number): string {
+        if (!value && value !== 0) return '';
+        const mb = value / (1024 * 1024);
+        return `${mb.toFixed(2)} MB`;
     }
 
     private initForm(): void {

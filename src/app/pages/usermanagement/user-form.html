@@ -172,6 +172,39 @@
                     </div>
                     }
 
+                    @if (isDirector) {
+                    <div class="mb-6 col-span-12">
+                        <label for="outrosDocumentos" class="font-medium mb-2 block">
+                            Assinatura
+                        </label>
+                        <p-fileupload name="files" method="post" [disabled]="signatureDoc"
+                            (onUpload)="onUploadDocs($event)" [maxFileSize]="maxFileSize" [multiple]="false"
+                            accept="image/*" mode="advanced" [url]="uploadURLDocs()">
+                            <ng-template #empty>
+                                @if (!this.signatureDoc) {
+                                Arraste e largue o ficheiro aqui para carregar.
+                                }
+                            </ng-template>
+
+                            <ng-template #content>
+                                @if (this.signatureDoc) {
+                                <ul>
+                                    <li>
+                                        <a class="cursor-pointer hover:underline hover:text-teal-300">
+                                            {{ signatureDoc.nome }} - {{ bytesToMBs(signatureDoc.tamanho) }}
+                                        </a>
+                                        &nbsp;
+
+                                        <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
+                                            [loading]="loadingRemoveBtn" severity="danger" (click)="removeDoc()" />
+                                    </li>
+                                </ul>
+                                }
+                            </ng-template>
+                        </p-fileupload>
+                    </div>
+                    }
+
                     <div class="col-span-12">
                         @if (isNew) {
                         <button (click)="createUser(userForm)" icon="pi pi-save" [loading]="loading"
@@ -188,3 +221,4 @@
         </div>
     </div>
 </div>
+<p-toast position="bottom-right" />

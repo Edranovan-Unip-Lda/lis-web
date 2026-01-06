@@ -33,13 +33,13 @@
         <ng-template #body let-cert>
             <tr>
                 <td>
-                    {{ cert.pedidoLicencaAtividade.aplicante.numero }}
+                    {{ cert.aplicanteNumero }}
                 </td>
                 <td>
                     {{cert.numeroRegistoComercial}}
                 </td>
                 <td>
-                    {{cert.sede.local}} - {{cert.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
+                    {{cert.sedeLocal}} - {{cert.sedeAldeiaNome}}, {{cert.sedeSucoNome}}, {{cert.sedePostoNome}}, {{cert.sedeMunicipioNome}}
                 </td>
                 <td>
                     {{ cert.dataValidade | date: 'dd/MM/yyyy'}}

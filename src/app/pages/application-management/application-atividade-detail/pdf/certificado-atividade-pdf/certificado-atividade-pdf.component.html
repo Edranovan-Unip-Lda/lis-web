@@ -39,9 +39,8 @@
                 N.º <span class="font-bold">{{certificadoData.pedidoLicencaAtividade.aplicante.numero}}</span>
             </div>
             <div class="col-span-6 text-xl my-2">
-                Sociedade Comercial: <span
-                    class="font-bold">
-                    {{certificadoData.pedidoLicencaAtividade.nomeEmpresa}} {{certificadoData.pedidoLicencaAtividade.aplicante.empresa.sociedadeComercial.nome}}
+                Sociedade Comercial: <span class="font-bold">
+                    {{certificadoData.pedidoLicencaAtividade.nomeEmpresa}} {{certificadoData.tipoSociedadeComercial}}
                 </span>
             </div>
             <div class="col-span-6 text-xl my-2">
@@ -63,11 +62,11 @@
             <div class="col-span-6 text-xl my-2">
                 Nível de risco: <span class="font-bold">{{certificadoData.pedidoLicencaAtividade.risco}}</span>
             </div>
-            <div class="col-span-4 text-xl my-2">
+            <div class="col-span-6 text-xl my-2">
                 Atividade comercial declarada: <span
                     class="font-bold">{{certificadoData.pedidoLicencaAtividade.classeAtividade.descricao}}</span>
             </div>
-            <div class="col-span-2 text-xl my-2">
+            <div class="col-span-6 text-xl my-2">
                 Código: <span class="font-bold">{{certificadoData.pedidoLicencaAtividade.classeAtividade.codigo}}</span>
             </div>
             <div class="col-span-6 text-xl my-2">
@@ -85,13 +84,13 @@
                     <p>O Diretor-Geral do Comércio</p>
                     <br>
                     <p class="text-gray-600">
-                        Nelito Lima de Araújo
+                        {{certificadoData.nomeDiretorGeral}}
                     </p>
                     } @else {
                     <p>O Diretor-Geral da Indústria</p>
                     <br>
                     <p class="text-gray-600">
-                        Martins Magno
+                        {{certificadoData.nomeDiretorGeral}}
                     </p>
                     }
 

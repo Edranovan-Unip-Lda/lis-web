@@ -15,6 +15,7 @@ export interface User {
     oneTimePassword: string;
     updatedAt: Date;
     direcao: Direcao;
+    signature: Documento;
 }
 
 export interface Direcao extends BaseModel {
@@ -108,6 +109,7 @@ export interface Aplicante extends BaseModel {
 
 export interface CertificadoCadastro extends BaseModel {
     sociedadeComercial: string;
+    tipoSociedadeComercial: string;
     numeroRegistoComercial: string;
     sede: Endereco;
     atividade: string;
@@ -115,10 +117,12 @@ export interface CertificadoCadastro extends BaseModel {
     dataEmissao: string;
     nomeDiretorGeral: string;
     pedidoInscricaoCadastro: PedidoInscricaoCadastro;
+    assinatura: Documento;
 }
 
 export interface CertificadoLicencaAtividade extends BaseModel {
     sociedadeComercial: string;
+    tipoSociedadeComercial: string;
     numeroRegistoComercial: string;
     nif: string;
     sede: Endereco;

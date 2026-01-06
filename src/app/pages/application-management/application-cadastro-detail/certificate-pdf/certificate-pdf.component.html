@@ -34,7 +34,7 @@
                     </span></div>
                 <p class="mb-6 mt-8">
                     Certifica-se que a Sociedade comercial <span class="font-semibold ">
-                        {{certificadoData.pedidoInscricaoCadastro.nomeEmpresa}} {{certificadoData.pedidoInscricaoCadastro.aplicante.empresa.sociedadeComercial.nome}}
+                        {{certificadoData.sociedadeComercial}} {{certificadoData.tipoSociedadeComercial}}
                     </span>,
                     titular de Registo Comercial n.º <span class="font-semibold ">
                         {{certificadoData.pedidoInscricaoCadastro.empresaNumeroRegistoComercial}}
@@ -77,9 +77,12 @@
                 <div class="col-span-3 flex items-center justify-center text-center">
                     <div class="mb-2 text-black">
                         <p>O Diretor-Geral do Comércio</p>
+                        @if (imageUrl) {
+                        <img [src]="imageUrl" alt="Signature" style="max-width: 200px" />
+                        }
                         <br>
                         <p class="text-gray-600">
-                            Nelito Lima de Araújo
+                            {{certificadoData.nomeDiretorGeral}}
                         </p>
                     </div>
                 </div>
@@ -130,7 +133,8 @@
                     Ministério
                     do Comércio e Indústria, pelo exercício da atividade de
                     <span class="font-semibold ">
-                        {{certificadoData.pedidoInscricaoCadastro.classeAtividade.descricao}} - {{certificadoData.pedidoInscricaoCadastro.classeAtividade.codigo}}
+                        {{certificadoData.pedidoInscricaoCadastro.classeAtividade.descricao}} -
+                        {{certificadoData.pedidoInscricaoCadastro.classeAtividade.codigo}}
                     </span>, nos termos do Decreto-Lei
                     n.º
                     90/2023, de 27 de dezembro.
@@ -154,9 +158,12 @@
                 <div class="col-span-3 flex items-center justify-center text-center">
                     <div class="mb-2 text-black">
                         <p>O Diretor-Geral da Indústria</p>
+                        @if (imageUrl) {
+                        <img [src]="imageUrl" alt="Signature" style="max-width: 200px" />
+                        }
                         <br>
                         <p class="text-gray-600">
-                            Martins Magno
+                            {{certificadoData.nomeDiretorGeral}}
                         </p>
                     </div>
                 </div>
