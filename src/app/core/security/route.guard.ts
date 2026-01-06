@@ -4,6 +4,7 @@ import { ActivatedRouteSnapshot, CanActivateChildFn, CanActivateFn, Router, Rout
 import { AuthenticationService } from '../services/authentication.service';
 import { of } from 'rxjs';
 import { OtpSessionService } from '../services/otp-session.service';
+import { Role } from '../models/enums';
 
 export const authenticationCanActivate: CanActivateFn = () => {
     const authService = inject(AuthenticationService);
@@ -57,7 +58,11 @@ export const loginGuard: CanActivateFn = () => {
     const user = authService.currentUserValue;
 
     if (user) {
-        router.navigate(['/dashboard']).then();
+        if (user.role.name === Role.client) {
+            router.navigate(['/home']).then();
+        } else {
+            router.navigate(['/dashboard']).then();
+        }
         return of(false);
     } else {
         return of(true);

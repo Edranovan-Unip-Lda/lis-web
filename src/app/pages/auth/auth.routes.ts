@@ -1,6 +1,6 @@
 import { getAllAldeiasResolver, getRolesResolver, getSociedadeComercialResolver } from '@/core/resolvers/data-master.resolver';
 import { getTokenActivationResolver } from '@/core/resolvers/user.resolver';
-import { validateGuard } from '@/core/security/route.guard';
+import { loginGuard, validateGuard } from '@/core/security/route.guard';
 import { Routes } from '@angular/router';
 import { AccessDenied } from './accessdenied';
 import { ActivationComponent } from './activation/activation.component';
@@ -20,7 +20,8 @@ export default [
         children: [
             {
                 path: 'login',
-                component: Login
+                component: Login,
+                canActivate: [loginGuard],
             },
             { path: 'error', component: Error },
             { path: 'access', component: AccessDenied },

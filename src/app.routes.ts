@@ -2,7 +2,7 @@ import { Role } from '@/core/models/enums';
 import { getDashboardData } from '@/core/resolvers/dashboard.resolver';
 import { getByUsernameResolver } from '@/core/resolvers/empresa.resolver';
 import { getUnreadNotificationsResolver } from '@/core/resolvers/notificacao.resolver';
-import { authenticationCanActivate, canActivateByRole } from '@/core/security/route.guard';
+import { authenticationCanActivate, canActivateByRole, loginGuard } from '@/core/security/route.guard';
 import { AppLayout } from '@/layout/components/app.layout';
 import { DashboardComponent } from '@/pages/dashboard/dashboard.component';
 import { Routes } from '@angular/router';
@@ -12,7 +12,7 @@ export const appRoutes: Routes = [
         path: '',
         redirectTo: 'auth/login',
         pathMatch: 'full',
-        data: { breadcrumb: 'Login' }
+        data: { breadcrumb: 'Login' },
     },
     {
         path: '',
@@ -24,11 +24,15 @@ export const appRoutes: Routes = [
         children: [
             {
                 path: 'dashboard',
-                data: { breadcrumb: 'Painél' },
+                data: {
+                    breadcrumb: 'Painél',
+                    role: [Role.admin, Role.manager, Role.chief, Role.staff]
+                },
                 component: DashboardComponent,
                 resolve: {
                     dashboardResolver: getDashboardData,
                 },
+                canActivate: [canActivateByRole],
             },
             {
                 path: 'home',
@@ -54,11 +58,6 @@ export const appRoutes: Routes = [
                 loadChildren: () => import('@/pages/licencas-certificados/licencas-certificados.routes')
             },
             {
-                path: 'pages',
-                data: { breadcrumb: 'Pages' },
-                loadChildren: () => import('@/pages/pages.routes')
-            },
-            {
                 path: 'gestor',
                 data: {
                     breadcrumb: 'Gestor',
@@ -68,24 +67,28 @@ export const appRoutes: Routes = [
                 loadChildren: () => import('@/pages/gestor/gestor.routes')
             },
             {
-                path: 'ecommerce',
-                data: { breadcrumb: 'E-Commerce' },
-                loadChildren: () => import('@/pages/ecommerce/ecommerce.routes')
-            },
-            {
                 path: 'utilizador',
-                data: { breadcrumb: 'Utilizadór' },
-                loadChildren: () => import('@/pages/usermanagement/usermanagement.routes')
+                data: {
+                    breadcrumb: 'Utilizadór',
+                    role: [Role.admin]
+                },
+                loadChildren: () => import('@/pages/usermanagement/usermanagement.routes'),
+                canActivate: [canActivateByRole],
             },
             {
                 path: 'relatorios',
-                data: { breadcrumb: 'Relatórios' },
-                loadChildren: () => import('@/pages/reports/report.route')
+                data: {
+                    breadcrumb: 'Relatórios',
+                    role: [Role.admin, Role.manager, Role.chief]
+                },
+                loadChildren: () => import('@/pages/reports/report.route'),
+                canActivate: [canActivateByRole],
             },
             {
                 path: 'dados-mestre',
-                data: { breadcrumb: 'Dados Mestre' },
-                loadChildren: () => import('@/pages/dados-mestre/dados-mestre.route')
+                data: { breadcrumb: 'Dados Mestre', role: [Role.admin] },
+                loadChildren: () => import('@/pages/dados-mestre/dados-mestre.route'),
+                canActivate: [canActivateByRole],
             }
         ]
     },
@@ -101,5 +104,5 @@ export const appRoutes: Routes = [
         path: 'notfound',
         loadComponent: () => import('@/pages/notfound/notfound').then((c) => c.Notfound)
     },
-    // { path: '**', redirectTo: '/notfound' }
+    { path: '**', redirectTo: '/notfound' }
 ];

@@ -10,5 +10,12 @@ import { RouterModule } from '@angular/router';
 })
 export class AuthLayoutComponent {
   layoutService = inject(LayoutService);
+  readonly startYear = 2026;
+  readonly currentYear = new Date().getFullYear();
 
+  get copyrightYears(): string {
+    return this.currentYear > this.startYear
+      ? `${this.startYear}–${this.currentYear}`
+      : `${this.startYear}`;
+  }
 }
