@@ -39,13 +39,17 @@
                     [options]="listaClasseAtividade" optionLabel="codigo" optionValue="id" fluid [filter]="true"
                     filterBy="codigo,descricao" [showClear]="true" placeholder="Selecione a atividade principal">
                     <ng-template let-tipo #item>
-                        <div class="flex items-center gap-2">
-                            <span>{{tipo.codigo}} </span> - <span>{{tipo.descricao}} </span>
+                        <div class="flex items-start gap-2 max-w-full">
+                            <span class="whitespace-normal break-words">{{tipo.codigo}}</span>
+                            <span>-</span>
+                            <span class="whitespace-normal break-words flex-1">{{tipo.descricao}}</span>
                         </div>
                     </ng-template>
                     <ng-template let-tipo #selectedItem>
-                        <div class="flex items-center gap-2">
-                            <span>{{tipo.codigo}} </span> - <span>{{tipo.descricao}} </span>
+                        <div class="flex items-start gap-2 max-w-full">
+                            <span class="whitespace-normal break-words">{{tipo.codigo}}</span>
+                            <span>-</span>
+                            <span class="whitespace-normal break-words flex-1 truncate">{{tipo.descricao}}</span>
                         </div>
                     </ng-template>
                 </p-select>
@@ -170,13 +174,17 @@
                     [options]="listaClasseAtividade" optionLabel="codigo" optionValue="id" fluid [filter]="true"
                     filterBy="codigo,descricao" [showClear]="true" placeholder="Selecione a atividade principal">
                     <ng-template let-tipo #item>
-                        <div class="flex items-center gap-2">
-                            <span>{{tipo.codigo}} </span> - <span>{{tipo.descricao}} </span>
+                        <div class="flex items-start gap-2 max-w-full">
+                            <span class="whitespace-normal break-words">{{tipo.codigo}}</span>
+                            <span>-</span>
+                            <span class="whitespace-normal break-words flex-1">{{tipo.descricao}}</span>
                         </div>
                     </ng-template>
                     <ng-template let-tipo #selectedItem>
-                        <div class="flex items-center gap-2">
-                            <span>{{tipo.codigo}} </span> - <span>{{tipo.descricao}} </span>
+                        <div class="flex items-start gap-2 max-w-full">
+                            <span class="whitespace-normal break-words">{{tipo.codigo}}</span>
+                            <span>-</span>
+                            <span class="whitespace-normal break-words flex-1 truncate">{{tipo.descricao}}</span>
                         </div>
                     </ng-template>
                 </p-select>

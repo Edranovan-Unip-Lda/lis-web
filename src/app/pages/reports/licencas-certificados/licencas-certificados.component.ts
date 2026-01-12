@@ -1,7 +1,7 @@
 import { AplicanteType } from '@/core/models/enums';
 import { ExportService } from '@/core/services/export.service';
 import { ReportService } from '@/core/services/report.service';
-import { applicationTypesOptions, caraterizacaEstabelecimentoOptions, categoryTpesOptions, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEstabelecimentoOptions, tipoPedidoVistoriaComercialOptions, tipoPedidoVistoriaIndustrialOptions, tipoPedidoVitoriaAll } from '@/core/utils/global-function';
+import { applicationTypesOptions, caraterizacaEstabelecimentoOptions, categoryTpesOptions, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEstabelecimentoOptions, tipoPedidoVitoriaAll } from '@/core/utils/global-function';
 import { DatePipe, formatDate } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -11,7 +11,7 @@ import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
 import { Message } from 'primeng/message';
 import { Paginator } from 'primeng/paginator';
-import { Select, SelectChangeEvent } from 'primeng/select';
+import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 
 @Component({
