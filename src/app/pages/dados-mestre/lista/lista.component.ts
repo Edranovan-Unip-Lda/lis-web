@@ -1,6 +1,6 @@
 import { Categoria } from '@/core/models/enums';
 import { DataMasterService } from '@/core/services/data-master.service';
-import { applicationTypesOptions, categoryTpesOptions, mapToAtividadeEconomica, mapToGrupoAtividade, nivelRiscoOptions, roleOptions } from '@/core/utils/global-function';
+import { applicationTypesOptions, categoryTpesOptions, mapToGrupoAtividade, nivelRiscoOptions, roleOptions } from '@/core/utils/global-function';
 import { CurrencyPipe, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -12,13 +12,14 @@ import { Dialog } from 'primeng/dialog';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
+import { Paginator } from 'primeng/paginator';
 import { Select } from 'primeng/select';
 import { Table, TableModule } from 'primeng/table';
 import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-lista',
-  imports: [TableModule, InputText, Button, Dialog, TitleCasePipe, Select, ReactiveFormsModule, ConfirmDialog, Toast, IconField, InputIcon, CurrencyPipe],
+  imports: [TableModule, InputText, Button, Dialog, TitleCasePipe, Select, ReactiveFormsModule, ConfirmDialog, Toast, IconField, InputIcon, CurrencyPipe, Paginator],
   templateUrl: './lista.component.html',
   styleUrl: './lista.component.scss',
   providers: [ConfirmationService, MessageService]
@@ -100,6 +101,7 @@ export class ListaComponent {
         break;
       case 'grupo-atividades':
         this.dataList = this.route.snapshot.data['listaGrupoAtividade']._embedded.grupoAtividade;
+        this.totalData = this.route.snapshot.data['listaGrupoAtividade'].page.totalElements;
         this.cols = [
           { field: 'tipo', header: 'Categoria' },
           { field: 'codigo', header: 'Codigo' },
@@ -116,6 +118,7 @@ export class ListaComponent {
         break;
       case 'classe-atividades':
         this.dataList = this.route.snapshot.data['listaClasseAtividade']._embedded.classeAtividade;
+        this.totalData = this.route.snapshot.data['listaClasseAtividade'].page.totalElements;
         this.cols = [
           { field: 'grupoAtividade', header: 'Grupo Codigo' },
           { field: 'codigo', header: 'Codigo' },
@@ -224,6 +227,91 @@ export class ListaComponent {
         this.closeDialog();
       }
     });
+  }
+
+  onPageChange(event: any): void {
+    this.dataIsFetching = true;
+    this.page = event.page;
+    this.size = event.rows;
+    this.getData(this.page, this.size);
+    this.service.getPageClasseAtividade
+  }
+
+  private getData(page: number, size: number): void {
+    switch (this.type) {
+      case 'direcoes':
+        this.service.getPageDirecao(page, size).subscribe({
+          next: response => {
+            this.dataList = response._embedded.direcoes;
+            this.totalData = response.page.totalElements;
+            this.dataIsFetching = false;
+          },
+          error: error => {
+            this.dataIsFetching = false;
+          }
+        });
+        break;
+      case 'roles':
+        this.service.getRoles().subscribe({
+          next: response => {
+            this.dataList = response._embedded.roles;
+            this.totalData = response.page.totalElements;
+            this.dataIsFetching = false;
+          },
+          error: error => {
+            this.dataIsFetching = false;
+          }
+        });
+        break;
+      case 'grupo-atividades':
+        this.service.getPageGrupoAtividade(page, size).subscribe({
+          next: response => {
+            this.dataList = response._embedded.grupoAtividade;
+            this.totalData = response.page.totalElements;
+            this.dataIsFetching = false;
+          },
+          error: error => {
+            this.dataIsFetching = false;
+          }
+        });
+        break;
+      case 'classe-atividades':
+        this.service.getPageClasseAtividade(page, size).subscribe({
+          next: response => {
+            this.dataList = response._embedded.classeAtividade;
+            this.totalData = response.page.totalElements;
+            this.dataIsFetching = false;
+          },
+          error: error => {
+            this.dataIsFetching = false;
+          }
+        });
+        break;
+      case 'taxas':
+        this.service.getTaxa(page, size).subscribe({
+          next: response => {
+            this.dataList = response._embedded.taxas;
+            this.totalData = response.page.totalElements;
+            this.dataIsFetching = false;
+          },
+          error: error => {
+            this.dataIsFetching = false;
+          }
+        });
+        break;
+      case 'sociedade-comercial':
+        this.service.getSociedadeComercial(page, size).subscribe({
+          next: response => {
+            this.dataList = response._embedded.sociedadeComercial;
+            this.totalData = response.page.totalElements;
+            this.dataIsFetching = false;
+          },
+          error: error => {
+            this.dataIsFetching = false;
+          }
+        });
+        break;
+    }
   }
 
   openDialogNewData(type: string): void {
