@@ -1,6 +1,6 @@
 import { Categoria } from '@/core/models/enums';
 import { DataMasterService } from '@/core/services/data-master.service';
-import { applicationTypesOptions, categoryTpesOptions, mapToAtividadeEconomica, nivelRiscoOptions, roleOptions } from '@/core/utils/global-function';
+import { applicationTypesOptions, categoryTpesOptions, mapToAtividadeEconomica, mapToGrupoAtividade, nivelRiscoOptions, roleOptions } from '@/core/utils/global-function';
 import { CurrencyPipe, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -324,9 +324,7 @@ export class ListaComponent {
   private getGrupoAtividadesByTipo(categoria: Categoria): void {
     this.service.getAllGrupoAtividadeByTipo(categoria).subscribe({
       next: (response) => {
-        this.grupoAtivadadeOpts = mapToAtividadeEconomica(response._embedded.grupoAtividade);
-
-
+        this.grupoAtivadadeOpts = mapToGrupoAtividade(response._embedded.grupoAtividade);
       }
     });
   }
