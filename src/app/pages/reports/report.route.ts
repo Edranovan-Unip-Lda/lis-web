@@ -1,4 +1,4 @@
-import { getAllClasseAtividadeResolver, getMunicipiosResolver, getPostosResolver, getSociedadeComercialResolver, getSucosResolver } from "@/core/resolvers/data-master.resolver";
+import { getAllClasseAtividadeResolver, getAllPostosResolver, getAllSucosResolver, getMunicipiosResolver, getPostosResolver, getSociedadeComercialResolver, getSucosResolver } from "@/core/resolvers/data-master.resolver";
 import { getPageEmpresaResolver } from "@/core/resolvers/empresa.resolver";
 import { Routes } from "@angular/router";
 
@@ -11,8 +11,8 @@ export default [
         resolve: {
             listaSociedadeComercial: getSociedadeComercialResolver,
             listaMunicipios: getMunicipiosResolver,
-            listaPostosAdministrativos: getPostosResolver,
-            listaSucos: getSucosResolver,
+            listaPostosAdministrativos: getAllPostosResolver,
+            listaSucos: getAllSucosResolver,
         }
     },
     {
@@ -30,8 +30,8 @@ export default [
         resolve: {
             listaEmpresa: getPageEmpresaResolver,
             listaMunicipios: getMunicipiosResolver,
-            listaPostosAdministrativos: getPostosResolver,
-            listaSucos: getSucosResolver,
+            listaPostosAdministrativos: getAllPostosResolver,
+            listaSucos: getAllSucosResolver,
             classeAtividadeResolver: getAllClasseAtividadeResolver,
         }
     },

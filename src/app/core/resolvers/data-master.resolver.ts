@@ -17,6 +17,16 @@ export const getPostosResolver: ResolveFn<any> = () => {
     return service.getPostos();
 }
 
+export const getAllPostosResolver: ResolveFn<any> = () => {
+    const service = inject(DataMasterService);
+    return service.getPostos(0, 1000);
+}
+
+export const getAllSucosResolver: ResolveFn<any> = () => {
+    const service = inject(DataMasterService);
+    return service.getSucos(0, 1000);
+}
+
 export const getSucosResolver: ResolveFn<any> = () => {
     const service = inject(DataMasterService);
     return service.getSucos();

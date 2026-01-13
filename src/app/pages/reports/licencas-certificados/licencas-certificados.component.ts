@@ -1,4 +1,5 @@
 import { AplicanteType } from '@/core/models/enums';
+import { DataMasterService } from '@/core/services';
 import { ExportService } from '@/core/services/export.service';
 import { ReportService } from '@/core/services/report.service';
 import { applicationTypesOptions, caraterizacaEstabelecimentoOptions, categoryTpesOptions, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEstabelecimentoOptions, tipoPedidoVitoriaAll } from '@/core/utils/global-function';
@@ -11,8 +12,10 @@ import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
 import { Message } from 'primeng/message';
 import { Paginator } from 'primeng/paginator';
-import { Select } from 'primeng/select';
+import { Select, SelectFilterEvent } from 'primeng/select';
 import { TableModule } from 'primeng/table';
+import { Subject, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-licencas-certificados',
@@ -33,6 +36,7 @@ export class LicencasCertificadosComponent {
   listaMunicipios = [];
   listaPostosAdministrativos = [];
   listaSucos = [];
+  listaSucosAux = [];
   listaClasseAtividade: any[] = [];
 
   // Inscrição e Cadastro
@@ -51,12 +55,15 @@ export class LicencasCertificadosComponent {
   totalData = 0;
   dataIsFetching = false;
   messages = signal<any[]>([]);
+  private sucoSearchSubject = new Subject<string>();
+  sucoIsLoading = false;
 
   constructor(
     private _fb: FormBuilder,
     private route: ActivatedRoute,
     private reportService: ReportService,
     private exportService: ExportService,
+    private dataMasterService: DataMasterService,
   ) { }
 
   ngOnInit() {
@@ -64,6 +71,7 @@ export class LicencasCertificadosComponent {
     this.listaMunicipios = this.route.snapshot.data['listaMunicipios']._embedded.municipios.map((m: any) => ({ name: m.nome, value: m.id }));
     this.listaPostosAdministrativos = this.route.snapshot.data['listaPostosAdministrativos']._embedded.postos.map((p: any) => ({ name: p.nome, value: p.id }));
     this.listaSucos = this.route.snapshot.data['listaSucos']._embedded.sucos.map((s: any) => ({ name: s.nome, value: s.id }));
+    this.listaSucosAux = [...this.listaSucos];
     this.listaClasseAtividade = this.route.snapshot.data['classeAtividadeResolver']._embedded.classeAtividade;
 
     this.applicanteTypeFormControl.valueChanges.subscribe((value) => {
@@ -74,6 +82,8 @@ export class LicencasCertificadosComponent {
         this.tipoAplicante = undefined as any;
       }
     });
+
+    this.setupSucoSearch();
   }
 
 
@@ -201,6 +211,42 @@ export class LicencasCertificadosComponent {
     //   }
     // });
 
+  }
+
+  setupSucoSearch(): void {
+    this.sucoSearchSubject.pipe(
+      debounceTime(400),
+      distinctUntilChanged(),
+      switchMap(query => {
+        if (query && query.length >= 3) {
+          this.sucoIsLoading = true;
+          return this.dataMasterService.searchSucosByNome(query).pipe(
+            catchError(error => {
+              console.error('Error searching sucos:', error);
+              this.sucoIsLoading = false;
+              return of(null);
+            })
+          );
+        } else {
+          this.sucoIsLoading = false;
+          return of(null);
+        }
+      })
+    ).subscribe({
+      next: (response) => {
+        if (response) {
+          this.listaSucos = response._embedded.sucos.map((s: any) => ({ name: s.nome, value: s.id }));
+        } else {
+          this.listaSucos = [...this.listaSucosAux];
+        }
+        this.sucoIsLoading = false;
+      }
+    });
+  }
+
+  sucoFilter(event: SelectFilterEvent): void {
+    const query = event.filter?.trim().toLowerCase() || '';
+    this.sucoSearchSubject.next(query);
   }
 
   private getPaginationData(page: number, size: number): void {

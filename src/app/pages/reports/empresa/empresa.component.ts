@@ -1,4 +1,5 @@
 import { Empresa } from '@/core/models/entities.model';
+import { DataMasterService } from '@/core/services';
 import { ExportService } from '@/core/services/export.service';
 import { ReportService } from '@/core/services/report.service';
 import { tipoEmpresaOptions, tipoPropriedadeOptions } from '@/core/utils/global-function';
@@ -10,8 +11,11 @@ import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { Message } from 'primeng/message';
 import { Paginator } from 'primeng/paginator';
-import { Select } from 'primeng/select';
+import { Select, SelectFilterEvent } from 'primeng/select';
 import { TableModule } from 'primeng/table';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-empresa',
@@ -28,12 +32,15 @@ export class EmpresaComponent {
   listaMunicipios = [];
   listaPostosAdministrativos = [];
   listaSucos = [];
+  listaSucosAux = [];
   data: any[] = [];
   page = 0;
   size = 50;
   totalData = 0;
   dataIsFetching = false;
   messages = signal<any[]>([]);
+  private sucoSearchSubject = new Subject<string>();
+  sucoIsLoading = false;
 
 
   constructor(
@@ -41,6 +48,7 @@ export class EmpresaComponent {
     private route: ActivatedRoute,
     private reportService: ReportService,
     private exportService: ExportService,
+    private dataMasterService: DataMasterService,
   ) { }
 
   ngOnInit() {
@@ -49,6 +57,39 @@ export class EmpresaComponent {
     this.listaMunicipios = this.route.snapshot.data['listaMunicipios']._embedded.municipios.map((m: any) => ({ name: m.nome, value: m.id }));
     this.listaPostosAdministrativos = this.route.snapshot.data['listaPostosAdministrativos']._embedded.postos.map((p: any) => ({ name: p.nome, value: p.id }));
     this.listaSucos = this.route.snapshot.data['listaSucos']._embedded.sucos.map((s: any) => ({ name: s.nome, value: s.id }));
+    this.listaSucosAux = [...this.listaSucos];
+    this.setupSucoSearch();
+  }
+
+  setupSucoSearch(): void {
+    this.sucoSearchSubject.pipe(
+      debounceTime(400),
+      distinctUntilChanged(),
+      switchMap(query => {
+        if (query && query.length >= 3) {
+          this.sucoIsLoading = true;
+          return this.dataMasterService.searchSucosByNome(query).pipe(
+            catchError(error => {
+              console.error('Error searching sucos:', error);
+              this.sucoIsLoading = false;
+              return of(null);
+            })
+          );
+        } else {
+          this.sucoIsLoading = false;
+          return of(null);
+        }
+      })
+    ).subscribe({
+      next: (response) => {
+        if (response) {
+          this.listaSucos = response._embedded.sucos.map((s: any) => ({ name: s.nome, value: s.id }));
+        } else {
+          this.listaSucos = [...this.listaSucosAux];
+        }
+        this.sucoIsLoading = false;
+      }
+    });
   }
 
   onSubmit() {
@@ -107,6 +148,11 @@ export class EmpresaComponent {
       }
     });
 
+  }
+
+  sucoFilter(event: SelectFilterEvent): void {
+    const query = event.filter?.trim().toLowerCase() || '';
+    this.sucoSearchSubject.next(query);
   }
 
   private getPaginationData(page: number, size: number): void {

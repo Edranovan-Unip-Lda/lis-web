@@ -733,9 +733,9 @@
                                                  <label for="aldeia" class="font-medium  mb-2 block">
                                                      Aldeia
                                                  </label>
-                                                 <p-select fluid formControlName="aldeia" [options]="aldeias"
+                                                 <p-select fluid formControlName="aldeia" [options]="gerenteListaAldeias"
                                                      optionLabel="nome" placeholder="Selecione a Aldeia" [filter]="true"
-                                                     filterBy="nome" [showClear]="true"
+                                                     filterBy="nome" [showClear]="true" [loading]="gerenteAldeiaIsLoading"
                                                      (onChange)="gerenteRepresentanteAldeiaOnChange($event, 'gerente')"
                                                      (onFilter)="gerenteRepresentanteAldeiaFilter($event, 'gerente')"
                                                      (onpanelHide)="gerenteRepresentanteOnPanelHide('gerente')"
@@ -1001,9 +1001,9 @@
                                                  <label for="aldeia" class="font-medium  mb-2 block">
                                                      Aldeia
                                                  </label>
-                                                 <p-select fluid formControlName="aldeia" [options]="aldeias"
+                                                 <p-select fluid formControlName="aldeia" [options]="representanteListaAldeias"
                                                      optionLabel="nome" placeholder="Selecione a Aldeia" [filter]="true"
-                                                     filterBy="nome" [showClear]="true"
+                                                     filterBy="nome" [showClear]="true" [loading]="representanteAldeiaIsLoading"
                                                      (onChange)="gerenteRepresentanteAldeiaOnChange($event, 'representante')"
                                                      (onFilter)="gerenteRepresentanteAldeiaFilter($event, 'representante')"
                                                      (onpanelHide)="gerenteRepresentanteOnPanelHide('representante')"

@@ -98,6 +98,12 @@ export class DataMasterService {
         return this.http.get<any>(`${this.apiUrl}/postos/search/findByNomeContainingIgnoreCase`, { params }).pipe(take(1));
     }
 
+    searchSucosByNome(nome: string): Observable<any> {
+        let params = new HttpParams()
+            .set('nome', nome)
+            .set('projection', 'withPostoAdministrativo');
+        return this.http.get<any>(`${this.apiUrl}/sucos/search/findByNomeContainingIgnoreCase`, { params }).pipe(take(1));
+    }
 
     searchAldeiasByNome(nome: string): Observable<any> {
         let params = new HttpParams()

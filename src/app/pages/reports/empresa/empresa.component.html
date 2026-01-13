@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card min-h-[720px]">
     <form [formGroup]="reportForm" (ngSubmit)="onSubmit()" class="py-4">
         <div class="grid grid-cols-3 gap-4">
             <div class="mb-6 col-span-3 md:col-span-1">
@@ -42,7 +42,7 @@
                 </label>
                 <p-select fluid formControlName="postoAdministrativoId" [options]="listaPostosAdministrativos"
                     optionLabel="name" optionValue="value" placeholder="Selecione o posto administrativo"
-                    [showClear]="true">
+                    [filter]="true" [showClear]="true">
                 </p-select>
             </div>
             <div class="mb-6 col-span-3 md:col-span-1">
@@ -50,7 +50,8 @@
                     Suco
                 </label>
                 <p-select fluid formControlName="sucoId" [options]="listaSucos" optionLabel="name" optionValue="value"
-                    placeholder="Selecione o suco" [showClear]="true">
+                    placeholder="Selecione o suco" (onFilter)="sucoFilter($event)" [filter]="true"
+                    [loading]="sucoIsLoading" [showClear]="true">
                 </p-select>
             </div>
         </div>

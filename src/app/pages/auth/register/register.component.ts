@@ -24,6 +24,8 @@ import { Ripple } from 'primeng/ripple';
 import { Select, SelectChangeEvent, SelectFilterEvent } from 'primeng/select';
 import { StepperModule } from 'primeng/stepper';
 import { Tooltip } from 'primeng/tooltip';
+import { Subject, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/operators';
 
 
 interface Notification {
@@ -70,6 +72,14 @@ export class Register {
     gerenteForeigner: boolean = false;
     representanteForeigner: boolean = false;
     errorMessage: any;
+    private aldeiaSearchSubject = new Subject<string>();
+    private gerenteAldeiaSearchSubject = new Subject<string>();
+    private representanteAldeiaSearchSubject = new Subject<string>();
+    private acionistaAldeiaSearchSubjects: Subject<string>[] = [];
+    aldeiaIsLoading = false;
+    gerenteAldeiaIsLoading = false;
+    representanteAldeiaIsLoading = false;
+    acionistaAldeiaIsLoading: boolean[] = [];
 
     constructor(
         private _fb: FormBuilder,
@@ -122,6 +132,138 @@ export class Register {
         this.selectedRole = roles.find(r => r.name === 'ROLE_CLIENT')!;
 
         this.setUtilizadorEmail();
+        this.setupAldeiaSearch();
+        this.setupGerenteAldeiaSearch();
+        this.setupRepresentanteAldeiaSearch();
+    }
+
+    setupAldeiaSearch(): void {
+        this.aldeiaSearchSubject.pipe(
+            debounceTime(400),
+            distinctUntilChanged(),
+            switchMap(query => {
+                if (query && query.length >= 2) {
+                    this.aldeiaIsLoading = true;
+                    return this.dataMasterService.searchAldeiasByNome(query).pipe(
+                        catchError(error => {
+                            console.error('Error searching aldeias:', error);
+                            this.aldeiaIsLoading = false;
+                            return of(null);
+                        })
+                    );
+                } else {
+                    this.aldeiaIsLoading = false;
+                    return of(null);
+                }
+            })
+        ).subscribe({
+            next: (response) => {
+                if (response) {
+                    this.aldeias = response._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+                } else {
+                    this.aldeias = [...this.originalAldeias];
+                }
+                this.aldeiaIsLoading = false;
+            }
+        });
+    }
+
+    setupGerenteAldeiaSearch(): void {
+        this.gerenteAldeiaSearchSubject.pipe(
+            debounceTime(400),
+            distinctUntilChanged(),
+            switchMap(query => {
+                if (query && query.length >= 2) {
+                    this.gerenteAldeiaIsLoading = true;
+                    return this.dataMasterService.searchAldeiasByNome(query).pipe(
+                        catchError(error => {
+                            console.error('Error searching aldeias:', error);
+                            this.gerenteAldeiaIsLoading = false;
+                            return of(null);
+                        })
+                    );
+                } else {
+                    this.gerenteAldeiaIsLoading = false;
+                    return of(null);
+                }
+            })
+        ).subscribe({
+            next: (response) => {
+                if (response) {
+                    this.gerenteListaAldeias = response._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+                } else {
+                    this.gerenteListaAldeias = [...this.originalAldeias];
+                }
+                this.gerenteAldeiaIsLoading = false;
+            }
+        });
+    }
+
+    setupRepresentanteAldeiaSearch(): void {
+        this.representanteAldeiaSearchSubject.pipe(
+            debounceTime(400),
+            distinctUntilChanged(),
+            switchMap(query => {
+                if (query && query.length >= 2) {
+                    this.representanteAldeiaIsLoading = true;
+                    return this.dataMasterService.searchAldeiasByNome(query).pipe(
+                        catchError(error => {
+                            console.error('Error searching aldeias:', error);
+                            this.representanteAldeiaIsLoading = false;
+                            return of(null);
+                        })
+                    );
+                } else {
+                    this.representanteAldeiaIsLoading = false;
+                    return of(null);
+                }
+            })
+        ).subscribe({
+            next: (response) => {
+                if (response) {
+                    this.representanteListaAldeias = response._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+                } else {
+                    this.representanteListaAldeias = [...this.originalAldeias];
+                }
+                this.representanteAldeiaIsLoading = false;
+            }
+        });
+    }
+
+    setupAcionistaAldeiaSearch(index: number): void {
+        if (!this.acionistaAldeiaSearchSubjects[index]) {
+            this.acionistaAldeiaSearchSubjects[index] = new Subject<string>();
+            this.acionistaAldeiaIsLoading[index] = false;
+
+            this.acionistaAldeiaSearchSubjects[index].pipe(
+                debounceTime(400),
+                distinctUntilChanged(),
+                switchMap(query => {
+                    if (query && query.length >= 2) {
+                        this.acionistaAldeiaIsLoading[index] = true;
+                        return this.dataMasterService.searchAldeiasByNome(query).pipe(
+                            catchError(error => {
+                                console.error('Error searching aldeias:', error);
+                                this.acionistaAldeiaIsLoading[index] = false;
+                                return of(null);
+                            })
+                        );
+                    } else {
+                        this.acionistaAldeiaIsLoading[index] = false;
+                        return of(null);
+                    }
+                })
+            ).subscribe({
+                next: (response) => {
+                    if (response) {
+                        this.listaAldeiaAcionista[index] = response._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+                    } else {
+                        this.listaAldeiaAcionista[index] = [...this.originalAldeias];
+                    }
+                    this.acionistaAldeiaIsLoading[index] = false;
+                }
+            });
+        }
     }
 
 
@@ -234,18 +376,9 @@ export class Register {
         }
     }
 
-    aldeiaFilter(event: SelectFilterEvent) {
-        const query = event.filter?.trim();
-        if (query && query.length) {
-            this.dataMasterService.searchAldeiasByNome(query)
-                .subscribe(resp => {
-                    this.aldeias = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
-                    this.loading = false;
-                });
-        } else {
-            // filter cleared — reset full list
-            this.aldeias = [...this.originalAldeias];
-        }
+    aldeiaFilter(event: SelectFilterEvent): void {
+        const query = event.filter?.trim() || '';
+        this.aldeiaSearchSubject.next(query);
     }
 
 
@@ -272,26 +405,12 @@ export class Register {
         }
     }
 
-    gerenteRepresentanteAldeiaFilter(event: SelectFilterEvent, formControl: string) {
-        const query = event.filter?.trim();
-        if (query && query.length) {
-            this.dataMasterService.searchAldeiasByNome(query)
-                .subscribe(resp => {
-                    if (formControl === 'gerente') {
-                        this.gerenteListaAldeias = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
-                    } else {
-                        this.representanteListaAldeias = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
-                    }
-                    this.loading = false;
-                });
+    gerenteRepresentanteAldeiaFilter(event: SelectFilterEvent, formControl: string): void {
+        const query = event.filter?.trim() || '';
+        if (formControl === 'gerente') {
+            this.gerenteAldeiaSearchSubject.next(query);
         } else {
-            // filter cleared — reset full list
-            if (formControl === 'gerente') {
-                this.gerenteListaAldeias = [...this.originalAldeias];
-            } else {
-                this.representanteListaAldeias = [...this.originalAldeias];
-            }
-
+            this.representanteAldeiaSearchSubject.next(query);
         }
     }
 
@@ -423,18 +542,10 @@ export class Register {
         }
     }
 
-    aldeiaAcionistaFilter(event: any, index: number) {
-        const query = event.filter?.trim();
-        if (query && query.length) {
-            this.dataMasterService.searchAldeiasByNome(query)
-                .subscribe(resp => {
-                    this.listaAldeiaAcionista[index] = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
-                    this.loading = false;
-                });
-        } else {
-            // filter cleared — reset full list
-            this.listaAldeiaAcionista[index] = [...this.originalAldeias];
-        }
+    aldeiaAcionistaFilter(event: any, index: number): void {
+        this.setupAcionistaAldeiaSearch(index);
+        const query = event.filter?.trim() || '';
+        this.acionistaAldeiaSearchSubjects[index].next(query);
     }
 
     onPanelHideAcionista(index: number) {
