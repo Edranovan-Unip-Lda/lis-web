@@ -3,9 +3,8 @@ import { TipoNacionalidade, TipoPropriedade } from '@/core/models/enums';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { EmpresaService } from '@/core/services/empresa.service';
 import { estadoCivilOptions, maxFileSizeUpload, tipoDocumentoOptions, tipoNacionalidadeOptions, tipoPropriedadeOptions, tipoRelacaoFamiliaOptions, tipoRepresentante } from '@/core/utils/global-function';
-import { LayoutService } from '@/layout/service/layout.service';
-import { DatePipe, NgClass } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { CurrencyPipe, DatePipe } from '@angular/common';
+import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NgxPrintModule } from 'ngx-print';
@@ -25,7 +24,7 @@ import { Select, SelectChangeEvent, SelectFilterEvent } from 'primeng/select';
 import { StepperModule } from 'primeng/stepper';
 import { Tooltip } from 'primeng/tooltip';
 import { Subject, of } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 
 interface Notification {
@@ -37,7 +36,7 @@ interface Notification {
 @Component({
     selector: 'app-register',
     standalone: true,
-    imports: [Button, FileUpload, RouterLink, InputText, Fluid, Ripple, Password, ReactiveFormsModule, Select, Message, StepperModule, DatePicker, InputGroup, InputGroupAddonModule, InputNumber, Divider, Tooltip, DatePipe, NgxPrintModule],
+    imports: [Button, FileUpload, RouterLink, InputText, Fluid, Ripple, Password, ReactiveFormsModule, Select, Message, StepperModule, DatePicker, InputGroup, InputGroupAddonModule, InputNumber, Divider, Tooltip, DatePipe, NgxPrintModule, CurrencyPipe],
     templateUrl: './register.component.html',
 })
 export class Register {
@@ -303,7 +302,7 @@ export class Register {
                 },
                 tipoDocumento: formData.representante.tipoDocumento.value
             }
-            formData.tipoPropriedade = form.value.tipoPropriedade.value;
+            formData.tipoPropriedade = formData.tipoPropriedade.value;
             formData.dataRegisto = this.formatDateForLocalDate(form.value.dataRegisto);
             formData.acionistas = form.value.acionistas.map((a: any) => {
                 return {
@@ -601,12 +600,40 @@ export class Register {
     }
 
     getCurrentPosition(): void {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
+        if (!navigator.geolocation) {
+            console.warn('Geolocalização não suportada');
+            return;
+        }
+
+        const options: PositionOptions = {
+            enableHighAccuracy: true, // tenta usar GPS
+            timeout: 15000,           // espera até 15s
+            maximumAge: 0             // não usar localização em cache
+        };
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
                 this.empresaForm.get('latitude')?.setValue(position.coords.latitude);
                 this.empresaForm.get('longitude')?.setValue(position.coords.longitude);
-            });
-        }
+            },
+            (error) => {
+                console.error('Erro de geolocalização:', error.code, error.message);
+
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        alert('Permissão de localização negada. Autorize o acesso à localização nas definições do navegador.');
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        // normalmente corresponde ao kCLErrorLocationUnknown no iOS
+                        alert('Localização indisponível. Tente deslocar-se para o exterior, activar Wi-Fi/GPS e tentar novamente.');
+                        break;
+                    case error.TIMEOUT:
+                        alert('Tempo limite excedido ao obter a localização. Tente novamente.');
+                        break;
+                }
+            },
+            options
+        );
     }
 
     onRepresentanteTipoChange({ value }: SelectChangeEvent): void {

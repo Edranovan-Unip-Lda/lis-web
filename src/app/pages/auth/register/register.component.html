@@ -1156,7 +1156,7 @@
                                              <div>
                                                  <p class="text-sm text-gray-400">Capital Social:</p>
                                                  <p class="text-lg text-gray-100">
-                                                     {{ empresaForm.get('capitalSocial')?.value }}</p>
+                                                     {{ empresaForm.get('capitalSocial')?.value | currency}}</p>
                                              </div>
                                              <div>
                                                  <p class="text-sm text-gray-400">Data de Registo:</p>
@@ -1172,12 +1172,12 @@
                                              <div>
                                                  <p class="text-sm text-gray-400">Volume de Negócios Anual:</p>
                                                  <p class="text-lg text-gray-100">
-                                                     {{ empresaForm.get('volumeNegocioAnual')?.value }}</p>
+                                                     {{ empresaForm.get('volumeNegocioAnual')?.value | currency }}</p>
                                              </div>
                                              <div>
                                                  <p class="text-sm text-gray-400">Balanço total Anual:</p>
                                                  <p class="text-lg text-gray-100">
-                                                     {{ empresaForm.get('balancoTotalAnual')?.value }}</p>
+                                                     {{ empresaForm.get('balancoTotalAnual')?.value | currency }}</p>
                                              </div>
                                              <div>
                                                  <p class="text-sm text-gray-400">Tipo de Propriedade:</p>
@@ -1283,9 +1283,9 @@
                                                  </p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Telemovel:</p>
+                                                 <p class="text-sm text-gray-400">Telefone:</p>
                                                  <p class="text-lg text-gray-100">
-                                                     {{ empresaForm.get('gerente.email')?.value }}
+                                                     {{ empresaForm.get('gerente.telefone')?.value }}
                                                  </p>
                                              </div>
                                              <div>
