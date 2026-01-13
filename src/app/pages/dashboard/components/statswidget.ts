@@ -17,7 +17,7 @@ import { Component, Input } from '@angular/core';
                         <div class="leading-loose text-3xl"></div>
                     </div>
                 </div>
-                <img class="absolute inline-block" style="bottom: 14px; right: 12px" src="/images/ecommerce-dashboard/rate.svg" />
+                <img class="absolute inline-block" style="bottom: 14px; right: 12px" src="/images/rate.svg" />
             </div>
         </div>
         <div class="col-span-12 md:col-span-4">
@@ -34,7 +34,7 @@ import { Component, Input } from '@angular/core';
                         </div>
                     </div>
                 </div>
-                <img class="absolute" style="bottom: 14px; right: 12px" src="/images/ecommerce-dashboard/value.svg" />
+                <img class="absolute" style="bottom: 14px; right: 12px" src="/images/value.svg" />
             </div>
         </div>
         <div class="col-span-12 md:col-span-4">
@@ -50,7 +50,7 @@ import { Component, Input } from '@angular/core';
                         <div class="leading-loose text-3xl"></div>
                     </div>
                 </div>
-                <img class="absolute" style="bottom: 14px; right: 12px" src="/images/ecommerce-dashboard/quantity.svg" />
+                <img class="absolute" style="bottom: 14px; right: 12px" src="/images/quantity.svg" />
             </div>
         </div>`,
     host: {
