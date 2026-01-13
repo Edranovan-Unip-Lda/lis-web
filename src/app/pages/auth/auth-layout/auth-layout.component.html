@@ -1,3 +1,6 @@
+@if (showProgressBar) {
+<p-progressbar mode="indeterminate" [style]="{ height: '6px' }" />
+}
 <div [class]="'flex h-screen' + (layoutService.isDarkTheme() ? 'layout-dark' : 'layout-light')">
     @if (layoutService.isDarkTheme()) {
     <div class="w-6/12 hidden md:block flex-shrink-0"
