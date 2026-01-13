@@ -669,7 +669,7 @@ export class Register {
             dataRegisto: [null, [Validators.required]],
             telemovel: [null, [Validators.required]],
             telefone: [null, Validators.required],
-            tipoPropriedade: [null, [Validators.required]],
+            tipoPropriedade: new FormControl({ value: null, disabled: true }, Validators.required),
             acionistas: this._fb.array([]),
             totalTrabalhadores: [null, [Validators.required, Validators.min(1)]],
             volumeNegocioAnual: [null, Validators.required],
