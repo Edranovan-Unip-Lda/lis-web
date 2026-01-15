@@ -31,6 +31,7 @@
         "html2canvas": "^1.4.1",
         "html2canvas-pro": "^1.5.12",
         "jspdf": "^3.0.3",
+        "ng-recaptcha-2": "^15.0.3",
         "ngx-print": "^20.0.0",
         "ngx-spinner": "^19.0.0",
         "primeclt": "^0.1.5",

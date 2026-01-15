@@ -6,8 +6,10 @@ import { provideRouter, Router, withEnabledBlockingInitialNavigation, withInMemo
 import Aura from '@primeng/themes/aura';
 import * as Sentry from "@sentry/angular";
 import { provideHighcharts } from 'highcharts-angular';
+import { RECAPTCHA_V3_SITE_KEY } from 'ng-recaptcha-2';
 import { providePrimeNG } from 'primeng/config';
 import { appRoutes } from './app.routes';
+import { environment } from './environments/environment';
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -48,5 +50,6 @@ export const appConfig: ApplicationConfig = {
                 ]
             }
         }),
+        { provide: RECAPTCHA_V3_SITE_KEY, useValue: environment.recaptchaSiteKey },
     ]
 };

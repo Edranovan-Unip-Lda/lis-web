@@ -130,3 +130,7 @@ export enum TipoNacionalidade {
     timorense = 'TIMORENSE',
     estrangeiro = 'ESTRANGEIRO'
 }
+
+export enum RecaptchaAction {
+    registerEmpresa = 'REGISTER_EMPRESA'
+}

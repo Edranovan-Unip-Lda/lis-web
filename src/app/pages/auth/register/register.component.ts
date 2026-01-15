@@ -1,5 +1,5 @@
 import { Aldeia, Role } from '@/core/models/data-master.model';
-import { TipoNacionalidade, TipoPropriedade } from '@/core/models/enums';
+import { RecaptchaAction, TipoNacionalidade, TipoPropriedade } from '@/core/models/enums';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { EmpresaService } from '@/core/services/empresa.service';
 import { estadoCivilOptions, maxFileSizeUpload, tipoDocumentoOptions, tipoNacionalidadeOptions, tipoPropriedadeOptions, tipoRelacaoFamiliaOptions, tipoRepresentante } from '@/core/utils/global-function';
@@ -25,7 +25,7 @@ import { StepperModule } from 'primeng/stepper';
 import { Tooltip } from 'primeng/tooltip';
 import { Subject, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-
+import { ReCaptchaV3Service, RecaptchaV3Module } from 'ng-recaptcha-2';
 
 interface Notification {
     state: string,
@@ -36,7 +36,7 @@ interface Notification {
 @Component({
     selector: 'app-register',
     standalone: true,
-    imports: [Button, FileUpload, RouterLink, InputText, Fluid, Ripple, Password, ReactiveFormsModule, Select, Message, StepperModule, DatePicker, InputGroup, InputGroupAddonModule, InputNumber, Divider, Tooltip, DatePipe, NgxPrintModule, CurrencyPipe],
+    imports: [Button, FileUpload, RouterLink, InputText, Fluid, Ripple, Password, ReactiveFormsModule, Select, Message, StepperModule, DatePicker, InputGroup, InputGroupAddonModule, InputNumber, Divider, Tooltip, DatePipe, NgxPrintModule, CurrencyPipe, RecaptchaV3Module],
     templateUrl: './register.component.html',
 })
 export class Register {
@@ -85,6 +85,7 @@ export class Register {
         private route: ActivatedRoute,
         private dataMasterService: DataMasterService,
         private empresaService: EmpresaService,
+        private recaptchaV3Service: ReCaptchaV3Service
     ) { }
 
 
@@ -332,28 +333,26 @@ export class Register {
             formData.utilizador.role = this.selectedRole;
             formData.utilizador.email = formData.gerente.email;
 
-            this.empresaService.save(formData, this.uploadedDocs).subscribe({
-                next: (response) => {
-                    this.loading = false;
-                    this.isSuccess = true;
-                    this.emailVerification = response.utilizador.email;
-                    this.empresaForm.reset();
-                    this.setNotification();
-                },
-                error: (error) => {
-                    this.loading = false;
-                    this.isError = true;
-
-                    // Handle error response
-                    console.error('Error saving empresa:', error);
-                    this.errorMessage = error;
-                }
+            this.recaptchaV3Service.execute(RecaptchaAction.registerEmpresa).subscribe((token: string) => {
+                formData.recaptchaToken = token;
+                this.empresaService.save(formData, this.uploadedDocs).subscribe({
+                    next: (response) => {
+                        this.loading = false;
+                        this.isSuccess = true;
+                        this.emailVerification = response.utilizador.email;
+                        this.empresaForm.reset();
+                        this.setNotification();
+                    },
+                    error: (error) => {
+                        this.loading = false;
+                        this.isError = true;
+                        this.errorMessage = error;
+                    }
+                });
             });
 
         } else {
             this.loading = false;
-            // Handle form errors
-            console.error('Form is invalid');
         }
     }
 
