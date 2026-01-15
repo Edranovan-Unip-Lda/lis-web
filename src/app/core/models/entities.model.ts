@@ -133,6 +133,7 @@ export interface CertificadoLicencaAtividade extends BaseModel {
     dataEmissao: string;
     nomeDiretorGeral: string;
     pedidoLicencaAtividade: PedidoAtividadeLicenca;
+    assinatura: Documento;
 }
 
 

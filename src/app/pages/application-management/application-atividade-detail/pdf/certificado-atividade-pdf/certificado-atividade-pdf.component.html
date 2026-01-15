@@ -82,7 +82,9 @@
                 <div class="mb-2 text-black">
                     @if (certificadoData.pedidoLicencaAtividade.aplicante.categoria === 'COMERCIAL') {
                     <p>O Diretor-Geral do Comércio</p>
-                    <br>
+                    @if (imageUrl) {
+                    <img [src]="imageUrl" alt="Signature" style="max-width: 150px" />
+                    }
                     <p class="text-gray-600">
                         {{certificadoData.nomeDiretorGeral}}
                     </p>
@@ -96,8 +98,9 @@
 
                 </div>
             </div>
-            <div class="col-span-1">
-                <img src="images/qrcode.png" alt="Qrcode" class="qrcode" width="110" height="110" />
+            <div class="col-span-1 pt-14">
+                <qrcode [qrdata]="qrcodeUrl()" [margin]="0" [width]="120" elementType="canvas">
+                </qrcode>
             </div>
         </div>
     </div>

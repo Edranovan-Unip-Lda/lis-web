@@ -1,15 +1,18 @@
 import { CertificadoLicencaAtividade } from '@/core/models/entities.model';
 import { Categoria } from '@/core/models/enums';
-import { DatePipe, Location, NgStyle, TitleCasePipe, UpperCasePipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { DocumentosService } from '@/core/services';
+import { DatePipe, Location, NgStyle, UpperCasePipe } from '@angular/common';
+import { Component, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { QRCodeComponent } from 'angularx-qrcode';
 import html2canvas from 'html2canvas-pro';
 import { jsPDF } from 'jspdf';
 import { Button } from 'primeng/button';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-certificado-atividade-pdf',
-  imports: [Button, DatePipe, NgStyle, UpperCasePipe],
+  imports: [Button, DatePipe, NgStyle, UpperCasePipe, QRCodeComponent],
   templateUrl: './certificado-atividade-pdf.component.html',
   styleUrl: './certificado-atividade-pdf.component.scss'
 })
@@ -18,16 +21,22 @@ export class CertificadoAtividadePdfComponent {
   dataValido = new Date();
   industrialCSS!: any;
   comercialCSS!: any;
+  imageUrl!: string;
+  qrcodeUrl = signal(`${environment.webUrl}/auth/search?numero=`);
 
   constructor(
     private router: ActivatedRoute,
-    private location: Location
+    private location: Location,
+    private documentoService: DocumentosService,
   ) { }
 
   ngOnInit(): void {
     this.certificadoData = this.router.snapshot.data['certificadoResolver'];
     this.certificadoData.updatedAt = new Date(this.certificadoData.updatedAt)
     this.certificadoData.updatedAt.setFullYear(this.certificadoData.updatedAt.getFullYear() + 1);
+
+    this.qrcodeUrl.set(`${environment.webUrl}/auth/search?numero=${this.certificadoData.pedidoLicencaAtividade.aplicante.numero}`);
+    this.loadImage(this.certificadoData.assinatura.id);
 
     this.industrialCSS = {
       'background-image': 'url("/images/bg-industrial.png")',
@@ -53,6 +62,16 @@ export class CertificadoAtividadePdfComponent {
       case Categoria.comercial: return this.comercialCSS;
       case Categoria.industrial: return this.industrialCSS;
     }
+  }
+
+  loadImage(id: number) {
+    this.documentoService.downloadById(id).subscribe(blob => {
+      if (this.imageUrl) {
+        URL.revokeObjectURL(this.imageUrl);
+      }
+
+      this.imageUrl = URL.createObjectURL(blob);
+    });
   }
 
   generatePDF() {

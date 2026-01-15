@@ -12,6 +12,7 @@ import { Login } from './login/login';
 import { Register } from './register/register.component';
 import { Verification } from './verification/verification';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { SearchComponent } from './search/search.component';
 
 export default [
     {
@@ -53,6 +54,10 @@ export default [
             {
                 path: 'resetpassword',
                 component: ResetPasswordComponent
+            },
+            {
+                path: 'search',
+                component: SearchComponent
             },
             { path: 'lockscreen', component: LockScreen },
             { path: '**', redirectTo: '/notfound' }

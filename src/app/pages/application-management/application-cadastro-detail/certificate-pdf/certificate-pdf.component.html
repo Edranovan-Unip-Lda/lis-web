@@ -73,21 +73,21 @@
 
             </div>
 
-            <div class="grid grid-cols-4 mt-64">
+            <div class="grid grid-cols-4 mt-32">
                 <div class="col-span-3 flex items-center justify-center text-center">
                     <div class="mb-2 text-black">
                         <p>O Diretor-Geral do Comércio</p>
                         @if (imageUrl) {
-                        <img [src]="imageUrl" alt="Signature" style="max-width: 200px" />
+                        <img [src]="imageUrl" alt="Signature" style="max-width: 150px" />
                         }
-                        <br>
-                        <p class="text-gray-600">
+                        <p class="text-gray-950">
                             {{certificadoData.nomeDiretorGeral}}
                         </p>
                     </div>
                 </div>
-                <div class="col-span-1">
-                    <img src="images/qrcode.png" alt="Qrcode" class="qrcode" width="110" height="110" />
+                <div class="col-span-1 pt-14">
+                    <qrcode [qrdata]="qrcodeUrl()" [margin]="0" [width]="120" elementType="canvas">
+                    </qrcode>
                 </div>
             </div>
 
@@ -154,21 +154,21 @@
                     </span>
                 </div>
             </div>
-            <div class="grid grid-cols-4 mt-64">
+            <div class="grid grid-cols-4 mt-32">
                 <div class="col-span-3 flex items-center justify-center text-center">
                     <div class="mb-2 text-black">
                         <p>O Diretor-Geral da Indústria</p>
                         @if (imageUrl) {
-                        <img [src]="imageUrl" alt="Signature" style="max-width: 200px" />
+                        <img [src]="imageUrl" alt="Signature" style="max-width: 150px" />
                         }
-                        <br>
-                        <p class="text-gray-600">
+                        <p class="text-gray-950">
                             {{certificadoData.nomeDiretorGeral}}
                         </p>
                     </div>
                 </div>
-                <div class="col-span-1">
-                    <img src="images/qrcode.png" alt="Qrcode" class="qrcode" width="110" height="110" />
+                <div class="col-span-1 pt-14">
+                    <qrcode [qrdata]="qrcodeUrl()" [margin]="0" [scale]="1" [width]="120" [errorCorrectionLevel]="'M'">
+                    </qrcode>
                 </div>
             </div>
         </div>

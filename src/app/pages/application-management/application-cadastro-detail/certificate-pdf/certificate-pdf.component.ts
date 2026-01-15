@@ -2,16 +2,18 @@ import { CertificadoCadastro } from '@/core/models/entities.model';
 import { Categoria } from '@/core/models/enums';
 import { DocumentosService } from '@/core/services';
 import { DatePipe, Location, NgStyle } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import html2canvas from 'html2canvas-pro';
 import jsPDF from 'jspdf';
 import { Button } from 'primeng/button';
 import { TableModule } from 'primeng/table';
+import { QRCodeComponent } from 'angularx-qrcode';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-certificate-pdf',
-  imports: [DatePipe, Button, TableModule, NgStyle],
+  imports: [DatePipe, Button, TableModule, NgStyle, QRCodeComponent],
   templateUrl: './certificate-pdf.component.html',
   styleUrl: './certificate-pdf.component.scss'
 })
@@ -21,6 +23,7 @@ export class CertificatePdfComponent {
   industrialCSS!: any;
   comercialCSS!: any;
   imageUrl!: string;
+  qrcodeUrl = signal(`${environment.webUrl}/auth/search?numero=`);
 
   constructor(
     private router: ActivatedRoute,
@@ -36,6 +39,8 @@ export class CertificatePdfComponent {
     this.dataValido = this.certificadoData.updatedAt;
 
     this.loadImage(this.certificadoData.assinatura.id);
+
+    this.qrcodeUrl.set(`${environment.webUrl}/auth/search?numero=${this.certificadoData.pedidoInscricaoCadastro.aplicante.numero}`);
 
     this.industrialCSS = {
       'background-image': 'url("/images/bg-industrial.png")',

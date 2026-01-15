@@ -1,0 +1,320 @@
+ <p-fluid class="min-h-screen text-center" style="padding: 50% 10% 20% 10%;">
+     <div class="flex flex-col">
+         <div class="flex items-center justify-center">
+             <img src="/images/logo.png" style="width: 100px" alt="logo" />
+         </div>
+         <div class="mt-2 mb-8">
+             <p class="text-2xl font-bold mb-4">
+                 Sistema de Gestão de <br> Licenças Comerciais e Indústriais
+             </p>
+         </div>
+         <span class="text-xl font-semibold">
+             Consultar Licença
+         </span>
+         <div class="flex flex-col mt-4 min-w-auto">
+             @for (message of messages(); track message; let first = $first) {
+             <p-message [severity]="message.severity" [text]="message.content" />
+             }
+         </div>
+         <div class="text-center flex items-center justify-center mt-2">
+             <!-- Search Form Section -->
+             <div class="w-full space-y-4 mb-12">
+                 <div class="relative group">
+                     <p-inputgroup>
+                         <input [formControl]="searchInput" pInputText placeholder="Número de Identificação" />
+                         <p-inputgroup-addon>
+                             <i class="pi pi-search"></i>
+                         </p-inputgroup-addon>
+                     </p-inputgroup>
+                 </div>
+                 <p-button (click)="submit(searchInput)" icon="pi pi-chevron-right" iconPos="right" label="Consultar"
+                     [loading]="loading" [disabled]="!searchInput.valid" pRipple fluid>
+                 </p-button>
+             </div>
+         </div>
+         <!-- Results Section -->
+         <section aria-label="Resultado da Pesquisa" class="animate-fade-in">
+
+             @if (!loading) {
+             @if (certificadoData) {
+             @if (isCadastro) {
+             <ng-container *ngTemplateOutlet="cadastroTemplate"></ng-container>
+             } @else {
+             <ng-container *ngTemplateOutlet="licencaAtividadeTemplate"></ng-container>
+             }
+             }
+             }
+             @else {
+             <p-skeleton width="100%" height="150px" />
+             }
+         </section>
+     </div>
+ </p-fluid>
+
+
+
+ <!-- Cadastro -->
+ <ng-template #cadastroTemplate>
+     <div id="myDiv" class="px-16 pt-16 tracking-wider" [ngStyle]="getCategoriaStyle()">
+         @if (certificadoData.pedidoInscricaoCadastro.aplicante.categoria === 'COMERCIAL') {
+         <div class="text-black tracking-wider">
+
+             <!-- Header -->
+             <div class="text-center pt-6">
+                 <div class="flex justify-center mb-3">
+                     <img src="/images/rdtl.png" alt="Logo" class="h-24 w-24 object-contain" />
+                 </div>
+
+                 <div class="font-bold text-2xl uppercase">Ministério do Comércio e Indústria</div>
+                 <div class="font-semibold text-xl">Direção-Geral do Comércio</div>
+                 <div class="mt-4 font-extrabold text-5xl text-red tracking-wide">CERTIFICADO</div>
+                 <div class="text-lg font-semibold text-red">DE INSCRIÇÃO NO CADASTRO COMERCIAL</div>
+             </div>
+
+             <!-- Certificate Body -->
+             <div class="mt-10 text-base p-8 text-justify">
+                 <div class="mb-3 font-bold text-3xl">N.º <span class="font-normal">
+                         {{certificadoData.pedidoInscricaoCadastro.aplicante.numero}}
+                     </span></div>
+                 <p class="mb-6 mt-8">
+                     Certifica-se que a Sociedade comercial <span class="font-semibold ">
+                         {{certificadoData.sociedadeComercial}} {{certificadoData.tipoSociedadeComercial}}
+                     </span>,
+                     titular de Registo Comercial n.º <span class="font-semibold ">
+                         {{certificadoData.pedidoInscricaoCadastro.empresaNumeroRegistoComercial}}
+                     </span> e sede em
+                     <span class="font-semibold ">
+                         {{certificadoData.sede.local}},
+                         {{certificadoData.sede.aldeia.nome}},
+                         {{certificadoData.sede.aldeia.suco.nome}},
+                         {{certificadoData.sede.aldeia.suco.postoAdministrativo.nome}},
+                         {{certificadoData.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
+                     </span>,<br>
+                     está inscrita no sistema de registo do cadastro comercial junto da Direção-Geral do Comércio do
+                     Ministério
+                     do Comércio e Indústria, pelo exercício da atividade de
+                     <span class="font-semibold ">
+                         {{certificadoData.pedidoInscricaoCadastro.classeAtividade.descricao}}
+                     </span>, nos termos do
+                     Decreto-Lei
+                     n.º
+                     90/2023, de 27 de dezembro.
+                 </p>
+                 <div class="mb-4">
+                     Validade até <span class="font-semibold">
+                         {{dataValido | date: 'dd/MM/yyyy'}}
+                     </span>
+                 </div>
+                 <div class="mb-6">
+                     Díli, <span class="font-semibold">
+                         {{certificadoData.createdAt | date: 'dd'}}
+                     </span> de <span class="font-semibold">
+                         {{certificadoData.createdAt | date: 'MMMM':'':'pt'}}
+                     </span> de <span class="font-semibold">
+                         {{certificadoData.createdAt | date: 'yyyy'}}
+                     </span>
+                 </div>
+
+             </div>
+
+             <div class="grid grid-cols-4 mt-32">
+                 <div class="col-span-3 flex items-center justify-center text-center">
+                     <div class="mb-2 text-black">
+                         <p>O Diretor-Geral do Comércio</p>
+                         @if (imageUrl) {
+                         <img [src]="imageUrl" alt="Signature" style="max-width: 150px" />
+                         }
+                         <p class="text-gray-950">
+                             {{certificadoData.nomeDiretorGeral}}
+                         </p>
+                     </div>
+                 </div>
+                 <div class="col-span-1 pt-14">
+                     <qrcode [qrdata]="qrcodeUrl()" [margin]="0" [width]="120" elementType="canvas">
+                     </qrcode>
+                 </div>
+             </div>
+
+
+         </div>
+         }
+
+
+         @else {
+         <div class="text-black tracking-wider">
+             <!-- Header -->
+             <div class="relative z-10 text-center pt-6">
+                 <div class="flex justify-center mb-3">
+                     <img src="/images/rdtl.png" alt="Logo" class="h-24 w-24 object-contain" />
+                 </div>
+
+                 <div class="font-bold text-2xl uppercase">Ministério do Comércio e Indústria</div>
+                 <div class="font-semibold text-xl">Direção-Geral do Indústria</div>
+                 <div class="mt-8 font-extrabold text-5xl text-blue tracking-wide">CERTIFICADO</div>
+                 <div class="text-lg font-semibold text-blue">DE INSCRIÇÃO NO CADASTRO INDUSTRIAL</div>
+             </div>
+
+             <!-- Certificate Body -->
+             <div class="mt-10 text-base p-8 text-justify">
+                 <div class="mb-6 font-bold text-3xl">N.º <span class="font-normal">
+                         {{certificadoData.pedidoInscricaoCadastro.aplicante.numero}}
+                     </span></div>
+                 <p class="mb-6 mt-8">
+                     Certifica-se que a Sociedade comercial <span class="font-semibold ">
+                         {{certificadoData.pedidoInscricaoCadastro.nomeEmpresa}}
+                     </span>,
+                     titular de Registo Comercial n.º <span class="font-semibold ">
+                         {{certificadoData.pedidoInscricaoCadastro.empresaNumeroRegistoComercial}}
+                     </span> e sede em
+                     <span class="font-semibold ">
+                         {{certificadoData.sede.local}},
+                         {{certificadoData.sede.aldeia.nome}},
+                         {{certificadoData.sede.aldeia.suco.nome}},
+                         {{certificadoData.sede.aldeia.suco.postoAdministrativo.nome}},
+                         {{certificadoData.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
+                     </span>,<br>
+                     está inscrita no sistema de registo do cadastro comercial junto da Direção-Geral do Comércio do
+                     Ministério
+                     do Comércio e Indústria, pelo exercício da atividade de
+                     <span class="font-semibold ">
+                         {{certificadoData.pedidoInscricaoCadastro.classeAtividade.descricao}} -
+                         {{certificadoData.pedidoInscricaoCadastro.classeAtividade.codigo}}
+                     </span>, nos termos do Decreto-Lei
+                     n.º
+                     90/2023, de 27 de dezembro.
+                 </p>
+                 <div class="mb-4">
+                     Validade até <span class="font-semibold">
+                         {{dataValido | date: 'dd/MM/yyyy'}}
+                     </span>
+                 </div>
+                 <div class="mb-6">
+                     Díli, <span class="font-semibold">
+                         {{certificadoData.createdAt | date: 'dd'}}
+                     </span> de <span class="font-semibold">
+                         {{certificadoData.createdAt | date: 'MMMM':'':'pt'}}
+                     </span> de <span class="font-semibold">
+                         {{certificadoData.createdAt | date: 'yyyy'}}
+                     </span>
+                 </div>
+             </div>
+             <div class="grid grid-cols-4 mt-32">
+                 <div class="col-span-3 flex items-center justify-center text-center">
+                     <div class="mb-2 text-black">
+                         <p>O Diretor-Geral da Indústria</p>
+                         @if (imageUrl) {
+                         <img [src]="imageUrl" alt="Signature" style="max-width: 150px" />
+                         }
+                         <p class="text-gray-950">
+                             {{certificadoData.nomeDiretorGeral}}
+                         </p>
+                     </div>
+                 </div>
+                 <div class="col-span-1 pt-14">
+                     <qrcode [qrdata]="qrcodeUrl()" [margin]="0" [scale]="1" [width]="120" [errorCorrectionLevel]="'M'">
+                     </qrcode>
+                 </div>
+             </div>
+         </div>
+
+
+         }
+     </div>
+ </ng-template>
+
+ <ng-template #licencaAtividadeTemplate>
+     <div id="myDiv" class="px-16 pt-16 tracking-wider" [ngStyle]="getCategoriaStyle()">
+         <div class="relative z-10 text-center pt-6 text-black">
+             <div class="flex justify-center pt-4 mb-3">
+                 <img src="/images/rdtl.png" alt="Logo" class="h-24 w-24 object-contain" />
+             </div>
+
+             <div class="font-bold text-2xl uppercase">Ministério do Comércio e Indústria</div>
+             @if (certificadoData.pedidoLicencaAtividade.aplicante.categoria === 'COMERCIAL') {
+             <div class="font-semibold text-xl">Direção-Geral do Comércio</div>
+             } @else {
+             <div class="font-semibold text-xl">Direção-Geral da Indústria</div>
+             }
+         </div>
+         <div class="flex justify-center">
+             <div class="text-center my-4">
+                 <div class="mt-4 font-extrabold text-5xl text-sky-600 tracking-wide">ALVARÁ DE LICENÇA</div>
+                 <div class="text-3xl font-semibold text-sky-600">
+                     PARA EXERCÍCIO DA ATIVIDADE
+                     {{certificadoData.pedidoLicencaAtividade.aplicante.categoria | uppercase}}
+                 </div>
+             </div>
+         </div>
+
+         <div class="grid grid-cols-6 text-black px-8 pt-6 text-left">
+             <div class="col-span-6 text-xl my-4">
+                 N.º <span class="font-bold">{{certificadoData.pedidoLicencaAtividade.aplicante.numero}}</span>
+             </div>
+             <div class="col-span-6 text-xl my-2">
+                 Sociedade Comercial: <span class="font-bold">
+                     {{certificadoData.pedidoLicencaAtividade.nomeEmpresa}} {{certificadoData.tipoSociedadeComercial}}
+                 </span>
+             </div>
+             <div class="col-span-6 text-xl my-2">
+                 Nº Registo Comercial: <span
+                     class="font-bold">{{certificadoData.pedidoLicencaAtividade.empresaNumeroRegistoComercial}}</span>
+             </div>
+             <div class="col-span-6 text-xl my-2">
+                 NIF: <span class="font-bold">{{certificadoData.pedidoLicencaAtividade.empresaNif}}</span>
+             </div>
+             <div class="col-span-6 text-xl my-2">
+                 Sede em: <span class="font-bold">
+                     {{certificadoData.sede.local}},
+                     {{certificadoData.sede.aldeia.nome}},
+                     {{certificadoData.sede.aldeia.suco.nome}},
+                     {{certificadoData.sede.aldeia.suco.postoAdministrativo.nome}},
+                     {{certificadoData.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
+                 </span>
+             </div>
+             <div class="col-span-6 text-xl my-2">
+                 Nível de risco: <span class="font-bold">{{certificadoData.pedidoLicencaAtividade.risco}}</span>
+             </div>
+             <div class="col-span-6 text-xl my-2">
+                 Atividade comercial declarada: <span
+                     class="font-bold">{{certificadoData.pedidoLicencaAtividade.classeAtividade.descricao}}</span>
+             </div>
+             <div class="col-span-6 text-xl my-2">
+                 Código: <span
+                     class="font-bold">{{certificadoData.pedidoLicencaAtividade.classeAtividade.codigo}}</span>
+             </div>
+             <div class="col-span-6 text-xl my-2">
+                 Data de Emissão: <span class="font-bold">{{certificadoData.dataEmissao| date:'longDate'}}</span>
+             </div>
+             <div class="col-span-6 text-xl my-2">
+                 Validade até: <span class="font-bold">{{certificadoData.dataValidade| date:'longDate'}}</span>
+             </div>
+         </div>
+
+         <div class="grid grid-cols-4 mt-16">
+             <div class="col-span-3 flex items-center justify-center text-center">
+                 <div class="mb-2 text-black">
+                     @if (certificadoData.pedidoLicencaAtividade.aplicante.categoria === 'COMERCIAL') {
+                     <p>O Diretor-Geral do Comércio</p>
+                     @if (imageUrl) {
+                     <img [src]="imageUrl" alt="Signature" style="max-width: 150px" />
+                     }
+                     <p class="text-gray-600">
+                         {{certificadoData.nomeDiretorGeral}}
+                     </p>
+                     } @else {
+                     <p>O Diretor-Geral da Indústria</p>
+                     <br>
+                     <p class="text-gray-600">
+                         {{certificadoData.nomeDiretorGeral}}
+                     </p>
+                     }
+
+                 </div>
+             </div>
+             <div class="col-span-1 pt-14">
+                 <qrcode [qrdata]="qrcodeUrl()" [margin]="0" [width]="120" elementType="canvas">
+                 </qrcode>
+             </div>
+         </div>
+     </div>
+ </ng-template>
