@@ -23,8 +23,10 @@ export class CertificadoService {
         return this.http.get<CertificadoCadastro | CertificadoLicencaAtividade>(`${this.apiUrl}/${id}`, { params });
     }
 
-    searchByNumero(numero: string): Observable<CertificadoCadastro | CertificadoLicencaAtividade> {
-        const params = new HttpParams().append('numero', numero);
+    searchByNumero(numero: string, recaptchaToken: string): Observable<CertificadoCadastro | CertificadoLicencaAtividade> {
+        const params = new HttpParams()
+            .append('numero', numero)
+            .append('recaptchaToken', recaptchaToken);
         return this.http.get<CertificadoCadastro | CertificadoLicencaAtividade>(`${this.apiUrl}/search`, { params });
     }
 }

@@ -132,5 +132,6 @@ export enum TipoNacionalidade {
 }
 
 export enum RecaptchaAction {
-    registerEmpresa = 'REGISTER_EMPRESA'
+    registerEmpresa = 'REGISTER_EMPRESA',
+    certificadoSearch = 'CERTIFICADO_SEARCH',
 }

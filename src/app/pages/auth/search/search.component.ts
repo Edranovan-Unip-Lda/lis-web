@@ -1,10 +1,11 @@
-import { Categoria } from '@/core/models/enums';
+import { Categoria, RecaptchaAction } from '@/core/models/enums';
 import { CertificadoService, DocumentosService } from '@/core/services';
 import { DatePipe, NgStyle, NgTemplateOutlet, UpperCasePipe } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { QRCodeComponent } from 'angularx-qrcode';
+import { RecaptchaV3Module, ReCaptchaV3Service } from 'ng-recaptcha-2';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { Fluid } from 'primeng/fluid';
@@ -17,7 +18,7 @@ import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-search',
-  imports: [Fluid, Message, Button, InputGroup, InputGroupAddon, InputText, Skeleton, DatePipe, NgStyle, QRCodeComponent, NgTemplateOutlet, ReactiveFormsModule, UpperCasePipe],
+  imports: [Fluid, Message, Button, InputGroup, InputGroupAddon, InputText, Skeleton, RecaptchaV3Module, DatePipe, NgStyle, QRCodeComponent, NgTemplateOutlet, ReactiveFormsModule, UpperCasePipe],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
   providers: [MessageService]
@@ -39,13 +40,14 @@ export class SearchComponent {
     private route: ActivatedRoute,
     private certificadoService: CertificadoService,
     private documentoService: DocumentosService,
+    private recaptchaV3Service: ReCaptchaV3Service,
   ) { }
 
   ngOnInit(): void {
 
     this.route.queryParamMap.subscribe(queryParams => {
       this.loading = true;
-      const numero = queryParams.get('numero');
+      const numero = queryParams.get('numero')?.trim();
 
       if (!numero) {
         this.loading = false;
@@ -74,7 +76,7 @@ export class SearchComponent {
   submit(form: FormControl) {
     if (form.valid) {
       this.loading = true;
-      const numero = form.value;
+      const numero = form.value?.trim();
       this.getData(numero);
     }
   }
@@ -82,30 +84,33 @@ export class SearchComponent {
   private getData(numero: string) {
 
     if (numero.match(this.numeroRegex)) {
-      this.certificadoService.searchByNumero(numero).subscribe({
-        next: (certificado) => {
-          // Type guards: check for unique properties
-          this.isCadastro = 'pedidoInscricaoCadastro' in certificado;
-          this.messages.set([{
-            severity: 'success',
-            content: 'Certificado encontrado com sucesso.'
-          }]);
-          this.certificadoData = certificado;
-          this.certificadoData.updatedAt = new Date(this.certificadoData.updatedAt)
-          this.certificadoData.updatedAt.setFullYear(this.certificadoData.updatedAt.getFullYear() + 1);
-          this.dataValido = this.certificadoData.updatedAt;
-          this.loadImage(this.certificadoData.assinatura.id);
-          this.loading = false;
-        },
-        error: (error) => {
-          this.messages.set([{
-            severity: 'error',
-            content: error
-          }]);
-          this.certificadoData = null;
-          this.loading = false;
-        }
+      this.recaptchaV3Service.execute(RecaptchaAction.certificadoSearch).subscribe(token => {
+        this.certificadoService.searchByNumero(numero, token).subscribe({
+          next: (certificado) => {
+            // Type guards: check for unique properties
+            this.isCadastro = 'pedidoInscricaoCadastro' in certificado;
+            this.messages.set([{
+              severity: 'success',
+              content: 'Certificado encontrado com sucesso.'
+            }]);
+            this.certificadoData = certificado;
+            this.certificadoData.updatedAt = new Date(this.certificadoData.updatedAt)
+            this.certificadoData.updatedAt.setFullYear(this.certificadoData.updatedAt.getFullYear() + 1);
+            this.dataValido = this.certificadoData.updatedAt;
+            this.loadImage(this.certificadoData.assinatura.id);
+            this.loading = false;
+          },
+          error: (error) => {
+            this.messages.set([{
+              severity: 'error',
+              content: error
+            }]);
+            this.certificadoData = null;
+            this.loading = false;
+          }
+        });
       });
+
     } else {
       this.messages.set([{
         severity: 'error',
