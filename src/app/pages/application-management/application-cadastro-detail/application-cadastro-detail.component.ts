@@ -1,6 +1,6 @@
 import { Aldeia } from '@/core/models/data-master.model';
 import { Aplicante, Documento, Empresa, Fatura, HistoricoEstadoAplicante, PedidoInscricaoCadastro } from '@/core/models/entities.model';
-import { AplicanteStatus, AplicanteType, Categoria, TipoEstabelecimento, TipoPedidoCadastro } from '@/core/models/enums';
+import { AplicanteStatus, Categoria, TipoEstabelecimento, TipoPedidoCadastro } from '@/core/models/enums';
 import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService } from '@/core/services';
 import { AplicanteService } from '@/core/services/aplicante.service';
@@ -8,7 +8,7 @@ import { DataMasterService } from '@/core/services/data-master.service';
 import { DocumentosService } from '@/core/services/documentos.service';
 import { EmpresaService } from '@/core/services/empresa.service';
 import { PedidoService } from '@/core/services/pedido.service';
-import { calculateCommercialLicenseTax, caraterizacaEstabelecimentoOptions, mapToAtividadeEconomica, mapToGrupoAtividade, mapToIdAndNome, mapToTaxa, maxFileSizeUpload, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEmpresaOptions, tipoEstabelecimentoOptions, tipoPedidoCadastroOptions } from '@/core/utils/global-function';
+import { calculateCommercialLicenseTax, caraterizacaEstabelecimentoOptions, mapToAtividadeEconomica, mapToIdAndNome, mapToTaxa, maxFileSizeUpload, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEmpresaOptions, tipoEstabelecimentoOptions, tipoPedidoCadastroOptions } from '@/core/utils/global-function';
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -712,7 +712,10 @@ export class ApplicationCadastroDetailComponent {
   }
 
   private disabledForms(aplicanteEstado: AplicanteStatus): void {
-    if (aplicanteEstado === AplicanteStatus.submetido || aplicanteEstado === AplicanteStatus.aprovado) {
+    if (aplicanteEstado === AplicanteStatus.submetido ||
+      aplicanteEstado === AplicanteStatus.aprovado ||
+      aplicanteEstado === AplicanteStatus.revisao ||
+      aplicanteEstado === AplicanteStatus.revisto) {
       this.requestForm.disable();
       this.faturaForm.disable();
       this.disableAllForm = true;
