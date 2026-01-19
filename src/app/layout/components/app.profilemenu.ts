@@ -7,6 +7,7 @@ import { CommonModule } from "@angular/common";
 import { NotificacaoDto } from '@/core/models/entities.model';
 import { NotificacaoService } from '@/core/services';
 import { TimeAgoPipe } from '@/core/pipes/custom.pipe';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-profile-menu',
@@ -24,6 +25,7 @@ export class AppProfileMenu {
 
     constructor(
         private notificacaoService: NotificacaoService,
+        private router: Router
     ) {
         // Use Angular effect to watch for rightMenuActive changes
         effect(() => {
@@ -43,7 +45,6 @@ export class AppProfileMenu {
         this.notificacaoService.getAll(this.page, this.size).subscribe({
             next: (response) => {
                 this.notifications = response.content || response;
-                console.log('Notifications fetched:', response);
             }
         });
     }
@@ -57,6 +58,12 @@ export class AppProfileMenu {
             'bg-green-100 text-green-600': item.aplicanteStatus === 'APROVADO'
         }
 
+    }
+
+    toDetail(item: NotificacaoDto): void {
+        console.log(item);
+        const url = `/application/${item.aplicanteTipo.toLowerCase()}/${item.aplicanteId}?categoria=${item.categoria}&tipo=${item.aplicanteTipo}`;
+        this.router.navigateByUrl(url);
     }
 
     get rightMenuVisible() {

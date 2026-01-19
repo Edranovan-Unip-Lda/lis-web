@@ -9,7 +9,7 @@
             @if (!item.visto) {
             <div
                 class="group relative flex flex-col p-4 rounded-lg bg-white dark:bg-[#1a3323] hover:bg-gray-50 dark:hover:bg-[#244730] transition-all cursor-pointer border border-transparent hover:border-primary/30 shadow-sm">
-                <div class="flex items-start gap-4">
+                <div class="flex items-start gap-4" (click)="toDetail(item)">
                     <!-- ICON -->
                     <div class="flex items-center justify-center rounded-full text-xl shrink-0 size-12 mt-1"
                         [ngClass]="setClassByStatus(item)">
@@ -43,7 +43,7 @@
             @else {
             <div
                 class="group relative flex flex-col p-4 rounded-lg bg-gray-50 dark:bg-[#112217] hover:bg-gray-100 dark:hover:bg-[#1a3323] transition-all cursor-pointer border border-transparent">
-                <div class="flex items-start gap-4">
+                <div class="flex items-start gap-4" (click)="toDetail(item)">
                     <div class="flex items-center justify-center rounded-full text-xl shrink-0 size-12 mt-1"
                         [ngClass]="setClassByStatus(item)">
                         <!-- Ícone por status -->
