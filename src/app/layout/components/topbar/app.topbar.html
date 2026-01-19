@@ -13,6 +13,13 @@
  </div>
  <div class="topbar-end">
      <ul class="topbar-menu">
+        <li class="topbar-item">
+             @if (layoutService.isDarkTheme()) {
+             <p-button (click)="toggleDarkMode()" [rounded]="true" icon="pi pi-moon" [outlined]="true" [text]="true" [severity]="'secondary'" />
+             } @else {
+             <p-button (click)="toggleDarkMode()" [rounded]="true" icon="pi pi-sun" [outlined]="true" [text]="true" [severity]="'secondary'" />
+             }
+         </li>
          <li class="profile-item topbar-item">
              @if (unreadCount > 0) {
              <p-overlaybadge [value]="unreadCount">
@@ -26,7 +33,6 @@
                  rounded></button>
              }
          </li>
-
          <li class="profile-item topbar-item">
 
          </li>
@@ -39,7 +45,7 @@
                      {{user.firstName}} {{user.lastName}}
                  </span>
                  <a>
-                     <img class="rounded-full" src="/images/user.webp"/>
+                     <img class="rounded-full" src="/images/user.webp" />
                  </a>
              </div>
 

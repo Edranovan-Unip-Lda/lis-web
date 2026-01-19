@@ -13,6 +13,7 @@ import { OverlayBadge } from 'primeng/overlaybadge';
 import { Ripple } from 'primeng/ripple';
 import { StyleClassModule } from 'primeng/styleclass';
 import { filter, Subscription } from 'rxjs';
+import { ToggleButton } from 'primeng/togglebutton';
 
 @Component({
     selector: '[app-topbar]',
@@ -38,6 +39,8 @@ export class AppTopbar {
     private routerSubscription?: Subscription;
     notifications: NotificacaoDto[] = [];
     unreadCount: number = 0;
+    checked: boolean = false;
+    darkTheme = computed(() => this.layoutService.layoutConfig().darkTheme);
 
     constructor(
         public layoutService: LayoutService,
@@ -117,6 +120,19 @@ export class AppTopbar {
             this.notificacaoService.markAllAsRead();
             this.unreadCount = 0;
         }
+    }
+
+    toggleDarkMode() {
+        console.log('toggle');
+        
+        this.executeDarkModeToggle();
+    }
+
+    executeDarkModeToggle() {
+        this.layoutService.layoutConfig.update((state) => ({
+            ...state,
+            darkTheme: !state.darkTheme
+        }));
     }
 
     private loadNotifications() {

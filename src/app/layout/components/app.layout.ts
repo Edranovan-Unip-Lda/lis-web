@@ -8,7 +8,6 @@ import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { filter, Subscription } from 'rxjs';
 import { AppBreadcrumb } from './app.breadcrumb';
-import { AppConfigurator } from './app.configurator';
 import { AppSidebar } from './app.sidebar';
 import { AppTopbar } from './topbar/app.topbar';
 
@@ -16,7 +15,7 @@ import { AppTopbar } from './topbar/app.topbar';
 @Component({
     selector: 'app-layout',
     standalone: true,
-    imports: [CommonModule, AppTopbar, RouterModule, AppConfigurator, AppBreadcrumb, ToastModule, AppProfileMenu, NgxSpinnerComponent],
+    imports: [CommonModule, AppTopbar, RouterModule, AppBreadcrumb, ToastModule, AppProfileMenu, NgxSpinnerComponent],
     template: `
         <div class="layout-container" [ngClass]="containerClass">
             <div class="layout-content-wrapper">
@@ -34,7 +33,6 @@ import { AppTopbar } from './topbar/app.topbar';
                 <div class="layout-mask"></div>
             </div>
             <app-profile-menu />
-            <app-configurator />
             <p-toast />
         </div>
     `,
