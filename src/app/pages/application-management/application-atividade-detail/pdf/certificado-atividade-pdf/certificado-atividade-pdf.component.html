@@ -90,7 +90,9 @@
                     </p>
                     } @else {
                     <p>O Diretor-Geral da Indústria</p>
-                    <br>
+                    @if (imageUrl) {
+                    <img [src]="imageUrl" alt="Signature" style="max-width: 150px" />
+                    }
                     <p class="text-gray-600">
                         {{certificadoData.nomeDiretorGeral}}
                     </p>
