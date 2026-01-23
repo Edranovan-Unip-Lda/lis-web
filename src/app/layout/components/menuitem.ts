@@ -202,19 +202,19 @@ export const model_admin: MenuItem[] = [
             },
         ]
     },
-    {
-        label: 'Historicos',
-        items: [
-            {
-                label: 'Atividades',
-                icon: 'bi bi-fw bi-activity'
-            },
-            {
-                label: 'Autenticacao',
-                icon: 'bi bi-fw bi-unlock'
-            }
-        ]
-    }
+    // {
+    //     label: 'Historicos',
+    //     items: [
+    //         {
+    //             label: 'Atividades',
+    //             icon: 'bi bi-fw bi-activity'
+    //         },
+    //         {
+    //             label: 'Autenticacao',
+    //             icon: 'bi bi-fw bi-unlock'
+    //         }
+    //     ]
+    // }
 ];
 
 export const model_manager: MenuItem[] = [
@@ -316,19 +316,19 @@ export const model_manager: MenuItem[] = [
             }
         ]
     },
-    {
-        label: 'Historicos',
-        items: [
-            {
-                label: 'Atividades',
-                icon: 'bi bi-fw bi-activity'
-            },
-            {
-                label: 'Autenticacao',
-                icon: 'bi bi-fw bi-unlock'
-            }
-        ]
-    }
+    // {
+    //     label: 'Historicos',
+    //     items: [
+    //         {
+    //             label: 'Atividades',
+    //             icon: 'bi bi-fw bi-activity'
+    //         },
+    //         {
+    //             label: 'Autenticacao',
+    //             icon: 'bi bi-fw bi-unlock'
+    //         }
+    //     ]
+    // }
 ];
 
 export const model_staff: MenuItem[] = [
@@ -397,19 +397,19 @@ export const model_staff: MenuItem[] = [
             }
         ]
     },
-    {
-        label: 'Historicos',
-        items: [
-            {
-                label: 'Atividades',
-                icon: 'bi bi-fw bi-activity'
-            },
-            {
-                label: 'Autenticacao',
-                icon: 'bi bi-fw bi-unlock'
-            }
-        ]
-    }
+    // {
+    //     label: 'Historicos',
+    //     items: [
+    //         {
+    //             label: 'Atividades',
+    //             icon: 'bi bi-fw bi-activity'
+    //         },
+    //         {
+    //             label: 'Autenticacao',
+    //             icon: 'bi bi-fw bi-unlock'
+    //         }
+    //     ]
+    // }
 ];
 
 export const model_client: MenuItem[] = [
@@ -473,13 +473,13 @@ export const model_client: MenuItem[] = [
             }
         ]
     },
-    {
-        label: 'Historicos',
-        items: [
-            {
-                label: 'Autenticacao',
-                icon: 'bi bi-fw bi-unlock'
-            }
-        ]
-    }
+    // {
+    //     label: 'Historicos',
+    //     items: [
+    //         {
+    //             label: 'Autenticacao',
+    //             icon: 'bi bi-fw bi-unlock'
+    //         }
+    //     ]
+    // }
 ];
