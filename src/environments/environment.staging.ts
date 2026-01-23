@@ -4,5 +4,5 @@ export const environment = {
     webUrl: 'https://mcitradelicense.netlify.app',
     production: false,
     sentryEnv: 'staging',
-    recaptchaSiteKey: '6LdxdEssAAAAAGFKpOzYvRH7ipMMciSQ9qx4dD4-',
+    recaptchaSiteKey: '6LcNlVMsAAAAANtlr3dD611xHoj2XHrWpWeuKeih',
 };
