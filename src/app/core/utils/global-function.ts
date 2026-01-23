@@ -43,7 +43,6 @@ export function mapToGrupoAtividade(array: any[]): { id: number, codigo: string,
             id: item.id,
             codigo: item.codigo,
             descricao: item.descricao,
-            tipoRisco: item.tipoRisco
         };
     });
 }

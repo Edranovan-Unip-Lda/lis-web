@@ -456,6 +456,18 @@ export class ApplicationCadastroDetailComponent {
     }
   }
 
+  classeAtividadeFilter(event: SelectFilterEvent) {
+    const query = event.filter?.replace(/\s/g, '').replace(/\D/g, '');
+
+    if (query && query.length >= 2) {
+      this.dataMasterService.searchClasseByCodigo(query).subscribe({
+        next: resp => {
+          this.listaClasseAtividade = mapToAtividadeEconomica(resp._embedded.classeAtividade);
+        }
+      });
+    }
+  }
+
 
   onPanelHide() {
     this.listaAldeia = [...this.originalAldeias];

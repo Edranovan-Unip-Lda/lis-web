@@ -123,8 +123,6 @@ export class AppTopbar {
     }
 
     toggleDarkMode() {
-        console.log('toggle');
-        
         this.executeDarkModeToggle();
     }
 
@@ -140,10 +138,6 @@ export class AppTopbar {
             next: (data) => {
                 this.notifications = data;
                 this.unreadCount = data.length;
-                console.log('Notifications loaded:', this.notifications);
-            },
-            error: (error) => {
-                console.error('Error loading notifications:', error);
             }
         });
     }

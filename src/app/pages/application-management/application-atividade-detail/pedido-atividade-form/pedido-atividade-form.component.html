@@ -87,8 +87,9 @@
                  Atividade Principal exercida no Estabelecimento
              </label>
              <p-select formControlName="classeAtividade" (onChange)="atividadePrincipalChange($event)"
-                 inputId="classeAtividade" [options]="listaClasseAtividade" optionLabel="codigo" fluid [filter]="true"
-                 filterBy="codigo,descricao" [showClear]="true" placeholder="Selecione a atividade principal">
+                 (onFilter)="classeAtividadeFilter($event)" inputId="classeAtividade" [options]="listaClasseAtividade"
+                 optionLabel="codigo" fluid [filter]="true" filterBy="codigo,descricao" [showClear]="true"
+                 placeholder="Selecione a atividade principal">
                  <ng-template let-tipo #item>
                      <div class="flex items-center gap-2">
                          <span>{{tipo.codigo}} </span> - <span>{{tipo.descricao}} </span>

@@ -1,18 +1,18 @@
 import { AplicanteType } from '@/core/models/enums';
 import { getCertificadoById } from '@/core/resolvers/certificados.resolver';
-import { getAllAldeiasResolver, getAllClasseAtividadeByTipoResolver, getAllGrupoAtividadeByTipoResolver, getSociedadeComercialResolver, getTaxaByCategoriaAndTipoResolver } from '@/core/resolvers/data-master.resolver';
+import { getAllAldeiasResolver, getPageClasseAtividadeResolver, getSociedadeComercialResolver, getTaxaByCategoriaAndTipoResolver } from '@/core/resolvers/data-master.resolver';
 import { getAplicante, getPageAplicanteOrByEmpresaIdResolver } from '@/core/resolvers/empresa.resolver';
 import { Routes } from '@angular/router';
 import { ApplicationAtividadeDetailComponent } from './application-atividade-detail/application-atividade-detail.component';
 import { AutoVistoriaPdfComponent } from './application-atividade-detail/pdf/auto-vistoria-pdf/auto-vistoria-pdf.component';
 import { CertificadoAtividadePdfComponent } from './application-atividade-detail/pdf/certificado-atividade-pdf/certificado-atividade-pdf.component';
 import { PedidoPdfComponent } from './application-atividade-detail/pdf/pedido-pdf/pedido-pdf.component';
+import { PedidoVistoriaPdfComponent } from './application-atividade-detail/pdf/pedido-vistoria-pdf/pedido-vistoria-pdf.component';
 import { ApplicationCadastroDetailComponent } from './application-cadastro-detail/application-cadastro-detail.component';
 import { ApplicationListComponent } from './application-cadastro-detail/application-list/application-list.component';
 import { CertificatePdfComponent } from './application-cadastro-detail/certificate-pdf/certificate-pdf.component';
 import { FaturaComponent } from './application-cadastro-detail/fatura/fatura.component';
 import { PedidoInscricaoComponent } from './application-cadastro-detail/pedido-inscricao/pedido-inscricao.component';
-import { PedidoVistoriaPdfComponent } from './application-atividade-detail/pdf/pedido-vistoria-pdf/pedido-vistoria-pdf.component';
 
 export default [
     {
@@ -36,7 +36,7 @@ export default [
                     listaTaxaResolver: getTaxaByCategoriaAndTipoResolver,
                     aldeiasResolver: getAllAldeiasResolver,
                     sociedadeComercialResolver: getSociedadeComercialResolver,
-                    classeAtividadeResolver: getAllClasseAtividadeByTipoResolver,
+                    classeAtividadeResolver: getPageClasseAtividadeResolver,
                 }
             },
             {
@@ -81,8 +81,8 @@ export default [
                     listaTaxaResolver: getTaxaByCategoriaAndTipoResolver,
                     aldeiasResolver: getAllAldeiasResolver,
                     sociedadeComercialResolver: getSociedadeComercialResolver,
-                    grupoAtividadeResolver: getAllGrupoAtividadeByTipoResolver,
-                    classeAtividadeResolver: getAllClasseAtividadeByTipoResolver,
+                    grupoAtividadeResolver: getPageClasseAtividadeResolver,
+                    classeAtividadeResolver: getPageClasseAtividadeResolver,
                 }
             },
             {

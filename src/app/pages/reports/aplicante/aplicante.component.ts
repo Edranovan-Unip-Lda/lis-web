@@ -64,8 +64,6 @@ export class AplicanteComponent {
 
     this.reportService.getAplicanteReport(formData, this.page, this.size).subscribe({
       next: (response) => {
-        console.log(response.content);
-
         this.data = response.content;
         this.totalData = response.totalElements;
         this.dataIsFetching = false;

@@ -5,7 +5,7 @@ import { AuthenticationService, EmpresaService } from '@/core/services';
 import { AplicanteService } from '@/core/services/aplicante.service';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { DocumentosService } from '@/core/services/documentos.service';
-import { formatDateForLocalDate, mapToIdAndNome, maxFileSizeUpload, pedidoLicencaDocumentsFields, stateOptions, tipoArrendadorOptions, tipoDocumentoOptions, tipoPedidoAtividadeComercialOptions, tipoPedidoAtividadeIndustrialOptions } from '@/core/utils/global-function';
+import { formatDateForLocalDate, mapToAtividadeEconomica, mapToIdAndNome, maxFileSizeUpload, pedidoLicencaDocumentsFields, stateOptions, tipoArrendadorOptions, tipoDocumentoOptions, tipoPedidoAtividadeComercialOptions, tipoPedidoAtividadeIndustrialOptions } from '@/core/utils/global-function';
 import { pedidoAtividadeWithFilesValidator } from '@/core/validators/must-match';
 import { Component, Input, output, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -307,6 +307,18 @@ export class PedidoAtividadeFormComponent {
     }
   }
 
+  classeAtividadeFilter(event: SelectFilterEvent) {
+    const query = event.filter?.replace(/\s/g, '').replace(/\D/g, '');
+
+    if (query && query.length >= 2) {
+      this.dataMasterService.searchClasseByCodigo(query).subscribe({
+        next: resp => {
+          this.listaClasseAtividade = mapToAtividadeEconomica(resp._embedded.classeAtividade);
+        }
+      });
+    }
+  }
+
   tipoPedidoOpts(categoria: Categoria): any[] {
     return categoria === Categoria.comercial ? tipoPedidoAtividadeComercialOptions : tipoPedidoAtividadeIndustrialOptions;
   }
@@ -569,6 +581,7 @@ export class PedidoAtividadeFormComponent {
         });
       }
     });
+    this.listaClasseAtividade.push(this.requestForm.get('classeAtividade')?.value);
   }
 
   private mapFormData(form: FormGroup): any {

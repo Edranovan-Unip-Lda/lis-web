@@ -4,7 +4,7 @@ import { AplicanteStatus, Categoria } from '@/core/models/enums';
 import { EmpresaService } from '@/core/services';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { PedidoService } from '@/core/services/pedido.service';
-import { caraterizacaEstabelecimentoOptions, mapToIdAndNome, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEmpresaOptions, tipoPedidoVistoriaComercialOptions, tipoPedidoVistoriaIndustrialOptions } from '@/core/utils/global-function';
+import { caraterizacaEstabelecimentoOptions, mapToAtividadeEconomica, mapToIdAndNome, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEmpresaOptions, tipoPedidoVistoriaComercialOptions, tipoPedidoVistoriaIndustrialOptions } from '@/core/utils/global-function';
 import { Component, Input, output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -258,6 +258,18 @@ export class PedidoVistoriaFormComponent {
     }
   }
 
+  classeAtividadeFilter(event: SelectFilterEvent) {
+    const query = event.filter?.replace(/\s/g, '').replace(/\D/g, '');
+
+    if (query && query.length >= 2) {
+      this.dataMasterService.searchClasseByCodigo(query).subscribe({
+        next: resp => {
+          this.listaClasseAtividade = mapToAtividadeEconomica(resp._embedded.classeAtividade);
+        }
+      });
+    }
+  }
+
   private mapEmpresaForm(empresa: Empresa): void {
     this.vistoriaRequestForm.patchValue({
       empresa: {
@@ -310,6 +322,7 @@ export class PedidoVistoriaFormComponent {
       },
       classeAtividadeCodigo: pedido.classeAtividade.descricao,
     });
+    this.listaClasseAtividade.push(this.vistoriaRequestForm.get('classeAtividade')?.value);
   }
 
   private initForm(): void {

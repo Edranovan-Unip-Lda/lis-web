@@ -165,7 +165,6 @@ export class AutoVistoriaComponent implements OnInit {
     } else {
       // form.markAllAsTouched();
       const invalidControls = this.findInvalidControls(this.autoVistoriaForm);
-      console.log('Invalid controls:', invalidControls);
       return;
     }
   }
@@ -653,6 +652,8 @@ export class AutoVistoriaComponent implements OnInit {
       }
     });
 
+    this.listaClassificacaoAtividade.push(this.autoVistoriaForm.get('requerente.classeAtividade')?.value);
+
     this.autoVistoria = this.getAutoVistoriaData(aplicanteData);
     if (this.autoVistoria) {
       this.mapAutoVistoriaEdit(this.autoVistoria);
@@ -661,8 +662,6 @@ export class AutoVistoriaComponent implements OnInit {
   }
 
   private mapAutoVistoriaEdit(autoVistoria: AutoVistoria): void {
-    console.log(autoVistoria);
-
     this.autoVistoriaForm.patchValue({
       ...autoVistoria,
       dataHora: new Date(autoVistoria.updatedAt)

@@ -1,13 +1,13 @@
 <div class="card">
     <p-table #dt [value]="data" [paginator]="true" paginatorDropdownAppendTo="body" [rows]="10"
         [showCurrentPageReport]="true" responsiveLayout="scroll"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas"
         [rowsPerPageOptions]="[10, 25, 50]" [globalFilterFields]="['firstName', 'role.name', 'email', 'status']">
         <ng-template #caption>
             <div class="flex flex-wrap gap-2 items-center justify-between">
                 <p-icon-field class="w-full sm:w-80 order-1 sm:order-none">
                     <p-inputicon class="pi pi-search" />
-                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Global Search"
+                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar"
                         class="w-full" />
                 </p-icon-field>
             </div>

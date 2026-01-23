@@ -61,7 +61,6 @@ export class AppProfileMenu {
     }
 
     toDetail(item: NotificacaoDto): void {
-        console.log(item);
         const url = `/application/${item.aplicanteTipo.toLowerCase()}/${item.aplicanteId}?categoria=${item.categoria}&tipo=${item.aplicanteTipo}`;
         this.router.navigateByUrl(url);
     }

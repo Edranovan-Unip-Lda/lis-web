@@ -1,4 +1,3 @@
-import { Categoria } from '@/core/models/enums';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { applicationTypesOptions, categoryTpesOptions, mapToGrupoAtividade, nivelRiscoOptions, roleOptions } from '@/core/utils/global-function';
 import { CurrencyPipe, TitleCasePipe } from '@angular/common';
@@ -57,14 +56,7 @@ export class ListaComponent {
   ngOnInit(): void {
     this.setDataMaster(this.route.snapshot.data['type']);
 
-    this.dataForm.get('tipo')?.valueChanges.subscribe((value) => {
-      if (value) {
-        this.getGrupoAtividadesByTipo(value);
-      } else {
-        // this.dataForm.get('codigo')?.reset();
-      }
-    });
-
+    this.getGrupoAtividades();
 
     this.dataForm.get('grupoAtividade')?.valueChanges.subscribe((value) => {
       if (value) {
@@ -103,17 +95,13 @@ export class ListaComponent {
         this.dataList = this.route.snapshot.data['listaGrupoAtividade']._embedded.grupoAtividade;
         this.totalData = this.route.snapshot.data['listaGrupoAtividade'].page.totalElements;
         this.cols = [
-          { field: 'tipo', header: 'Categoria' },
           { field: 'codigo', header: 'Codigo' },
           { field: 'descricao', header: 'Descricao' },
-          { field: 'tipoRisco', header: 'Risco' },
         ];
         this.dataForm = this._fb.group({
           id: [''],
-          tipo: [null, [Validators.required, Validators.minLength(1)]],
           codigo: [null, [Validators.required, Validators.minLength(2), Validators.maxLength(2)]],
           descricao: [null, [Validators.required, Validators.minLength(1)]],
-          tipoRisco: [null, [Validators.required, Validators.minLength(1)]],
         });
         break;
       case 'classe-atividades':
@@ -123,12 +111,10 @@ export class ListaComponent {
           { field: 'grupoAtividade', header: 'Grupo Codigo' },
           { field: 'codigo', header: 'Codigo' },
           { field: 'descricao', header: 'Descricao' },
-          { field: 'tipo', header: 'Categoria' },
           { field: 'tipoRisco', header: 'Risco' },
         ];
         this.dataForm = this._fb.group({
           id: [''],
-          tipo: ['', [Validators.required, Validators.minLength(1)]],
           grupoAtividade: ['', [Validators.required]],
           codigo: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(4)]],
           descricao: ['', [Validators.required, Validators.minLength(1)]],
@@ -409,8 +395,8 @@ export class ListaComponent {
     this.dataForm.reset();
   }
 
-  private getGrupoAtividadesByTipo(categoria: Categoria): void {
-    this.service.getAllGrupoAtividadeByTipo(categoria).subscribe({
+  private getGrupoAtividades(): void {
+    this.service.getAllGrupoAtividade().subscribe({
       next: (response) => {
         this.grupoAtivadadeOpts = mapToGrupoAtividade(response._embedded.grupoAtividade);
       }

@@ -82,15 +82,6 @@
             </div>
             }
             @case ('grupo-atividades') {
-            <div class="mb-2 col-span-12">
-                <label for="tipo" class="font-medium  mb-2 block">
-                    Categoria (Comercial/Industrial)
-                </label>
-                <p-select [appendTo]="'body'" formControlName="tipo" inputId="tipo" [options]="categoryOpts"
-                    optionLabel="name" optionValue="value" fluid [showClear]="true"
-                    placeholder="Selecione o Tipo Economico">
-                </p-select>
-            </div>
             <div class="mb-6 col-span-12">
                 <label for="codigo" class="font-medium  mb-2 block">
                     Código
@@ -103,26 +94,8 @@
                 </label>
                 <input formControlName="descricao" id="descricao" type="text" pInputText fluid />
             </div>
-            <div class="col-span-12">
-                <label for="tipoRisco" class="font-medium  mb-2 block">
-                    Risco
-                </label>
-                <p-select [appendTo]="'body'" formControlName="tipoRisco" inputId="tipoRisco" [options]="nivelRiscoOpts"
-                    optionLabel="name" optionValue="value" fluid [showClear]="true"
-                    placeholder="Selecione o Nivel Risco">
-                </p-select>
-            </div>
             }
             @case ('classe-atividades') {
-            <div class="mb-2 col-span-12">
-                <label for="tipo" class="font-medium  mb-2 block">
-                    Categoria (Comercial/Industrial)
-                </label>
-                <p-select [appendTo]="'body'" formControlName="tipo" inputId="tipo" [options]="categoryOpts"
-                    optionLabel="name" optionValue="value" fluid [showClear]="true"
-                    placeholder="Selecione o Tipo Economico">
-                </p-select>
-            </div>
             <div class="mb-2 col-span-12">
                 <label for="grupoAtividade" class="font-medium  mb-2 block">
                     Grupo Atividade

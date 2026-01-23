@@ -59,7 +59,7 @@ export default [
                         path: ':id/auto-vistoria',
                         data: {
                             breadcrumb: 'Auto Vistoria',
-                            role: [Role.staff]
+                            role: [Role.staff, Role.admin]
                         },
                         canActivate: [canActivateByRole],
                         component: AutoVistoriaComponent,

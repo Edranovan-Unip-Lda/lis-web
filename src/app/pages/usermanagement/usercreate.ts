@@ -125,7 +125,6 @@ export class UserCreate {
                 },
                 error: (error) => {
                     this.loading = false;
-                    console.log(error);
                     this.addMessage(false, error);
                 }
             });
@@ -154,7 +153,6 @@ export class UserCreate {
                 },
                 error: (error) => {
                     this.loading = false;
-                    console.log(error);
                     this.addMessage(false, error);
                 }
             });

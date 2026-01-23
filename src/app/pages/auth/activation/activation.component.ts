@@ -56,7 +56,6 @@ export class ActivationComponent {
                 this.setNotification();
             },
             error: error => {
-                console.log(error);
                 this.loading = false;
                 this.setNotification(true, error);
                 this.activationForm.reset();

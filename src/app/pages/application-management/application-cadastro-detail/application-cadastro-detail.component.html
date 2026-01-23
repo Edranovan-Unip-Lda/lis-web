@@ -471,7 +471,8 @@
                                      Atividade Principal exercida no Estabelecimento
                                  </label>
                                  <p-select formControlName="classeAtividade"
-                                     (onChange)="atividadePrincipalChange($event)" inputId="classeAtividade"
+                                     (onChange)="atividadePrincipalChange($event)"
+                                     (onFilter)="classeAtividadeFilter($event)" inputId="classeAtividade"
                                      [options]="listaClasseAtividade" optionLabel="codigo" fluid [filter]="true"
                                      filterBy="codigo,descricao" [showClear]="true"
                                      placeholder="Selecione a atividade principal">

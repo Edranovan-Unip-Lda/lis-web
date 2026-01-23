@@ -120,8 +120,8 @@ export class DataMasterService {
         return this.http.get<any>(`${this.apiUrl}/grupo-atividades`, { params }).pipe(take(1));
     }
 
-    getAllGrupoAtividade(): Observable<GrupoAtividade[]> {
-        return this.http.get<GrupoAtividade[]>(`${this.apiUrl}/grupo-atividades`).pipe(take(1));
+    getAllGrupoAtividade(): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/grupo-atividades`).pipe(take(1));
     }
 
     getAllGrupoAtividadeByTipo(tipo: Categoria): Observable<any> {
@@ -146,6 +146,13 @@ export class DataMasterService {
 
     getAllClasseAtividade(): Observable<any> {
         return this.http.get<any>(`${this.apiUrl}/classe-atividades?projection=withGrupo`).pipe(take(1));
+    }
+
+    searchClasseByCodigo(codigo: string): Observable<any> {
+        let params = new HttpParams()
+            .set('codigo', codigo)
+            .set('projection', 'withGrupo');
+        return this.http.get<any>(`${this.apiUrl}/classe-atividades/search/findByCodigoContainingIgnoreCase`, { params }).pipe(take(1));
     }
 
     getClasseAtividadeById(id: number): Observable<any> {
