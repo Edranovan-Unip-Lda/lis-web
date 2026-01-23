@@ -1,20 +1,20 @@
+import { AplicanteType, Categoria, Role } from "@/core/models/enums";
 import { getByIdResolver, getPageResolver } from "@/core/resolvers/aplicante.resolver";
-import { getAllAldeiasResolver, getAllGrupoAtividadeByTipoResolver, getPageClasseAtividadeResolver, getPostosResolver, getSociedadeComercialResolver, getTaxaByCategoriaAndTipoResolver } from "@/core/resolvers/data-master.resolver";
-import { getAssignedAplicanteByIdResolver, getPageAplicanteByUsernameResolver, getPageCertificadosByUsername, getPageUserResolver, getUsersByDirecaoId, getUsersByDirecaoIdAndRole_Staff } from "@/core/resolvers/user.resolver";
+import { getCertificadoById } from "@/core/resolvers/certificados.resolver";
+import { getAllAldeiasResolver, getPageClasseAtividadeResolver, getPostosResolver, getSociedadeComercialResolver, getTaxaByCategoriaAndTipoResolver } from "@/core/resolvers/data-master.resolver";
+import { getAssignedAplicanteByIdResolver, getPageAplicanteByUsernameResolver, getPageCertificadosByUsername, getPageUserResolver, getUsersByDirecaoIdAndRole_Staff } from "@/core/resolvers/user.resolver";
+import { canActivateByRole } from "@/core/security/route.guard";
 import { Routes } from "@angular/router";
 import { AutoVistoriaComponent } from "../application-management/application-atividade-detail/auto-vistoria/auto-vistoria.component";
+import { AutoVistoriaPdfComponent } from "../application-management/application-atividade-detail/pdf/auto-vistoria-pdf/auto-vistoria-pdf.component";
+import { CertificadoAtividadePdfComponent } from "../application-management/application-atividade-detail/pdf/certificado-atividade-pdf/certificado-atividade-pdf.component";
 import { PedidoPdfComponent } from "../application-management/application-atividade-detail/pdf/pedido-pdf/pedido-pdf.component";
 import { PedidoVistoriaPdfComponent } from "../application-management/application-atividade-detail/pdf/pedido-vistoria-pdf/pedido-vistoria-pdf.component";
 import { CertificatePdfComponent } from "../application-management/application-cadastro-detail/certificate-pdf/certificate-pdf.component";
 import { FaturaComponent } from "../application-management/application-cadastro-detail/fatura/fatura.component";
 import { PedidoInscricaoComponent } from "../application-management/application-cadastro-detail/pedido-inscricao/pedido-inscricao.component";
-import { AutoVistoriaPdfComponent } from "../application-management/application-atividade-detail/pdf/auto-vistoria-pdf/auto-vistoria-pdf.component";
-import { CertificadoAtividadePdfComponent } from "../application-management/application-atividade-detail/pdf/certificado-atividade-pdf/certificado-atividade-pdf.component";
-import { canActivateByRole } from "@/core/security/route.guard";
-import { AplicanteType, Categoria, Role } from "@/core/models/enums";
-import { LicencasListaComponent } from "../licencas-certificados/licencas-lista/licencas-lista.component";
 import { CertificadosListaComponent } from "../licencas-certificados/certificados-lista/certificados-lista.component";
-import { getCertificadoById } from "@/core/resolvers/certificados.resolver";
+import { LicencasListaComponent } from "../licencas-certificados/licencas-lista/licencas-lista.component";
 
 export default [
     {
@@ -50,7 +50,6 @@ export default [
                             listaTaxaResolver: getTaxaByCategoriaAndTipoResolver,
                             aldeiasResolver: getAllAldeiasResolver,
                             sociedadeComercialResolver: getSociedadeComercialResolver,
-                            grupoAtividadeResolver: getAllGrupoAtividadeByTipoResolver,
                             userRoleStaffResolver: getUsersByDirecaoIdAndRole_Staff
 
                         }
@@ -93,7 +92,6 @@ export default [
                     listaTaxaResolver: getTaxaByCategoriaAndTipoResolver,
                     aldeiasResolver: getAllAldeiasResolver,
                     sociedadeComercialResolver: getSociedadeComercialResolver,
-                    grupoAtividadeResolver: getAllGrupoAtividadeByTipoResolver,
                     userPageResolver: getPageUserResolver
 
                 }
