@@ -132,7 +132,11 @@
                     <div>
                         <p class="text-sm text-gray-400 font-medium">Longitude - Latitude</p>
                         <p class="text-lg text-gray-100">
-                            {{empresa.longitude}} - {{empresa.latitude}}
+                            <a [href]="'https://www.google.com/maps?q=' + empresa.latitude + ',' + empresa.longitude" 
+                               target="_blank" 
+                               class="text-emerald-400 hover:text-emerald-300 hover:underline cursor-pointer">
+                                {{empresa.longitude}} - {{empresa.latitude}}
+                            </a>
                         </p>
                     </div>
                     <div>
