@@ -44,6 +44,12 @@ export class EmpresaService {
     }
   }
 
+  search(query: string): Observable<any[]> {
+    let params = new HttpParams().append('q', query);
+    return this.http.get<any[]>(`${this.apiUrl}/search`, { params }).pipe(take(1));
+  }
+
+
   createAplicante(empresaId: number, formData: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/${empresaId}/aplicantes`, formData);
   }

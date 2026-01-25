@@ -5,26 +5,22 @@ import { EmpresaDetailComponent } from './empresa-detail/empresa-detail.componen
 import { EmpresaFormComponent } from './empresa-form/empresa-form.component';
 import { EmpresaListComponent } from './empresa-list/empresa-list.component';
 import { Role } from '@/core/models/enums';
+import { canActivateByRole } from '@/core/security/route.guard';
 
 export default [
     { path: '', redirectTo: 'list', pathMatch: 'full' },
     {
         path: 'list',
-        data: { breadcrumb: 'Lista' },
+        data: {
+            breadcrumb: 'Lista',
+            role: [Role.admin, Role.manager, Role.chief, Role.staff]
+        },
         component: EmpresaListComponent,
         resolve: {
             empresaPage: getPageEmpresaResolver,
-            // role: [Role.admin, Role.manager, Role.chief, Role.staff]
-        }
+        },
+        canActivate: [canActivateByRole],
     },
-    // {
-    //     path: 'create',
-    //     data: { breadcrumb: 'Criar' },
-    //     component: EmpresaFormComponent,
-    //     resolve: {
-    //         roleList: getRolesResolver,
-    //     }
-    // },
     {
         path: ':username',
         data: {
@@ -41,13 +37,17 @@ export default [
     },
     {
         path: 'detail/:username',
-        data: { breadcrumb: 'Detail' },
+        data: {
+            breadcrumb: 'Detail',
+            role: [Role.admin, Role.manager, Role.chief, Role.staff]
+        },
         component: EmpresaDetailComponent,
         resolve: {
             aldeiasResolver: getAllAldeiasResolver,
             listaSociedadeComercial: getSociedadeComercialResolver,
             roleListResolver: getRolesResolver,
             empresaResolver: getByUsernameResolver,
-        }
+        },
+        canActivate: [canActivateByRole],
     }
 ] as Routes;
