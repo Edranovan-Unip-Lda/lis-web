@@ -24,6 +24,11 @@ export class AplicanteService {
         }
     }
 
+    search(query: string): Observable<any[]> {
+        let params = new HttpParams().append('q', query);
+        return this.http.get<any[]>(`${this.apiUrl}/search`, { params }).pipe(take(1));
+    }
+
     getById(id: number): Observable<any> {
         return this.http.get<any>(`${this.apiUrl}/${id}`);
     }

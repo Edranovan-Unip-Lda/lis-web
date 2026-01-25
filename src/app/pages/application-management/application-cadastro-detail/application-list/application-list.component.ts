@@ -1,10 +1,10 @@
 import { Aplicante } from '@/core/models/entities.model';
 import { Role } from '@/core/models/enums';
 import { StatusIconPipe, StatusSeverityPipe } from '@/core/pipes/custom.pipe';
-import { AuthenticationService } from '@/core/services';
+import { AplicanteService, AuthenticationService } from '@/core/services';
 import { EmpresaService } from '@/core/services/empresa.service';
 import { DatePipe, UpperCasePipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
@@ -12,20 +12,23 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
+import { Paginator } from 'primeng/paginator';
 import { Table, TableModule } from 'primeng/table';
 import { Tag } from 'primeng/tag';
 import { Toast } from 'primeng/toast';
 import { Tooltip } from 'primeng/tooltip';
+import { Subject, debounceTime, distinctUntilChanged, switchMap, catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-application-list',
-  imports: [TableModule, InputText, Button, IconField, InputIcon, RouterModule, Tag, StatusSeverityPipe, StatusIconPipe, Tooltip, UpperCasePipe, DatePipe, Toast, ConfirmDialog],
+  imports: [TableModule, Paginator, InputText, Button, IconField, InputIcon, RouterModule, Tag, StatusSeverityPipe, StatusIconPipe, Tooltip, UpperCasePipe, DatePipe, Toast, ConfirmDialog],
   templateUrl: './application-list.component.html',
   styleUrl: './application-list.component.scss',
   providers: [ConfirmationService, MessageService]
 })
-export class ApplicationListComponent {
+export class ApplicationListComponent implements OnInit, OnDestroy {
   applications: any[] = [];
+  applicationsCached: any[] = [];
   page = 0;
   size = 50;
   totalData = 0;
@@ -33,6 +36,8 @@ export class ApplicationListComponent {
   currentRole: any;
   roleAdmin = Role.admin;
   roleClient = Role.client;
+  private searchSubject = new Subject<string>();
+  private searchSubscription: any;
 
   constructor(
     private router: Router,
@@ -40,11 +45,13 @@ export class ApplicationListComponent {
     private service: EmpresaService,
     private authService: AuthenticationService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private aplicanteService: AplicanteService,
   ) {
     this.currentRole = this.authService.currentRole.name;
 
     this.applications = this.route.snapshot.data['applicationPage'].content;
+    this.applicationsCached = this.applications;
 
     if (this.authService.currentRole.name === Role.manager || this.authService.currentRole.name === Role.chief || this.authService.currentRole.name === Role.staff) {
       this.applications = this.applications.filter(item => item.categoria === this.authService.currentUserValue.direcao.nome);
@@ -53,8 +60,75 @@ export class ApplicationListComponent {
     this.totalData = this.route.snapshot.data['applicationPage'].totalElements;
   }
 
-  onGlobalFilter(table: Table, event: Event) {
-    table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+  ngOnInit(): void {
+    this.setupSearch();
+  }
+
+  ngOnDestroy(): void {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
+  }
+
+  private setupSearch(): void {
+    this.searchSubscription = this.searchSubject.pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+      switchMap(query => {
+        if (query.length >= 3) {
+          this.dataIsFetching = true;
+          if (this.authService.currentRole.name === Role.client) {
+            const empresaId = this.authService.currentUserValue.empresa.id;
+            return this.service.searchAplicanteById(empresaId, query).pipe(
+              catchError(error => {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Erro',
+                  detail: error
+                });
+                return of(this.applicationsCached);
+              })
+            );
+          } else {
+            return this.aplicanteService.search(query).pipe(
+              catchError(error => {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Erro',
+                  detail: error
+                });
+                return of(this.applicationsCached);
+              })
+            );
+          }
+
+        } else if (query.length === 0) {
+          this.dataIsFetching = true;
+          return of(this.applicationsCached);
+        }
+        return of(null);
+      })
+    ).subscribe(result => {
+      if (result) {
+        this.applications = result;
+
+        if (this.authService.currentRole.name === Role.manager ||
+          this.authService.currentRole.name === Role.chief ||
+          this.authService.currentRole.name === Role.staff) {
+          this.applications = this.applications.filter(
+            item => item.categoria === this.authService.currentUserValue.direcao.nome
+          );
+        }
+      }
+      this.dataIsFetching = false;
+    });
+  }
+
+  onGlobalFilter(table: Table, event: Event): void {
+    const query = (event.target as HTMLInputElement).value;
+    console.log(query);
+
+    this.searchSubject.next(query);
   }
 
   toDetail(aplicante: Aplicante) {
@@ -130,5 +204,39 @@ export class ApplicationListComponent {
         });
       },
     });
+  }
+
+  onPageChange(event: any): void {
+    this.dataIsFetching = true;
+    this.page = event.page;
+    this.size = event.rows;
+    this.getData(this.page, this.size);
+  }
+
+  private getData(page: number, size: number): void {
+    if (this.authService.currentRole.name === Role.client) {
+      const empresaId = this.authService.currentUserValue.empresa.id;
+      this.service.getAplicantesPage(empresaId, page, size).subscribe({
+        next: response => {
+          this.applications = response.content;
+          this.totalData = response.totalElements;
+          this.dataIsFetching = false;
+        },
+        error: err => {
+          this.dataIsFetching = false;
+        },
+      });
+    } else {
+      this.aplicanteService.getPage(page, size).subscribe({
+        next: response => {
+          this.applications = response.content;
+          this.totalData = response.totalElements;
+          this.dataIsFetching = false;
+        },
+        error: err => {
+          this.dataIsFetching = false;
+        },
+      });
+    }
   }
 }
