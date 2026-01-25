@@ -733,9 +733,10 @@
                                                  <label for="aldeia" class="font-medium  mb-2 block">
                                                      Aldeia
                                                  </label>
-                                                 <p-select fluid formControlName="aldeia" [options]="gerenteListaAldeias"
-                                                     optionLabel="nome" placeholder="Selecione a Aldeia" [filter]="true"
-                                                     filterBy="nome" [showClear]="true" [loading]="gerenteAldeiaIsLoading"
+                                                 <p-select fluid formControlName="aldeia"
+                                                     [options]="gerenteListaAldeias" optionLabel="nome"
+                                                     placeholder="Selecione a Aldeia" [filter]="true" filterBy="nome"
+                                                     [showClear]="true" [loading]="gerenteAldeiaIsLoading"
                                                      (onChange)="gerenteRepresentanteAldeiaOnChange($event, 'gerente')"
                                                      (onFilter)="gerenteRepresentanteAldeiaFilter($event, 'gerente')"
                                                      (onpanelHide)="gerenteRepresentanteOnPanelHide('gerente')"
@@ -1001,9 +1002,10 @@
                                                  <label for="aldeia" class="font-medium  mb-2 block">
                                                      Aldeia
                                                  </label>
-                                                 <p-select fluid formControlName="aldeia" [options]="representanteListaAldeias"
-                                                     optionLabel="nome" placeholder="Selecione a Aldeia" [filter]="true"
-                                                     filterBy="nome" [showClear]="true" [loading]="representanteAldeiaIsLoading"
+                                                 <p-select fluid formControlName="aldeia"
+                                                     [options]="representanteListaAldeias" optionLabel="nome"
+                                                     placeholder="Selecione a Aldeia" [filter]="true" filterBy="nome"
+                                                     [showClear]="true" [loading]="representanteAldeiaIsLoading"
                                                      (onChange)="gerenteRepresentanteAldeiaOnChange($event, 'representante')"
                                                      (onFilter)="gerenteRepresentanteAldeiaFilter($event, 'representante')"
                                                      (onpanelHide)="gerenteRepresentanteOnPanelHide('representante')"
@@ -1180,11 +1182,6 @@
                                                      {{ empresaForm.get('balancoTotalAnual')?.value | currency }}</p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Tipo de Propriedade:</p>
-                                                 <p class="text-lg text-gray-100">
-                                                     {{ empresaForm.get('tipoPropriedade')?.value.name }}</p>
-                                             </div>
-                                             <div class="md:col-span-2">
                                                  <p class="text-sm text-gray-400">Localização:</p>
                                                  <p class="text-lg text-gray-100">
                                                      {{ empresaForm.get('sede.local')?.value }} <br>
@@ -1192,6 +1189,17 @@
                                                      {{ empresaForm.get('sede.suco')?.value }},
                                                      {{ empresaForm.get('sede.postoAdministrativo')?.value }},
                                                      {{ empresaForm.get('sede.municipio')?.value }}
+                                                 </p>
+                                             </div>
+                                             <div>
+                                                 <p class="text-sm text-gray-400 font-medium">Longitude - Latitude</p>
+                                                 <p class="text-lg text-gray-100">
+                                                     <a [href]="'https://www.google.com/maps?q=' + empresaForm.get('latitude')?.value + ',' + empresaForm.get('longitude')?.value"
+                                                         target="_blank"
+                                                         class="text-emerald-400 hover:text-emerald-300 hover:underline cursor-pointer">
+                                                         {{empresaForm.get('latitude')?.value}} -
+                                                         {{empresaForm.get('longitude')?.value}}
+                                                     </a>
                                                  </p>
                                              </div>
                                          </div>
