@@ -15,7 +15,7 @@
 
 
      <div class="w-full px-8">
-         <p-stepper [value]="1" class="basis-[50rem]" [linear]="true">
+         <p-stepper [value]="1" class="basis-[50rem]" [linear]="false">
              <p-step-list>
                  <p-step [value]="1">Empresa</p-step>
                  <p-step [value]="2">Proprietário(a) / Titular da empresa</p-step>
@@ -373,15 +373,40 @@
                                      <div class="mb-6 col-span-12 md:col-span-6">
                                          <label for="acoes" class="font-medium  mb-2 block">
                                              Ações
+                                             <span class="text-sm font-normal text-gray-600 ml-2">
+                                                 (Máximo disponível: {{ getMaxAcoesForAcionista(i) | number:'1.2-2' }}%)
+                                             </span>
                                          </label>
                                          <p-inputgroup>
                                              <p-inputgroup-addon>%</p-inputgroup-addon>
-                                             <p-inputnumber formControlName="acoes" mode="decimal" [max]="100"
-                                                 [minFractionDigits]="2" [maxFractionDigits]="2" />
+                                             <p-inputnumber formControlName="acoes" mode="decimal"
+                                                 [max]="getMaxAcoesForAcionista(i)" [minFractionDigits]="2"
+                                                 [maxFractionDigits]="2" [min]="0.01" />
                                          </p-inputgroup>
                                          @if (item.get('acoes')?.touched && item.get('acoes')?.invalid) {
                                          <p class="text-red-500 text-sm mt-1">
-                                             Este campo é obrigatório e deve ser válido.
+                                             @if (item.get('acoes')?.errors?.['required']) {
+                                             Este campo é obrigatório.
+                                             }
+                                             @if (item.get('acoes')?.errors?.['min']) {
+                                             O valor mínimo é 0.01%.
+                                             }
+                                             @if (item.get('acoes')?.errors?.['max']) {
+                                             O valor máximo é 100%.
+                                             }
+                                             @if (item.get('acoes')?.errors?.['totalExceeds100']) {
+                                             O total de ações excede 100%. Total atual:
+                                             {{ item.get('acoes')?.errors?.['totalExceeds100'].total | number:'1.2-2' }}%
+                                             }
+                                             @if (item.get('acoes')?.errors?.['maxExceeded']) {
+                                             Valor excede o máximo disponível de
+                                             {{ item.get('acoes')?.errors?.['maxExceeded'].max | number:'1.2-2' }}%
+                                             }
+                                         </p>
+                                         }
+                                         @if (getTotalAcoes() > 0 && !item.get('acoes')?.invalid) {
+                                         <p class="text-gray-600 text-sm mt-1">
+                                             Total de ações: {{ getTotalAcoes() | number:'1.2-2' }}% / 100%
                                          </p>
                                          }
                                      </div>

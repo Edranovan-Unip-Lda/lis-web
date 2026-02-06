@@ -3,10 +3,11 @@ import { RecaptchaAction, TipoNacionalidade, TipoPropriedade } from '@/core/mode
 import { DataMasterService } from '@/core/services/data-master.service';
 import { EmpresaService } from '@/core/services/empresa.service';
 import { estadoCivilOptions, maxFileSizeUpload, tipoDocumentoOptions, tipoNacionalidadeOptions, tipoPropriedadeOptions, tipoRelacaoFamiliaOptions, tipoRepresentante } from '@/core/utils/global-function';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ReCaptchaV3Service, RecaptchaV3Module } from 'ng-recaptcha-2';
 import { NgxPrintModule } from 'ngx-print';
 import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
@@ -25,7 +26,6 @@ import { StepperModule } from 'primeng/stepper';
 import { Tooltip } from 'primeng/tooltip';
 import { Subject, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { ReCaptchaV3Service, RecaptchaV3Module } from 'ng-recaptcha-2';
 
 interface Notification {
     state: string,
@@ -36,7 +36,7 @@ interface Notification {
 @Component({
     selector: 'app-register',
     standalone: true,
-    imports: [Button, FileUpload, RouterLink, InputText, Fluid, Ripple, Password, ReactiveFormsModule, Select, Message, StepperModule, DatePicker, InputGroup, InputGroupAddonModule, InputNumber, Divider, Tooltip, DatePipe, NgxPrintModule, CurrencyPipe, RecaptchaV3Module],
+    imports: [Button, FileUpload, RouterLink, InputText, Fluid, Ripple, Password, ReactiveFormsModule, Select, Message, StepperModule, DatePicker, InputGroup, InputGroupAddonModule, InputNumber, Divider, Tooltip, DatePipe, NgxPrintModule, CurrencyPipe, RecaptchaV3Module, DecimalPipe],
     templateUrl: './register.component.html',
 })
 export class Register {
@@ -469,8 +469,98 @@ export class Register {
         }
     }
 
+    /**     * Calculate total acoes percentage from all acionistas
+     */
+    getTotalAcoes(): number {
+        let total = 0;
+        this.acionistasArray.controls.forEach(control => {
+            const acoes = control.get('acoes')?.value;
+            if (acoes && !isNaN(acoes)) {
+                total += Number(acoes);
+            }
+        });
+        return total;
+    }
+
     /**
-     * Generate a new form for a acionista.
+     * Get remaining available acoes percentage
+     */
+    getRemainingAcoes(excludeIndex?: number): number {
+        let total = 0;
+        this.acionistasArray.controls.forEach((control, index) => {
+            if (excludeIndex === undefined || index !== excludeIndex) {
+                const acoes = control.get('acoes')?.value;
+                if (acoes && !isNaN(acoes)) {
+                    total += Number(acoes);
+                }
+            }
+        });
+        return 100 - total;
+    }
+
+    /**
+     * Get maximum allowed acoes for a specific acionista
+     */
+    getMaxAcoesForAcionista(index: number): number {
+        const currentValue = this.acionistasArray.at(index)?.get('acoes')?.value || 0;
+        const remaining = this.getRemainingAcoes(index);
+        return Math.min(100, remaining + currentValue);
+    }
+
+    /**
+     * Validate total acoes percentage across all acionistas
+     */
+    private validateTotalAcoes(): void {
+        const total = this.getTotalAcoes();
+        const tipoPropriedade = this.empresaForm.get('tipoPropriedade')?.value?.value;
+
+        // Update showAddBtnAcionistas based on total and tipo proprietade
+        if (tipoPropriedade === TipoPropriedade.sociedade) {
+            this.showAddBtnAcionistas = total < 100;
+        }
+
+        this.acionistasArray.controls.forEach((control, index) => {
+            const acoesControl = control.get('acoes');
+
+            if (acoesControl) {
+                const currentValue = acoesControl.value;
+                const remaining = this.getRemainingAcoes(index);
+
+                // Get existing errors (non-custom ones)
+                const existingErrors = acoesControl.errors || {};
+                const errors: any = {};
+
+                // Preserve built-in validator errors (required, min, max)
+                if (existingErrors['required']) errors['required'] = existingErrors['required'];
+                if (existingErrors['min']) errors['min'] = existingErrors['min'];
+                if (existingErrors['max']) errors['max'] = existingErrors['max'];
+
+                // Check if total exceeds 100%
+                if (total > 100) {
+                    errors['totalExceeds100'] = {
+                        total: total,
+                        max: 100
+                    };
+                }
+
+                // Check if current value exceeds available percentage
+                if (currentValue && currentValue > remaining) {
+                    errors['maxExceeded'] = {
+                        max: remaining,
+                        actual: currentValue
+                    };
+                }
+
+                // Set errors and mark as touched to show validation messages
+                acoesControl.setErrors(Object.keys(errors).length > 0 ? errors : null);
+                if (Object.keys(errors).length > 0 && !acoesControl.touched) {
+                    acoesControl.markAsTouched();
+                }
+            }
+        });
+    }
+
+    /**     * Generate a new form for a acionista.
      *
      * The form is a `FormGroup` containing the following fields:
      * - `nome`: string, required, minimum length 3
@@ -485,15 +575,15 @@ export class Register {
      * @returns a new `FormGroup` for a acionista
      */
 
-    generateAcionistaForm(isIndividual: boolean) {
-        return this._fb.group({
+    private generateAcionistaForm(isIndividual: boolean) {
+        const formGroup = this._fb.group({
             nome: [null, [Validators.required, Validators.minLength(3)]],
             nif: [null, [Validators.required]],
             tipoDocumento: [null, [Validators.required]],
             numeroDocumento: [, [Validators.required]],
             telefone: [null, [Validators.required]],
             email: [null, [Validators.required, Validators.email]],
-            acoes: [isIndividual ? 100 : null, [Validators.required]],
+            acoes: [isIndividual ? 100 : null, [Validators.required, Validators.min(0.01), Validators.max(100)]],
             agregadoFamilia: [null, [Validators.required]],
             relacaoFamilia: [null, [Validators.required]],
             sectionTitle: [`Acionista n.º ${this.acionistasArray.length + 1}`],
@@ -503,6 +593,13 @@ export class Register {
             suco: new FormControl({ value: null, disabled: true }),
             aldeia: [null, [Validators.required]],
         });
+
+        // Subscribe to acoes value changes to trigger validation
+        formGroup.get('acoes')?.valueChanges.subscribe(() => {
+            this.validateTotalAcoes();
+        });
+
+        return formGroup;
     }
 
     get acionistasArray(): FormArray {
@@ -510,6 +607,13 @@ export class Register {
     }
 
     addAcionistaForm() {
+        // Prevent adding if TipoPropriedade is individual
+        const tipoPropriedade = this.empresaForm.get('tipoPropriedade')?.value?.value;
+        if (tipoPropriedade === TipoPropriedade.individual) {
+            return;
+        }
+        this.validateTotalAcoes();
+
         this.acionistasArray.push(this.generateAcionistaForm(false));
         const idx = this.acionistasArray.length - 1;
         this.listaAldeiaAcionista[idx] = [...this.originalAldeias];
@@ -518,6 +622,8 @@ export class Register {
     removeAcionistaForm(index: number) {
         if (this.acionistasArray.length > 1) {
             this.acionistasArray.removeAt(index);
+            // Revalidate acoes after removal
+            setTimeout(() => this.validateTotalAcoes(), 0);
         }
     }
 
