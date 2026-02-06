@@ -11,13 +11,13 @@ import { AuthenticationService, UserService } from "../services";
  */
 export const getPageUserResolver: ResolveFn<any> = (route: ActivatedRouteSnapshot) => {
     const service = inject(UserService);
-    const roles = route.queryParamMap.get('roles');
-    return service.getPagination(roles ? roles.split(',').map(r => r.trim() as Role) : [], 0, 10);
+    const roles = [Role.admin, Role.manager, Role.chief, Role.staff].join(',');
+    return service.getPagination(roles, 0, 10);
 }
 
 export const getPageEmpresaUserResolver: ResolveFn<any> = () => {
     const service = inject(UserService);
-    return service.getPagination([Role.client], 0, 10);
+    return service.getPagination(Role.client, 0, 10);
 }
 
 export const getUsersByDirecaoId: ResolveFn<any> = () => {

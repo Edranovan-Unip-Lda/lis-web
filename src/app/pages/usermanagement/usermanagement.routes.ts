@@ -7,7 +7,7 @@ import { UserList } from './userlist';
 export default [
     // { path: '', redirectTo: 'list', pathMatch: 'full' },
     {
-        path: 'list',
+        path: 'internal/list',
         data: { breadcrumb: 'Lista' },
         component: UserList,
         resolve: {

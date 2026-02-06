@@ -42,7 +42,7 @@ export class UserService {
    * @param size The number of items per page.
    * @returns The response from the server.
    */
-  getPagination(roles: Role[], page?: number, size?: number): Observable<any> {
+  getPagination(roles: string, page?: number, size?: number): Observable<any> {
     let params = new HttpParams();
     params = params.append('roles', roles.toString());
     if (page !== undefined && size !== undefined) {
@@ -52,6 +52,13 @@ export class UserService {
     } else {
       return this.http.get<any>(this.apiUrl, { params }).pipe(take(1));
     }
+  }
+
+  search(query: string, roles: string): Observable<any[]> {
+    let params = new HttpParams()
+      .append('q', query)
+      .append('roles', roles);
+    return this.http.get<any[]>(`${this.apiUrl}/search`, { params }).pipe(take(1));
   }
 
   getByDirecaoId(direcaoId: number): Observable<any> {

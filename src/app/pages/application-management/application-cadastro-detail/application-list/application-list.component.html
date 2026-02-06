@@ -1,6 +1,6 @@
 <div class="min-h-[720px]">
     <div class="card">
-        <p-table #dt [value]="applications" responsiveLayout="scroll"
+        <p-table #dt [value]="applications" responsiveLayout="scroll" [loading]="dataIsFetching"
             [globalFilterFields]="['candidatura.numero', 'candidatura.empresa.nome', 'candidatura.categoria', 'candidatura.tipo']">
             <ng-template #caption>
                 <div class="flex flex-wrap gap-2 items-center justify-between">
