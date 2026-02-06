@@ -1,17 +1,23 @@
 import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, ResolveFn, Router } from "@angular/router";
 import { EMPTY, of } from "rxjs";
-import { AuthenticationService, UserService } from "../services";
 import { AplicanteType, Categoria, Role } from "../models/enums";
+import { AuthenticationService, UserService } from "../services";
 
 /**
  * Resolves a page of users.
  *
  * @returns A promise that resolves to an HttpResponse of User objects.
  */
-export const getPageUserResolver: ResolveFn<any> = () => {
+export const getPageUserResolver: ResolveFn<any> = (route: ActivatedRouteSnapshot) => {
     const service = inject(UserService);
-    return service.getPagination();
+    const roles = route.queryParamMap.get('roles');
+    return service.getPagination(roles ? roles.split(',').map(r => r.trim() as Role) : [], 0, 10);
+}
+
+export const getPageEmpresaUserResolver: ResolveFn<any> = () => {
+    const service = inject(UserService);
+    return service.getPagination([Role.client], 0, 10);
 }
 
 export const getUsersByDirecaoId: ResolveFn<any> = () => {

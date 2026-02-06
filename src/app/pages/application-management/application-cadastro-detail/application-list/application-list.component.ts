@@ -126,8 +126,6 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
 
   onGlobalFilter(table: Table, event: Event): void {
     const query = (event.target as HTMLInputElement).value;
-    console.log(query);
-
     this.searchSubject.next(query);
   }
 

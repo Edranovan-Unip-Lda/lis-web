@@ -42,11 +42,12 @@ export class UserService {
    * @param size The number of items per page.
    * @returns The response from the server.
    */
-  getPagination(page?: number, size?: number): Observable<any> {
+  getPagination(roles: Role[], page?: number, size?: number): Observable<any> {
     let params = new HttpParams();
-    if (page && size) {
-      params.append('page', page)
-      params.append('size', size);
+    params = params.append('roles', roles.toString());
+    if (page !== undefined && size !== undefined) {
+      params = params.append('page', page)
+      params = params.append('size', size);
       return this.http.get<any>(this.apiUrl, { params }).pipe(take(1));
     } else {
       return this.http.get<any>(this.apiUrl, { params }).pipe(take(1));

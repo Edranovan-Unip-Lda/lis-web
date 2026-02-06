@@ -109,7 +109,13 @@ export const model_admin: MenuItem[] = [
             {
                 label: 'Lista',
                 icon: 'pi pi-fw pi-list',
-                routerLink: ['utilizador/list']
+                routerLink: ['utilizador/list'],
+                queryParams: { roles: 'ROLE_ADMIN,ROLE_MANAGER,ROLE_CHIEF,ROLE_STAFF' }
+            },
+            {
+                label: 'Empresa',
+                icon: 'pi pi-fw pi-list',
+                routerLink: ['utilizador/empresa/list'],
             },
             {
                 label: 'Criar',

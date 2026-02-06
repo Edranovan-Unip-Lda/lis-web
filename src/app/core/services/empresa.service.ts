@@ -61,11 +61,8 @@ export class EmpresaService {
   getAplicantesPage(empresaId: number, page?: number, size?: number): Observable<any> {
     let params = new HttpParams();
     if (page !== undefined && size !== undefined) {
-      console.log(page, size);
       params = params.append('page', page);
       params = params.append('size', size);
-      console.log(params);
-
       return this.http.get<any>(`${this.apiUrl}/${empresaId}/aplicantes`, { params }).pipe(take(1));
     } else {
       return this.http.get<any>(`${this.apiUrl}/${empresaId}/aplicantes`).pipe(take(1));

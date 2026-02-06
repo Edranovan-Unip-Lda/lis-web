@@ -1,17 +1,25 @@
-import { Routes } from '@angular/router';
-import { UserList } from './userlist';
-import { UserCreate } from './usercreate';
-import { getPageUserResolver, getUserByUsernameResolver } from '@/core/resolvers/user.resolver';
 import { getDirecaoResolver, getRolesResolver } from '@/core/resolvers/data-master.resolver';
+import { getPageEmpresaUserResolver, getPageUserResolver, getUserByUsernameResolver } from '@/core/resolvers/user.resolver';
+import { Routes } from '@angular/router';
+import { UserCreate } from './usercreate';
+import { UserList } from './userlist';
 
 export default [
-    { path: '', redirectTo: 'list', pathMatch: 'full' },
+    // { path: '', redirectTo: 'list', pathMatch: 'full' },
     {
         path: 'list',
         data: { breadcrumb: 'Lista' },
         component: UserList,
         resolve: {
             userPage: getPageUserResolver
+        }
+    },
+    {
+        path: 'empresa/list',
+        data: { breadcrumb: 'Lista' },
+        component: UserList,
+        resolve: {
+            userPage: getPageEmpresaUserResolver
         }
     },
     {
