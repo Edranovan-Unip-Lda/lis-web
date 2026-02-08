@@ -326,6 +326,8 @@ export class PedidoAtividadeFormComponent {
   documentoPropriedadeOnChange(event: SelectButtonChangeEvent): void {
     if (event.value === false) {
       this.showcontratoArrendamentoForm = true;
+    } else {
+      this.showcontratoArrendamentoForm = false;
     }
   }
 
