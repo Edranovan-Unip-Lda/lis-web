@@ -636,5 +636,24 @@
             </div>
         </section>
     </div>
+
+    <div class="mt-6">
+        <span class="text-xl font-bold mb-4 mr-4">Documentos</span>
+        <ul>
+            @for (item of autoVistoria.documentos; track $index) {
+            <li>
+                <a class="cursor-pointer hover:underline hover:text-teal-300">
+                  {{item.coluna}}  {{ item.nome }} - {{ bytesToMBs(item.tamanho) }}
+                </a>
+                &nbsp;
+                @if (item.id) {
+                <p-button (click)="downloadDoc(item)" [loading]="loadingDownloadButtons.has(item.id)"
+                    icon="pi pi-download" [rounded]="true" [text]="true" severity="success" />
+                }
+
+            </li>
+            }
+        </ul>
+    </div>
 </div>
 }

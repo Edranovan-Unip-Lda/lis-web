@@ -381,7 +381,7 @@
         </div>
     </div>
 
-    <div>
+    <div class="mt-6">
         <span class="text-xl font-bold mb-4 mr-4">Documentos</span>
         <ul>
             @for (item of pedido.documentos; track $index) {
@@ -391,7 +391,7 @@
                 </a>
                 &nbsp;
                 @if (item.id) {
-                <p-button (click)="downloadDoc(item)" [loading]="loadingDownloadButtons.has(item.nome)"
+                <p-button (click)="downloadDoc(item)" [loading]="loadingDownloadButtons.has(item.id)"
                     icon="pi pi-download" [rounded]="true" [text]="true" severity="success" />
                 }
 
