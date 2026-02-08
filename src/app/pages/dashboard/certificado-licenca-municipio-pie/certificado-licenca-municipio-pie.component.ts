@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { HighchartsChartComponent } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
 import { CategoryDistributionDto } from '@/core/models/entities.model';
@@ -11,9 +11,10 @@ import { randomColors } from '@/core/utils/global-function';
   templateUrl: './certificado-licenca-municipio-pie.component.html',
   styleUrl: './certificado-licenca-municipio-pie.component.scss'
 })
-export class CertificadoLicencaMunicipioPieComponent {
+export class CertificadoLicencaMunicipioPieComponent implements OnChanges {
   Highcharts: typeof Highcharts = Highcharts;
   chartOptions!: Highcharts.Options;
+  updateFlag: boolean = false;
   @Input() data!: CategoryDistributionDto;
   @Input() title!: string;
   @Input() chartType!: string;
@@ -22,8 +23,13 @@ export class CertificadoLicencaMunicipioPieComponent {
   municipioColors = randomColors;
 
   ngOnInit() {
-    this.generateColors();
-    this.initChart();
+    this.updateChart();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['data'] && !changes['data'].firstChange && this.data) {
+      this.updateChart();
+    }
   }
 
   initChart() {
@@ -85,6 +91,17 @@ export class CertificadoLicencaMunicipioPieComponent {
         },
       ]
     }
+  }
+
+  private updateChart(): void {
+    this.updateFlag = false;
+    this.chartColors = [];
+    this.itemColors = [];
+    this.generateColors();
+    this.initChart();
+
+    // Toggle updateFlag to trigger Highcharts update
+    setTimeout(() => this.updateFlag = true, 0);
   }
 
   private generateColors() {

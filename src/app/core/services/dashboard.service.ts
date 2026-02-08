@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, take } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { DashboardResponse } from '../models/entities.model';
+import { CategoryDistributionDto, DashboardResponse } from '../models/entities.model';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +30,10 @@ export class DashboardService {
       params.year = year;
     }
     return this.http.get<DashboardResponse>(`${this.apiUrl}`, { params }).pipe(take(1));
+  }
+
+  getByCategory(nome: string): Observable<CategoryDistributionDto[]> {
+    return this.http.get<CategoryDistributionDto[]>(`${this.apiUrl}/category`, { params: { nome } }).pipe(take(1));
   }
 
 }

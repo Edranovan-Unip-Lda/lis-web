@@ -1,7 +1,6 @@
 import { MapDataDto, MapDataPointDto } from '@/core/models/entities.model';
-import { listaMunicipios } from '@/core/utils/global-function';
 import { HttpClient } from '@angular/common/http';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { HighchartsChartComponent, providePartialHighcharts } from 'highcharts-angular';
 import * as Highcharts from 'highcharts/highmaps';
@@ -17,16 +16,19 @@ import * as Highcharts from 'highcharts/highmaps';
 export class EmpresaMapComponent {
   title = 'Empresas Registadas no Sistema — Distribuição Geográfica';
   @Input() data!: MapDataDto;
+  @Output() municipioSelected = new EventEmitter<any>();
   Highcharts: typeof Highcharts = Highcharts;
   chartOptions: Highcharts.Options = {
     title: { text: 'Loading map…' },
     series: []
   };
 
-  private listaMunicipios = listaMunicipios;
+  private readonly sociedadeComercial = 'empresas_sociedade_comercial';
+  private readonly tipoEmpresa = 'empresas_tipo_empresa';
+
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
   ) { }
 
   ngOnInit(): void {
@@ -85,8 +87,15 @@ export class EmpresaMapComponent {
 
         plotOptions: {
           series: {
+            cursor: 'pointer',
             borderColor: '#374151',
             borderWidth: 1,
+            allowPointSelect: true,
+            states: {
+              select: {
+                color: '#ff9800'
+              }
+            }
           },
           map: {
             states: {
@@ -101,7 +110,11 @@ export class EmpresaMapComponent {
 
         series: [{
           type: 'map',
-          // data: this.data.series,
+          point: {
+            events: {
+              click: (event) => this.municipioSelected.emit(event.point.name)
+            }
+          },
           data: this.convertToMapSeries(this.data.data),
           name: 'Número de Empresas',
           states: { hover: { color: '#BADA55' } },

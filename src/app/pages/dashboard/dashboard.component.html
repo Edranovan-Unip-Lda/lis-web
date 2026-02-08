@@ -4,8 +4,9 @@
              <label for="yearFilter" class="text-md font-semibold text-gray-50">
                  Filtrar dados por ano de referência:
              </label>
-             <p-select (ngModelChange)="yearChange($event)" inputId="yearFilter" [(ngModel)]="yearCtrl" [options]="visitorYear" optionLabel="name"
-                 [fluid]="true" [showClear]="true" placeholder="Selecione o ano" styleClass="w-32">
+             <p-select (ngModelChange)="yearChange($event)" inputId="yearFilter" [(ngModel)]="yearCtrl"
+                 [options]="visitorYear" optionLabel="name" [fluid]="true" [showClear]="true"
+                 placeholder="Selecione o ano" styleClass="w-32">
              </p-select>
          </div>
      </div>
@@ -15,17 +16,19 @@
      <stats-widget [kpisData]="kpisData" />
 
      <div class="col-span-12">
-         <app-empresa-map [data]="empresasByMunicipio"></app-empresa-map>
+         <app-empresa-map [data]="empresasByMunicipio" (municipioSelected)="onMunicipioSelected($event)">
+         </app-empresa-map>
      </div>
 
      <div class="col-span-12 xl:col-span-6">
          <app-certificado-licenca-municipio-pie [title]="'Empresa por Sociedade Comercial'"
-             [data]="empresasBySociedadeComercial" />
+             [data]="empresasBySociedadeComercial" [chartType]="'sociedade'"
+             [attr.data-chart-id]="'sociedade-comercial'" />
      </div>
 
      <div class="col-span-12 xl:col-span-6">
-         <app-certificado-licenca-municipio-pie [title]="'Empresa por Tipo de Empresa'"
-             [data]="empresasByTipoEmpresa" />
+         <app-certificado-licenca-municipio-pie [title]="'Empresa por Tipo de Empresa'" [data]="empresasByTipoEmpresa"
+             [chartType]="'tipo'" [attr.data-chart-id]="'tipo-empresa'" />
      </div>
 
      <!-- Certificado de Inscrição -->

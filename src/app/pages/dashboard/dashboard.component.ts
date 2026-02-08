@@ -82,4 +82,13 @@ export class DashboardComponent {
             }
         });
     }
+
+    onMunicipioSelected(nome: string) {
+        this.service.getByCategory(nome).subscribe({
+            next: (data) => {
+                this.empresasBySociedadeComercial = { ...data[0] };
+                this.empresasByTipoEmpresa = { ...data[1] };
+            }
+        })
+    }
 }
