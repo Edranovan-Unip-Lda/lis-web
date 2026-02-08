@@ -14,11 +14,12 @@ import { Select } from 'primeng/select';
 import { Tag } from 'primeng/tag';
 import { Textarea } from 'primeng/textarea';
 import { Toast } from 'primeng/toast';
+import { Tooltip } from 'primeng/tooltip';
 import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-summary',
-  imports: [Tag, StatusSeverityPipe, DatePipe, Button, RouterLink, Toast, ConfirmDialog, Textarea, Textarea, ReactiveFormsModule, TitleCasePipe, Select],
+  imports: [Tag, StatusSeverityPipe, DatePipe, Button, RouterLink, Toast, ConfirmDialog, Textarea, Textarea, ReactiveFormsModule, TitleCasePipe, Select, Tooltip],
   templateUrl: './summary.component.html',
   styleUrl: './summary.component.scss',
   providers: [MessageService, ConfirmationService, Textarea]

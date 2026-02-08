@@ -60,6 +60,13 @@
                     {{aplicanteData.empresa.sede.aldeia.suco.postoAdministrativo.nome}},
                     {{aplicanteData.empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
                 </p>
+                <p>
+                    <span class="font-medium text-gray-400">Coordenadas:</span>
+                    <a [href]="'https://www.google.com/maps?q=' + aplicanteData.empresa.latitude + ',' + aplicanteData.empresa.longitude"
+                        target="_blank" class="text-emerald-400 hover:text-emerald-300 hover:underline cursor-pointer">
+                        {{aplicanteData.empresa.longitude}} / {{aplicanteData.empresa.latitude}}
+                    </a>
+                </p>
             </div>
         </div>
     </div>
@@ -94,8 +101,10 @@
             </label>
             <textarea [formControl]="notes" inputId="notes" rows="5" cols="30" pTextarea fluid></textarea>
         </div>
+        <p-button (click)="rejeitarRevisto($event)" icon="pi pi-times" label="Rejeitar" [raised]="true"
+            severity="danger" />
         <p-button [disabled]="!selectedFuncionario.valid" (click)="atribuir()" icon="pi pi-check-circle"
-            label="Atribuir" [raised]="true" severity="success" />
+            label="Atribuir" [raised]="true" severity="success" class="ml-2" />
     </div>
 
     }
@@ -456,6 +465,11 @@
                     === 'ROLE_STAFF') {
                     <p-button [routerLink]="['auto-vistoria']" icon="pi pi-pencil" label="Preencher" [raised]="true"
                         severity="warn" />
+                    <a [href]="'https://www.google.com/maps?q=' + aplicanteData.empresa.latitude + ',' + aplicanteData.empresa.longitude"
+                        target="_blank" rel="noopener noreferrer" class="p-button font-bold" icon="pi pi-map-marker"
+                        label="Localização" severity="secondary" pTooltip="Localização" tooltipPosition="top">
+                        <i class="bi bi-map"></i>
+                    </a>
                     }@else {
                     <p-tag value="Em curso" [severity]="'info'" icon="pi pi-clock" />
                     }
