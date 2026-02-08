@@ -83,7 +83,9 @@
                     @if (certificadoData.pedidoLicencaAtividade.aplicante.categoria === 'COMERCIAL') {
                     <p>O Diretor-Geral do Comércio</p>
                     @if (imageUrl) {
-                    <img [src]="imageUrl" alt="Signature" style="max-width: 150px" />
+                    <div [style.background-image]="'url(' + imageUrl + ')'"
+                        style="background-size: contain; background-repeat: no-repeat; background-position: center; width: 150px; height: 100px; margin: 0 auto; pointer-events: none;">
+                    </div>
                     }
                     <p class="text-gray-600">
                         {{certificadoData.nomeDiretorGeral}}
@@ -91,7 +93,9 @@
                     } @else {
                     <p>O Diretor-Geral da Indústria</p>
                     @if (imageUrl) {
-                    <img [src]="imageUrl" alt="Signature" style="max-width: 150px" />
+                    <div [style.background-image]="'url(' + imageUrl + ')'"
+                        style="background-size: contain; background-repeat: no-repeat; background-position: center; width: 150px; height: 100px; margin: 0 auto; pointer-events: none;">
+                    </div>
                     }
                     <p class="text-gray-600">
                         {{certificadoData.nomeDiretorGeral}}
@@ -108,3 +112,4 @@
     </div>
 </div>
 }
+<p-toast position="bottom-right" key="br" />

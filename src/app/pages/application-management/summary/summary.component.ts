@@ -193,16 +193,41 @@ export class SummaryComponent {
         }
         this.userService.updateAplicante(this.user.username, this.aplicanteData.id, formData).subscribe({
           next: response => {
-            this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Aplicante aprovado com sucesso. O certificao foi gerado com sucesso', life: 3000, key: 'tr' });
+            this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Aplicante aprovado com sucesso. O certificado está sendo gerado', life: 3000, key: 'tr' });
             this.aplicanteData = response;
-            this.route.navigate(['gestor/application', this.aplicanteData.id],
-              {
-                queryParams: {
-                  categoria: this.aplicanteData.categoria,
-                  tipo: this.aplicanteData.tipo
+
+            // Navigate to certificate PDF page based on application type
+            if (this.aplicanteData.tipo === AplicanteType.cadastro && this.aplicanteData.pedidoInscricaoCadastro.certificadoInscricaoCadastro) {
+              this.route.navigate(['gestor/application', this.aplicanteData.id, 'certificado-inscricao', this.aplicanteData.pedidoInscricaoCadastro.certificadoInscricaoCadastro.id],
+                {
+                  queryParams: {
+                    categoria: this.aplicanteData.categoria,
+                    tipo: this.aplicanteData.tipo,
+                    autoUpload: 'true'
+                  }
                 }
-              }
-            );
+              );
+            } else if (this.aplicanteData.tipo === AplicanteType.licenca && this.aplicanteData.pedidoLicencaAtividade.certificadoLicencaAtividade) {
+              this.route.navigate(['gestor/application', this.aplicanteData.id, 'certificado-atividade', this.aplicanteData.pedidoLicencaAtividade.certificadoLicencaAtividade.id],
+                {
+                  queryParams: {
+                    categoria: this.aplicanteData.categoria,
+                    tipo: this.aplicanteData.tipo,
+                    autoUpload: 'true'
+                  }
+                }
+              );
+            } else {
+              // Fallback to application page if no certificate
+              this.route.navigate(['gestor/application', this.aplicanteData.id],
+                {
+                  queryParams: {
+                    categoria: this.aplicanteData.categoria,
+                    tipo: this.aplicanteData.tipo
+                  }
+                }
+              );
+            }
           },
           error: () => {
             this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao aprovar o aplicante', life: 3000, key: 'tr' });

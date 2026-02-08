@@ -23,6 +23,13 @@ export class CertificadoService {
         return this.http.get<CertificadoCadastro | CertificadoLicencaAtividade>(`${this.apiUrl}/${id}`, { params });
     }
 
+    sendCertificadoToEmailById(id: number, tipo: AplicanteType, file: File | Blob, fileName: string): Observable<any> {
+        const formData = new FormData();
+        formData.append('type', tipo);
+        formData.append('file', file, fileName);
+        return this.http.post(`${this.apiUrl}/${id}/send-email`, formData);
+    }
+
     searchByNumero(numero: string, recaptchaToken: string): Observable<CertificadoCadastro | CertificadoLicencaAtividade> {
         const params = new HttpParams()
             .append('numero', numero)

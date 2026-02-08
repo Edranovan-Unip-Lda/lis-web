@@ -15,6 +15,12 @@ export class DocumentosService {
         return this.http.get(`${this.apiUrl}/${id}`, { responseType: 'blob' as 'blob' });
     }
 
+    upload(username: string, file: File | Blob, fileName: string): Observable<any> {
+        const formData = new FormData();
+        formData.append('files', file, fileName);
+        return this.http.post(`${this.apiUrl}/${username}/upload`, formData);
+    }
+
     deleteById(id: number): Observable<any> {
         return this.http.delete(`${this.apiUrl}/${id}`);
     }

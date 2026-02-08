@@ -1,20 +1,23 @@
 import { CertificadoLicencaAtividade } from '@/core/models/entities.model';
 import { Categoria } from '@/core/models/enums';
-import { DocumentosService } from '@/core/services';
+import { AuthenticationService, CertificadoService, DocumentosService } from '@/core/services';
 import { DatePipe, Location, NgStyle, UpperCasePipe } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { QRCodeComponent } from 'angularx-qrcode';
 import html2canvas from 'html2canvas-pro';
 import { jsPDF } from 'jspdf';
+import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
+import { Toast } from 'primeng/toast';
 import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-certificado-atividade-pdf',
-  imports: [Button, DatePipe, NgStyle, UpperCasePipe, QRCodeComponent],
+  imports: [Button, DatePipe, NgStyle, UpperCasePipe, QRCodeComponent, Toast],
   templateUrl: './certificado-atividade-pdf.component.html',
-  styleUrl: './certificado-atividade-pdf.component.scss'
+  styleUrl: './certificado-atividade-pdf.component.scss',
+  providers: [MessageService]
 })
 export class CertificadoAtividadePdfComponent {
   certificadoData!: CertificadoLicencaAtividade;
@@ -28,6 +31,8 @@ export class CertificadoAtividadePdfComponent {
     private router: ActivatedRoute,
     private location: Location,
     private documentoService: DocumentosService,
+    private certificadoService: CertificadoService,
+    private messageService: MessageService,
   ) { }
 
   ngOnInit(): void {
@@ -49,6 +54,15 @@ export class CertificadoAtividadePdfComponent {
       'background-size': 'cover',
       'background-position': 'center',
       'background-repeat': 'no-repeat'
+    }
+  }
+
+  ngAfterViewInit() {
+    const autoUpload = this.router.snapshot.queryParamMap.get('autoUpload');
+    if (autoUpload === 'true') {
+      setTimeout(() => {
+        this.generateAndUploadPDF();
+      }, 2000); // Wait 2 seconds for view to stabilize
     }
   }
 
@@ -79,17 +93,44 @@ export class CertificadoAtividadePdfComponent {
     if (data) {
       html2canvas(data).then(canvas => {
         const imgWidth = 208;
-        const pageHeight = 295;
         const imgHeight = canvas.height * imgWidth / canvas.width;
-        const heightLeft = imgHeight;
         const fileName = `alvara-licenca-${this.certificadoData.pedidoLicencaAtividade.nomeEmpresa}.pdf`;
 
-        const contentDataURL = canvas.toDataURL('image/png');
+        const contentDataURL = canvas.toDataURL('image/jpeg', 0.75);
         const pdf = new jsPDF('p', 'mm', 'a4'); // A4 size page of PDF
 
         let position = 0;
-        pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight);
+        pdf.addImage(contentDataURL, 'JPEG', 0, position, imgWidth, imgHeight);
         pdf.save(fileName); // Generated PDF
+      });
+    }
+  }
+
+  private generateAndUploadPDF() {
+    const data = document.getElementById('myDiv');
+    if (data) {
+      html2canvas(data).then(canvas => {
+        const imgWidth = 208;
+        const imgHeight = canvas.height * imgWidth / canvas.width;
+        const fileName = `alvara-licenca-${this.certificadoData.pedidoLicencaAtividade.nomeEmpresa}.pdf`;
+
+        const contentDataURL = canvas.toDataURL('image/jpeg', 0.75);
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        pdf.addImage(contentDataURL, 'JPEG', 0, 0, imgWidth, imgHeight);
+
+        // Convert PDF to blob and upload in background
+        const pdfBlob = pdf.output('blob');
+        this.certificadoService.sendCertificadoToEmailById(this.certificadoData.id, this.certificadoData.pedidoLicencaAtividade.aplicante.tipo, pdfBlob, fileName).subscribe({
+          next: () => {
+            this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Certificado enviado por e-mail com sucesso.', key: 'br' });
+          },
+          error: (error) => {
+            this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao enviar o certificado por e-mail. ' + error, key: 'br' });
+          }
+        });
+      }).catch(error => {
+        console.error('Error generating PDF:', error);
       });
     }
   }
