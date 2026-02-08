@@ -1,5 +1,5 @@
 import { LicensesPerMonthDto } from '@/core/models/entities.model';
-import { Component, Input } from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import { HighchartsChartComponent, } from 'highcharts-angular';
 
@@ -18,27 +18,16 @@ export class CertificadoLicencaCategoriaChartsComponent {
 
   totalComercial = 0;
   totalIndustrial = 0;
+  updateFlag: boolean = false;
 
   ngOnInit() {
-    const documentStyle = getComputedStyle(document.documentElement);
-    if (this.licensesPerMonth) {
-      this.licensesPerMonth.series.map((s) => {
-        switch (s.name) {
-          case 'Comercial':
-            s.type = 'line';
-            s.color = '#FC6161'
-            this.totalComercial = s.data.reduce((a, b) => (a as number) + (b as number), 0);
-            break;
-          case 'Industrial':
-            s.type = 'column';
-            s.color = documentStyle.getPropertyValue('--primary-color');
-            this.totalIndustrial = s.data.reduce((a, b) => (a as number) + (b as number), 0);
-            break;
-        }
-      });
-    }
+    this.updateChart();
+  }
 
-    this.initChart();
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['licensesPerMonth'] && !changes['licensesPerMonth'].firstChange && this.licensesPerMonth) {
+      this.updateChart();
+    }
   }
 
   initChart() {
@@ -121,7 +110,7 @@ export class CertificadoLicencaCategoriaChartsComponent {
           }
         },
         line: {
-           dataLabels: {
+          dataLabels: {
             enabled: true,
             color: '#e5e7eb'
           },
@@ -136,4 +125,29 @@ export class CertificadoLicencaCategoriaChartsComponent {
     };
   }
 
+  private updateChart() {
+    const documentStyle = getComputedStyle(document.documentElement);
+
+    if (this.licensesPerMonth) {
+      this.licensesPerMonth.series.forEach((s) => {
+        switch (s.name) {
+          case 'Comercial':
+            s.type = 'line';
+            s.color = '#FC6161';
+            this.totalComercial = s.data.reduce((a, b) => (a as number) + (b as number), 0);
+            break;
+          case 'Industrial':
+            s.type = 'column';
+            s.color = documentStyle.getPropertyValue('--primary-color');
+            this.totalIndustrial = s.data.reduce((a, b) => (a as number) + (b as number), 0);
+            break;
+        }
+      });
+    }
+
+    this.updateFlag = false;
+    this.initChart();
+    // Toggle updateFlag to trigger Highcharts update
+    setTimeout(() => this.updateFlag = true, 0);
+  }
 }
