@@ -26,6 +26,7 @@ export class CertificadoAtividadePdfComponent {
   comercialCSS!: any;
   imageUrl!: string;
   qrcodeUrl = signal(`${environment.webUrl}/auth/search?numero=`);
+  private autoUpload = false;
 
   constructor(
     private router: ActivatedRoute,
@@ -58,12 +59,7 @@ export class CertificadoAtividadePdfComponent {
   }
 
   ngAfterViewInit() {
-    const autoUpload = this.router.snapshot.queryParamMap.get('autoUpload');
-    if (autoUpload === 'true') {
-      setTimeout(() => {
-        this.generateAndUploadPDF();
-      }, 2000); // Wait 2 seconds for view to stabilize
-    }
+    this.autoUpload = this.router.snapshot.queryParamMap.get('autoUpload') === 'true';
   }
 
   goBack() {
@@ -85,6 +81,14 @@ export class CertificadoAtividadePdfComponent {
       }
 
       this.imageUrl = URL.createObjectURL(blob);
+
+      // Generate and upload PDF only after image is loaded
+      if (this.autoUpload) {
+        this.autoUpload = false; // Prevent duplicate uploads
+        setTimeout(() => {
+          this.generateAndUploadPDF();
+        }, 500); // Small delay for the image to render in the DOM
+      }
     });
   }
 

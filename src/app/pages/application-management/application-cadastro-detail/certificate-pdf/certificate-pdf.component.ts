@@ -27,6 +27,7 @@ export class CertificatePdfComponent {
   comercialCSS!: any;
   imageUrl!: string;
   qrcodeUrl = signal(`${environment.webUrl}/auth/search?numero=`);
+  private autoUpload = false;
 
   constructor(
     private router: ActivatedRoute,
@@ -62,13 +63,7 @@ export class CertificatePdfComponent {
   }
 
   ngAfterViewInit() {
-    const autoUpload = this.router.snapshot.queryParamMap.get('autoUpload');
-
-    if (autoUpload === 'true') {
-      setTimeout(() => {
-        this.generateAndUploadPDF();
-      }, 2000); // Wait 2 seconds for view to stabilize
-    }
+    this.autoUpload = this.router.snapshot.queryParamMap.get('autoUpload') === 'true';
   }
 
   loadImage(id: number) {
@@ -78,6 +73,14 @@ export class CertificatePdfComponent {
       }
 
       this.imageUrl = URL.createObjectURL(blob);
+
+      // Generate and upload PDF only after image is loaded
+      if (this.autoUpload) {
+        this.autoUpload = false; // Prevent duplicate uploads
+        setTimeout(() => {
+          this.generateAndUploadPDF();
+        }, 500); // Small delay for the image to render in the DOM
+      }
     });
   }
 
@@ -128,10 +131,10 @@ export class CertificatePdfComponent {
         const pdfBlob = pdf.output('blob');
         this.certificadoService.sendCertificadoToEmailById(this.certificadoData.id, this.certificadoData.pedidoInscricaoCadastro.aplicante.tipo, pdfBlob, fileName).subscribe({
           next: () => {
-            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Certificate sent to email successfully.', key: 'br' });
+            this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Certificado enviado por e-mail com sucesso.', key: 'br' });
           },
           error: (error) => {
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to send certificate to email. ' + error, key: 'br' });
+            this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao enviar o certificado por e-mail. ' + error, key: 'br' });
           }
         });
       }).catch(error => {
