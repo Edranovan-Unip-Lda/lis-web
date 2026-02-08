@@ -1,13 +1,14 @@
-import { Component, effect, inject, OnDestroy } from '@angular/core';
-import { DrawerModule } from "primeng/drawer";
-import { LayoutService } from "@/layout/service/layout.service";
-import { DatePickerModule } from "primeng/datepicker";
-import { FormsModule } from "@angular/forms";
-import { CommonModule } from "@angular/common";
 import { NotificacaoDto } from '@/core/models/entities.model';
-import { NotificacaoService } from '@/core/services';
+import { Role } from '@/core/models/enums';
 import { TimeAgoPipe } from '@/core/pipes/custom.pipe';
+import { AuthenticationService, NotificacaoService } from '@/core/services';
+import { LayoutService } from "@/layout/service/layout.service";
+import { CommonModule } from "@angular/common";
+import { Component, effect, inject } from '@angular/core';
+import { FormsModule } from "@angular/forms";
 import { Router } from '@angular/router';
+import { DatePickerModule } from "primeng/datepicker";
+import { DrawerModule } from "primeng/drawer";
 
 @Component({
     selector: 'app-profile-menu',
@@ -25,7 +26,8 @@ export class AppProfileMenu {
 
     constructor(
         private notificacaoService: NotificacaoService,
-        private router: Router
+        private router: Router,
+        private authService: AuthenticationService
     ) {
         // Use Angular effect to watch for rightMenuActive changes
         effect(() => {
@@ -61,8 +63,20 @@ export class AppProfileMenu {
     }
 
     toDetail(item: NotificacaoDto): void {
-        const url = `/application/${item.aplicanteTipo.toLowerCase()}/${item.aplicanteId}?categoria=${item.categoria}&tipo=${item.aplicanteTipo}`;
-        this.router.navigateByUrl(url);
+        const roleName: Role = this.authService.currentRole.name;
+        switch (roleName) {
+            case Role.admin:
+            case Role.manager:
+            case Role.chief:
+            case Role.staff:
+                this.router.navigateByUrl(`/gestor/application/${item.aplicanteId}?categoria=${item.categoria}&tipo=${item.aplicanteTipo}`);
+                break;
+            case Role.client:
+                this.router.navigateByUrl(`/application/${item.aplicanteTipo.toLowerCase()}/${item.aplicanteId}?categoria=${item.categoria}&tipo=${item.aplicanteTipo}`);
+                break;
+            default:
+                this.router.navigateByUrl(`/application/${item.aplicanteTipo.toLowerCase()}/${item.aplicanteId}?categoria=${item.categoria}&tipo=${item.aplicanteTipo}`);
+        }
     }
 
     get rightMenuVisible() {
