@@ -132,7 +132,7 @@ export class SummaryComponent {
 
   rejeitarRevisto(event: any) {
     this.confirmationService.confirm({
-      key: 'aprovar',
+      key: 'cancelar',
       target: event.currentTarget as EventTarget,
       icon: 'pi pi-exclamation-triangle',
       rejectButtonProps: {
@@ -147,12 +147,12 @@ export class SummaryComponent {
         const formData = {
           id: null,
           status: AplicanteStatus.rejeitado,
-          descricao: null,
+          descricao: this.descricao.value,
           alteradoPor: this.user.username,
         }
         this.userService.revistoAplicante(this.user.username, this.aplicanteData.id, formData).subscribe({
           next: response => {
-            this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Aplicante revisto com sucesso', life: 3000, key: 'tr' });
+            this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Aplicante rejeitado com sucesso', life: 3000, key: 'tr' });
             this.aplicanteData = response;
             this.route.navigate(['gestor/application', this.aplicanteData.id],
               {

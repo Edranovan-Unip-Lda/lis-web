@@ -1,4 +1,4 @@
-import { AplicanteType } from '@/core/models/enums';
+import { AplicanteType, Role } from '@/core/models/enums';
 import { getCertificadoById } from '@/core/resolvers/certificados.resolver';
 import { getAllAldeiasResolver, getPageClasseAtividadeResolver, getSociedadeComercialResolver, getTaxaByCategoriaAndTipoResolver } from '@/core/resolvers/data-master.resolver';
 import { getAplicante, getPageAplicanteOrByEmpresaIdResolver } from '@/core/resolvers/empresa.resolver';
@@ -13,6 +13,7 @@ import { ApplicationListComponent } from './application-cadastro-detail/applicat
 import { CertificatePdfComponent } from './application-cadastro-detail/certificate-pdf/certificate-pdf.component';
 import { FaturaComponent } from './application-cadastro-detail/fatura/fatura.component';
 import { PedidoInscricaoComponent } from './application-cadastro-detail/pedido-inscricao/pedido-inscricao.component';
+import { canActivateByRole } from '@/core/security/route.guard';
 
 export default [
     {
@@ -29,7 +30,10 @@ export default [
         children: [
             {
                 path: ':id',
-                data: { breadcrumb: 'Detail' },
+                data: {
+                    breadcrumb: 'Detail',
+                    role: [Role.client]
+                },
                 component: ApplicationCadastroDetailComponent,
                 resolve: {
                     aplicanteResolver: getAplicante,
@@ -37,7 +41,8 @@ export default [
                     aldeiasResolver: getAllAldeiasResolver,
                     sociedadeComercialResolver: getSociedadeComercialResolver,
                     classeAtividadeResolver: getPageClasseAtividadeResolver,
-                }
+                },
+                canActivate: [canActivateByRole],
             },
             {
                 path: ':id/pedido-inscricao',
@@ -74,7 +79,10 @@ export default [
         children: [
             {
                 path: ':id',
-                data: { breadcrumb: 'Detail' },
+                data: {
+                    breadcrumb: 'Detail',
+                    role: [Role.client]
+                },
                 component: ApplicationAtividadeDetailComponent,
                 resolve: {
                     aplicanteResolver: getAplicante,
@@ -83,7 +91,8 @@ export default [
                     sociedadeComercialResolver: getSociedadeComercialResolver,
                     grupoAtividadeResolver: getPageClasseAtividadeResolver,
                     classeAtividadeResolver: getPageClasseAtividadeResolver,
-                }
+                },
+                canActivate: [canActivateByRole],
             },
             {
                 path: ':id/pedido-licenca',
