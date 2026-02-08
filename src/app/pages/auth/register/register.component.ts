@@ -686,7 +686,8 @@ export class Register {
     disableStepProprietario(): boolean {
         return !!(
             this.empresaForm.get('tipoPropriedade')?.invalid ||
-            this.acionistasArray.invalid);
+            this.acionistasArray.invalid ||
+            this.getTotalAcoes() !== 100);
     }
 
     disableStepGerente(): boolean {
