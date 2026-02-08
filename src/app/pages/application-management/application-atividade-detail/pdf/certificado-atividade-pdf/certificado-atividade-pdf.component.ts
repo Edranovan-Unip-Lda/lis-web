@@ -1,6 +1,6 @@
 import { CertificadoLicencaAtividade } from '@/core/models/entities.model';
 import { Categoria } from '@/core/models/enums';
-import { AuthenticationService, CertificadoService, DocumentosService } from '@/core/services';
+import { CertificadoService, DocumentosService } from '@/core/services';
 import { DatePipe, Location, NgStyle, UpperCasePipe } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';

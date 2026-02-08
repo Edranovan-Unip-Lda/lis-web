@@ -7,19 +7,19 @@ import { DatePipe } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { NgxPrintModule } from 'ngx-print';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { Message } from 'primeng/message';
 import { Paginator } from 'primeng/paginator';
 import { Select, SelectFilterEvent } from 'primeng/select';
 import { TableModule } from 'primeng/table';
-import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-empresa',
-  imports: [ReactiveFormsModule, Select, Button, DatePipe, TableModule, Message, Paginator],
+  imports: [ReactiveFormsModule, Select, Button, DatePipe, TableModule, Message, Paginator, NgxPrintModule],
   templateUrl: './empresa.component.html',
   styleUrl: './empresa.component.scss',
   providers: [MessageService]
@@ -38,6 +38,7 @@ export class EmpresaComponent {
   size = 50;
   totalData = 0;
   dataIsFetching = false;
+  isPdfGenerating = false;
   messages = signal<any[]>([]);
   private sucoSearchSubject = new Subject<string>();
   sucoIsLoading = false;
@@ -127,27 +128,19 @@ export class EmpresaComponent {
   }
 
   exportToExcel(): void {
-    this.reportService.getEmpresaReport(this.reportForm.value).subscribe({
-      next: (response) => {
-        const mappedData = response.content.map((item: Empresa) => ({
-          'Empresa': item.nome,
-          'Email': item.email,
-          'Local': `${item.sede.local} - ${item.sede.aldeia.nome}, ${item.sede.aldeia.suco.nome}, ${item.sede.aldeia.suco.postoAdministrativo.nome}, ${item.sede.aldeia.suco.postoAdministrativo.municipio.nome}`,
-          'Tipo de Propriedade': item.tipoPropriedade,
-          'Tipo de Empresa': item.tipoEmpresa,
-          'Sociedade Comercial': item.sociedadeComercial?.nome || 'N/A',
-          'Gerente': item.gerente?.nome || 'N/A',
-          'Telefone do Gerente': item.gerente?.telefone || 'N/A',
-          'Data de Criação': new DatePipe('pt-PT').transform(item.createdAt, 'dd/MM/yyyy') || 'N/A',
-        }));
-        const fileName = `Relatório de Empresas_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
-        this.exportService.toExcel(mappedData, fileName);
-      },
-      error: (error) => {
-        console.error('Error fetching data for export:', error);
-      }
-    });
-
+    const mappedData = this.data.map((item: Empresa) => ({
+      'Empresa': item.nome,
+      'Email': item.email,
+      'Local': `${item.sede.local} - ${item.sede.aldeia.nome}, ${item.sede.aldeia.suco.nome}, ${item.sede.aldeia.suco.postoAdministrativo.nome}, ${item.sede.aldeia.suco.postoAdministrativo.municipio.nome}`,
+      'Tipo de Propriedade': item.tipoPropriedade,
+      'Tipo de Empresa': item.tipoEmpresa,
+      'Sociedade Comercial': item.sociedadeComercial?.nome || 'N/A',
+      'Gerente': item.gerente?.nome || 'N/A',
+      'Telefone do Gerente': item.gerente?.telefone || 'N/A',
+      'Data de Criação': new DatePipe('pt-PT').transform(item.createdAt, 'dd/MM/yyyy') || 'N/A',
+    }));
+    const fileName = `Relatório de Empresas_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
+    this.exportService.toExcel(mappedData, fileName);
   }
 
   sucoFilter(event: SelectFilterEvent): void {
@@ -182,5 +175,17 @@ export class EmpresaComponent {
       postoAdministrativoId: [null],
       sucoId: [null]
     });
+  }
+
+  generatePDF(divId: string) {
+    this.isPdfGenerating = true;
+    const fileName = `Relatório de Empresas_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
+    this.exportService.toPdf(divId, fileName)
+      .then(() => {
+        this.isPdfGenerating = false;
+      })
+      .catch(() => {
+        this.isPdfGenerating = false;
+      });
   }
 }

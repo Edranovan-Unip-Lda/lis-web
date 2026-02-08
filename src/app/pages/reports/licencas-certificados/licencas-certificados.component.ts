@@ -1,3 +1,4 @@
+import { Empresa } from '@/core/models/entities.model';
 import { AplicanteType } from '@/core/models/enums';
 import { DataMasterService } from '@/core/services';
 import { ExportService } from '@/core/services/export.service';
@@ -30,6 +31,7 @@ export class LicencasCertificadosComponent {
   applicationTypesOpts = applicationTypesOptions;
   applicanteTypeFormControl = new FormControl<AplicanteType | null>(null, Validators.required);
   listaEmpresa = [];
+  isPdfGenerating = false;
 
   // Geral
   listaCategoria = categoryTpesOptions;
@@ -190,27 +192,28 @@ export class LicencasCertificadosComponent {
   }
 
   exportToExcel(): void {
-    // this.reportService.getEmpresaReport(this.reportForm.value).subscribe({
-    //   next: (response) => {
-    //     const mappedData = response.content.map((item: Empresa) => ({
-    //       'Empresa': item.nome,
-    //       'Email': item.email,
-    //       'Local': `${item.sede.local} - ${item.sede.aldeia.nome}, ${item.sede.aldeia.suco.nome}, ${item.sede.aldeia.suco.postoAdministrativo.nome}, ${item.sede.aldeia.suco.postoAdministrativo.municipio.nome}`,
-    //       'Tipo de Propriedade': item.tipoPropriedade,
-    //       'Tipo de Empresa': item.tipoEmpresa,
-    //       'Sociedade Comercial': item.sociedadeComercial?.nome || 'N/A',
-    //       'Gerente': item.gerente?.nome || 'N/A',
-    //       'Telefone do Gerente': item.gerente?.telefone || 'N/A',
-    //       'Data de Criação': new DatePipe('pt-PT').transform(item.createdAt, 'dd/MM/yyyy') || 'N/A',
-    //     }));
-    //     const fileName = `Relatório de Empresas_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
-    //     this.exportService.toExcel(mappedData, fileName);
-    //   },
-    //   error: (error) => {
-    //     console.error('Error fetching data for export:', error);
-    //   }
-    // });
+    const mappedData = this.data.map((item: any) => ({
+      'Empresa': item.sociedadeComercial,
+      'Nº': item.pedidoInscricaoCadastro ? item.pedidoInscricaoCadastro.aplicante.numero : item.pedidoLicencaAtividade.aplicante.numero,
+      'Sede': `${item.sede.local} - ${item.sede.aldeia.nome}, ${item.sede.aldeia.suco.nome}, ${item.sede.aldeia.suco.postoAdministrativo.nome}, ${item.sede.aldeia.suco.postoAdministrativo.municipio.nome}`,
+      'Data de Validade': new DatePipe('pt-PT').transform(item.dataValidade, 'dd/MM/yyyy') || 'N/A',
+      'Data de Emissão': new DatePipe('pt-PT').transform(item.dataEmissao, 'dd/MM/yyyy') || 'N/A',
+    }));
+    const fileName = `Relatório de LicencasECertificados_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
+    this.exportService.toExcel(mappedData, fileName);
 
+  }
+
+  generatePDF(divId: string) {
+    this.isPdfGenerating = true;
+    const fileName = `Relatório de LicencasECertificados_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
+    this.exportService.toPdf(divId, fileName)
+      .then(() => {
+        this.isPdfGenerating = false;
+      })
+      .catch(() => {
+        this.isPdfGenerating = false;
+      });
   }
 
   setupSucoSearch(): void {

@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { utils, writeFile } from "xlsx";
+import html2canvas from 'html2canvas-pro';
+import { jsPDF } from 'jspdf';
 
 @Injectable({
     providedIn: 'root'
@@ -27,5 +29,32 @@ export class ExportService {
         utils.book_append_sheet(workbook, worksheet, sheetName);
 
         writeFile(workbook, `${filename}.xlsx`, { compression: true });
+    }
+
+    /**
+     * Export an HTML element to a PDF file in landscape orientation.
+     * 
+     * @param elementId The ID of the HTML element to capture.
+     * @param filename The filename for the exported PDF (without extension).
+     * @returns Promise that resolves when PDF generation is complete
+     */
+    toPdf(elementId: string, filename: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const element = document.getElementById(elementId);
+            if (element) {
+                html2canvas(element).then(canvas => {
+                    const imgWidth = 297; // A4 landscape width in mm
+                    const imgHeight = canvas.height * imgWidth / canvas.width;
+                    const contentDataURL = canvas.toDataURL('image/jpeg', 0.75);
+                    const pdf = new jsPDF('l', 'mm', 'a4'); // Landscape orientation
+                    
+                    pdf.addImage(contentDataURL, 'JPEG', 0, 0, imgWidth, imgHeight);
+                    pdf.save(`${filename}.pdf`);
+                    resolve();
+                }).catch(error => reject(error));
+            } else {
+                reject(new Error('Element not found'));
+            }
+        });
     }
 }

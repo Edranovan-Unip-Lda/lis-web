@@ -139,7 +139,7 @@
                 <p-button icon="pi pi-sync" (click)="onSubmit('CADASTRO')" [loading]="dataIsFetching"
                     [disabled]="isFormEmpty(reportForm)" pRipple label="Gerar Relatório" class="w-auto">
                 </p-button>
-                <p-button class="ml-4" (onClick)="clearFilter()" label="Clear" icon="pi pi-trash" [raised]="true"
+                <p-button class="ml-4" (onClick)="clearFilter()" label="Limpar" icon="pi pi-trash" [raised]="true"
                     severity="secondary" />
             </div>
         </div>
@@ -281,7 +281,7 @@
                 <p-button icon="pi pi-sync" (click)="onSubmit('ATIVIDADE')" [loading]="dataIsFetching"
                     [disabled]="isFormEmpty(reportForm)" pRipple label="Gerar Relatório" class="w-auto">
                 </p-button>
-                <p-button class="ml-4" (onClick)="clearFilter()" label="Clear" icon="pi pi-trash" [raised]="true"
+                <p-button class="ml-4" (onClick)="clearFilter()" label="Limpar" icon="pi pi-trash" [raised]="true"
                     severity="secondary" />
             </div>
         </div>
@@ -294,10 +294,15 @@
         <h1 class="text-2xl font-bold text-white pt-6">
             Filtered Results
         </h1>
-        <p-button (onClick)="exportToExcel()" [disabled]="isFormEmpty(reportForm) || data.length === 0"
-            label="Export to Excel" icon="pi pi-file-excel" [raised]="true" severity="success" class="mr-2" />
+        <div>
+            <p-button (onClick)="generatePDF('myDiv')" [disabled]="isFormEmpty(reportForm) || data.length === 0"
+                label="Exportar para PDF" icon="pi pi-file-pdf" [raised]="true" severity="danger" class="mr-2"
+                [loading]="isPdfGenerating" />
+            <p-button (onClick)="exportToExcel()" [disabled]="isFormEmpty(reportForm) || data.length === 0"
+                label="Export to Excel" icon="pi pi-file-excel" [raised]="true" severity="success" class="mr-2" />
+        </div>
     </div>
-    <p-table #dt [value]="data" responsiveLayout="scroll" [scrollable]="true" [rowHover]="true">
+    <p-table id="myDiv" #dt [value]="data" responsiveLayout="scroll" [scrollable]="true" [rowHover]="true">
         <ng-template #header>
             <tr>
                 <th>

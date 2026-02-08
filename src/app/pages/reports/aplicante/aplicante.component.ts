@@ -33,6 +33,7 @@ export class AplicanteComponent {
   totalData = 0;
   dataIsFetching = false;
   messages = signal<any[]>([]);
+  isPdfGenerating = false;
 
   constructor(
     private _fb: FormBuilder,
@@ -95,23 +96,16 @@ export class AplicanteComponent {
   }
 
   exportToExcel(): void {
-    this.reportService.getAplicanteReport(this.reportForm.value).subscribe({
-      next: (response) => {
-        const mappedData = response.content.map((item: Aplicante) => ({
-          'Empresa': item.empresa.nome,
-          'Nº da Aplicante': item.numero,
-          'Categoria': item.categoria,
-          'Tipo de Aplicante': item.tipo,
-          'Estado': item.estado,
-          'Data de Aprovação': new DatePipe('pt-PT').transform(item.updatedAt, 'dd/MM/yyyy_HH:mm:ss') || 'N/A',
-        }));
-        const fileName = `Relatório do Aplicante_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
-        this.exportService.toExcel(mappedData, fileName);
-      },
-      error: (error) => {
-        console.error('Error fetching data for export:', error);
-      }
-    });
+    const mappedData = this.data.map((item: Aplicante) => ({
+      'Empresa': item.empresa.nome,
+      'Nº da Aplicante': item.numero,
+      'Categoria': item.categoria,
+      'Tipo de Aplicante': item.tipo,
+      'Estado': item.estado,
+      'Data de Aprovação': new DatePipe('pt-PT').transform(item.updatedAt, 'dd/MM/yyyy_HH:mm:ss') || 'N/A',
+    }));
+    const fileName = `Relatório do Aplicante_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
+    this.exportService.toExcel(mappedData, fileName);
 
   }
 
@@ -123,6 +117,18 @@ export class AplicanteComponent {
       empresaId: [null],
       updatedAtRange: [null],
     });
+  }
+
+  generatePDF(divId: string) {
+    this.isPdfGenerating = true;
+    const fileName = `Relatório de Aplicante_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
+    this.exportService.toPdf(divId, fileName)
+      .then(() => {
+        this.isPdfGenerating = false;
+      })
+      .catch(() => {
+        this.isPdfGenerating = false;
+      });
   }
 
   private getPaginationData(page: number, size: number): void {
