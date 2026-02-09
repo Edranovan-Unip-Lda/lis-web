@@ -39,14 +39,14 @@ export class UserList {
         private route: ActivatedRoute,
         private service: UserService,
         private messageService: MessageService,
-    ) {
+    ) { }
+
+    ngOnInit() {
         this.users = this.route.snapshot.data['userPage'].content;
         this.totalData = this.route.snapshot.data['userPage'].totalElements;
         this.usersCached = this.users;
         this.roles = this.route.snapshot.queryParamMap.get('roles');
-    }
-
-    ngOnInit() {
+        
         this.setupSearch();
     }
 
