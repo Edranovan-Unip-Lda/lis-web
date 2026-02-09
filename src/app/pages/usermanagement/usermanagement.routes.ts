@@ -8,7 +8,10 @@ export default [
     // { path: '', redirectTo: 'list', pathMatch: 'full' },
     {
         path: 'internal/list',
-        data: { breadcrumb: 'Lista' },
+        data: { 
+            breadcrumb: 'Lista',
+            type: 'internal' 
+        },
         component: UserList,
         resolve: {
             userPage: getPageUserResolver

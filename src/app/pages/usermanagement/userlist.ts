@@ -33,6 +33,7 @@ export class UserList {
     page = 0;
     size = 50;
     totalData = 0;
+    isInternal = false;
 
     constructor(
         private router: Router,
@@ -46,8 +47,9 @@ export class UserList {
         this.totalData = this.route.snapshot.data['userPage'].totalElements;
         this.usersCached = this.users;
         this.roles = this.route.snapshot.queryParamMap.get('roles');
-        
+
         this.setupSearch();
+        this.isInternal = this.route.snapshot.data['type'] === 'internal';
     }
 
     ngOnDestroy(): void {
@@ -73,7 +75,8 @@ export class UserList {
     }
 
     private getData(page: number, size: number): void {
-        if (this.roles) {
+        if (this.isInternal) {
+            this.roles = [Role.admin, Role.manager, Role.chief, Role.staff].toString();
             this.service.getPagination(this.roles, page, size).subscribe({
                 next: (response) => {
                     this.users = response.content;
