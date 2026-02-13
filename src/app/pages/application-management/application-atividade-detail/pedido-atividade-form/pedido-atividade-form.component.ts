@@ -379,7 +379,7 @@ export class PedidoAtividadeFormComponent {
         const url = window.URL.createObjectURL(response);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'documento.pdf';
+        a.download = file.nome;
         a.click();
         window.URL.revokeObjectURL(url);
         this.messageService.add({

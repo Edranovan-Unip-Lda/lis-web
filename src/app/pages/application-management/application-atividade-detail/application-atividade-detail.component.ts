@@ -154,14 +154,15 @@ export class ApplicationAtividadeDetailComponent {
     });
   }
 
-  downloadFile(file: Documento) {
+  downloadFile(aplicanteId: number, pedidoId: number, faturaId: number, reciboId: number) {
     this.downloadLoading = true;
-    this.pedidoService.downloadRecibo(this.aplicanteData.id, this.aplicanteData.pedidoLicencaAtividade.id, this.aplicanteData.pedidoLicencaAtividade.fatura.id, file.id).subscribe({
+    this.pedidoService.downloadRecibo(aplicanteId, pedidoId, faturaId, reciboId).subscribe({
       next: (response) => {
         const url = window.URL.createObjectURL(response);
         const a = document.createElement('a');
         a.href = url;
-        a.download = file.nome;
+        const fileName = this.pedidoVistoria?.fatura.recibo?.nome || 'recibo.pdf';
+        a.download = fileName;
         a.click();
         window.URL.revokeObjectURL(url);
       },
