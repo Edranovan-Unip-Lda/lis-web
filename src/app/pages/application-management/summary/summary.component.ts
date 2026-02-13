@@ -279,10 +279,13 @@ export class SummaryComponent {
     this.downloadLoading = true;
     this.pedidoService.downloadRecibo(aplicanteId, pedidoId, faturaId, reciboId).subscribe({
       next: (response) => {
+        console.log(response);
+
         const url = window.URL.createObjectURL(response);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'recibo.pdf';
+        const fileName = this.pedidoVistoria?.fatura.recibo?.nome || 'recibo.pdf';
+        a.download = fileName;
         a.click();
         window.URL.revokeObjectURL(url);
         this.messageService.add({

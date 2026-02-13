@@ -307,7 +307,7 @@
                                             && pedidoVistoria.fatura.recibo
                                             ){
                                             <p-tag [value]="'SUBMETIDO'" [severity]="'success'" />
-                                            <p-button (click)="downloadFile(pedidoVistoria.fatura.recibo)"
+                                            <p-button (click)="downloadFile(aplicanteData.id, pedidoVistoria.id, pedidoVistoria.fatura.id, pedidoVistoria.fatura.recibo.id)"
                                                 icon="pi pi-download" label="Decarregar Recibo" [raised]="true"
                                                 [loading]="downloadLoading" severity="info" />
                                             }@else {
