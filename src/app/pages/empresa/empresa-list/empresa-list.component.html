@@ -57,12 +57,14 @@
                     <td>
                         {{ empresa.createdAt | date: 'dd/MM/yyyy, HH:mm:ss' }}
                     </td>
-                    <td>
-                        <a routerLink="/empresa/detail/{{empresa.utilizador.username}}" pTooltip="Detalho"
-                            tooltipPosition="top">
-                            <p-button icon="pi pi-eye" class="mr-2" severity="info" [rounded]="true"
-                                [outlined]="true" />
-                        </a>
+                    <td class="flex justify-around">
+                        <p-button routerLink="/empresa/detail/{{empresa.utilizador.username}}" pTooltip="Detalho"
+                            tooltipPosition="top" icon="pi pi-eye" class="mr-2" severity="info" [rounded]="true"
+                            [outlined]="true" />
+                        <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
+                            pTooltip="Eliminar" tooltipPosition="top"
+                            (click)="delete(empresa.utilizador.username, $event)" pTooltip="Eliminar"
+                            tooltipPosition="top" />
                     </td>
                 </tr>
             </ng-template>
@@ -72,3 +74,5 @@
             currentPageReportTemplate="A mostrar {first} a {last} de {totalRecords}" />
     </div>
 </div>
+<p-confirmdialog />
+<p-toast position="bottom-right" />
