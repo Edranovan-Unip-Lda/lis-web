@@ -1,4 +1,4 @@
-import { AplicanteStatus, AplicanteType, AreaRepresentante, CaraterizacaoEstabelecimento, Categoria, NivelRisco, QuantoAtividade, Role, Status, TipoAto, TipoDocumento, TipoEmpresa, TipoEstabelecimento, TipoNacionalidade, TipoPedidoCadastro, TipoPedidoLicenca, TipoPedidoVistoria, TipoPropriedade } from "../models/enums";
+import { AplicanteStatus, AplicanteType, AreaRepresentante, AuditEntity, AuditType, CaraterizacaoEstabelecimento, Categoria, NivelRisco, QuantoAtividade, Role, Status, TipoAto, TipoDocumento, TipoEmpresa, TipoEstabelecimento, TipoNacionalidade, TipoPedidoCadastro, TipoPedidoLicenca, TipoPedidoVistoria, TipoPropriedade } from "../models/enums";
 
 export const maxFileSizeUpload = 20 * 1024 * 1024;
 
@@ -686,3 +686,57 @@ export const listaMunicipios: [string, string, number][] = [
     ['Covalima', 'tl-cl', 0], ['Dili', 'tl-dl', 0], ['Ermera', 'tl-er', 0], ['Liquiça', 'tl-lq', 0],
     ['Lautem', 'tl-bt', 0], ['Manatuto', 'tl-mt', 0], ['Manufahi', 'tl-mf', 0], ['Oecusse', 'tl-oe', 0], ['Viqueque', 'tl-vq', 0]
 ]
+
+export const listaAuditType: { name: string, value: AuditType }[] = [
+    {
+        name: 'Criação',
+        value: AuditType.initial
+    },
+    {
+        name: 'Alteração',
+        value: AuditType.update
+    },
+];
+
+export const listaAuditEntity: { name: AuditEntity, value: AuditEntity }[] = [
+    {
+        name: AuditEntity.user,
+        value: AuditEntity.user
+    },
+    {
+        name: AuditEntity.role,
+        value: AuditEntity.role
+    },
+    {
+        name: AuditEntity.aplicante,
+        value: AuditEntity.aplicante
+    },
+    {
+        name: AuditEntity.empresa,
+        value: AuditEntity.empresa
+    },
+    {
+        name: AuditEntity.pedidoInscricaoCadastro,
+        value: AuditEntity.pedidoInscricaoCadastro
+    },
+    {
+        name: AuditEntity.certificadoInscricaoCadastro,
+        value: AuditEntity.certificadoInscricaoCadastro
+    },
+    {
+        name: AuditEntity.pedidoLicencaAtividade,
+        value: AuditEntity.pedidoLicencaAtividade
+    },
+    {
+        name: AuditEntity.certificadoLicencaAtividade,
+        value: AuditEntity.certificadoLicencaAtividade
+    },
+    {
+        name: AuditEntity.pedidoVistoria,
+        value: AuditEntity.pedidoVistoria
+    },
+    {
+        name: AuditEntity.autoVistoria,
+        value: AuditEntity.autoVistoria
+    },
+];

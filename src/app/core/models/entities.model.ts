@@ -1,6 +1,6 @@
 import { BaseModel } from "./base";
 import { ClasseAtividade, Endereco, GrupoAtividade, PostoAdministrativo, Role } from "./data-master.model";
-import { AplicanteStatus, AplicanteType, AreaRepresentante, CaraterizacaoEstabelecimento, Categoria, FaturaStatus, NivelRisco, QuantoAtividade, TipoAto, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro, TipoPedidoLicenca, TipoPedidoVistoria, TipoPropriedade } from "./enums";
+import { AplicanteStatus, AplicanteType, AreaRepresentante, AuditType, CaraterizacaoEstabelecimento, Categoria, FaturaStatus, NivelRisco, QuantoAtividade, TipoAto, TipoEmpresa, TipoEstabelecimento, TipoPedidoCadastro, TipoPedidoLicenca, TipoPedidoVistoria, TipoPropriedade } from "./enums";
 
 export interface User {
     id: number;
@@ -463,5 +463,48 @@ export interface NotificacaoDto {
     empresaId: number;
     empresaNome: string;
     empresaNif: string;
+}
+
+export interface LoginActivity {
+    id: number;
+    username: string;
+    email: string;
+    timestamp: string;
+    ipAddress: string;
+    outcome: string;
+    userAgent: string;
+    deviceType: string;
+}
+
+export interface JaversCommitMetadata {
+    id: number;
+    author: string;
+    commitDate: string;
+    commitDateInstant: string;
+    properties: Record<string, string>[];
+}
+
+export interface JaversGlobalId {
+    entity: string;
+    cdoId: any;
+}
+
+export interface JaversEntry {
+    commitMetadata: JaversCommitMetadata;
+    globalId: JaversGlobalId;
+    state: Record<string, any>;
+    changedProperties: string[];
+    type: 'INITIAL' | 'UPDATE' | 'TERMINAL' | string;
+    version: number;
+}
+
+export interface AuditFilterRequest {
+    page: number;
+    size: number;
+    startDate?: Date | string;
+    endDate?: Date | string;
+    entity?: string;
+    type?: AuditType;
+    author?: string;
 }
 

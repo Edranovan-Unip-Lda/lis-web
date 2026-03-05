@@ -207,19 +207,21 @@ export const model_admin: MenuItem[] = [
             },
         ]
     },
-    // {
-    //     label: 'Historicos',
-    //     items: [
-    //         {
-    //             label: 'Atividades',
-    //             icon: 'bi bi-fw bi-activity'
-    //         },
-    //         {
-    //             label: 'Autenticacao',
-    //             icon: 'bi bi-fw bi-unlock'
-    //         }
-    //     ]
-    // }
+    {
+        label: 'Historicos',
+        items: [
+            {
+                label: 'Autenticações',
+                icon: 'bi bi-fw bi-unlock',
+                routerLink: ['historicos/autenticacoes']
+            },
+             {
+                label: 'Ações',
+                icon: 'bi bi-fw bi-activity',
+                routerLink: ['historicos/acoes']
+            },
+        ]
+    }
 ];
 
 export const model_manager: MenuItem[] = [

@@ -1,0 +1,70 @@
+<div class="min-h-[720px]">
+    <div class="card">
+        <p-table #dt [value]="data" responsiveLayout="scroll" [loading]="dataIsFetching">
+            <ng-template #caption>
+                <form [formGroup]="filterForm" class="flex flex-wrap gap-2 items-center justify-start">
+                    <p-selectbutton
+                        formControlName="datePreset"
+                        [options]="presetOptions"
+                        optionLabel="label"
+                        optionValue="value"
+                        [allowEmpty]="false"
+                        class="w-full" />
+                    @if (filterForm.get('datePreset')?.value === 'custom') {
+                        <p-floatLabel>
+                            <p-datepicker formControlName="rangeDateTime" selectionMode="range" dateFormat="dd/mm/yy"
+                                inputId="rangeDateTime" [showButtonBar]="true" />
+                            <label for="rangeDateTime">Intervalo personalizado</label>
+                        </p-floatLabel>
+                    }
+                    <input type="text" pInputText formControlName="author" placeholder="Filtrar por Autor" />
+                    <p-select [options]="entityOpts" formControlName="entity" optionLabel="name" optionValue="value"
+                        placeholder="Filtrar por Entidade" [showClear]="true" />
+                    <p-select [options]="typeOpts" formControlName="type" optionLabel="name" optionValue="value"
+                        placeholder="Filtrar por Tipo" [showClear]="true" />
+                </form>
+            </ng-template>
+            <ng-template #header>
+                <tr>
+                    @for (item of columns; track $index) {
+                    <th>{{ item }}</th>
+                    }
+                </tr>
+            </ng-template>
+            <ng-template #body let-item>
+                <tr>
+                    <td>{{ item.commitMetadata?.author }}</td>
+                    <td>{{ item.commitMetadata?.commitDate | date: 'dd/MM/yyyy, HH:mm:ss' }}</td>
+                    <td>
+                        <span [title]="item.globalId?.entity">
+                            {{ extractEntityName(item.globalId?.entity) }}
+                        </span>
+                    </td>
+                    <td>{{ item.globalId?.cdoId }}</td>
+                    <td>
+                        <p-tag [value]="typeLabel(item.type)" [severity]="typeSeverity(item.type)" />
+                    </td>
+                    <td>{{ item.version }}</td>
+                    <td class="max-w-[240px]">
+                        <div class="flex flex-wrap gap-1">
+                            @for (prop of item.changedProperties; track $index) {
+                            <p-tag [value]="prop" severity="secondary" styleClass="text-xs" />
+                            }
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template #emptymessage>
+                <tr>
+                    <td [attr.colspan]="columns.length" class="text-center">
+                        Nenhum registo encontrado.
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="size" [totalRecords]="totalData"
+            [rowsPerPageOptions]="[50, 250, 500]" [showCurrentPageReport]="true"
+            currentPageReportTemplate="A mostrar {first} a {last} de {totalRecords}" />
+    </div>
+</div>
+<p-toast />

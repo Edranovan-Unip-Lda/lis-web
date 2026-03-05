@@ -98,6 +98,15 @@ export const appRoutes: Routes = [
                     userData: getUserProfileResolver,
                 },
                 loadComponent: () => import('@/pages/profile/profile.component').then((c) => c.ProfileComponent)
+            },
+            {
+                path: 'historicos',
+                data: {
+                    breadcrumb: 'Históricos',
+                    role: [Role.admin]
+                },
+                loadChildren: () => import('@/pages/logs/logs.routes'),
+                canActivate: [canActivateByRole],
             }
         ]
     },

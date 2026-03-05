@@ -135,3 +135,21 @@ export enum RecaptchaAction {
     registerEmpresa = 'REGISTER_EMPRESA',
     certificadoSearch = 'CERTIFICADO_SEARCH',
 }
+
+export enum AuditType {
+    initial = "INITIAL",
+    update = "UPDATE",
+}
+
+export enum AuditEntity {
+    user = 'User',
+    role = 'Role',
+    empresa = 'Empresa',
+    aplicante = 'Aplicante',
+    pedidoInscricaoCadastro = 'PedidoInscricaoCadastro',
+    certificadoInscricaoCadastro = 'CertificadoInscricaoCadastro',
+    pedidoLicencaAtividade = 'PedidoLicencaAtividade',
+    pedidoVistoria = 'PedidoVistoria',
+    autoVistoria = 'AutoVistoria',
+    certificadoLicencaAtividade = 'CertificadoLicencaAtividade',
+}
