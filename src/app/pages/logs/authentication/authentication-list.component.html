@@ -1,0 +1,60 @@
+<div class="min-h-[720px]">
+    <div class="card">
+        <p-table #dt [value]="data" responsiveLayout="scroll" [loading]="dataIsFetching">
+            <ng-template #caption>
+                <div class="flex flex-wrap gap-2 items-center justify-between">
+                    <form [formGroup]="filterForm">
+                        <p-floatLabel>
+                            <p-datepicker formControlName="rangeDateTime" selectionMode="range" dateFormat="dd/mm/yy"
+                                inputId="rangeDateTime" class="w-full" [showButtonBar]="true" />
+                            <label for="rangeDateTime">
+                                Filtrar por data
+                            </label>
+                        </p-floatLabel>
+                    </form>
+                </div>
+            </ng-template>
+            <ng-template #header>
+                <tr>
+                    @for (item of columns; track $index) {
+                    <th>
+                        {{ item }}
+                    </th>
+                    }
+                </tr>
+            </ng-template>
+            <ng-template #body let-item>
+                <tr>
+                    <td>
+                        @if (item.email) {
+                        {{item.email}}
+                        }@else {
+                        {{item.username}}
+                        }
+                    </td>
+                    <td>
+                        {{ item.timestamp | date: 'dd/MM/yyyy, HH:mm:ss' }}
+                    </td>
+                    <td>
+                        <p-tag value="{{item.outcome | titlecase}}" [severity]="item.outcome | statusSeverity"
+                            icon="{{item.outcome | statusIcon}}" />
+                    </td>
+                    <td>
+                        {{item.ipAddress}}
+                    </td>
+                    <td>
+                        {{item.deviceType}}
+                    </td>
+                    <!-- <td>
+                        <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" severity="warn" [raised]="true"
+                            variant="outlined" [routerLink]="['/utilizador', user.username]" />
+                    </td> -->
+                </tr>
+            </ng-template>
+        </p-table>
+        <p-paginator (onPageChange)="onPageChange($event)" [rows]="size" [totalRecords]="totalData"
+            [rowsPerPageOptions]="[50, 250, 500]" [showCurrentPageReport]="true"
+            currentPageReportTemplate="A mostrar {first} a {last} de {totalRecords}" />
+    </div>
+</div>
+<p-toast />

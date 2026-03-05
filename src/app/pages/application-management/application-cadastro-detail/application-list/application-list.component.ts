@@ -141,7 +141,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
         }
       });
     } else {
-      if (aplicante.estado === 'APROVADO') {
+      if (aplicante.estado === 'APROVADO' || user.role.name === Role.admin) {
         this.router.navigate(['/gestor/application', aplicante.id], {
           queryParams: {
             categoria: aplicante.categoria,

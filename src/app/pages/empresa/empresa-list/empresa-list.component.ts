@@ -2,21 +2,24 @@ import { EmpresaService } from '@/core/services/empresa.service';
 import { DatePipe } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
 import { Paginator } from 'primeng/paginator';
 import { Table, TableModule } from 'primeng/table';
+import { Toast } from 'primeng/toast';
+import { Tooltip } from "primeng/tooltip";
 import { Subject, catchError, debounceTime, distinctUntilChanged, of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-empresa-list',
-  imports: [TableModule, Paginator, Button, InputIcon, IconField, InputText, RouterLink, DatePipe],
+  imports: [TableModule, Paginator, Button, InputIcon, IconField, InputText, RouterLink, DatePipe, Tooltip, ConfirmDialog, Toast],
   templateUrl: './empresa-list.component.html',
   styleUrl: './empresa-list.component.scss',
-  providers: [MessageService]
+  providers: [MessageService, ConfirmationService]
 })
 export class EmpresaListComponent implements OnInit, OnDestroy {
   data: any[] = [];
@@ -31,7 +34,8 @@ export class EmpresaListComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private service: EmpresaService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService,
   ) {
     this.data = this.route.snapshot.data['empresaPage'].content;
     this.dataCached = this.data;
@@ -57,6 +61,7 @@ export class EmpresaListComponent implements OnInit, OnDestroy {
           this.dataIsFetching = true;
           return this.service.search(query).pipe(
             catchError(error => {
+              this.messageService.clear();
               this.messageService.add({
                 severity: 'error',
                 summary: 'Erro',
@@ -100,8 +105,48 @@ export class EmpresaListComponent implements OnInit, OnDestroy {
     this.getData(this.page, this.size);
   }
 
-onGlobalFilter(table: Table, event: Event): void {
+  onGlobalFilter(table: Table, event: Event): void {
     const query = (event.target as HTMLInputElement).value;
     this.searchSubject.next(query);
+  }
+
+  delete(username: string, event: Event): void {
+    this.messageService.clear();
+
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Tem certeza que deseja eliminar esta empresa?',
+      header: 'Confirmação',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Cancelar',
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Eliminar',
+        severity: 'danger',
+      },
+
+      accept: () => {
+        this.service.deleteByUsername(username).subscribe({
+          next: () => {
+            this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Empresa eliminada com sucesso' });
+            this.data = this.data.filter(item => item.utilizador.username !== username);
+            this.dataCached = this.dataCached.filter(item => item.utilizador.username !== username);
+            this.totalData--;
+          },
+          error: (err) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erro',
+              detail: err || 'Ocorreu um erro ao eliminar a empresa'
+            });
+          }
+        });
+
+      },
+    });
   }
 }

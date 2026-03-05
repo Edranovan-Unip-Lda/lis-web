@@ -47,6 +47,8 @@ export class StatusSeverityPipe implements PipeTransform {
         REJEITADO: 'danger',
         REVISAO: 'warn',
         APROVADO: 'success',
+        SUCCESS: 'success',
+        FAILURE: 'danger',
     };
 
     transform(status: string): Severity {

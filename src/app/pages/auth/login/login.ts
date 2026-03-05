@@ -36,8 +36,8 @@ export class Login {
         private otpSessionService: OtpSessionService,
     ) {
         this.loginForm = this._fb.group({
-            username: new FormControl(null, [Validators.required]),
-            password: new FormControl(null, [Validators.required])
+            email: new FormControl(null, [Validators.required, Validators.email]),
+            password: new FormControl(null, [Validators.required, Validators.minLength(6)])
         });
     }
 
@@ -46,7 +46,7 @@ export class Login {
   * If the authentication is successful, it redirects the user to the OTP route session.
   * If the authentication fails, it displays an error message.
   *
-  * @param form The form data containing the username and password.
+  * @param form The form data containing the email and password.
   */
     login(form: FormGroup): void {
         this.erroMessage = undefined;

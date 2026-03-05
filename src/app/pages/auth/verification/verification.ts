@@ -10,11 +10,12 @@ import { InputNumber } from 'primeng/inputnumber';
 import { InputOtp } from 'primeng/inputotp';
 import { Message } from 'primeng/message';
 import { Ripple } from 'primeng/ripple';
+import { Toast } from 'primeng/toast';
 
 @Component({
     selector: 'app-verification',
     standalone: true,
-    imports: [Ripple, RouterLink, InputOtp, Message, Button, ReactiveFormsModule],
+    imports: [Ripple, RouterLink, InputOtp, Message, Button, ReactiveFormsModule, Toast],
     templateUrl: './verification.component.html',
     providers: [MessageService]
 })
@@ -42,7 +43,7 @@ export class Verification {
         private route: ActivatedRoute,
     ) {
         this.route.queryParamMap.subscribe(params => this.username = params.get('u') ?? '');
-        this.email = this.router.getCurrentNavigation()?.extras.state?.['email'] ?? '';
+        this.email = this.router.getCurrentNavigation()?.extras.state?.['email'] ?? this.router.navigateByUrl('/auth/login');
     }
 
     focusOnNext(inputEl: InputNumber) {

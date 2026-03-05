@@ -1,4 +1,5 @@
 export * from './aplicante.service';
+export * from './audit.service';
 export * from './assignment.service';
 export * from './authentication.service';
 export * from './certificado.service';

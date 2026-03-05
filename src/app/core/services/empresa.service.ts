@@ -33,6 +33,10 @@ export class EmpresaService {
     return this.http.get<any>(`${this.apiUrl}/${username}`);
   }
 
+  deleteByUsername(username: string): Observable<number> {
+    return this.http.delete<number>(`${this.apiUrl}/${username}`);
+  }
+
   getPage(page?: number, size?: number): Observable<any> {
     let params = new HttpParams();
     if (page && size) {
