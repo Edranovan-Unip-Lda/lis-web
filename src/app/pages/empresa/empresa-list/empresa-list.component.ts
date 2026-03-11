@@ -30,6 +30,7 @@ export class EmpresaListComponent implements OnInit, OnDestroy {
   dataIsFetching = false;
   private searchSubject = new Subject<string>();
   private searchSubscription: any;
+  deleteLoading = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -130,14 +131,17 @@ export class EmpresaListComponent implements OnInit, OnDestroy {
       },
 
       accept: () => {
+        this.deleteLoading = true;
         this.service.deleteByUsername(username).subscribe({
           next: () => {
+            this.deleteLoading = false;
             this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Empresa eliminada com sucesso' });
             this.data = this.data.filter(item => item.utilizador.username !== username);
             this.dataCached = this.dataCached.filter(item => item.utilizador.username !== username);
             this.totalData--;
           },
           error: (err) => {
+            this.deleteLoading = false;
             this.messageService.add({
               severity: 'error',
               summary: 'Erro',

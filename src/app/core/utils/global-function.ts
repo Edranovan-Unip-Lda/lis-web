@@ -389,8 +389,8 @@ export const tipoAreaRepresentanteIndustrial: any[] = [
         value: AreaRepresentante.anla
     },
     {
-        name: 'Representante do departamento governamental responsável pela área do Comércio',
-        value: AreaRepresentante.comercio
+        name: 'Representante do departamento governamental responsável pela área da Indústria',
+        value: AreaRepresentante.industria
     },
     {
         name: 'Representante da autoridade administrativa local',
