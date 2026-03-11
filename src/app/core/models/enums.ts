@@ -118,6 +118,7 @@ export enum TipoPedidoVistoria {
 
 export enum AreaRepresentante {
     comercio = 'COMERCIO',
+    industria = 'INDUSTRIA',
     autoridadeLocal = 'AUTORIDADE_LOCAL',
     saude = 'SAUDE',
     trabalho = 'TRABALHO',
