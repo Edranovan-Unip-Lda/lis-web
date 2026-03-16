@@ -4,7 +4,7 @@ import { TipoNacionalidade, TipoPropriedade } from '@/core/models/enums';
 import { AuthenticationService, DataMasterService, EmpresaService } from '@/core/services';
 import { DocumentosService } from '@/core/services/documentos.service';
 import { estadoCivilOptions, maxFileSizeUpload, tipoDocumentoOptions, tipoNacionalidadeOptions, tipoPropriedadeOptions, tipoRelacaoFamiliaOptions, tipoRepresentante } from '@/core/utils/global-function';
-import { DatePipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { Component, OnInit, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -25,7 +25,7 @@ import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-empresa-form',
-  imports: [ReactiveFormsModule, InputText, Select, Button, StepPanel, FileUpload, InputGroup, InputGroupAddon, InputNumber, Stepper, DatePicker, Divider, DatePipe, StepPanels, StepList, Step, Toast, NgxPrintModule],
+  imports: [ReactiveFormsModule, InputText, Select, Button, StepPanel, FileUpload, InputGroup, InputGroupAddon, InputNumber, Stepper, DatePicker, Divider, DatePipe, DecimalPipe, StepPanels, StepList, Step, Toast, NgxPrintModule],
   templateUrl: './empresa-form.component.html',
   styleUrl: './empresa-form.component.scss',
   providers: [MessageService]
@@ -91,6 +91,35 @@ export class EmpresaFormComponent implements OnInit {
     }
 
     this.uploadURLDocs.set(`${environment.apiUrl}/documentos/${this.authService.currentUserValue.username}/upload`);
+
+    // Setup tipoPropriedade changes to manage acionistas array (only reacts to user-driven changes)
+    this.empresaForm.get('tipoPropriedade')?.valueChanges.subscribe({
+      next: (value) => {
+        if (!value) {
+          this.showAddBtnAcionistas = false;
+          this.acionistasArray.clear();
+          return;
+        }
+        switch (value.value) {
+          case TipoPropriedade.individual:
+            this.acionistasArray.clear();
+            this.showAddBtnAcionistas = false;
+            this.acionistasArray.push(this.generateAcionistaForm(true));
+            break;
+          case TipoPropriedade.sociedade:
+            this.acionistasArray.clear();
+            this.showAddBtnAcionistas = true;
+            this.acionistasArray.push(this.generateAcionistaForm(false));
+            break;
+          default:
+            this.showAddBtnAcionistas = false;
+            this.acionistasArray.clear();
+            break;
+        }
+        const idx = this.acionistasArray.length - 1;
+        this.listaAldeiaAcionista[idx] = [...this.originalAldeias];
+      }
+    });
   }
 
   submit(form: FormGroup): void {
@@ -320,34 +349,78 @@ export class EmpresaFormComponent implements OnInit {
   }
 
 
-  tipoPropriedadeChange(event: SelectChangeEvent) {
-    if (!event.value) {
-      this.showAddBtnAcionistas = false;
-      this.acionistasArray.clear();
-      return;
-    }
-    switch (event.value) {
-      case TipoPropriedade.individual:
-        this.acionistasArray.clear();
-        this.showAddBtnAcionistas = false;
-        this.acionistasArray.push(this.generateAcionistaForm(true));
-        break;
+  getTotalAcoes(): number {
+    let total = 0;
+    this.acionistasArray.controls.forEach(control => {
+      const acoes = control.get('acoes')?.value;
+      if (acoes && !isNaN(acoes)) {
+        total += Number(acoes);
+      }
+    });
+    return total;
+  }
 
-      case TipoPropriedade.sociedade:
-        this.acionistasArray.clear();
-        this.showAddBtnAcionistas = true;
-        this.acionistasArray.push(this.generateAcionistaForm(false));
-        break;
-      default:
-        this.showAddBtnAcionistas = false;
-        this.acionistasArray.clear();
-        break;
+  getRemainingAcoes(excludeIndex?: number): number {
+    let total = 0;
+    this.acionistasArray.controls.forEach((control, index) => {
+      if (excludeIndex === undefined || index !== excludeIndex) {
+        const acoes = control.get('acoes')?.value;
+        if (acoes && !isNaN(acoes)) {
+          total += Number(acoes);
+        }
+      }
+    });
+    return 100 - total;
+  }
+
+  getMaxAcoesForAcionista(index: number): number {
+    const currentValue = this.acionistasArray.at(index)?.get('acoes')?.value || 0;
+    const remaining = this.getRemainingAcoes(index);
+    return Math.min(100, remaining + currentValue);
+  }
+
+  private validateTotalAcoes(): void {
+    const total = this.getTotalAcoes();
+    const tipoPropriedade = this.empresaForm.get('tipoPropriedade')?.value?.value;
+
+    if (tipoPropriedade === TipoPropriedade.sociedade) {
+      this.showAddBtnAcionistas = total < 100;
     }
-    const idx = this.acionistasArray.length - 1;
-    this.listaAldeiaAcionista[idx] = [...this.originalAldeias];
+
+    this.acionistasArray.controls.forEach((control, index) => {
+      const acoesControl = control.get('acoes');
+      if (acoesControl) {
+        const currentValue = acoesControl.value;
+        const remaining = this.getRemainingAcoes(index);
+        const existingErrors = acoesControl.errors || {};
+        const errors: any = {};
+
+        if (existingErrors['required']) errors['required'] = existingErrors['required'];
+        if (existingErrors['min']) errors['min'] = existingErrors['min'];
+        if (existingErrors['max']) errors['max'] = existingErrors['max'];
+
+        if (total > 100) {
+          errors['totalExceeds100'] = { total, max: 100 };
+        }
+
+        if (currentValue && currentValue > remaining + currentValue) {
+          errors['maxExceeded'] = { max: remaining, actual: currentValue };
+        }
+
+        acoesControl.setErrors(Object.keys(errors).length > 0 ? errors : null);
+        if (Object.keys(errors).length > 0 && !acoesControl.touched) {
+          acoesControl.markAsTouched();
+        }
+      }
+    });
   }
 
   addAcionistaForm() {
+    const tipoPropriedade = this.empresaForm.get('tipoPropriedade')?.value?.value;
+    if (tipoPropriedade === TipoPropriedade.individual) {
+      return;
+    }
+    this.validateTotalAcoes();
     this.acionistasArray.push(this.generateAcionistaForm(false));
     const idx = this.acionistasArray.length - 1;
     this.listaAldeiaAcionista[idx] = [...this.originalAldeias];
@@ -356,6 +429,7 @@ export class EmpresaFormComponent implements OnInit {
   removeAcionistaForm(index: number) {
     if (this.acionistasArray.length > 1) {
       this.acionistasArray.removeAt(index);
+      setTimeout(() => this.validateTotalAcoes(), 0);
     }
   }
 
@@ -423,7 +497,8 @@ export class EmpresaFormComponent implements OnInit {
   disableStepProprietario(): boolean {
     return !!(
       this.empresaForm.get('tipoPropriedade')?.invalid ||
-      this.acionistasArray.invalid);
+      this.acionistasArray.invalid ||
+      this.getTotalAcoes() !== 100);
   }
 
   disableStepGerente(): boolean {
@@ -545,7 +620,7 @@ export class EmpresaFormComponent implements OnInit {
   }
 
   private generateAcionistaForm(isIndividual: boolean) {
-    return this._fb.group({
+    const formGroup = this._fb.group({
       id: [null],
       nome: [null, [Validators.required, Validators.minLength(3)]],
       nif: [null, [Validators.required]],
@@ -553,7 +628,7 @@ export class EmpresaFormComponent implements OnInit {
       numeroDocumento: [, [Validators.required]],
       telefone: [null, [Validators.required]],
       email: [null, [Validators.required, Validators.email]],
-      acoes: [isIndividual ? 100 : null, [Validators.required]],
+      acoes: [isIndividual ? 100 : null, [Validators.required, Validators.min(0.01), Validators.max(100)]],
       agregadoFamilia: [null, [Validators.required]],
       relacaoFamilia: [null, [Validators.required]],
       sectionTitle: [`Acionista n.º ${this.acionistasArray.length + 1}`],
@@ -566,6 +641,10 @@ export class EmpresaFormComponent implements OnInit {
         aldeia: [null, [Validators.required]],
       }),
     });
+    formGroup.get('acoes')?.valueChanges.subscribe(() => {
+      this.validateTotalAcoes();
+    });
+    return formGroup;
   }
 
   setForeigner(field: string, value: boolean) {
@@ -592,7 +671,7 @@ export class EmpresaFormComponent implements OnInit {
       dataRegisto: [null, [Validators.required]],
       telefone: [null, [Validators.required]],
       telemovel: [null, [Validators.required]],
-      tipoPropriedade: [null, [Validators.required]],
+      tipoPropriedade: new FormControl({ value: null, disabled: true }, Validators.required),
       acionistas: this._fb.array([]),
       totalTrabalhadores: [null, [Validators.required, Validators.min(1)]],
       volumeNegocioAnual: [null, Validators.required],
@@ -801,6 +880,7 @@ export class EmpresaFormComponent implements OnInit {
         break;
     }
 
+    this.validateTotalAcoes();
     this.uploadedDocs = empresa.documentos ? [...empresa.documentos] : [];
   }
 }

@@ -61,10 +61,12 @@
                         <p-button routerLink="/empresa/detail/{{empresa.utilizador.username}}" pTooltip="Detalho"
                             tooltipPosition="top" icon="pi pi-eye" class="mr-2" severity="info" [rounded]="true"
                             [outlined]="true" />
+                        @if (currentRole === 'ROLE_ADMIN') {
                         <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
                             [loading]="deleteLoading" pTooltip="Eliminar" tooltipPosition="top"
                             (click)="delete(empresa.utilizador.username, $event)" pTooltip="Eliminar"
                             tooltipPosition="top" />
+                        }
                     </td>
                 </tr>
             </ng-template>
