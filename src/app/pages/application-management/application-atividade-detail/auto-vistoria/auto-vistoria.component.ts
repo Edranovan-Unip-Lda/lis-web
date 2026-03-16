@@ -52,6 +52,7 @@ export class AutoVistoriaComponent implements OnInit {
   deleteLoading = false;
   uploadUrl = signal(`${environment.apiUrl}/documentos`);
   maxFileSize = 20 * 1024 * 1024; // 20 MB
+  acceptedFileTypes = 'application/pdf,image/jpeg,image/jpg,image/png';
   loading = false;
   loadingDownloadButtons = new Set<string>();
   loadingRemoveButtons = new Set<string>();

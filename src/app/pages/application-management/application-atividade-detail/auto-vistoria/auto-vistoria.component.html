@@ -379,7 +379,7 @@
                  <div class="flex justify-start pt-2">
                      <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
                          [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, 'legislacaoUrbanistica')"
-                         [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadUrl()"
+                         [maxFileSize]="maxFileSize" [accept]="acceptedFileTypes" mode="basic" [url]="uploadUrl()"
                          (onProgress)="uploadOnProgress($event, 'legislacaoUrbanistica')"
                          [disabled]="this.autoVistoriaForm.disable" [disabled]="getFileByField('legislacaoUrbanistica')"
                          [auto]="true">
@@ -442,7 +442,7 @@
                  <div class="flex justify-start pt-2">
                      <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
                          [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, 'acessoEstrada')"
-                         [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadUrl()"
+                         [maxFileSize]="maxFileSize" [accept]="acceptedFileTypes" mode="basic" [url]="uploadUrl()"
                          (onProgress)="uploadOnProgress($event, 'acessoEstrada')"
                          [disabled]="this.autoVistoriaForm.disable" [disabled]="getFileByField('acessoEstrada')"
                          [auto]="true">
@@ -505,7 +505,7 @@
                  <div class="flex justify-start pt-2">
                      <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
                          [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, 'escoamentoAguas')"
-                         [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadUrl()"
+                         [maxFileSize]="maxFileSize" [accept]="acceptedFileTypes" mode="basic" [url]="uploadUrl()"
                          (onProgress)="uploadOnProgress($event, 'escoamentoAguas')"
                          [disabled]="this.autoVistoriaForm.disable" [disabled]="getFileByField('escoamentoAguas')"
                          [auto]="true">
@@ -553,7 +553,7 @@
                  <div class="flex justify-start pt-2">
                      <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
                          [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, 'alimentacaoEnergia')"
-                         [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadUrl()"
+                         [maxFileSize]="maxFileSize" [accept]="acceptedFileTypes" mode="basic" [url]="uploadUrl()"
                          (onProgress)="uploadOnProgress($event, 'alimentacaoEnergia')"
                          [disabled]="this.autoVistoriaForm.disable" [disabled]="getFileByField('alimentacaoEnergia')"
                          [auto]="true">
@@ -626,7 +626,7 @@
                  <div class="flex justify-start pt-2">
                      <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
                          [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, item.name)"
-                         [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadUrl()"
+                         [maxFileSize]="maxFileSize" [accept]="acceptedFileTypes" mode="basic" [url]="uploadUrl()"
                          (onProgress)="uploadOnProgress($event, item.name)" [disabled]="getFileByField(item.name)"
                          [auto]="true">
                      </p-fileupload>
@@ -679,7 +679,7 @@
                  <div class="flex justify-start pt-2">
                      <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
                          [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, item.name)"
-                         [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadUrl()"
+                         [maxFileSize]="maxFileSize" [accept]="acceptedFileTypes" mode="basic" [url]="uploadUrl()"
                          (onProgress)="uploadOnProgress($event, item.name)" [disabled]="getFileByField(item.name)"
                          [auto]="true">
                      </p-fileupload>
