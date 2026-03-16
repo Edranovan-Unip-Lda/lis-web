@@ -1,0 +1,39 @@
+# Allow Facebook crawler for link preview
+User-agent: facebookexternalhit
+Allow: /
+
+# Allow Twitter / X crawler
+User-agent: Twitterbot
+Allow: /
+
+# Allow LinkedIn crawler
+User-agent: LinkedInBot
+Allow: /
+
+# Allow Slack link preview
+User-agent: Slackbot
+Allow: /
+
+# Allow WhatsApp link preview
+User-agent: WhatsApp
+Allow: /
+
+# Allow Google crawler
+User-agent: Googlebot
+Allow: /
+
+# Allow Google Image crawler
+User-agent: Googlebot-Image
+Allow: /
+
+# Allow Bing crawler
+User-agent: Bingbot
+Allow: /
+
+# Allow Apple crawler
+User-agent: Applebot
+Allow: /
+
+# Default rule for all bots
+User-agent: *
+Allow: /
