@@ -1,3 +1,5 @@
+import { Role } from '@/core/models/enums';
+import { AuthenticationService } from '@/core/services';
 import { EmpresaService } from '@/core/services/empresa.service';
 import { DatePipe } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
@@ -31,19 +33,24 @@ export class EmpresaListComponent implements OnInit, OnDestroy {
   private searchSubject = new Subject<string>();
   private searchSubscription: any;
   deleteLoading = false;
+  currentRole!: Role;
 
   constructor(
     private route: ActivatedRoute,
     private service: EmpresaService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
+    private authService: AuthenticationService,
   ) {
-    this.data = this.route.snapshot.data['empresaPage'].content;
-    this.dataCached = this.data;
-    this.totalData = this.route.snapshot.data['empresaPage'].totalElements;
   }
 
   ngOnInit(): void {
+    this.data = this.route.snapshot.data['empresaPage'].content;
+    this.dataCached = this.data;
+    this.totalData = this.route.snapshot.data['empresaPage'].totalElements;
+
+    this.currentRole = this.authService.currentRole.name as Role;
+    
     this.setupSearch();
   }
 
