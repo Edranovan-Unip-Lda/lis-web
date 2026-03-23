@@ -5,6 +5,7 @@ import { AuthenticationService, DataMasterService } from '@/core/services';
 import { DocumentosService } from '@/core/services/documentos.service';
 import { PedidoService } from '@/core/services/pedido.service';
 import { autoVistoriaComercialFields, autoVistoriaIndustrialFields, mapToAtividadeEconomica, stateOptions, tipoAreaRepresentanteComercial, tipoAreaRepresentanteIndustrial, tipoDocumentoOptions, tipoEletricidadeOptions, tipoLocalOptions } from '@/core/utils/global-function';
+import { alphanumericValidator } from '@/core/validators/alphanumeric';
 import { autoVistoriaWithFilesValidator } from '@/core/validators/must-match';
 import { Component, OnInit, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -610,7 +611,7 @@ export class AutoVistoriaComponent implements OnInit {
       areaRepresentante: [null, [Validators.required, Validators.minLength(3)]],
       cargo: [null, [Validators.required, Validators.minLength(3)]],
       tipoDocumento: [null, Validators.required],
-      numeroDocumento: [null, Validators.required],
+      numeroDocumento: [null, [Validators.required, alphanumericValidator()]],
       telemovel: [null],
     });
   }

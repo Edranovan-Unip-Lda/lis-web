@@ -45,6 +45,18 @@ export class AppMenu {
                 this.model = model_client;
                 break;
         }
+        let docMenu = {
+            label: 'Documentação',
+            items: [
+                {
+                    label: 'Manual do Utilizador',
+                    icon: 'bi bi-fw bi-file-earmark-text',
+                    url: ['https://drive.google.com/file/d/1A8g_iC9E8js0gQZbXcxXmua1pAwYiQTw/view?usp=drive_link'],
+                    target: '_blank'
+                }
+            ]
+        };
+        this.model.push(docMenu);
 
     }
 

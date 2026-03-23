@@ -215,7 +215,7 @@ export const model_admin: MenuItem[] = [
                 icon: 'bi bi-fw bi-unlock',
                 routerLink: ['historicos/autenticacoes']
             },
-             {
+            {
                 label: 'Ações',
                 icon: 'bi bi-fw bi-activity',
                 routerLink: ['historicos/acoes']

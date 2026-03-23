@@ -4,6 +4,8 @@ import { TipoNacionalidade, TipoPropriedade } from '@/core/models/enums';
 import { AuthenticationService, DataMasterService, EmpresaService } from '@/core/services';
 import { DocumentosService } from '@/core/services/documentos.service';
 import { estadoCivilOptions, maxFileSizeUpload, tipoDocumentoOptions, tipoNacionalidadeOptions, tipoPropriedadeOptions, tipoRelacaoFamiliaOptions, tipoRepresentante } from '@/core/utils/global-function';
+import { alphanumericValidator } from '@/core/validators/alphanumeric';
+import { greaterThanValidator } from '@/core/validators/greater-than';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { Component, OnInit, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -623,9 +625,9 @@ export class EmpresaFormComponent implements OnInit {
     const formGroup = this._fb.group({
       id: [null],
       nome: [null, [Validators.required, Validators.minLength(3)]],
-      nif: [null, [Validators.required]],
+      nif: [null, [Validators.required, alphanumericValidator()]],
       tipoDocumento: [null, [Validators.required]],
-      numeroDocumento: [, [Validators.required]],
+      numeroDocumento: [null, [Validators.required, alphanumericValidator()]],
       telefone: [null, [Validators.required]],
       email: [null, [Validators.required, Validators.email]],
       acoes: [isIndividual ? 100 : null, [Validators.required, Validators.min(0.01), Validators.max(100)]],
@@ -656,7 +658,7 @@ export class EmpresaFormComponent implements OnInit {
     this.empresaForm = this._fb.group({
       id: [null],
       nome: [null, [Validators.required, Validators.minLength(3)]],
-      nif: [null, [Validators.required]],
+      nif: [null, [Validators.required, alphanumericValidator()]],
       sede: this._fb.group({
         id: [null],
         local: [null, [Validators.required]],
@@ -665,8 +667,8 @@ export class EmpresaFormComponent implements OnInit {
         suco: new FormControl({ value: null, disabled: true }),
         aldeia: [null, [Validators.required]],
       }),
-      sociedadeComercial: [null, [Validators.required]],
-      numeroRegistoComercial: [null, [Validators.required]],
+      sociedadeComercial: [null, [Validators.required, alphanumericValidator()]],
+      numeroRegistoComercial: [null, [Validators.required, alphanumericValidator()]],
       capitalSocial: [null, [Validators.required]],
       dataRegisto: [null, [Validators.required]],
       telefone: [null, [Validators.required]],
@@ -685,7 +687,7 @@ export class EmpresaFormComponent implements OnInit {
         telefone: [null, Validators.required],
         email: [null, [Validators.required, Validators.email]],
         tipoDocumento: [null, [Validators.required]],
-        numeroDocumento: [, [Validators.required]],
+        numeroDocumento: [null, [Validators.required, alphanumericValidator()]],
         nacionalidade: [null, [Validators.required]],
         numeroVisto: [null],
         validadeVisto: [null],
@@ -716,7 +718,7 @@ export class EmpresaFormComponent implements OnInit {
         telefone: [null, [Validators.required]],
         email: [null, [Validators.required, Validators.email]],
         tipoDocumento: [null, [Validators.required]],
-        numeroDocumento: [, [Validators.required]],
+        numeroDocumento: [null, [Validators.required, alphanumericValidator()]],
         morada: this._fb.group({
           id: [null],
           local: [null, [Validators.required]],
@@ -726,7 +728,7 @@ export class EmpresaFormComponent implements OnInit {
           aldeia: [null, [Validators.required]],
         }),
       })
-    });
+    }, { validators: greaterThanValidator('volumeNegocioAnual', 'balancoTotalAnual') });
   }
 
   private mapGerenteForm(empresa: Empresa): void {

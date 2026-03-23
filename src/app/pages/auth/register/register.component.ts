@@ -3,6 +3,8 @@ import { RecaptchaAction, TipoNacionalidade, TipoPropriedade } from '@/core/mode
 import { DataMasterService } from '@/core/services/data-master.service';
 import { EmpresaService } from '@/core/services/empresa.service';
 import { estadoCivilOptions, maxFileSizeUpload, tipoDocumentoOptions, tipoNacionalidadeOptions, tipoPropriedadeOptions, tipoRelacaoFamiliaOptions, tipoRepresentante } from '@/core/utils/global-function';
+import { alphanumericValidator } from '@/core/validators/alphanumeric';
+import { greaterThanValidator } from '@/core/validators/greater-than';
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -79,6 +81,7 @@ export class Register {
     gerenteAldeiaIsLoading = false;
     representanteAldeiaIsLoading = false;
     acionistaAldeiaIsLoading: boolean[] = [];
+    acceptedFileTypes = 'application/pdf,image/jpeg,image/jpg,image/png';
 
     constructor(
         private _fb: FormBuilder,
@@ -578,9 +581,9 @@ export class Register {
     private generateAcionistaForm(isIndividual: boolean) {
         const formGroup = this._fb.group({
             nome: [null, [Validators.required, Validators.minLength(3)]],
-            nif: [null, [Validators.required]],
+            nif: [null, [Validators.required, alphanumericValidator()]],
             tipoDocumento: [null, [Validators.required]],
-            numeroDocumento: [, [Validators.required]],
+            numeroDocumento: [null, [Validators.required, alphanumericValidator()]],
             telefone: [null, [Validators.required]],
             email: [null, [Validators.required, Validators.email]],
             acoes: [isIndividual ? 100 : null, [Validators.required, Validators.min(0.01), Validators.max(100)]],
@@ -788,7 +791,7 @@ export class Register {
     private initForm(): void {
         this.empresaForm = this._fb.group({
             nome: [null, [Validators.required, Validators.minLength(3)]],
-            nif: [null, [Validators.required]],
+            nif: [null, [Validators.required, alphanumericValidator()]],
             sede: this._fb.group({
                 local: [null, [Validators.required]],
                 municipio: new FormControl({ value: null, disabled: true }),
@@ -797,7 +800,7 @@ export class Register {
                 aldeia: [null, [Validators.required]],
             }),
             sociedadeComercial: [null, [Validators.required]],
-            numeroRegistoComercial: [null, [Validators.required]],
+            numeroRegistoComercial: [null, [Validators.required, alphanumericValidator()]],
             capitalSocial: [null, [Validators.required]],
             dataRegisto: [null, [Validators.required]],
             telemovel: [null, [Validators.required]],
@@ -815,7 +818,7 @@ export class Register {
                 telefone: [null, Validators.required],
                 email: [null, [Validators.required, Validators.email]],
                 tipoDocumento: [null, [Validators.required]],
-                numeroDocumento: [, [Validators.required]],
+                numeroDocumento: [null, [Validators.required, alphanumericValidator()]],
                 nacionalidade: [null, [Validators.required]],
                 numeroVisto: [null],
                 validadeVisto: [null],
@@ -844,7 +847,7 @@ export class Register {
                 telefone: [null, [Validators.required]],
                 email: [null, [Validators.required, Validators.email]],
                 tipoDocumento: [null, [Validators.required]],
-                numeroDocumento: [, [Validators.required]],
+                numeroDocumento: [null, [Validators.required, alphanumericValidator()]],
                 morada: this._fb.group({
                     local: [null, [Validators.required]],
                     municipio: new FormControl({ value: null, disabled: true }),
@@ -857,6 +860,6 @@ export class Register {
                 email: new FormControl({ value: null, disabled: true }),
                 password: [null, [Validators.required, Validators.minLength(6)]],
             }),
-        });
+        }, { validators: greaterThanValidator('volumeNegocioAnual', 'balancoTotalAnual') });
     }
 }
