@@ -81,6 +81,7 @@ export class Register {
     gerenteAldeiaIsLoading = false;
     representanteAldeiaIsLoading = false;
     acionistaAldeiaIsLoading: boolean[] = [];
+    acceptedFileTypes = 'application/pdf,image/jpeg,image/jpg,image/png';
 
     constructor(
         private _fb: FormBuilder,

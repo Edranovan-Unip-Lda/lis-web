@@ -307,7 +307,7 @@
                                      <div class="flex justify-start">
                                          <p-fileupload name="files" method="post" (onSelect)="onSelect($event)"
                                              [fileLimit]="5" [maxFileSize]="maxFileSize" [multiple]="true"
-                                             accept="application/pdf" [showUploadButton]="false"
+                                             [accept]="acceptedFileTypes" [showUploadButton]="false"
                                              [showCancelButton]="false" mode="basic" [chooseLabel]="'Selecionar'"
                                              [customUpload]="true" chooseIcon="pi pi-upload">
                                          </p-fileupload>
