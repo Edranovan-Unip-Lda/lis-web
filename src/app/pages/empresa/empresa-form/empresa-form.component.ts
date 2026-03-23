@@ -5,6 +5,7 @@ import { AuthenticationService, DataMasterService, EmpresaService } from '@/core
 import { DocumentosService } from '@/core/services/documentos.service';
 import { estadoCivilOptions, maxFileSizeUpload, tipoDocumentoOptions, tipoNacionalidadeOptions, tipoPropriedadeOptions, tipoRelacaoFamiliaOptions, tipoRepresentante } from '@/core/utils/global-function';
 import { alphanumericValidator } from '@/core/validators/alphanumeric';
+import { greaterThanValidator } from '@/core/validators/greater-than';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { Component, OnInit, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -727,7 +728,7 @@ export class EmpresaFormComponent implements OnInit {
           aldeia: [null, [Validators.required]],
         }),
       })
-    });
+    }, { validators: greaterThanValidator('volumeNegocioAnual', 'balancoTotalAnual') });
   }
 
   private mapGerenteForm(empresa: Empresa): void {

@@ -93,6 +93,13 @@
                                     Este campo é obrigatório e deve ser válido.
                                 </p>
                                 }
+                                @if (empresaForm.hasError('greaterThan') &&
+                                empresaForm.get('balancoTotalAnual')?.touched &&
+                                empresaForm.get('volumeNegocioAnual')?.touched) {
+                                <p class="text-red-500 text-sm mt-1">
+                                    O Volume de Negócios Anual deve ser superior ao Balanço Total Anual.
+                                </p>
+                                }
                             </div>
                             <div class="col-span-12">
                                 <div formGroupName="sede" class="grid grid-cols-12">
@@ -295,8 +302,9 @@
                                     </label>
                                     <p-inputgroup>
                                         <p-inputgroup-addon>%</p-inputgroup-addon>
-                                        <p-inputnumber formControlName="acoes" mode="decimal" [max]="getMaxAcoesForAcionista(i)"
-                                            [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0.01" />
+                                        <p-inputnumber formControlName="acoes" mode="decimal"
+                                            [max]="getMaxAcoesForAcionista(i)" [minFractionDigits]="2"
+                                            [maxFractionDigits]="2" [min]="0.01" />
                                     </p-inputgroup>
                                     @if (item.get('acoes')?.touched && item.get('acoes')?.invalid) {
                                     <p class="text-red-500 text-sm mt-1">
@@ -977,8 +985,8 @@
                                         printSectionId="myDiv" [useExistingCss]="true" ngxPrint />
                                 </div>
                                 <p-button icon="pi pi-save" (click)="submit(empresaForm)" [loading]="loading"
-                                    [disabled]="!empresaForm.valid || getTotalAcoes() !== 100" pButton pRipple label="Confirmar e Guardar"
-                                    class="w-auto"></p-button>
+                                    [disabled]="!empresaForm.valid || getTotalAcoes() !== 100" pButton pRipple
+                                    label="Confirmar e Guardar" class="w-auto"></p-button>
                             </header>
                             <main id="myDiv">
                                 <section class="bg-gray-800 p-8 rounded-2xl shadow-lg mb-8">
@@ -1242,8 +1250,8 @@
                                 <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
                                     (onClick)="activateCallback(2)" />
                                 <p-button icon="pi pi-save" (click)="submit(empresaForm)" [loading]="loading"
-                                    [disabled]="!empresaForm.valid || getTotalAcoes() !== 100" pButton pRipple label="Confirmar e Guardar"
-                                    class="w-auto"></p-button>
+                                    [disabled]="!empresaForm.valid || getTotalAcoes() !== 100" pButton pRipple
+                                    label="Confirmar e Guardar" class="w-auto"></p-button>
                             </div>
                         </div>
 

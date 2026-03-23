@@ -4,6 +4,7 @@ import { DataMasterService } from '@/core/services/data-master.service';
 import { EmpresaService } from '@/core/services/empresa.service';
 import { estadoCivilOptions, maxFileSizeUpload, tipoDocumentoOptions, tipoNacionalidadeOptions, tipoPropriedadeOptions, tipoRelacaoFamiliaOptions, tipoRepresentante } from '@/core/utils/global-function';
 import { alphanumericValidator } from '@/core/validators/alphanumeric';
+import { greaterThanValidator } from '@/core/validators/greater-than';
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -858,6 +859,6 @@ export class Register {
                 email: new FormControl({ value: null, disabled: true }),
                 password: [null, [Validators.required, Validators.minLength(6)]],
             }),
-        });
+        }, { validators: greaterThanValidator('volumeNegocioAnual', 'balancoTotalAnual') });
     }
 }

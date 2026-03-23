@@ -153,6 +153,13 @@
                                          Este campo é obrigatório e deve ser válido.
                                      </p>
                                      }
+                                     @if (empresaForm.hasError('greaterThan') &&
+                                     empresaForm.get('balancoTotalAnual')?.touched &&
+                                     empresaForm.get('volumeNegocioAnual')?.touched) {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         O Volume de Negócios Anual deve ser superior ao Balanço Total Anual.
+                                     </p>
+                                     }
                                  </div>
                                  <div class="col-span-12">
                                      <div formGroupName="sede" class="grid grid-cols-12">
