@@ -682,7 +682,7 @@ export class Register {
             this.empresaForm.get('nif')?.invalid ||
             this.empresaForm.get('numeroRegistoComercial')?.invalid ||
             this.empresaForm.get('capitalSocial')?.invalid ||
-            this.empresaForm.get('dataRegisto')?.invalid || this.uploadedDocs.length < 3
+            this.empresaForm.get('dataRegisto')?.invalid || this.uploadedDocs.length !== 5
         );
     }
 
