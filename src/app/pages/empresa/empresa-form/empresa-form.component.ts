@@ -136,7 +136,7 @@ export class EmpresaFormComponent implements OnInit {
       return;
     }
 
-    const formData = this.prepareFormData(form.value);
+    const formData = this.prepareFormData(form.getRawValue());
 
     this.empresaService.update(this.authService.currentUserValue.username, formData).subscribe({
       next: (response) => {
@@ -492,7 +492,7 @@ export class EmpresaFormComponent implements OnInit {
       this.empresaForm.get('nif')?.invalid ||
       this.empresaForm.get('numeroRegistoComercial')?.invalid ||
       this.empresaForm.get('capitalSocial')?.invalid ||
-      this.empresaForm.get('dataRegisto')?.invalid
+      this.empresaForm.get('dataRegisto')?.invalid || this.uploadedDocs.length !== 5
     );
   }
 
@@ -667,7 +667,7 @@ export class EmpresaFormComponent implements OnInit {
         suco: new FormControl({ value: null, disabled: true }),
         aldeia: [null, [Validators.required]],
       }),
-      sociedadeComercial: [null, [Validators.required, alphanumericValidator()]],
+      sociedadeComercial: [null, [Validators.required]],
       numeroRegistoComercial: [null, [Validators.required, alphanumericValidator()]],
       capitalSocial: [null, [Validators.required]],
       dataRegisto: [null, [Validators.required]],
@@ -815,6 +815,11 @@ export class EmpresaFormComponent implements OnInit {
       balancoTotalAnual: empresa.balancoTotalAnual,
       email: empresa.email,
     });
+
+    console.log(this.empresaForm.value);
+    console.log(this.aldeias);
+
+
 
     this.mapGerenteForm(empresa);
     this.mapRepresentanteForm(empresa);
