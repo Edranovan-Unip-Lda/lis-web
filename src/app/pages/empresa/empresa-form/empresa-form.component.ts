@@ -23,6 +23,7 @@ import { InputText } from 'primeng/inputtext';
 import { Select, SelectChangeEvent, SelectFilterEvent } from 'primeng/select';
 import { Step, StepList, StepPanel, StepPanels, Stepper } from 'primeng/stepper';
 import { Toast } from 'primeng/toast';
+import { firstValueFrom } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -80,8 +81,6 @@ export class EmpresaFormComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
 
-    this.aldeias = this.route.snapshot.data['aldeiasResolver']._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
-
     this.listaSociedadeComercial = this.route.snapshot.data['listaSociedadeComercial']._embedded.sociedadeComercial.map((s: any) => ({ nome: s.nome, value: s.id }));
     this.originalAldeias = [...this.aldeias];
     this.gerenteListaAldeias = [...this.aldeias];
@@ -136,7 +135,7 @@ export class EmpresaFormComponent implements OnInit {
       return;
     }
 
-    const formData = this.prepareFormData(form.value);
+    const formData = this.prepareFormData(form.getRawValue());
 
     this.empresaService.update(this.authService.currentUserValue.username, formData).subscribe({
       next: (response) => {
@@ -492,7 +491,7 @@ export class EmpresaFormComponent implements OnInit {
       this.empresaForm.get('nif')?.invalid ||
       this.empresaForm.get('numeroRegistoComercial')?.invalid ||
       this.empresaForm.get('capitalSocial')?.invalid ||
-      this.empresaForm.get('dataRegisto')?.invalid
+      this.empresaForm.get('dataRegisto')?.invalid || this.uploadedDocs.length !== 5
     );
   }
 
@@ -667,7 +666,7 @@ export class EmpresaFormComponent implements OnInit {
         suco: new FormControl({ value: null, disabled: true }),
         aldeia: [null, [Validators.required]],
       }),
-      sociedadeComercial: [null, [Validators.required, alphanumericValidator()]],
+      sociedadeComercial: [null, [Validators.required]],
       numeroRegistoComercial: [null, [Validators.required, alphanumericValidator()]],
       capitalSocial: [null, [Validators.required]],
       dataRegisto: [null, [Validators.required]],
@@ -788,7 +787,9 @@ export class EmpresaFormComponent implements OnInit {
     }
   }
 
-  private mapEmpresaForm(empresa: Empresa): void {
+  private async mapEmpresaForm(empresa: Empresa): Promise<void> {
+    this.aldeias = await this.setAldeiaListBySucoId(empresa.sede.aldeia?.suco.id);
+
     this.empresaForm.patchValue({
       id: empresa.id,
       nome: empresa.nome,
@@ -809,12 +810,18 @@ export class EmpresaFormComponent implements OnInit {
       longitude: empresa.longitude,
       telefone: empresa.telefone,
       telemovel: empresa.telemovel,
-      tipoPropriedade: empresa.tipoPropriedade ? this.tipoProriedadeOpts.find(tp => tp.value === empresa.tipoPropriedade) : null,
       totalTrabalhadores: empresa.totalTrabalhadores,
       volumeNegocioAnual: empresa.volumeNegocioAnual,
       balancoTotalAnual: empresa.balancoTotalAnual,
       email: empresa.email,
     });
+
+    // Patch tipoPropriedade separately with emitEvent: false to prevent
+    // the valueChanges subscription from creating duplicate acionistas
+    this.empresaForm.get('tipoPropriedade')?.patchValue(
+      empresa.tipoPropriedade ? this.tipoProriedadeOpts.find(tp => tp.value === empresa.tipoPropriedade) : null,
+      { emitEvent: false }
+    );
 
     this.mapGerenteForm(empresa);
     this.mapRepresentanteForm(empresa);
@@ -823,9 +830,9 @@ export class EmpresaFormComponent implements OnInit {
       case TipoPropriedade.individual:
         this.acionistasArray.push(this.generateAcionistaForm(true));
         const idx = this.acionistasArray.length - 1;
-        this.listaAldeiaAcionista[idx] = [...this.originalAldeias];
         if (empresa.acionistas && empresa.acionistas.length) {
           const acionista = empresa.acionistas[0];
+          this.listaAldeiaAcionista[idx] = await this.setAldeiaListBySucoId(acionista.endereco.aldeia.suco.id);
           this.acionistasArray.at(0).patchValue({
             id: acionista.id,
             nome: acionista.nome,
@@ -853,10 +860,11 @@ export class EmpresaFormComponent implements OnInit {
         this.acionistasArray.clear();
         this.showAddBtnAcionistas = true;
         if (empresa.acionistas && empresa.acionistas.length) {
-          empresa.acionistas.forEach((acionista, index) => {
+          for (let index = 0; index < empresa.acionistas.length; index++) {
+            const acionista = empresa.acionistas[index];
             this.acionistasArray.push(this.generateAcionistaForm(false));
             const idx = this.acionistasArray.length - 1;
-            this.listaAldeiaAcionista[idx] = [...this.originalAldeias];
+            this.listaAldeiaAcionista[idx] = await this.setAldeiaListBySucoId(acionista.endereco.aldeia.suco.id);
             this.acionistasArray.at(index).patchValue({
               id: acionista.id,
               nome: acionista.nome,
@@ -877,12 +885,17 @@ export class EmpresaFormComponent implements OnInit {
                 aldeia: acionista.endereco.aldeia ? { nome: acionista.endereco.aldeia.nome, value: acionista.endereco.aldeia.id } : null,
               },
             });
-          });
+          }
         }
         break;
     }
 
     this.validateTotalAcoes();
     this.uploadedDocs = empresa.documentos ? [...empresa.documentos] : [];
+  }
+
+  private async setAldeiaListBySucoId(sucoId: number): Promise<any[]> {
+    const response = await firstValueFrom(this.dataMasterService.getAldeiasBySuco(sucoId));
+    return response._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
   }
 }
