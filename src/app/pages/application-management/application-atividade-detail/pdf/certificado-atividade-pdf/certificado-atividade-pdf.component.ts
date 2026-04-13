@@ -110,6 +110,14 @@ export class CertificadoAtividadePdfComponent {
     }
   }
 
+  formatNomeEmpresaComTipoSociedade(nome: string, tipoSociedade: string): string {
+    if (nome.toLowerCase().includes(tipoSociedade.toLowerCase())) {
+      return nome.toUpperCase(); // Já contém o tipo, retorna como está
+    } else {
+      return `${nome} ${tipoSociedade}`.toUpperCase(); // Adiciona o tipo ao nome
+    }
+  }
+
   private generateAndUploadPDF() {
     const data = document.getElementById('myDiv');
     if (data) {

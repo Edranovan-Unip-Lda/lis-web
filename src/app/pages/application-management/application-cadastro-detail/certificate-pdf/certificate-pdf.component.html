@@ -34,7 +34,7 @@
                     </span></div>
                 <p class="mb-6 mt-8">
                     Certifica-se que a Sociedade comercial <span class="font-semibold ">
-                        {{certificadoData.sociedadeComercial}} {{certificadoData.tipoSociedadeComercial}}
+                        {{formatNomeEmpresaComTipoSociedade(certificadoData.pedidoInscricaoCadastro.nomeEmpresa, certificadoData.tipoSociedadeComercial)}}
                     </span>,
                     titular de Registo Comercial n.º <span class="font-semibold ">
                         {{certificadoData.pedidoInscricaoCadastro.empresaNumeroRegistoComercial}}
@@ -119,7 +119,7 @@
                     </span></div>
                 <p class="mb-6 mt-8">
                     Certifica-se que a Sociedade comercial <span class="font-semibold ">
-                        {{certificadoData.pedidoInscricaoCadastro.nomeEmpresa}}
+                        {{formatNomeEmpresaComTipoSociedade(certificadoData.pedidoInscricaoCadastro.nomeEmpresa, certificadoData.tipoSociedadeComercial)}}
                     </span>,
                     titular de Registo Comercial n.º <span class="font-semibold ">
                         {{certificadoData.pedidoInscricaoCadastro.empresaNumeroRegistoComercial}}
