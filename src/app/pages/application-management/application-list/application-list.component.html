@@ -75,6 +75,12 @@
                                 pTooltip="Eliminar" tooltipPosition="top" />
                         </a>
                         }
+                        @if (roleAdmin === currentRole) {
+                        <a (click)="delete(candidatura)">
+                            <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
+                                pTooltip="Eliminar" tooltipPosition="top" />
+                        </a>
+                        }
                     </td>
                 </tr>
             </ng-template>

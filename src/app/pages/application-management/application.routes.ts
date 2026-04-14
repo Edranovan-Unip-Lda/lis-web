@@ -9,7 +9,7 @@ import { CertificadoAtividadePdfComponent } from './application-atividade-detail
 import { PedidoPdfComponent } from './application-atividade-detail/pdf/pedido-pdf/pedido-pdf.component';
 import { PedidoVistoriaPdfComponent } from './application-atividade-detail/pdf/pedido-vistoria-pdf/pedido-vistoria-pdf.component';
 import { ApplicationCadastroDetailComponent } from './application-cadastro-detail/application-cadastro-detail.component';
-import { ApplicationListComponent } from './application-cadastro-detail/application-list/application-list.component';
+import { ApplicationListComponent } from './application-list/application-list.component';
 import { CertificatePdfComponent } from './application-cadastro-detail/certificate-pdf/certificate-pdf.component';
 import { FaturaComponent } from './application-cadastro-detail/fatura/fatura.component';
 import { PedidoInscricaoComponent } from './application-cadastro-detail/pedido-inscricao/pedido-inscricao.component';

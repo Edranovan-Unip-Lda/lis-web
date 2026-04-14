@@ -49,6 +49,7 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     private aplicanteService: AplicanteService,
   ) {
     this.currentRole = this.authService.currentRole.name;
+    
 
     this.applications = this.route.snapshot.data['applicationPage'].content;
     this.applicationsCached = this.applications;
@@ -162,8 +163,6 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   }
 
   delete(aplicante: Aplicante) {
-    const empresaId = this.authService.currentUserValue.empresa.id;
-
     this.confirmationService.confirm({
       message: 'Quer apagar este aplicante?',
       header: 'Zona de risco',
@@ -182,24 +181,48 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
       },
 
       accept: () => {
-        this.service.deleteApicante(empresaId, aplicante.id).subscribe({
-          next: () => {
-            this.applications = this.applications.filter(item => item.id !== aplicante.id);
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Sucesso',
-              detail: 'Aplicante removido com sucesso'
-            });
-          },
-          error: error => {
-            console.error(error);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Erro',
-              detail: 'Ocorreu um erro ao remover o aplicante'
-            });
-          },
-        });
+
+        if (this.roleAdmin === this.authService.currentRole.name) {
+          this.aplicanteService.deleteById(aplicante.id).subscribe({
+            next: () => {
+              this.applications = this.applications.filter(item => item.id !== aplicante.id);
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: 'Aplicante removido com sucesso'
+              });
+            },
+            error: error => {
+              console.error(error);
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Ocorreu um erro ao remover o aplicante'
+              });
+            },
+          });
+        } else {
+          const empresaId = this.authService.currentUserValue.empresa.id;
+          this.service.deleteApicante(empresaId, aplicante.id).subscribe({
+            next: () => {
+              this.applications = this.applications.filter(item => item.id !== aplicante.id);
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: 'Aplicante removido com sucesso'
+              });
+            },
+            error: error => {
+              console.error(error);
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Ocorreu um erro ao remover o aplicante'
+              });
+            },
+          });
+        }
+
       },
     });
   }

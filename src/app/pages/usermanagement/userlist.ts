@@ -47,8 +47,6 @@ export class UserList {
         this.totalData = this.route.snapshot.data['userPage'].totalElements;
         this.usersCached = this.users;
         this.roles = this.route.snapshot.queryParamMap.get('roles');
-        console.log(this.roles);
-        
         this.setupSearch();
         this.isInternal = this.route.snapshot.data['type'] === 'internal';
     }

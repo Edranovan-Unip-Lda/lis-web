@@ -34,7 +34,7 @@ export default [
                         data: {
                             breadcrumb: 'List',
                         },
-                        loadComponent: () => import('@/pages/application-management/application-cadastro-detail/application-list/application-list.component').then((c) => c.ApplicationListComponent),
+                        loadComponent: () => import('@/pages/application-management/application-list/application-list.component').then((c) => c.ApplicationListComponent),
                         resolve: {
                             applicationPage: getPageAplicanteByUsernameResolver
                         },
@@ -76,7 +76,7 @@ export default [
                 data: {
                     breadcrumb: 'Lista',
                 },
-                loadComponent: () => import('@/pages/application-management/application-cadastro-detail/application-list/application-list.component').then((c) => c.ApplicationListComponent),
+                loadComponent: () => import('@/pages/application-management/application-list/application-list.component').then((c) => c.ApplicationListComponent),
                 resolve: {
                     applicationPage: getPageResolver
                 }
