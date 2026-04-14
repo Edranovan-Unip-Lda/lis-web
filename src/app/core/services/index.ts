@@ -1,6 +1,6 @@
 export * from './aplicante.service';
-export * from './audit.service';
 export * from './assignment.service';
+export * from './audit.service';
 export * from './authentication.service';
 export * from './certificado.service';
 export * from './dashboard.service';
@@ -8,8 +8,8 @@ export * from './data-master.service';
 export * from './documentos.service';
 export * from './empresa.service';
 export * from './export.service';
+export * from './notificacao.service';
 export * from './otp-session.service';
 export * from './pedido.service';
 export * from './report.service';
 export * from './user.service';
-export * from './notificacao.service';
