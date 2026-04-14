@@ -16,6 +16,12 @@
             </ng-template>
             <ng-template #header>
                 <tr>
+                    @if (!isInternal) {
+                    <th pSortableColumn="empresa" class="white-space-nowrap" style="width:23%">Empresa<p-sortIcon
+                            field="empresa">
+                        </p-sortIcon>
+                    </th>
+                    }
                     <th pSortableColumn="firstName" class="white-space-nowrap" style="width:23%">Nome<p-sortIcon
                             field="firstName">
                         </p-sortIcon>
@@ -41,6 +47,9 @@
             </ng-template>
             <ng-template #body let-user>
                 <tr>
+                    <td>
+                        {{ user.empresa.nome }}
+                    </td>
                     <td>
                         {{ user.firstName }} {{ user.lastName }}
                     </td>
