@@ -33,7 +33,14 @@
                                          Nome da Empresa
                                      </label>
                                      <input formControlName="nome" id="nome" type="text" pInputText fluid />
-                                     @if (empresaForm.get('nome')?.touched && empresaForm.get('nome')?.invalid) {
+                                     @if (empresaForm.get('nome')?.errors?.['sociedadeComercialInName']) {
+                                     <p class="text-amber-600 text-sm mt-1">
+                                         <i class="pi pi-exclamation-triangle mr-1"></i>
+                                         Ups! O nome da empresa não deve conter o tipo de sociedade
+                                         (<strong>{{ empresaForm.get('nome')?.errors?.['sociedadeComercialInName'].matched.join(', ') }}</strong>).
+                                         Esse tipo será definido no campo "Tipo de Sociedade Comercial" abaixo.
+                                     </p>
+                                     } @else if (empresaForm.get('nome')?.touched && empresaForm.get('nome')?.invalid) {
                                      <p class="text-red-500 text-sm mt-1">
                                          Este campo é obrigatório e deve ser válido.
                                      </p>
@@ -303,10 +310,13 @@
                                          <li>
                                              Documento de Identificação do(s) Proprietário(s) / Acionista(s)
                                          </li>
+                                         <li>
+                                            Declaracão de Prévia
+                                         </li>
                                      </ul>
                                      <div class="flex justify-start">
                                          <p-fileupload name="files" method="post" (onSelect)="onSelect($event)"
-                                             [fileLimit]="5" [maxFileSize]="maxFileSize" [multiple]="true"
+                                             [fileLimit]="6" [maxFileSize]="maxFileSize" [multiple]="true"
                                              [accept]="acceptedFileTypes" [showUploadButton]="false"
                                              [showCancelButton]="false" mode="basic" [chooseLabel]="'Selecionar'"
                                              [customUpload]="true" chooseIcon="pi pi-upload">

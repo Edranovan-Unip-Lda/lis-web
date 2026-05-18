@@ -7,7 +7,7 @@ import { alphanumericValidator } from '@/core/validators/alphanumeric';
 import { greaterThanValidator } from '@/core/validators/greater-than';
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ReCaptchaV3Service, RecaptchaV3Module } from 'ng-recaptcha-2';
 import { NgxPrintModule } from 'ngx-print';
@@ -98,6 +98,8 @@ export class Register {
         this.aldeias = this.route.snapshot.data['aldeiasResolver']._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
 
         this.listaSociedadeComercial = this.route.snapshot.data['listaSociedadeComercial']._embedded.sociedadeComercial.map((s: any) => ({ nome: s.nome, value: s.id }));
+        // Re-validate now that the list is loaded
+        this.empresaForm.get('nome')?.updateValueAndValidity();
         this.originalAldeias = [...this.aldeias];
         this.gerenteListaAldeias = [...this.aldeias];
         this.representanteListaAldeias = [...this.aldeias];
@@ -682,7 +684,7 @@ export class Register {
             this.empresaForm.get('nif')?.invalid ||
             this.empresaForm.get('numeroRegistoComercial')?.invalid ||
             this.empresaForm.get('capitalSocial')?.invalid ||
-            this.empresaForm.get('dataRegisto')?.invalid || this.uploadedDocs.length !== 5
+            this.empresaForm.get('dataRegisto')?.invalid || this.uploadedDocs.length !== 6
         );
     }
 
@@ -788,9 +790,28 @@ export class Register {
         (this as any)[key] = value;
     }
 
+    private sociedadeComercialNameValidator(): ValidatorFn {
+        const normalize = (v: unknown) =>
+            (v ?? '')
+                .toString()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .trim()
+                .toLowerCase();
+        return (control: AbstractControl): ValidationErrors | null => {
+            const raw = normalize(control.value);
+            if (!raw) return null;
+            const list: any[] = this.listaSociedadeComercial || [];
+            const matched = list
+                .map(s => (s?.nome ?? '').toString().trim())
+                .filter(nome => !!nome && raw.includes(normalize(nome)));
+            return matched.length ? { sociedadeComercialInName: { matched } } : null;
+        };
+    }
+
     private initForm(): void {
         this.empresaForm = this._fb.group({
-            nome: [null, [Validators.required, Validators.minLength(3)]],
+            nome: [null, [Validators.required, Validators.minLength(3), this.sociedadeComercialNameValidator()]],
             nif: [null, [Validators.required, alphanumericValidator()]],
             sede: this._fb.group({
                 local: [null, [Validators.required]],

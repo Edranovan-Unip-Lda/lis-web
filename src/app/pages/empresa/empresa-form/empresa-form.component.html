@@ -1,5 +1,5 @@
 <div class="card">
-    <p-stepper [value]="1" class="basis-[50rem]" [linear]="true">
+    <p-stepper [value]="1" class="basis-[50rem]" [linear]="false">
         <p-step-list>
             <p-step [value]="1">Empresa</p-step>
             <p-step [value]="2">Proprietário(a) / Titular da empresa</p-step>
@@ -625,7 +625,7 @@
                                             <label for="aldeia" class="font-medium  mb-2 block">
                                                 Aldeia
                                             </label>
-                                            <p-select fluid formControlName="aldeia" [options]="aldeias"
+                                            <p-select fluid formControlName="aldeia" [options]="gerenteListaAldeias"
                                                 optionLabel="nome" placeholder="Selecione a Aldeia" [filter]="true"
                                                 filterBy="nome" [showClear]="true"
                                                 (onChange)="gerenteRepresentanteAldeiaOnChange($event, 'gerente')"
@@ -891,9 +891,10 @@
                                             <label for="aldeia" class="font-medium  mb-2 block">
                                                 Aldeia
                                             </label>
-                                            <p-select fluid formControlName="aldeia" [options]="aldeias"
-                                                optionLabel="nome" placeholder="Selecione a Aldeia" [filter]="true"
-                                                filterBy="nome" [showClear]="true"
+                                            <p-select fluid formControlName="aldeia"
+                                                [options]="representanteListaAldeias" optionLabel="nome"
+                                                placeholder="Selecione a Aldeia" [filter]="true" filterBy="nome"
+                                                [showClear]="true"
                                                 (onChange)="gerenteRepresentanteAldeiaOnChange($event, 'representante')"
                                                 (onFilter)="gerenteRepresentanteAldeiaFilter($event, 'representante')"
                                                 (onpanelHide)="gerenteRepresentanteOnPanelHide('representante')"

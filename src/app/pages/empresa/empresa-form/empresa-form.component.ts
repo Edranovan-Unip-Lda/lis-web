@@ -491,7 +491,7 @@ export class EmpresaFormComponent implements OnInit {
       this.empresaForm.get('nif')?.invalid ||
       this.empresaForm.get('numeroRegistoComercial')?.invalid ||
       this.empresaForm.get('capitalSocial')?.invalid ||
-      this.empresaForm.get('dataRegisto')?.invalid || this.uploadedDocs.length !== 5
+      this.empresaForm.get('dataRegisto')?.invalid || this.uploadedDocs.length === 0
     );
   }
 
@@ -730,61 +730,67 @@ export class EmpresaFormComponent implements OnInit {
     }, { validators: greaterThanValidator('volumeNegocioAnual', 'balancoTotalAnual') });
   }
 
-  private mapGerenteForm(empresa: Empresa): void {
-    if (empresa.gerente) {
-      this.empresaForm.get('gerente')?.patchValue({
-        id: empresa.gerente.id,
-        nome: empresa.gerente.nome,
-        telefone: empresa.gerente.telefone,
-        email: empresa.gerente.email,
-        tipoDocumento: empresa.gerente.tipoDocumento ? this.tipoDocumentoOpts.find(td => td.value === empresa.gerente.tipoDocumento).value : null,
-        numeroDocumento: empresa.gerente.numeroDocumento,
-        nacionalidade: empresa.gerente.nacionalidade ? this.tipoNacionalidadeOpts.find(tn => tn.value === empresa.gerente.nacionalidade).value : null,
-        numeroVisto: empresa.gerente.numeroVisto,
-        validadeVisto: empresa.gerente.validadeVisto ? new Date(empresa.gerente.validadeVisto) : null,
-        naturalidade: empresa.gerente.naturalidade,
-        estadoCivil: empresa.gerente.estadoCivil ? this.tipoEstadoCivilOpts.find(ec => ec.value === empresa.gerente.estadoCivil).value : null,
-        morada: {
-          id: empresa.gerente.morada.id,
-          local: empresa.gerente.morada.local,
-          municipio: empresa.gerente.morada.aldeia?.suco.postoAdministrativo.municipio.nome,
-          postoAdministrativo: empresa.gerente.morada.aldeia?.suco.postoAdministrativo.nome,
-          suco: empresa.gerente.morada.aldeia?.suco.nome,
-          aldeia: empresa.gerente.morada.aldeia ? { nome: empresa.gerente.morada.aldeia.nome, value: empresa.gerente.morada.aldeia.id } : null,
-        },
-      });
-    }
+  private async mapGerenteForm(empresa: Empresa): Promise<void> {
+    const gerente = empresa.gerente;
+    if (!gerente) return;
+
+    this.gerenteListaAldeias = await this.setAldeiaListBySucoId(gerente.morada.aldeia?.suco.id);
+
+    this.empresaForm.get('gerente')?.patchValue({
+      id: gerente.id,
+      nome: gerente.nome,
+      telefone: gerente.telefone,
+      email: gerente.email,
+      tipoDocumento: gerente.tipoDocumento ? this.tipoDocumentoOpts.find(td => td.value === gerente.tipoDocumento).value : null,
+      numeroDocumento: gerente.numeroDocumento,
+      nacionalidade: gerente.nacionalidade ? this.tipoNacionalidadeOpts.find(tn => tn.value === gerente.nacionalidade).value : null,
+      numeroVisto: gerente.numeroVisto,
+      validadeVisto: gerente.validadeVisto ? new Date(gerente.validadeVisto) : null,
+      naturalidade: gerente.naturalidade,
+      estadoCivil: gerente.estadoCivil ? this.tipoEstadoCivilOpts.find(ec => ec.value === gerente.estadoCivil).value : null,
+      morada: {
+        id: gerente.morada.id,
+        local: gerente.morada.local,
+        municipio: gerente.morada.aldeia?.suco.postoAdministrativo.municipio.nome,
+        postoAdministrativo: gerente.morada.aldeia?.suco.postoAdministrativo.nome,
+        suco: gerente.morada.aldeia?.suco.nome,
+        aldeia: gerente.morada.aldeia ? { nome: gerente.morada.aldeia.nome, value: gerente.morada.aldeia.id } : null,
+      },
+    });
   }
 
-  private mapRepresentanteForm(empresa: Empresa): void {
-    if (empresa.representante) {
-      this.empresaForm.get('representante')?.patchValue({
-        id: empresa.representante.id,
-        tipo: empresa.representante.tipo,
-        nomeEmpresa: empresa.representante.nomeEmpresa,
-        nome: empresa.representante.nome,
-        pai: empresa.representante.pai,
-        mae: empresa.representante.mae,
-        dataNascimento: empresa.representante.dataNascimento ? new Date(empresa.representante.dataNascimento) : null,
-        estadoCivil: empresa.representante.estadoCivil ? this.tipoEstadoCivilOpts.find(ec => ec.value === empresa.representante.estadoCivil).value : null,
-        nacionalidade: empresa.representante.nacionalidade ? this.tipoNacionalidadeOpts.find(tn => tn.value === empresa.representante.nacionalidade).value : null,
-        numeroVisto: empresa.representante.numeroVisto,
-        validadeVisto: empresa.representante.validadeVisto ? new Date(empresa.representante.validadeVisto) : null,
-        naturalidade: empresa.representante.naturalidade,
-        telefone: empresa.representante.telefone,
-        email: empresa.representante.email,
-        tipoDocumento: empresa.representante.tipoDocumento ? this.tipoDocumentoOpts.find(td => td.value === empresa.representante.tipoDocumento).value : null,
-        numeroDocumento: empresa.representante.numeroDocumento,
-        morada: {
-          id: empresa.representante.morada.id,
-          local: empresa.representante.morada.local,
-          municipio: empresa.representante.morada.aldeia?.suco.postoAdministrativo.municipio.nome,
-          postoAdministrativo: empresa.representante.morada.aldeia?.suco.postoAdministrativo.nome,
-          suco: empresa.representante.morada.aldeia?.suco.nome,
-          aldeia: empresa.representante.morada.aldeia ? { nome: empresa.representante.morada.aldeia.nome, value: empresa.representante.morada.aldeia.id } : null,
-        },
-      });
-    }
+  private async mapRepresentanteForm(empresa: Empresa): Promise<void> {
+    const representante = empresa.representante;
+    if (!representante) return;
+
+    this.representanteListaAldeias = await this.setAldeiaListBySucoId(representante.morada.aldeia?.suco.id);
+
+    this.empresaForm.get('representante')?.patchValue({
+      id: representante.id,
+      tipo: representante.tipo,
+      nomeEmpresa: representante.nomeEmpresa,
+      nome: representante.nome,
+      pai: representante.pai,
+      mae: representante.mae,
+      dataNascimento: representante.dataNascimento ? new Date(representante.dataNascimento) : null,
+      estadoCivil: representante.estadoCivil ? this.tipoEstadoCivilOpts.find(ec => ec.value === representante.estadoCivil).value : null,
+      nacionalidade: representante.nacionalidade ? this.tipoNacionalidadeOpts.find(tn => tn.value === representante.nacionalidade).value : null,
+      numeroVisto: representante.numeroVisto,
+      validadeVisto: representante.validadeVisto ? new Date(representante.validadeVisto) : null,
+      naturalidade: representante.naturalidade,
+      telefone: representante.telefone,
+      email: representante.email,
+      tipoDocumento: representante.tipoDocumento ? this.tipoDocumentoOpts.find(td => td.value === representante.tipoDocumento).value : null,
+      numeroDocumento: representante.numeroDocumento,
+      morada: {
+        id: representante.morada.id,
+        local: representante.morada.local,
+        municipio: representante.morada.aldeia?.suco.postoAdministrativo.municipio.nome,
+        postoAdministrativo: representante.morada.aldeia?.suco.postoAdministrativo.nome,
+        suco: representante.morada.aldeia?.suco.nome,
+        aldeia: representante.morada.aldeia ? { nome: representante.morada.aldeia.nome, value: representante.morada.aldeia.id } : null,
+      },
+    });
   }
 
   private async mapEmpresaForm(empresa: Empresa): Promise<void> {
@@ -823,8 +829,8 @@ export class EmpresaFormComponent implements OnInit {
       { emitEvent: false }
     );
 
-    this.mapGerenteForm(empresa);
-    this.mapRepresentanteForm(empresa);
+    await this.mapGerenteForm(empresa);
+    await this.mapRepresentanteForm(empresa);
 
     switch (empresa.tipoPropriedade) {
       case TipoPropriedade.individual:
