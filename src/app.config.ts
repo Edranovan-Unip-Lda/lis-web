@@ -42,6 +42,7 @@ export const appConfig: ApplicationConfig = {
         },
         { provide: LOCALE_ID, useValue: 'pt' },
         provideHighcharts({
+            instance: () => import('highcharts'),
             // Include Highcharts additional modules (e.g., exporting, accessibility) or custom themes
             modules: () => {
                 return [
