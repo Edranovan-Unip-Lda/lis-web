@@ -65,7 +65,6 @@ export class Register {
     tipoNacionalidadeOpts = tipoNacionalidadeOptions;
     tipoEstadoCivilOpts = estadoCivilOptions;
     showAddBtnAcionistas = false;
-    selectedRole!: Role;
     listaAldeiaAcionista: any[][] = [];
     uploadedDocs: any[] = [];
     maxFileSize = maxFileSizeUpload;
@@ -132,9 +131,6 @@ export class Register {
                 this.listaAldeiaAcionista[idx] = [...this.originalAldeias];
             }
         });
-
-        const roles: any[] = this.route.snapshot.data['roleListResolver']._embedded.roles;
-        this.selectedRole = roles.find(r => r.name === 'ROLE_CLIENT')!;
 
         this.setUtilizadorEmail();
         this.setupAldeiaSearch();
@@ -335,7 +331,6 @@ export class Register {
             formData.utilizador.lastName = parts.slice(1).join(' ') || parts[0];
 
             formData.utilizador.username = formData.gerente.email.split('@')[0] + new Date().getUTCMilliseconds().toString();
-            formData.utilizador.role = this.selectedRole;
             formData.utilizador.email = formData.gerente.email;
 
             this.recaptchaV3Service.execute(RecaptchaAction.registerEmpresa).subscribe((token: string) => {
