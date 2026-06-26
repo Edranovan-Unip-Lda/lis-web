@@ -333,22 +333,40 @@ export class Register {
             formData.utilizador.username = formData.gerente.email.split('@')[0] + new Date().getUTCMilliseconds().toString();
             formData.utilizador.email = formData.gerente.email;
 
-            this.recaptchaV3Service.execute(RecaptchaAction.registerEmpresa).subscribe((token: string) => {
-                formData.recaptchaToken = token;
-                this.empresaService.save(formData, this.uploadedDocs).subscribe({
-                    next: (response) => {
-                        this.loading = false;
-                        this.isSuccess = true;
-                        this.emailVerification = response.utilizador.email;
-                        this.empresaForm.reset();
-                        this.setNotification();
-                    },
-                    error: (error) => {
-                        this.loading = false;
-                        this.isError = true;
-                        this.errorMessage = error;
-                    }
-                });
+            // Two-step (Option 1A): mint a fresh v3 token, verify it in a tiny pre-flight, then upload with the
+            // returned single-use proof. Keeps the token's ~2-min life off the slow multipart upload path.
+            this.recaptchaV3Service.execute(RecaptchaAction.registerEmpresa).subscribe({
+                next: (token: string) => {
+                    this.empresaService.verifyRecaptcha(token).subscribe({
+                        next: ({ proof }) => {
+                            formData.recaptchaProof = proof;
+                            this.empresaService.save(formData, this.uploadedDocs).subscribe({
+                                next: (response) => {
+                                    this.loading = false;
+                                    this.isSuccess = true;
+                                    this.emailVerification = response.utilizador.email;
+                                    this.empresaForm.reset();
+                                    this.setNotification();
+                                },
+                                error: (error) => {
+                                    this.loading = false;
+                                    this.isError = true;
+                                    this.errorMessage = error;
+                                }
+                            });
+                        },
+                        error: (error) => {
+                            this.loading = false;
+                            this.isError = true;
+                            this.errorMessage = error;
+                        }
+                    });
+                },
+                error: () => {
+                    this.loading = false;
+                    this.isError = true;
+                    this.errorMessage = 'Falha na verificação reCAPTCHA. Tente novamente.';
+                }
             });
 
         } else {

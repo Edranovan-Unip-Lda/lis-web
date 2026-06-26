@@ -14,6 +14,14 @@ export class EmpresaService {
     private http: HttpClient,
   ) { }
 
+  /**
+   * Pre-flight (Option 1A): verify the fresh reCAPTCHA v3 token while it's young and get back a single-use proof.
+   * The slow multipart upload below presents that proof, so the token's ~2-min life never races the upload.
+   */
+  verifyRecaptcha(token: string): Observable<{ proof: string }> {
+    return this.http.post<{ proof: string }>(`${this.apiUrl}/verify-recaptcha`, { token, action: 'REGISTER_EMPRESA' });
+  }
+
   save(formData: any, selectedFiles: any[]): Observable<any> {
     const fd = new FormData();
 
