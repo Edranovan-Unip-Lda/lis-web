@@ -37,7 +37,9 @@ export const httpErrorInterceptor: HttpInterceptorFn = (
         catchError((error: HttpErrorResponse) => {
             let errorMessage = '';
 
-            if (error.status === 401 || error.status === 403) {
+            // Finding #27: log out only on 401 (truly unauthenticated). A 403 is an authorization/CSRF denial
+            // on one request — logging out mid-flow would kick the user out for hitting a forbidden resource.
+            if (error.status === 401) {
                 authService.logout()
             }
 
