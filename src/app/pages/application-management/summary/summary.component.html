@@ -63,7 +63,7 @@
                 <p>
                     <span class="font-medium text-gray-400">Coordenadas:</span>
                     <a [href]="'https://www.google.com/maps?q=' + aplicanteData.empresa.latitude + ',' + aplicanteData.empresa.longitude"
-                        target="_blank" class="text-emerald-400 hover:text-emerald-300 hover:underline cursor-pointer">
+                        target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:text-emerald-300 hover:underline cursor-pointer">
                         {{aplicanteData.empresa.longitude}} / {{aplicanteData.empresa.latitude}}
                     </a>
                 </p>

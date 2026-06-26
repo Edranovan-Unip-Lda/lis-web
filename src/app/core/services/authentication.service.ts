@@ -48,8 +48,11 @@ export class AuthenticationService {
    */
   logout(): void {
     localStorage.removeItem(this.userKey);
+    // BUG-WEB-4: redirect whether or not the logout POST succeeds — otherwise a failed call (e.g. the 401 that
+    // triggered logout) leaves the app stuck user-less with no navigation.
     this.http.post(`${this.apiUrl}/logout`, {}, { responseType: 'text' }).pipe(take(1)).subscribe({
-      next: () => this.router.navigateByUrl('/').then()
+      next: () => this.router.navigateByUrl('/').then(),
+      error: () => this.router.navigateByUrl('/').then()
     });
   }
 

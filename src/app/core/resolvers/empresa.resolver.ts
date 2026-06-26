@@ -44,8 +44,11 @@ export const getPageAplicanteOrByEmpresaIdResolver: ResolveFn<any> = () => {
     const aplicanteService = inject(AplicanteService);
     const authServiec = inject(AuthenticationService);
 
-    if (authServiec.currentUserValue.role.name === Role.client) {
-        const empresaId = authServiec.currentUserValue?.empresa?.id;
+    // BUG-WEB-1: guard currentUserValue (null right after a forced logout) before dereferencing.
+    const user = authServiec.currentUserValue;
+    if (!user) return of(null);
+    if (user.role?.name === Role.client) {
+        const empresaId = user?.empresa?.id;
         return service.getAplicantesPage(empresaId);
     } else {
         return aplicanteService.getPage();
@@ -70,7 +73,7 @@ export const getAplicante: ResolveFn<any> = (route: ActivatedRouteSnapshot) => {
     const aplicanteService = inject(AplicanteService);
 
     if (id) {
-        const empresa = authService.currentUserValue.empresa;
+        const empresa = authService.currentUserValue?.empresa; // BUG-WEB-1: null-safe
         if (empresa) {
             return empresaService.getAplicanteByEmpresaIdAndAplicanteId(empresa.id, +id);
         } else {
@@ -94,7 +97,7 @@ export const getPageCertificadosByEmpresaId: ResolveFn<any> = (route: ActivatedR
     const type = route.data['type'] as AplicanteType;
     const authService = inject(AuthenticationService);
     const service = inject(EmpresaService);
-    const empresa = authService.currentUserValue.empresa;
+    const empresa = authService.currentUserValue?.empresa; // BUG-WEB-1: null-safe
     if (empresa) {
         return service.getPageCertificados(empresa.id, categoria, type);
     } else {
