@@ -3,6 +3,33 @@
     min-height: 297mm;
 }
 
+/* Keep the full A4 certificate rendered (html2canvas needs real layout, not display:none)
+   but pushed off-screen so the user only ever sees the card + medium preview. */
+.offscreen-cert {
+    position: fixed;
+    top: 0;
+    left: -10000px;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Medium thumbnail of the rasterized license (preview overlay is styled globally). */
+:host ::ng-deep .license-image {
+    display: block;
+
+    img {
+        width: 100%;
+        max-width: 360px;
+        height: auto;
+        margin: 0 auto;
+        border-radius: 0.75rem;
+        border: 1px solid var(--surface-200, #e5e7eb);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+        cursor: zoom-in;
+    }
+}
+
+
 .text-red {
     color: red;
     font-weight: 600;

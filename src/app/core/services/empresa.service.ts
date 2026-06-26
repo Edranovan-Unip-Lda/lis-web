@@ -15,22 +15,30 @@ export class EmpresaService {
   ) { }
 
   /**
-   * Pre-flight (Option 1A): verify the fresh reCAPTCHA v3 token while it's young and get back a single-use proof.
-   * The slow multipart upload below presents that proof, so the token's ~2-min life never races the upload.
+   * Pre-flight (B1): verify the fresh reCAPTCHA v3 token and open a registration session. The returned
+   * sessionToken authorizes the document uploads and the final submit.
    */
-  verifyRecaptcha(token: string): Observable<{ proof: string }> {
-    return this.http.post<{ proof: string }>(`${this.apiUrl}/verify-recaptcha`, { token, action: 'REGISTER_EMPRESA' });
+  verifyRecaptcha(token: string): Observable<{ sessionToken: string }> {
+    return this.http.post<{ sessionToken: string }>(`${this.apiUrl}/verify-recaptcha`, { token, action: 'REGISTER_EMPRESA' });
   }
 
-  save(formData: any, selectedFiles: any[]): Observable<any> {
+  /** Stage one document immediately on selection; returns a ref the finalize call sends back. */
+  stageDocument(file: File, sessionToken: string): Observable<{ ref: string; nome: string; extensao: string; tamanho: number }> {
     const fd = new FormData();
+    fd.append('file', file, file.name);
+    fd.append('sessionToken', sessionToken);
+    return this.http.post<{ ref: string; nome: string; extensao: string; tamanho: number }>(`${this.apiUrl}/staging-documents`, fd);
+  }
 
-    fd.append('data', new Blob([JSON.stringify(formData)], { type: 'application/json' }));
-    for (const file of selectedFiles) {
-      fd.append('files', file, file.name);
-    }
+  /** Remove a staged document the user dropped before submitting. */
+  deleteStagedDocument(ref: string, sessionToken: string): Observable<void> {
+    const params = new HttpParams().append('sessionToken', sessionToken);
+    return this.http.delete<void>(`${this.apiUrl}/staging-documents/${encodeURIComponent(ref)}`, { params });
+  }
 
-    return this.http.post<any>(this.apiUrl, fd);
+  /** Finalize: small JSON call carrying the form + staged document refs + session token. */
+  finalize(formData: any): Observable<any> {
+    return this.http.post<any>(this.apiUrl, formData);
   }
 
   update(username: string, formData: any): Observable<any> {

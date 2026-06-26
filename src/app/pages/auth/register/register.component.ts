@@ -26,8 +26,8 @@ import { Ripple } from 'primeng/ripple';
 import { Select, SelectChangeEvent, SelectFilterEvent } from 'primeng/select';
 import { StepperModule } from 'primeng/stepper';
 import { Tooltip } from 'primeng/tooltip';
-import { Subject, of } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Observable, Subject, of } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 
 interface Notification {
     state: string,
@@ -67,6 +67,8 @@ export class Register {
     showAddBtnAcionistas = false;
     listaAldeiaAcionista: any[][] = [];
     uploadedDocs: any[] = [];
+    // B1: registration session token, opened on first file select; authorizes staging uploads + finalize.
+    sessionToken: string | null = null;
     maxFileSize = maxFileSizeUpload;
     tipoRepresentanteOptions = tipoRepresentante;
     gerenteForeigner: boolean = false;
@@ -333,39 +335,24 @@ export class Register {
             formData.utilizador.username = formData.gerente.email.split('@')[0] + new Date().getUTCMilliseconds().toString();
             formData.utilizador.email = formData.gerente.email;
 
-            // Two-step (Option 1A): mint a fresh v3 token, verify it in a tiny pre-flight, then upload with the
-            // returned single-use proof. Keeps the token's ~2-min life off the slow multipart upload path.
-            this.recaptchaV3Service.execute(RecaptchaAction.registerEmpresa).subscribe({
-                next: (token: string) => {
-                    this.empresaService.verifyRecaptcha(token).subscribe({
-                        next: ({ proof }) => {
-                            formData.recaptchaProof = proof;
-                            this.empresaService.save(formData, this.uploadedDocs).subscribe({
-                                next: (response) => {
-                                    this.loading = false;
-                                    this.isSuccess = true;
-                                    this.emailVerification = response.utilizador.email;
-                                    this.empresaForm.reset();
-                                    this.setNotification();
-                                },
-                                error: (error) => {
-                                    this.loading = false;
-                                    this.isError = true;
-                                    this.errorMessage = error;
-                                }
-                            });
-                        },
-                        error: (error) => {
-                            this.loading = false;
-                            this.isError = true;
-                            this.errorMessage = error;
-                        }
-                    });
+            // B1: the session + the 6 documents were already established/uploaded while the form was filled.
+            // Finalize is a small JSON call carrying the staged document refs + the session token.
+            formData.sessionToken = this.sessionToken;
+            formData.documentRefs = this.uploadedDocs.map(d => d.ref);
+            this.empresaService.finalize(formData).subscribe({
+                next: (response) => {
+                    this.loading = false;
+                    this.isSuccess = true;
+                    this.emailVerification = response.utilizador.email;
+                    this.empresaForm.reset();
+                    this.uploadedDocs = [];
+                    this.sessionToken = null;
+                    this.setNotification();
                 },
-                error: () => {
+                error: (error) => {
                     this.loading = false;
                     this.isError = true;
-                    this.errorMessage = 'Falha na verificação reCAPTCHA. Tente novamente.';
+                    this.errorMessage = error;
                 }
             });
 
@@ -674,18 +661,66 @@ export class Register {
         this.listaAldeiaAcionista[index] = [...this.originalAldeias];
     }
 
+    /** Open the registration session once (verify reCAPTCHA → sessionToken), then reuse it for every upload. */
+    private ensureSession(): Observable<string> {
+        if (this.sessionToken) return of(this.sessionToken);
+        return this.recaptchaV3Service.execute(RecaptchaAction.registerEmpresa).pipe(
+            switchMap(token => this.empresaService.verifyRecaptcha(token)),
+            map(res => (this.sessionToken = res.sessionToken))
+        );
+    }
+
     onSelect(e: FileSelectEvent) {
-        this.uploadedDocs = [...this.uploadedDocs, ...e.files];
+        // Bootstrap the session on the first selection, then stage each file immediately and independently.
+        this.ensureSession().subscribe({
+            next: () => e.files.forEach(file => this.stageOne(file)),
+            error: () => {
+                this.isError = true;
+                this.errorMessage = 'Falha na verificação reCAPTCHA. Tente novamente.';
+            }
+        });
+    }
+
+    private stageOne(file: File) {
+        const entry: any = {
+            file,
+            name: file.name,
+            size: file.size,
+            __key: `${file.name}-${file.size}-${(file as any).lastModified}`,
+            ref: null,
+            status: 'uploading'
+        };
+        this.uploadedDocs = [...this.uploadedDocs, entry];
+        this.empresaService.stageDocument(file, this.sessionToken!).subscribe({
+            next: h => { entry.ref = h.ref; entry.status = 'done'; },
+            error: () => { entry.status = 'error'; }
+        });
     }
 
     onFileRemove(e: { file: any }) {
-        const key = e.file.__key ?? `${e.file.name}-${e.file.size}-${e.file.lastModified}`;
+        const item = e.file;
+        // Best-effort: drop the staged object server-side too (lifecycle rule is the backstop).
+        if (item.ref && this.sessionToken) {
+            this.empresaService.deleteStagedDocument(item.ref, this.sessionToken).subscribe({ error: () => { } });
+        }
+        const key = item.__key ?? `${item.name}-${item.size}-${item.lastModified}`;
         this.uploadedDocs = this.uploadedDocs.filter(f => (f.__key ?? `${f.name}-${f.size}-${f.lastModified}`) !== key);
     }
 
     // Fired when the "clear" button is pressed
     onFileClear() {
+        const token = this.sessionToken;
+        if (token) {
+            this.uploadedDocs.forEach(d => {
+                if (d.ref) this.empresaService.deleteStagedDocument(d.ref, token).subscribe({ error: () => { } });
+            });
+        }
         this.uploadedDocs = [];
+    }
+
+    /** Step is valid only when all 6 documents finished staging (have a ref). */
+    allDocsStaged(): boolean {
+        return this.uploadedDocs.length === 6 && this.uploadedDocs.every(d => d.status === 'done' && !!d.ref);
     }
 
     disableStepEmpresa(): boolean {
@@ -697,7 +732,7 @@ export class Register {
             this.empresaForm.get('nif')?.invalid ||
             this.empresaForm.get('numeroRegistoComercial')?.invalid ||
             this.empresaForm.get('capitalSocial')?.invalid ||
-            this.empresaForm.get('dataRegisto')?.invalid || this.uploadedDocs.length !== 6
+            this.empresaForm.get('dataRegisto')?.invalid || !this.allDocsStaged()
         );
     }
 

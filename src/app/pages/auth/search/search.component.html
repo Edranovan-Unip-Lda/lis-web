@@ -35,21 +35,95 @@
          <!-- Results Section -->
          <section aria-label="Resultado da Pesquisa" class="animate-fade-in">
 
-             @if (!loading) {
-             @if (certificadoData) {
-             @if (isCadastro) {
-             <ng-container *ngTemplateOutlet="cadastroTemplate"></ng-container>
-             } @else {
-             <ng-container *ngTemplateOutlet="licencaAtividadeTemplate"></ng-container>
-             }
-             }
-             }
-             @else {
+             @if (loading) {
              <p-skeleton width="100%" height="150px" />
+             } @else if (certificadoData) {
+
+             <!-- Validity status card -->
+             <div class="text-left rounded-2xl border border-l-4 p-5 shadow-sm bg-surface-0 dark:bg-surface-900 border-surface-200 dark:border-surface-700 text-surface-700 dark:text-surface-200"
+                 [ngClass]="isValid ? 'border-l-green-500' : 'border-l-red-500'">
+                 <div class="flex items-center gap-3 mb-4">
+                     <i class="pi text-2xl"
+                         [ngClass]="isValid ? 'pi-verified text-green-500' : 'pi-times-circle text-red-500'"></i>
+                     <div class="flex-1">
+                         <div class="font-semibold text-lg leading-tight text-surface-900 dark:text-surface-0">
+                             {{ isValid ? 'Licença Válida' : 'Licença Expirada' }}
+                         </div>
+                         <div class="text-sm text-surface-500 dark:text-surface-400">{{ tipoDocumento }}</div>
+                     </div>
+                     <p-tag [severity]="isValid ? 'success' : 'danger'"
+                         [value]="isValid ? 'VÁLIDA' : 'EXPIRADA'" />
+                 </div>
+
+                 <dl class="text-sm space-y-2">
+                     <div class="flex justify-between gap-4">
+                         <dt class="text-surface-500 dark:text-surface-400">Nº de Identificação</dt>
+                         <dd class="font-semibold text-right break-all text-surface-900 dark:text-surface-0">{{ numero }}</dd>
+                     </div>
+                     <div class="flex justify-between gap-4">
+                         <dt class="text-surface-500 dark:text-surface-400">Sociedade Comercial</dt>
+                         <dd class="font-semibold text-right text-surface-900 dark:text-surface-0">{{ empresaNome }}</dd>
+                     </div>
+                     <div class="flex justify-between gap-4">
+                         <dt class="text-surface-500 dark:text-surface-400">Categoria</dt>
+                         <dd class="font-semibold text-right text-surface-900 dark:text-surface-0">{{ categoria | uppercase }}</dd>
+                     </div>
+                     <div class="flex justify-between gap-4">
+                         <dt class="text-surface-500 dark:text-surface-400">Data de Emissão</dt>
+                         <dd class="font-semibold text-right text-surface-900 dark:text-surface-0">{{ emissao | date: 'dd/MM/yyyy' }}</dd>
+                     </div>
+                     <div class="flex justify-between gap-4">
+                         <dt class="text-surface-500 dark:text-surface-400">Válida até</dt>
+                         <dd class="font-semibold text-right"
+                             [ngClass]="isValid ? 'text-surface-900 dark:text-surface-0' : 'text-red-500'">
+                             {{ validUntil | date: 'dd/MM/yyyy' }}
+                         </dd>
+                     </div>
+                 </dl>
+             </div>
+
+             <!-- Medium license image — tap to preview (responsive) -->
+             <div class="mt-6">
+                 @if (certificadoImage()) {
+                 <p class="text-sm text-surface-500 mb-2">Toque na licença para ampliar</p>
+                 <p-image [src]="certificadoImage()!" alt="Licença" [preview]="true"
+                     styleClass="license-image" />
+                 } @else {
+                 <p-skeleton width="100%" height="320px" />
+                 }
+             </div>
+
+             } @else if (searched()) {
+
+             <!-- Invalid / not-found card -->
+             <div class="text-left rounded-2xl border border-l-4 border-l-red-500 p-5 shadow-sm bg-surface-0 dark:bg-surface-900 border-surface-200 dark:border-surface-700">
+                 <div class="flex items-center gap-3">
+                     <i class="pi pi-times-circle text-2xl text-red-500"></i>
+                     <div class="flex-1">
+                         <div class="font-semibold text-lg leading-tight text-surface-900 dark:text-surface-0">Licença Inválida</div>
+                         <div class="text-sm text-surface-500 dark:text-surface-400">
+                             Número não encontrado ou inexistente.
+                         </div>
+                     </div>
+                     <p-tag severity="danger" value="INVÁLIDA" />
+                 </div>
+             </div>
+
              }
          </section>
      </div>
  </p-fluid>
+
+ <!-- Off-screen full certificate: rendered only as the capture source for the <p-image> above -->
+ @if (certificadoData) {
+ <div class="offscreen-cert" aria-hidden="true">
+     @if (isCadastro) {
+     <ng-container *ngTemplateOutlet="cadastroTemplate"></ng-container>
+     } @else {
+     <ng-container *ngTemplateOutlet="licencaAtividadeTemplate"></ng-container>
+     }
+ </div>
+ }
 
 
 
