@@ -43,12 +43,24 @@ export class ExportService {
             const element = document.getElementById(elementId);
             if (element) {
                 html2canvas(element).then(canvas => {
-                    const imgWidth = 297; // A4 landscape width in mm
+                    const imgWidth = 297;   // A4 landscape width in mm
+                    const pageHeight = 210; // A4 landscape height in mm
                     const imgHeight = canvas.height * imgWidth / canvas.width;
                     const contentDataURL = canvas.toDataURL('image/jpeg', 0.75);
                     const pdf = new jsPDF('l', 'mm', 'a4'); // Landscape orientation
-                    
-                    pdf.addImage(contentDataURL, 'JPEG', 0, 0, imgWidth, imgHeight);
+
+                    // BUG-WEB-5: content taller than one page was squashed/truncated. Slice the rendered image
+                    // across as many pages as needed by re-drawing it with a negative offset on each page.
+                    let heightLeft = imgHeight;
+                    let position = 0;
+                    pdf.addImage(contentDataURL, 'JPEG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                    while (heightLeft > 0) {
+                        position -= pageHeight;
+                        pdf.addPage();
+                        pdf.addImage(contentDataURL, 'JPEG', 0, position, imgWidth, imgHeight);
+                        heightLeft -= pageHeight;
+                    }
                     pdf.save(`${filename}.pdf`);
                     resolve();
                 }).catch(error => reject(error));
