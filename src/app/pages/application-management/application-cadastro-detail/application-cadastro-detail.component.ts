@@ -656,7 +656,7 @@ export class ApplicationCadastroDetailComponent {
       tipoEstabelecimento: [null],
       tipoEmpresa: new FormControl({ value: null, disabled: true }),
       quantoAtividade: [null],
-      caraterizacaoEstabelecimento: [null],
+      caraterizacaoEstabelecimento: [null, Validators.required],
       risco: new FormControl({ value: null, disabled: true }),
       ato: [null],
       grupoAtividade: new FormControl({ value: null, disabled: true }),
