@@ -23,11 +23,10 @@ export class CertificadoService {
         return this.http.get<CertificadoCadastro | CertificadoLicencaAtividade>(`${this.apiUrl}/${id}`, { params });
     }
 
-    sendCertificadoToEmailById(id: number, tipo: AplicanteType, file: File | Blob, fileName: string): Observable<any> {
-        const formData = new FormData();
-        formData.append('type', tipo);
-        formData.append('file', file, fileName);
-        return this.http.post(`${this.apiUrl}/${id}/send-email`, formData);
+    /** Fetch the server-generated certificate PDF (auth + ownership enforced server-side). */
+    getCertificadoPdf(id: number, aplicanteType: AplicanteType): Observable<Blob> {
+        const params = new HttpParams().append('type', aplicanteType);
+        return this.http.get(`${this.apiUrl}/${id}/pdf`, { params, responseType: 'blob' });
     }
 
     searchByNumero(numero: string, recaptchaToken: string): Observable<CertificadoCadastro | CertificadoLicencaAtividade> {

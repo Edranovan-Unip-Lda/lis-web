@@ -204,8 +204,7 @@ export class SummaryComponent {
                 {
                   queryParams: {
                     categoria: this.aplicanteData.categoria,
-                    tipo: this.aplicanteData.tipo,
-                    autoUpload: 'true'
+                    tipo: this.aplicanteData.tipo
                   }
                 }
               );
@@ -214,8 +213,7 @@ export class SummaryComponent {
                 {
                   queryParams: {
                     categoria: this.aplicanteData.categoria,
-                    tipo: this.aplicanteData.tipo,
-                    autoUpload: 'true'
+                    tipo: this.aplicanteData.tipo
                   }
                 }
               );
