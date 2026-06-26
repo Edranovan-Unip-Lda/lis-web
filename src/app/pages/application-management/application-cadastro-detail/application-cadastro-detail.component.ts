@@ -240,6 +240,7 @@ export class ApplicationCadastroDetailComponent {
         nif: empresa.nif,
         numeroRegistoComercial: empresa.numeroRegistoComercial,
         telemovel: empresa.telemovel,
+        telefone: empresa.telefone,
         email: empresa.email,
         gerente: empresa.gerente.nome,
       }
