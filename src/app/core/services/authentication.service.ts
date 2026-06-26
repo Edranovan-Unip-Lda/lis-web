@@ -35,8 +35,10 @@ export class AuthenticationService {
     return this.http.put<User>(`${this.apiUrl}/otp/${username}`, { username });
   }
 
-  sendForgotPasswordEmail(email: string): Observable<any> {
-    return this.http.post<User>(`${this.apiUrl}/forgot-password?email=${email}`, { email });
+  sendForgotPasswordEmail(email: string, recaptchaToken: string): Observable<any> {
+    // #22: forward the reCAPTCHA v3 token for backend verification.
+    const params = `?email=${encodeURIComponent(email)}&recaptchaToken=${encodeURIComponent(recaptchaToken)}`;
+    return this.http.post<User>(`${this.apiUrl}/forgot-password${params}`, { email });
   }
 
   resetPassword(data: any): Observable<any> {

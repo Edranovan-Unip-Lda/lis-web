@@ -143,7 +143,7 @@ export class SearchComponent implements OnDestroy {
   }
 
   loadImage(id: number) {
-    this.documentoService.downloadById(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(blob => {
+    this.documentoService.downloadSignatureById(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(blob => { // #8: public signature endpoint
       if (this.imageUrl) {
         URL.revokeObjectURL(this.imageUrl);
       }

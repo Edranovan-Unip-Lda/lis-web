@@ -1,8 +1,9 @@
+import { RecaptchaAction } from '@/core/models/enums';
 import { AuthenticationService } from '@/core/services';
 import { Component, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { RecaptchaV3Module, ReCaptchaV3Service } from 'ng-recaptcha-2';
 import { Button } from 'primeng/button';
 import { Fluid } from 'primeng/fluid';
 import { IconField } from 'primeng/iconfield';
@@ -10,12 +11,11 @@ import { InputIcon } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
 import { Message } from 'primeng/message';
 import { Ripple } from 'primeng/ripple';
-import { Toast } from 'primeng/toast';
 
 @Component({
     standalone: true,
     selector: 'app-forgot-password',
-    imports: [IconField, InputIcon, InputText, Button, Ripple, Fluid, RouterLink, ReactiveFormsModule, Message],
+    imports: [IconField, InputIcon, InputText, Button, Ripple, Fluid, RouterLink, ReactiveFormsModule, Message, RecaptchaV3Module],
     templateUrl: './forgot-password.component.html',
 })
 export class ForgotPassword {
@@ -25,32 +25,43 @@ export class ForgotPassword {
 
     constructor(
         private authService: AuthenticationService,
+        private recaptchaV3Service: ReCaptchaV3Service,
     ) { }
 
     submit() {
         this.messages.set([]);
-        this.loading = true;
-        if (this.email.valid) {
-            this.authService.sendForgotPasswordEmail(this.email.value!).subscribe({
-                next: () => {
-                    this.loading = false;
-                    this.messages.set([
-                        { severity: 'success', content: 'Email de redefinição de palavra-passe enviado com sucesso.' },
-                    ]);
-                    this.email.reset();
-                },
-                error: (err) => {
-                    this.messages.set([
-                        { severity: 'error', content: err },
-                    ]);
-                    this.loading = false;
-                    this.email.reset();
-                }
-            })
-        } else {
+        if (!this.email.valid) {
             this.email.markAsTouched();
-            this.loading = false;
+            return;
         }
+        this.loading = true;
+        // #22: obtain a reCAPTCHA v3 token, then request the reset email.
+        this.recaptchaV3Service.execute(RecaptchaAction.forgotPassword).subscribe({
+            next: (token) => this.requestReset(token),
+            error: () => {
+                this.loading = false;
+                this.messages.set([{ severity: 'error', content: 'Falha na verificação reCAPTCHA. Tente novamente.' }]);
+            }
+        });
+    }
+
+    private requestReset(recaptchaToken: string) {
+        this.authService.sendForgotPasswordEmail(this.email.value!, recaptchaToken).subscribe({
+            next: () => {
+                this.loading = false;
+                this.messages.set([
+                    { severity: 'success', content: 'Email de redefinição de palavra-passe enviado com sucesso.' },
+                ]);
+                this.email.reset();
+            },
+            error: (err) => {
+                this.messages.set([
+                    { severity: 'error', content: err },
+                ]);
+                this.loading = false;
+                this.email.reset();
+            }
+        });
     }
 
 }

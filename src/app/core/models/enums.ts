@@ -135,6 +135,7 @@ export enum TipoNacionalidade {
 export enum RecaptchaAction {
     registerEmpresa = 'REGISTER_EMPRESA',
     certificadoSearch = 'CERTIFICADO_SEARCH',
+    forgotPassword = 'FORGOT_PASSWORD',
 }
 
 export enum AuditType {
