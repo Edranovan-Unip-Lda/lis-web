@@ -6,7 +6,8 @@ import { estadoCivilOptions, maxFileSizeUpload, tipoDocumentoOptions, tipoNacion
 import { alphanumericValidator } from '@/core/validators/alphanumeric';
 import { greaterThanValidator } from '@/core/validators/greater-than';
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ReCaptchaV3Service, RecaptchaV3Module } from 'ng-recaptcha-2';
@@ -40,6 +41,7 @@ interface Notification {
     standalone: true,
     imports: [Button, FileUpload, RouterLink, InputText, Fluid, Ripple, Password, ReactiveFormsModule, Select, Message, StepperModule, DatePicker, InputGroup, InputGroupAddonModule, InputNumber, Divider, Tooltip, DatePipe, NgxPrintModule, CurrencyPipe, RecaptchaV3Module, DecimalPipe],
     templateUrl: './register.component.html',
+    styleUrls: ['./register.component.scss']
 })
 export class Register {
     confirmed: boolean = false;
@@ -69,6 +71,12 @@ export class Register {
     uploadedDocs: any[] = [];
     // B1: registration session token, opened on first file select; authorizes staging uploads + finalize.
     sessionToken: string | null = null;
+    // Draft autosave: a recoverable draft was found in localStorage → show the continue/start-fresh banner.
+    draftAvailable = false;
+    private readonly destroyRef = inject(DestroyRef);
+    private static readonly DRAFT_KEY = 'lis:register:draft';
+    private static readonly DRAFT_MAX_AGE_MS = 24 * 60 * 60 * 1000;   // discard drafts older than 24h entirely
+    private static readonly SESSION_SAFE_AGE_MS = 25 * 60 * 1000;     // beyond this, the 30-min session is unsafe
     maxFileSize = maxFileSizeUpload;
     tipoRepresentanteOptions = tipoRepresentante;
     gerenteForeigner: boolean = false;
@@ -83,6 +91,9 @@ export class Register {
     representanteAldeiaIsLoading = false;
     acionistaAldeiaIsLoading: boolean[] = [];
     acceptedFileTypes = 'application/pdf,image/jpeg,image/jpg,image/png';
+    // Printed resumo (official PDF layout): absolute logo URL so it resolves inside the ngxPrint window.
+    printLogoUrl = `${window.location.origin}/images/logo.png`;
+    today = new Date();
 
     constructor(
         private _fb: FormBuilder,
@@ -138,6 +149,9 @@ export class Register {
         this.setupAldeiaSearch();
         this.setupGerenteAldeiaSearch();
         this.setupRepresentanteAldeiaSearch();
+
+        this.setupDraftAutosave();
+        this.maybeOfferDraft();
     }
 
     setupAldeiaSearch(): void {
@@ -347,6 +361,7 @@ export class Register {
                     this.empresaForm.reset();
                     this.uploadedDocs = [];
                     this.sessionToken = null;
+                    this.clearDraft(); // registration done — drop any saved draft
                     this.setNotification();
                 },
                 error: (error) => {
@@ -671,9 +686,11 @@ export class Register {
     }
 
     onSelect(e: FileSelectEvent) {
+        // e.files may be a FileList (array-like, not an Array) — normalize before iterating.
+        const files = Array.from(e.files ?? []);
         // Bootstrap the session on the first selection, then stage each file immediately and independently.
         this.ensureSession().subscribe({
-            next: () => e.files.forEach(file => this.stageOne(file)),
+            next: () => files.forEach(file => this.stageOne(file)),
             error: () => {
                 this.isError = true;
                 this.errorMessage = 'Falha na verificação reCAPTCHA. Tente novamente.';
@@ -721,6 +738,118 @@ export class Register {
     /** Step is valid only when all 6 documents finished staging (have a ref). */
     allDocsStaged(): boolean {
         return this.uploadedDocs.length === 6 && this.uploadedDocs.every(d => d.status === 'done' && !!d.ref);
+    }
+
+    // ---- Draft autosave (continue after reload) ------------------------------------------------------------
+
+    /** Persist a small draft (form JSON minus password + staged doc refs + session token) on every change. */
+    private setupDraftAutosave(): void {
+        this.empresaForm.valueChanges.pipe(
+            debounceTime(800),
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe(() => this.saveDraft());
+    }
+
+    private saveDraft(): void {
+        if (this.empresaForm.pristine) return; // nothing meaningful typed yet
+        const raw = this.empresaForm.getRawValue();
+        if (raw.utilizador) raw.utilizador = { ...raw.utilizador, password: null }; // never persist the password
+        const draft = {
+            savedAt: Date.now(),
+            form: raw,
+            sessionToken: this.sessionToken,
+            docs: this.uploadedDocs
+                .filter(d => d.ref && d.status === 'done')
+                .map(d => ({ name: d.name, size: d.size, ref: d.ref, __key: d.__key })),
+        };
+        try {
+            localStorage.setItem(Register.DRAFT_KEY, JSON.stringify(draft));
+        } catch { /* quota / private mode — non-fatal */ }
+    }
+
+    /** Read a non-expired draft. Drops session+docs if older than the session window (form fields are kept). */
+    private readDraft(): any | null {
+        try {
+            const raw = localStorage.getItem(Register.DRAFT_KEY);
+            if (!raw) return null;
+            const draft = JSON.parse(raw);
+            if (!draft?.savedAt || Date.now() - draft.savedAt > Register.DRAFT_MAX_AGE_MS) {
+                this.clearDraft();
+                return null;
+            }
+            if (Date.now() - draft.savedAt > Register.SESSION_SAFE_AGE_MS) {
+                draft.sessionToken = null; // the 30-min session/staged files are likely gone — make the user re-attach
+                draft.docs = [];
+            }
+            return draft;
+        } catch {
+            this.clearDraft();
+            return null;
+        }
+    }
+
+    private maybeOfferDraft(): void {
+        this.draftAvailable = !!this.readDraft();
+    }
+
+    /** "Continuar": restore the form (rebuilding the acionistas array first), plus fresh staged docs/session. */
+    restoreDraft(): void {
+        const draft = this.readDraft();
+        if (!draft) { this.draftAvailable = false; return; }
+        const data = draft.form ?? {};
+
+        // 0) JSON turned Date objects into ISO strings — revive them so the p-datepickers can render again.
+        this.reviveDates(data);
+
+        // 1) Rebuild the acionistas FormArray to the saved size before patching (patchValue can't grow an array).
+        const savedAcionistas: any[] = data.acionistas ?? [];
+        // Setting tipoPropriedade fires the handler that clears + pushes one acionista.
+        this.empresaForm.get('tipoPropriedade')?.setValue(data.tipoPropriedade ?? null, { emitEvent: true });
+        while (this.acionistasArray.length < savedAcionistas.length) {
+            this.acionistasArray.push(this.generateAcionistaForm(false));
+        }
+        while (this.acionistasArray.length > savedAcionistas.length) {
+            this.acionistasArray.removeAt(this.acionistasArray.length - 1);
+        }
+        this.acionistasArray.controls.forEach((_, idx) => this.listaAldeiaAcionista[idx] = [...this.originalAldeias]);
+
+        // 2) Patch every field (acionistas controls now exist). emitEvent:false so we don't immediately re-save.
+        this.empresaForm.patchValue(data, { emitEvent: false });
+        this.empresaForm.markAsDirty();
+
+        // 3) Restore the staged documents + session if still within the safe window.
+        if (draft.sessionToken && draft.docs?.length) {
+            this.sessionToken = draft.sessionToken;
+            this.uploadedDocs = draft.docs.map((d: any) => ({ ...d, status: 'done' }));
+        }
+
+        this.draftAvailable = false;
+    }
+
+    /** "Começar de novo": drop the draft (and best-effort delete any staged docs it referenced). */
+    discardDraft(): void {
+        const draft = this.readDraft();
+        if (draft?.sessionToken && draft?.docs?.length) {
+            draft.docs.forEach((d: any) =>
+                this.empresaService.deleteStagedDocument(d.ref, draft.sessionToken).subscribe({ error: () => { } }));
+        }
+        this.clearDraft();
+        this.draftAvailable = false;
+    }
+
+    private clearDraft(): void {
+        try { localStorage.removeItem(Register.DRAFT_KEY); } catch { /* non-fatal */ }
+    }
+
+    /** Convert the persisted ISO-string dates back into Date objects the DatePickers can bind. */
+    private reviveDates(data: any): void {
+        const toDate = (v: any) => (v ? new Date(v) : v);
+        data.dataRegisto = toDate(data.dataRegisto);
+        if (data.gerente) data.gerente.validadeVisto = toDate(data.gerente.validadeVisto);
+        if (data.representante) {
+            data.representante.dataNascimento = toDate(data.representante.dataNascimento);
+            data.representante.validadeVisto = toDate(data.representante.validadeVisto);
+        }
     }
 
     disableStepEmpresa(): boolean {

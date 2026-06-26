@@ -15,6 +15,18 @@
 
 
      <div class="w-full px-2 md:px-8">
+         @if (draftAvailable) {
+         <p-message severity="info" [closable]="false" styleClass="mb-4 w-full">
+             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 w-full text-left">
+                 <span>Encontrámos um registo não concluído. Deseja continuar de onde parou?</span>
+                 <div class="flex gap-2 shrink-0">
+                     <p-button label="Continuar" size="small" icon="pi pi-history" (onClick)="restoreDraft()" />
+                     <p-button label="Começar de novo" size="small" severity="secondary" [text]="true"
+                         (onClick)="discardDraft()" />
+                 </div>
+             </div>
+         </p-message>
+         }
          <p-stepper [value]="1" class="basis-[50rem]" [linear]="true">
              <p-step-list>
                  <p-step [value]="1"><span class="hidden md:inline">Empresa</span></p-step>
@@ -311,7 +323,7 @@
                                              Documento de Identificação do(s) Proprietário(s) / Acionista(s)
                                          </li>
                                          <li>
-                                            Declaracão de Prévia
+                                             Declaracão de Prévia
                                          </li>
                                      </ul>
                                      <div class="flex justify-start">
@@ -329,11 +341,11 @@
                                          </a>
                                          &nbsp;
                                          @if (item.status === 'uploading') {
-                                             <i class="pi pi-spin pi-spinner text-surface-500"></i>
+                                         <i class="pi pi-spin pi-spinner text-surface-500"></i>
                                          } @else if (item.status === 'error') {
-                                             <span class="text-red-500 text-sm">Falha no upload</span>
+                                         <span class="text-red-500 text-sm">Falha no upload</span>
                                          } @else {
-                                             <i class="pi pi-check text-green-500"></i>
+                                         <i class="pi pi-check text-green-500"></i>
                                          }
                                          &nbsp;
                                          <p-button icon="pi pi-times" [rounded]="true" [text]="true" severity="danger"
@@ -688,6 +700,9 @@
                                          Este campo é obrigatório e deve ser válido.
                                      </p>
                                      }
+                                     <p-message severity="info" icon="pi pi-info-circle" styleClass="mt-2 text-sm">
+                                         Este email será usado como conta de acesso ao sistema.
+                                     </p-message>
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="telefone" class="font-medium mb-2 block">
@@ -1177,7 +1192,7 @@
                                      <div class="flex flex-row gap-2">
                                          <h1 class="text-3xl font-bold text-gray-100">Resumo da Inscrição</h1>
                                          <p-button icon="pi pi-file-pdf" size="large" severity="info" [raised]="true"
-                                             printSectionId="myDiv" [useExistingCss]="true" ngxPrint />
+                                             printSectionId="resumoPrint" [useExistingCss]="true" ngxPrint />
                                      </div>
                                      <p-button icon="pi pi-save" (click)="submit(empresaForm)" [loading]="loading"
                                          [disabled]="!empresaForm.valid" pButton pRipple label="Confirmar e Guardar"
@@ -1468,6 +1483,427 @@
                                          </div>
                                      </section>
                                  </main>
+
+                                 <!-- Hidden, print-only document — official MCI "Formulário de Registo de Empresa" layout.
+                                      The on-screen resumo above is unchanged; the PDF button prints this section.
+                                      translate="no" + .notranslate + lang="pt" keep it Portuguese even if the browser
+                                      auto-translates the page (ngxPrint copies this DOM's innerHTML). -->
+                                 <div id="resumoPrint" class="resumo-print-host notranslate" translate="no" lang="pt">
+                                     <div class="resumo-doc">
+                                         <div class="rz-header">
+                                             <div class="rz-brand">
+                                                 <img [src]="printLogoUrl" alt="MCI" />
+                                                 <div>
+                                                     <p class="name">MINISTÉRIO DO COMÉRCIO E INDÚSTRIA</p>
+                                                     <p class="sub">República Democrática de Timor-Leste</p>
+                                                     <p class="sub">Sistema de Gestão de Licenças Comerciais e
+                                                         Industriais</p>
+                                                 </div>
+                                             </div>
+                                             <div class="rz-formtitle">
+                                                 <div class="big">FORMULÁRIO DE REGISTO</div>
+                                                 <div class="small">DE EMPRESA</div>
+                                             </div>
+                                         </div>
+
+                                         <!-- 1. Dados da Empresa -->
+                                         <div class="rz-section">
+                                             <div class="rz-bar">
+                                                 <div class="left"><span class="rz-badge">1</span><span
+                                                         class="ttl">Dados da Empresa</span></div>
+                                                 <span class="step">Passo 1 de 4</span>
+                                             </div>
+                                             <div class="rz-grid">
+                                                 <div class="rz-f s12">
+                                                     <div class="rz-label">Nome da Empresa</div>
+                                                     <div class="rz-val">{{ empresaForm.get('nome')?.value }}</div>
+                                                 </div>
+                                                 <div class="rz-f s6">
+                                                     <div class="rz-label">Tipo de Sociedade Comercial</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('sociedadeComercial')?.value?.nome || empresaForm.get('sociedadeComercial')?.value?.name }}
+                                                     </div>
+                                                 </div>
+                                                 <div class="rz-f s6">
+                                                     <div class="rz-label">NIF da Empresa</div>
+                                                     <div class="rz-val">{{ empresaForm.get('nif')?.value }}</div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">Nº Registo Comercial</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('numeroRegistoComercial')?.value }}</div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">Capital Social (USD $)</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('capitalSocial')?.value | currency }}</div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">Data de Registo</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('dataRegisto')?.value | date:'dd/MM/yyyy' }}
+                                                     </div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">Total de Trabalhadores</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('totalTrabalhadores')?.value }}</div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">Volume de Negócios Anual ($)</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('volumeNegocioAnual')?.value | currency }}
+                                                     </div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">Balanço Total Anual ($)</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('balancoTotalAnual')?.value | currency }}
+                                                     </div>
+                                                 </div>
+                                                 <div class="rz-f s12">
+                                                     <div class="rz-label">Sede (Endereço)</div>
+                                                     <div class="rz-val">{{ empresaForm.get('sede.local')?.value }}
+                                                     </div>
+                                                 </div>
+                                                 <div class="rz-f s3">
+                                                     <div class="rz-label">Aldeia</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('sede.aldeia')?.value?.nome }}</div>
+                                                 </div>
+                                                 <div class="rz-f s3">
+                                                     <div class="rz-label">Suco</div>
+                                                     <div class="rz-val">{{ empresaForm.get('sede.suco')?.value }}</div>
+                                                 </div>
+                                                 <div class="rz-f s3">
+                                                     <div class="rz-label">Posto Administrativo</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('sede.postoAdministrativo')?.value }}</div>
+                                                 </div>
+                                                 <div class="rz-f s3">
+                                                     <div class="rz-label">Município</div>
+                                                     <div class="rz-val">{{ empresaForm.get('sede.municipio')?.value }}
+                                                     </div>
+                                                 </div>
+                                                 <div class="rz-f s3">
+                                                     <div class="rz-label">Longitude</div>
+                                                     <div class="rz-val">{{ empresaForm.get('longitude')?.value }}</div>
+                                                 </div>
+                                                 <div class="rz-f s3">
+                                                     <div class="rz-label">Latitude</div>
+                                                     <div class="rz-val">{{ empresaForm.get('latitude')?.value }}</div>
+                                                 </div>
+                                                 <div class="rz-f s3">
+                                                     <div class="rz-label">Nº Telemóvel</div>
+                                                     <div class="rz-val">{{ empresaForm.get('telemovel')?.value }}</div>
+                                                 </div>
+                                                 <div class="rz-f s3">
+                                                     <div class="rz-label">Nº Telefone</div>
+                                                     <div class="rz-val">{{ empresaForm.get('telefone')?.value }}</div>
+                                                 </div>
+                                                 <div class="rz-f s12">
+                                                     <div class="rz-label">Email</div>
+                                                     <div class="rz-val">{{ empresaForm.get('email')?.value }}</div>
+                                                 </div>
+                                             </div>
+                                             <div class="rz-docs">
+                                                 <div class="rz-doc-item"><span class="rz-check">✓</span> 1. Certidão de
+                                                     Registo Comercial</div>
+                                                 <div class="rz-doc-item"><span class="rz-check">✓</span> 2. Estatuto da
+                                                     Empresa</div>
+                                                 <div class="rz-doc-item"><span class="rz-check">✓</span> 3. NIF da
+                                                     Empresa</div>
+                                                 <div class="rz-doc-item"><span class="rz-check">✓</span> 4. Relatório
+                                                     do imposto sobre o rendimento anual</div>
+                                                 <div class="rz-doc-item"><span class="rz-check">✓</span> 5. Documento
+                                                     de Identificação do(s) Proprietário(s) / Acionista(s)</div>
+                                                 <div class="rz-doc-item"><span class="rz-check">✓</span> 6. Declaração
+                                                     de Prévia</div>
+                                             </div>
+                                         </div>
+
+                                         <!-- 2. Proprietário(a) / Titular -->
+                                         <div class="rz-section">
+                                             <div class="rz-bar">
+                                                 <div class="left"><span class="rz-badge">2</span><span
+                                                         class="ttl">Proprietário(a) / Titular da Empresa</span></div>
+                                                 <span class="step">Passo 2 de 4</span>
+                                             </div>
+                                             <div class="rz-grid">
+                                                 <div class="rz-f s12">
+                                                     <div class="rz-label">Tipo de Proprietário</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('tipoPropriedade')?.value?.name || empresaForm.get('tipoPropriedade')?.value }}
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                             @for (a of empresaForm.get('acionistas')?.getRawValue(); track $index) {
+                                             <div class="rz-sub">Acionista n.º {{ $index + 1 }}</div>
+                                             <div class="rz-grid">
+                                                 <div class="rz-f s6">
+                                                     <div class="rz-label">Nome do titular</div>
+                                                     <div class="rz-val">{{ a.nome }}</div>
+                                                 </div>
+                                                 <div class="rz-f s6">
+                                                     <div class="rz-label">Ações (%)</div>
+                                                     <div class="rz-val">{{ a.acoes }}</div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">NIF</div>
+                                                     <div class="rz-val">{{ a.nif }}</div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">Tipo de Documento</div>
+                                                     <div class="rz-val">{{ a.tipoDocumento?.name }}</div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">Nº Documento</div>
+                                                     <div class="rz-val">{{ a.numeroDocumento }}</div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">Nº Telefone</div>
+                                                     <div class="rz-val">{{ a.telefone }}</div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">Email</div>
+                                                     <div class="rz-val">{{ a.email }}</div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">Agregado Família</div>
+                                                     <div class="rz-val">{{ a.agregadoFamilia }}</div>
+                                                 </div>
+                                                 <div class="rz-f s6">
+                                                     <div class="rz-label">Relação de Família</div>
+                                                     <div class="rz-val">{{ a.relacaoFamilia }}</div>
+                                                 </div>
+                                                 <div class="rz-f s12">
+                                                     <div class="rz-label">Endereço</div>
+                                                     <div class="rz-val">{{ a.local }}</div>
+                                                 </div>
+                                                 <div class="rz-f s3">
+                                                     <div class="rz-label">Aldeia</div>
+                                                     <div class="rz-val">{{ a.aldeia?.nome }}</div>
+                                                 </div>
+                                                 <div class="rz-f s3">
+                                                     <div class="rz-label">Suco</div>
+                                                     <div class="rz-val">{{ a.suco }}</div>
+                                                 </div>
+                                                 <div class="rz-f s3">
+                                                     <div class="rz-label">Posto Administrativo</div>
+                                                     <div class="rz-val">{{ a.postoAdministrativo }}</div>
+                                                 </div>
+                                                 <div class="rz-f s3">
+                                                     <div class="rz-label">Município</div>
+                                                     <div class="rz-val">{{ a.municipio }}</div>
+                                                 </div>
+                                             </div>
+                                             }
+                                         </div>
+
+                                         <!-- 3. Gerente -->
+                                         <div class="rz-section">
+                                             <div class="rz-bar">
+                                                 <div class="left"><span class="rz-badge">3</span><span
+                                                         class="ttl">Gerente</span></div>
+                                                 <span class="step">Passo 3 de 4</span>
+                                             </div>
+                                             <div class="rz-grid">
+                                                 <div class="rz-f s12">
+                                                     <div class="rz-label">Nome</div>
+                                                     <div class="rz-val">{{ empresaForm.get('gerente.nome')?.value }}
+                                                     </div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">Tipo de Documento</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('gerente.tipoDocumento')?.value?.name }}
+                                                     </div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">Nº Documento</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('gerente.numeroDocumento')?.value }}</div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">Estado Civil</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('gerente.estadoCivil')?.value?.name || empresaForm.get('gerente.estadoCivil')?.value }}
+                                                     </div>
+                                                 </div>
+                                                 <div class="rz-f s6">
+                                                     <div class="rz-label">Email</div>
+                                                     <div class="rz-val">{{ empresaForm.get('gerente.email')?.value }}
+                                                     </div>
+                                                 </div>
+                                                 <div class="rz-f s6">
+                                                     <div class="rz-label">Nº Telefone</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('gerente.telefone')?.value }}</div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">Nacionalidade</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('gerente.nacionalidade')?.value }}</div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">Naturalidade</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('gerente.naturalidade')?.value }}</div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">Validade do Visto</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('gerente.validadeVisto')?.value | date:'dd/MM/yyyy' }}
+                                                     </div>
+                                                 </div>
+                                                 <div class="rz-f s12">
+                                                     <div class="rz-label">Morada</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('gerente.morada.local')?.value }}</div>
+                                                 </div>
+                                                 <div class="rz-f s3">
+                                                     <div class="rz-label">Aldeia</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('gerente.morada.aldeia')?.value?.nome }}
+                                                     </div>
+                                                 </div>
+                                                 <div class="rz-f s3">
+                                                     <div class="rz-label">Suco</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('gerente.morada.suco')?.value }}</div>
+                                                 </div>
+                                                 <div class="rz-f s3">
+                                                     <div class="rz-label">Posto Administrativo</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('gerente.morada.postoAdministrativo')?.value }}
+                                                     </div>
+                                                 </div>
+                                                 <div class="rz-f s3">
+                                                     <div class="rz-label">Município</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('gerente.morada.municipio')?.value }}</div>
+                                                 </div>
+                                             </div>
+                                         </div>
+
+                                         <!-- 4. Representante -->
+                                         <div class="rz-section">
+                                             <div class="rz-bar">
+                                                 <div class="left"><span class="rz-badge">4</span><span
+                                                         class="ttl">Representante</span></div>
+                                                 <span class="step">Passo 4 de 4</span>
+                                             </div>
+                                             <div class="rz-grid">
+                                                 <div class="rz-f s6">
+                                                     <div class="rz-label">Tipo de Representante</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('representante.tipo')?.value?.name || empresaForm.get('representante.tipo')?.value }}
+                                                     </div>
+                                                 </div>
+                                                 <div class="rz-f s6">
+                                                     <div class="rz-label">Nome</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('representante.nome')?.value }}</div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">Tipo de Documento</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('representante.tipoDocumento')?.value?.name }}
+                                                     </div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">Nº Documento</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('representante.numeroDocumento')?.value }}
+                                                     </div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">Data de Nascimento</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('representante.dataNascimento')?.value | date:'dd/MM/yyyy' }}
+                                                     </div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">Estado Civil</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('representante.estadoCivil')?.value?.name || empresaForm.get('representante.estadoCivil')?.value }}
+                                                     </div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">Nacionalidade</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('representante.nacionalidade')?.value }}
+                                                     </div>
+                                                 </div>
+                                                 <div class="rz-f s4">
+                                                     <div class="rz-label">Naturalidade</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('representante.naturalidade')?.value }}
+                                                     </div>
+                                                 </div>
+                                                 <div class="rz-f s6">
+                                                     <div class="rz-label">Pai</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('representante.pai')?.value }}</div>
+                                                 </div>
+                                                 <div class="rz-f s6">
+                                                     <div class="rz-label">Mãe</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('representante.mae')?.value }}</div>
+                                                 </div>
+                                                 <div class="rz-f s6">
+                                                     <div class="rz-label">Email</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('representante.email')?.value }}</div>
+                                                 </div>
+                                                 <div class="rz-f s6">
+                                                     <div class="rz-label">Nº Telefone</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('representante.telefone')?.value }}</div>
+                                                 </div>
+                                                 <div class="rz-f s12">
+                                                     <div class="rz-label">Morada</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('representante.morada.local')?.value }}
+                                                     </div>
+                                                 </div>
+                                                 <div class="rz-f s3">
+                                                     <div class="rz-label">Aldeia</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('representante.morada.aldeia')?.value?.nome }}
+                                                     </div>
+                                                 </div>
+                                                 <div class="rz-f s3">
+                                                     <div class="rz-label">Suco</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('representante.morada.suco')?.value }}</div>
+                                                 </div>
+                                                 <div class="rz-f s3">
+                                                     <div class="rz-label">Posto Administrativo</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('representante.morada.postoAdministrativo')?.value }}
+                                                     </div>
+                                                 </div>
+                                                 <div class="rz-f s3">
+                                                     <div class="rz-label">Município</div>
+                                                     <div class="rz-val">
+                                                         {{ empresaForm.get('representante.morada.municipio')?.value }}
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                             <div class="rz-sign">
+                                                 <div class="ln">Assinatura do Requerente</div>
+                                                 <div class="ln">Data: {{ today | date:'dd/MM/yyyy' }}</div>
+                                             </div>
+                                         </div>
+
+                                         <div class="rz-footer">
+                                             <span>MCI / LIS — Formulário de Registo de Empresa</span>
+                                             <span>Resumo da Inscrição</span>
+                                         </div>
+                                     </div>
+                                 </div>
+
                                  <div class="mt-6 mb-6 text-left flex justify-between items-center">
                                      <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
                                          (onClick)="activateCallback(2)" />

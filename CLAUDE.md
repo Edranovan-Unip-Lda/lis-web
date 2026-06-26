@@ -50,8 +50,15 @@ npm run format       # prettier
 - **User-by-direcao** lookups use `GET /api/v1/users/by-direcao` (returns a plain `UserDto[]`), **not** the old
   Spring Data REST `/data/users/...` path (which is gone — `User` is no longer REST-exposed).
 - **reCAPTCHA v3** (`ng-recaptcha-2`): obtain a token via `ReCaptchaV3Service.execute(RecaptchaAction.<x>)` and pass
-  it to the backend for public/abuse-prone flows (registration, certificate search, forgot-password). Site keys +
-  API hosts live in `environment*.ts` (env-specific, not secret).
+  it to the backend for public/abuse-prone flows (certificate search, forgot-password). Site keys + API hosts live
+  in `environment*.ts` (env-specific, not secret).
+- **Register page** (`pages/auth/register`): documents upload **as selected**, not at submit — `onSelect` opens a
+  registration session (`empresaService.verifyRecaptcha` → `sessionToken`) then stages each file via
+  `stageDocument`; submit is a small JSON `finalize` carrying the staged refs + token (no multipart). A debounced
+  draft autosaves to `localStorage` (`lis:register:draft` — password stripped, `Date`s revived on restore) and is
+  offered back through a continue/start-fresh `p-message` banner. The printed **Resumo** is a separate hidden,
+  `translate="no"` document (`#resumoPrint`, styled in `register.component.scss`) cloned by `ngxPrint` — keep it
+  Portuguese-only and mirroring the official MCI PDF form.
 - Domain terms **Portuguese**, code/comments **English**. `develop` → `main`; commit only when asked.
 
 ## Adding a feature — checklist
