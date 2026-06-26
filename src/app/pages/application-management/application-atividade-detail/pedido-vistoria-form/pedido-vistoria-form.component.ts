@@ -117,7 +117,7 @@ export class PedidoVistoriaFormComponent {
     });
 
 
-    this.listaAldeia = mapToIdAndNome(this.route.snapshot.data['aldeiasResolver']._embedded.aldeias);
+    this.listaAldeia = mapToIdAndNome((this.route.snapshot.data['aldeiasResolver']?._embedded?.aldeias ?? []));
     if (this.disabledAllForm) {
       this.vistoriaRequestForm.disable();
     }
@@ -217,7 +217,7 @@ export class PedidoVistoriaFormComponent {
     if (query && query.length) {
       this.dataMasterService.searchAldeiasByNome(query)
         .subscribe(resp => {
-          this.listaAldeia = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, id: a.id }));
+          this.listaAldeia = (resp?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, id: a.id }));
           // this.loading = false;
         });
     } else {
@@ -236,7 +236,7 @@ export class PedidoVistoriaFormComponent {
       this.vistoriaRequestForm.get('grupoAtividadeCodigo')?.setValue(event.value.descricao);
 
       this.dataMasterService.getClassesByGrupoId(value.id).subscribe({
-        next: response => this.listaClasseAtividade = response._embedded.classeAtividade
+        next: response => this.listaClasseAtividade = (response?._embedded?.classeAtividade ?? [])
       });
     } else {
       this.vistoriaRequestForm.get('grupoAtividadeCodigo')?.reset();
@@ -264,7 +264,7 @@ export class PedidoVistoriaFormComponent {
     if (query && query.length >= 2) {
       this.dataMasterService.searchClasseByCodigo(query).subscribe({
         next: resp => {
-          this.listaClasseAtividade = mapToAtividadeEconomica(resp._embedded.classeAtividade);
+          this.listaClasseAtividade = mapToAtividadeEconomica((resp?._embedded?.classeAtividade ?? []));
         }
       });
     }

@@ -81,7 +81,7 @@ export class EmpresaFormComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
 
-    this.listaSociedadeComercial = this.route.snapshot.data['listaSociedadeComercial']._embedded.sociedadeComercial.map((s: any) => ({ nome: s.nome, value: s.id }));
+    this.listaSociedadeComercial = (this.route.snapshot.data['listaSociedadeComercial']?._embedded?.sociedadeComercial ?? []).map((s: any) => ({ nome: s.nome, value: s.id }));
     this.originalAldeias = [...this.aldeias];
     this.gerenteListaAldeias = [...this.aldeias];
     this.representanteListaAldeias = [...this.aldeias];
@@ -249,7 +249,7 @@ export class EmpresaFormComponent implements OnInit {
     if (query && query.length) {
       this.dataMasterService.searchAldeiasByNome(query)
         .subscribe(resp => {
-          this.aldeias = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+          this.aldeias = (resp?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, value: a.id }));
           this.loading = false;
         });
     } else {
@@ -288,9 +288,9 @@ export class EmpresaFormComponent implements OnInit {
       this.dataMasterService.searchAldeiasByNome(query)
         .subscribe(resp => {
           if (formControl === 'gerente') {
-            this.gerenteListaAldeias = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+            this.gerenteListaAldeias = (resp?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, value: a.id }));
           } else {
-            this.representanteListaAldeias = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+            this.representanteListaAldeias = (resp?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, value: a.id }));
           }
           this.loading = false;
         });
@@ -458,7 +458,7 @@ export class EmpresaFormComponent implements OnInit {
     if (query && query.length) {
       this.dataMasterService.searchAldeiasByNome(query)
         .subscribe(resp => {
-          this.listaAldeiaAcionista[index] = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+          this.listaAldeiaAcionista[index] = (resp?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, value: a.id }));
           this.loading = false;
         });
     } else {
@@ -902,6 +902,6 @@ export class EmpresaFormComponent implements OnInit {
 
   private async setAldeiaListBySucoId(sucoId: number): Promise<any[]> {
     const response = await firstValueFrom(this.dataMasterService.getAldeiasBySuco(sucoId));
-    return response._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+    return (response?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, value: a.id }));
   }
 }

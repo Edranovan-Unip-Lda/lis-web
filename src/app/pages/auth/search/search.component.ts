@@ -1,7 +1,8 @@
 import { Categoria, RecaptchaAction } from '@/core/models/enums';
 import { CertificadoService, DocumentosService } from '@/core/services';
 import { DatePipe, NgStyle, NgTemplateOutlet, UpperCasePipe } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnDestroy, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { QRCodeComponent } from 'angularx-qrcode';
@@ -23,7 +24,8 @@ import { environment } from 'src/environments/environment';
   styleUrl: './search.component.scss',
   providers: [MessageService]
 })
-export class SearchComponent {
+export class SearchComponent implements OnDestroy {
+  private destroyRef = inject(DestroyRef);
   messages = signal<any[]>([]);
   searchInput = new FormControl(null, [Validators.required, Validators.minLength(1)]);
   loading = false;
@@ -45,7 +47,7 @@ export class SearchComponent {
 
   ngOnInit(): void {
 
-    this.route.queryParamMap.subscribe(queryParams => {
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(queryParams => { // BUG-WEB-6: teardown
       this.loading = true;
       const numero = queryParams.get('numero')?.trim();
 
@@ -95,7 +97,12 @@ export class SearchComponent {
             }]);
             this.certificadoData = certificado;
             this.certificadoData.updatedAt = new Date(this.certificadoData.updatedAt)
+            const originalDay = this.certificadoData.updatedAt.getDate();
             this.certificadoData.updatedAt.setFullYear(this.certificadoData.updatedAt.getFullYear() + 1);
+            // BUG-WEB-7: a Feb-29 date +1yr rolls into March — clamp back to the last valid day of the target month.
+            if (this.certificadoData.updatedAt.getDate() !== originalDay) {
+              this.certificadoData.updatedAt.setDate(0);
+            }
             this.dataValido = this.certificadoData.updatedAt;
             this.loadImage(this.certificadoData.assinatura.id);
             this.loading = false;
@@ -136,13 +143,20 @@ export class SearchComponent {
   }
 
   loadImage(id: number) {
-    this.documentoService.downloadById(id).subscribe(blob => {
+    this.documentoService.downloadById(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(blob => {
       if (this.imageUrl) {
         URL.revokeObjectURL(this.imageUrl);
       }
 
       this.imageUrl = URL.createObjectURL(blob);
     });
+  }
+
+  ngOnDestroy(): void {
+    // BUG-WEB-6: free the last object URL so it isn't leaked when leaving the page.
+    if (this.imageUrl) {
+      URL.revokeObjectURL(this.imageUrl);
+    }
   }
 
 }

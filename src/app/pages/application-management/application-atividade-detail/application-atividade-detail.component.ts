@@ -72,10 +72,10 @@ export class ApplicationAtividadeDetailComponent {
   ngOnInit(): void {
     this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
 
-    this.listaAldeia = mapToIdAndNome(this.router.snapshot.data['aldeiasResolver']._embedded.aldeias);
-    this.listaClasseAtividade = mapToAtividadeEconomica(this.router.snapshot.data['classeAtividadeResolver']._embedded.classeAtividade);
+    this.listaAldeia = mapToIdAndNome((this.router.snapshot.data['aldeiasResolver']?._embedded?.aldeias ?? []));
+    this.listaClasseAtividade = mapToAtividadeEconomica((this.router.snapshot.data['classeAtividadeResolver']?._embedded?.classeAtividade ?? []));
 
-    this.listaPedidoAto = mapToTaxa(this.router.snapshot.data['listaTaxaResolver']._embedded.taxas);
+    this.listaPedidoAto = mapToTaxa((this.router.snapshot.data['listaTaxaResolver']?._embedded?.taxas ?? []));
     this.aplicanteEstado = this.aplicanteData.estado;
 
     this.checkedForms(this.aplicanteData);

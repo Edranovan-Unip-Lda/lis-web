@@ -60,12 +60,12 @@ export class UserCreate {
 
         this.userData = this.route.snapshot.data['userData'];
 
-        this.direcaoList = mapToIdAndNome(this.route.snapshot.data['direcaoList']._embedded.direcoes);
+        this.direcaoList = mapToIdAndNome((this.route.snapshot.data['direcaoList']?._embedded?.direcoes ?? []));
 
         this.isNew = !this.userData;
 
         if (!this.isNew) {
-            this.roleList = mapToIdAndName(this.route.snapshot.data['roleList']._embedded.roles || []);
+            this.roleList = mapToIdAndName((this.route.snapshot.data['roleList']?._embedded?.roles ?? []) || []);
 
 
             this.userData.password = ''; // Do not show password in edit form
@@ -98,7 +98,7 @@ export class UserCreate {
             }
 
         } else {
-            this.roleList = mapToIdAndName(this.route.snapshot.data['roleList']._embedded.roles || []).filter(item => item.name !== Role.client);
+            this.roleList = mapToIdAndName((this.route.snapshot.data['roleList']?._embedded?.roles ?? []) || []).filter(item => item.name !== Role.client);
         }
     }
 

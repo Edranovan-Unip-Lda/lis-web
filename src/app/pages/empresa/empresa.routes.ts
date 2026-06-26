@@ -33,7 +33,8 @@ export default [
             listaSociedadeComercial: getSociedadeComercialResolver,
             roleListResolver: getRolesResolver,
             empresaResolver: getByUsernameResolver,
-        }
+        },
+        canActivate: [canActivateByRole], // #13: enforce the role declared above (was unguarded)
     },
     {
         path: 'detail/:username',

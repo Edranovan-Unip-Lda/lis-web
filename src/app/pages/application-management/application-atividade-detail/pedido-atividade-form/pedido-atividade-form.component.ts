@@ -232,7 +232,7 @@ export class PedidoAtividadeFormComponent {
     if (query && query.length) {
       this.dataMasterService.searchAldeiasByNome(query)
         .subscribe(resp => {
-          this.listaAldeiaEmpresa = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, id: a.id }));
+          this.listaAldeiaEmpresa = (resp?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, id: a.id }));
           // this.loading = false;
         });
     } else {
@@ -246,7 +246,7 @@ export class PedidoAtividadeFormComponent {
     if (query && query.length) {
       this.dataMasterService.searchAldeiasByNome(query)
         .subscribe(resp => {
-          this.listaAldeiaRepresentante = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, id: a.id }));
+          this.listaAldeiaRepresentante = (resp?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, id: a.id }));
           // this.loading = false;
         });
     } else {
@@ -260,7 +260,7 @@ export class PedidoAtividadeFormComponent {
     if (query && query.length) {
       this.dataMasterService.searchAldeiasByNome(query)
         .subscribe(resp => {
-          this.listaAldeiaGerente = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, id: a.id }));
+          this.listaAldeiaGerente = (resp?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, id: a.id }));
           // this.loading = false;
         });
     } else {
@@ -274,7 +274,7 @@ export class PedidoAtividadeFormComponent {
     if (query && query.length) {
       this.dataMasterService.searchAldeiasByNome(query)
         .subscribe(resp => {
-          this.listaAldeiaArrendador = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, id: a.id }));
+          this.listaAldeiaArrendador = (resp?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, id: a.id }));
           // this.loading = false;
         });
     } else {
@@ -313,7 +313,7 @@ export class PedidoAtividadeFormComponent {
     if (query && query.length >= 2) {
       this.dataMasterService.searchClasseByCodigo(query).subscribe({
         next: resp => {
-          this.listaClasseAtividade = mapToAtividadeEconomica(resp._embedded.classeAtividade);
+          this.listaClasseAtividade = mapToAtividadeEconomica((resp?._embedded?.classeAtividade ?? []));
         }
       });
     }
@@ -559,9 +559,9 @@ export class PedidoAtividadeFormComponent {
 
     forkJoin([empresaSedeService, representanteService, gerenteService]).subscribe({
       next: ([empresaSedeResponse, representanteResponse, gerenteResponse]) => {
-        this.listaAldeiaEmpresa = [...mapToIdAndNome(empresaSedeResponse._embedded.aldeias), ...this.listaAldeia];
-        this.listaAldeiaRepresentante = [...mapToIdAndNome(representanteResponse._embedded.aldeias)];
-        this.listaAldeiaGerente = [...mapToIdAndNome(gerenteResponse._embedded.aldeias)];
+        this.listaAldeiaEmpresa = [...mapToIdAndNome((empresaSedeResponse?._embedded?.aldeias ?? [])), ...this.listaAldeia];
+        this.listaAldeiaRepresentante = [...mapToIdAndNome((representanteResponse?._embedded?.aldeias ?? []))];
+        this.listaAldeiaGerente = [...mapToIdAndNome((gerenteResponse?._embedded?.aldeias ?? []))];
 
         this.requestForm.get('empresaSede')?.patchValue({
           aldeia: request.empresaSede.aldeia.id,
@@ -648,7 +648,7 @@ export class PedidoAtividadeFormComponent {
     this.requestForm.get('empresaNif')?.setValue(empresa.nif);
 
     this.dataMasterService.getAldeiasBySuco(empresa.sede.aldeia.suco.id).subscribe(resp => {
-      this.listaAldeiaEmpresa = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, id: a.id }));
+      this.listaAldeiaEmpresa = (resp?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, id: a.id }));
       this.requestForm.get('empresaSede')?.get('aldeia')?.setValue(empresa.sede.aldeia.id);
       this.requestForm.get('empresaSede')?.get('suco')?.setValue(empresa.sede.aldeia.suco.nome);
       this.requestForm.get('empresaSede')?.get('postoAdministrativo')?.setValue(empresa.sede.aldeia.suco.postoAdministrativo.nome);

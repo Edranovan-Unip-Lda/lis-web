@@ -94,9 +94,9 @@ export class Register {
     ngOnInit() {
         this.initForm();
 
-        this.aldeias = this.route.snapshot.data['aldeiasResolver']._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+        this.aldeias = (this.route.snapshot.data['aldeiasResolver']?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, value: a.id }));
 
-        this.listaSociedadeComercial = this.route.snapshot.data['listaSociedadeComercial']._embedded.sociedadeComercial.map((s: any) => ({ nome: s.nome, value: s.id }));
+        this.listaSociedadeComercial = (this.route.snapshot.data['listaSociedadeComercial']?._embedded?.sociedadeComercial ?? []).map((s: any) => ({ nome: s.nome, value: s.id }));
         // Re-validate now that the list is loaded
         this.empresaForm.get('nome')?.updateValueAndValidity();
         this.originalAldeias = [...this.aldeias];
@@ -160,7 +160,7 @@ export class Register {
         ).subscribe({
             next: (response) => {
                 if (response) {
-                    this.aldeias = response._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+                    this.aldeias = (response?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, value: a.id }));
                 } else {
                     this.aldeias = [...this.originalAldeias];
                 }
@@ -191,7 +191,7 @@ export class Register {
         ).subscribe({
             next: (response) => {
                 if (response) {
-                    this.gerenteListaAldeias = response._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+                    this.gerenteListaAldeias = (response?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, value: a.id }));
                 } else {
                     this.gerenteListaAldeias = [...this.originalAldeias];
                 }
@@ -222,7 +222,7 @@ export class Register {
         ).subscribe({
             next: (response) => {
                 if (response) {
-                    this.representanteListaAldeias = response._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+                    this.representanteListaAldeias = (response?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, value: a.id }));
                 } else {
                     this.representanteListaAldeias = [...this.originalAldeias];
                 }
@@ -257,7 +257,7 @@ export class Register {
             ).subscribe({
                 next: (response) => {
                     if (response) {
-                        this.listaAldeiaAcionista[index] = response._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+                        this.listaAldeiaAcionista[index] = (response?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, value: a.id }));
                     } else {
                         this.listaAldeiaAcionista[index] = [...this.originalAldeias];
                     }

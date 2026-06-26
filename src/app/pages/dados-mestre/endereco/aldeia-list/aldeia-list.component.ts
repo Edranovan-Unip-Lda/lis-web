@@ -55,10 +55,10 @@ export class AldeiaListComponent {
     });
 
     this.type = this.route.snapshot.data['type'];
-    this.dataList = this.route.snapshot.data['aldeiaResolve']._embedded.aldeias;
+    this.dataList = (this.route.snapshot.data['aldeiaResolve']?._embedded?.aldeias ?? []);
     this.totalData = this.route.snapshot.data['aldeiaResolve'].page.totalElements;
 
-    this.municipioList = mapToIdAndNome(this.route.snapshot.data['municipioResolve']._embedded.municipios);
+    this.municipioList = mapToIdAndNome((this.route.snapshot.data['municipioResolve']?._embedded?.municipios ?? []));
   }
 
 
@@ -88,7 +88,7 @@ export class AldeiaListComponent {
 
         this.service.getSucosByPosto(response.postoAdministrativo.id).subscribe({
           next: response => {
-            this.sucoList = mapToIdAndNome(response._embedded.sucos);
+            this.sucoList = mapToIdAndNome((response?._embedded?.sucos ?? []));
             this.service.getPostoById(data.postoAdministrativo.id).subscribe({
               next: response => {
                 delete response.municipio._links;
@@ -96,7 +96,7 @@ export class AldeiaListComponent {
 
                 this.service.getPostosByMunicipio(response.municipio.id).subscribe({
                   next: response => {
-                    this.postoList = mapToIdAndNome(response._embedded.postos);
+                    this.postoList = mapToIdAndNome((response?._embedded?.postos ?? []));
                     
                     this.form.patchValue(data);
                     this.selectedData = data;
@@ -118,7 +118,7 @@ export class AldeiaListComponent {
   municipioSelectOnChange(event: any): void {
     this.service.getPostosByMunicipio(event.value.id).subscribe({
       next: response => {
-        this.postoList = mapToIdAndNome(response._embedded.postos);
+        this.postoList = mapToIdAndNome((response?._embedded?.postos ?? []));
       }
     });
   }
@@ -126,7 +126,7 @@ export class AldeiaListComponent {
   postoSelectOnChange(event: any): void {
     this.service.getSucosByPosto(event.value.id).subscribe({
       next: response => {
-        this.sucoList = mapToIdAndNome(response._embedded.sucos);
+        this.sucoList = mapToIdAndNome((response?._embedded?.sucos ?? []));
       }
     });
   }
@@ -227,7 +227,7 @@ export class AldeiaListComponent {
     this.dataIsFetching = true;
     this.service.getAldeias(page, size).subscribe({
       next: response => {
-        this.dataList = response._embedded.aldeias;
+        this.dataList = (response?._embedded?.aldeias ?? []);
         this.totalData = response.page.totalElements;
         this.dataIsFetching = false;
       }

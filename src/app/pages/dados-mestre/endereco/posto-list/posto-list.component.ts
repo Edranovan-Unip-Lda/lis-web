@@ -51,10 +51,10 @@ export class PostoListComponent {
       municipio: [null, [Validators.required]]
     });
     this.type = this.route.snapshot.data['type'];
-    this.dataList = this.route.snapshot.data['postoResolve']._embedded.postos;
+    this.dataList = (this.route.snapshot.data['postoResolve']?._embedded?.postos ?? []);
     this.totalData = this.route.snapshot.data['postoResolve'].page.totalElements;
 
-    this.municipioList = mapToIdAndNome(this.route.snapshot.data['municipioResolve']._embedded.municipios);
+    this.municipioList = mapToIdAndNome((this.route.snapshot.data['municipioResolve']?._embedded?.municipios ?? []));
   }
 
 
@@ -171,7 +171,7 @@ export class PostoListComponent {
     this.dataIsFetching = true;
     this.service.getPostos(page, size).subscribe({
       next: response => {
-        this.dataList = response._embedded.postos;
+        this.dataList = (response?._embedded?.postos ?? []);
         this.totalData = response.page.totalElements;
         this.dataIsFetching = false;
       }

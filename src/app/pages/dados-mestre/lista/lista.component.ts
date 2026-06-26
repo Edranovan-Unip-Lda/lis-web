@@ -72,7 +72,7 @@ export class ListaComponent {
     this.type = type;
     switch (type) {
       case 'direcoes':
-        this.dataList = this.route.snapshot.data['listaDirecao']._embedded.direcoes;
+        this.dataList = (this.route.snapshot.data['listaDirecao']?._embedded?.direcoes ?? []);
         this.cols = [
           { field: 'nome', header: 'Nome' },
         ];
@@ -82,7 +82,7 @@ export class ListaComponent {
         });
         break;
       case 'roles':
-        this.dataList = this.route.snapshot.data['listaRoles']._embedded.roles;
+        this.dataList = (this.route.snapshot.data['listaRoles']?._embedded?.roles ?? []);
         this.cols = [
           { field: 'name', header: 'Nome' },
         ];
@@ -92,7 +92,7 @@ export class ListaComponent {
         });
         break;
       case 'grupo-atividades':
-        this.dataList = this.route.snapshot.data['listaGrupoAtividade']._embedded.grupoAtividade;
+        this.dataList = (this.route.snapshot.data['listaGrupoAtividade']?._embedded?.grupoAtividade ?? []);
         this.totalData = this.route.snapshot.data['listaGrupoAtividade'].page.totalElements;
         this.cols = [
           { field: 'codigo', header: 'Codigo' },
@@ -105,7 +105,7 @@ export class ListaComponent {
         });
         break;
       case 'classe-atividades':
-        this.dataList = this.route.snapshot.data['listaClasseAtividade']._embedded.classeAtividade;
+        this.dataList = (this.route.snapshot.data['listaClasseAtividade']?._embedded?.classeAtividade ?? []);
         this.totalData = this.route.snapshot.data['listaClasseAtividade'].page.totalElements;
         this.cols = [
           { field: 'grupoAtividade', header: 'Grupo Codigo' },
@@ -122,7 +122,7 @@ export class ListaComponent {
         });
         break;
       case 'taxas':
-        this.dataList = this.route.snapshot.data['listaTaxa']._embedded.taxas;
+        this.dataList = (this.route.snapshot.data['listaTaxa']?._embedded?.taxas ?? []);
         this.cols = [
           { field: 'categoria', header: 'Categoria' },
           { field: 'tipo', header: 'Tipo' },
@@ -141,7 +141,7 @@ export class ListaComponent {
 
         break;
       case 'sociedade-comercial':
-        this.dataList = this.route.snapshot.data['listaSociedadeComercial']._embedded.sociedadeComercial;
+        this.dataList = (this.route.snapshot.data['listaSociedadeComercial']?._embedded?.sociedadeComercial ?? []);
         this.cols = [
           { field: 'nome', header: 'Nome' },
           { field: 'acronimo', header: 'Acrónimo' },
@@ -228,7 +228,7 @@ export class ListaComponent {
       case 'direcoes':
         this.service.getPageDirecao(page, size).subscribe({
           next: response => {
-            this.dataList = response._embedded.direcoes;
+            this.dataList = (response?._embedded?.direcoes ?? []);
             this.totalData = response.page.totalElements;
             this.dataIsFetching = false;
           },
@@ -240,7 +240,7 @@ export class ListaComponent {
       case 'roles':
         this.service.getRoles().subscribe({
           next: response => {
-            this.dataList = response._embedded.roles;
+            this.dataList = (response?._embedded?.roles ?? []);
             this.totalData = response.page.totalElements;
             this.dataIsFetching = false;
           },
@@ -252,7 +252,7 @@ export class ListaComponent {
       case 'grupo-atividades':
         this.service.getPageGrupoAtividade(page, size).subscribe({
           next: response => {
-            this.dataList = response._embedded.grupoAtividade;
+            this.dataList = (response?._embedded?.grupoAtividade ?? []);
             this.totalData = response.page.totalElements;
             this.dataIsFetching = false;
           },
@@ -264,7 +264,7 @@ export class ListaComponent {
       case 'classe-atividades':
         this.service.getPageClasseAtividade(page, size).subscribe({
           next: response => {
-            this.dataList = response._embedded.classeAtividade;
+            this.dataList = (response?._embedded?.classeAtividade ?? []);
             this.totalData = response.page.totalElements;
             this.dataIsFetching = false;
           },
@@ -276,7 +276,7 @@ export class ListaComponent {
       case 'taxas':
         this.service.getTaxa(page, size).subscribe({
           next: response => {
-            this.dataList = response._embedded.taxas;
+            this.dataList = (response?._embedded?.taxas ?? []);
             this.totalData = response.page.totalElements;
             this.dataIsFetching = false;
           },
@@ -288,7 +288,7 @@ export class ListaComponent {
       case 'sociedade-comercial':
         this.service.getSociedadeComercial(page, size).subscribe({
           next: response => {
-            this.dataList = response._embedded.sociedadeComercial;
+            this.dataList = (response?._embedded?.sociedadeComercial ?? []);
             this.totalData = response.page.totalElements;
             this.dataIsFetching = false;
           },
@@ -398,7 +398,7 @@ export class ListaComponent {
   private getGrupoAtividades(): void {
     this.service.getAllGrupoAtividade().subscribe({
       next: (response) => {
-        this.grupoAtivadadeOpts = mapToGrupoAtividade(response._embedded.grupoAtividade);
+        this.grupoAtivadadeOpts = mapToGrupoAtividade((response?._embedded?.grupoAtividade ?? []));
       }
     });
   }
