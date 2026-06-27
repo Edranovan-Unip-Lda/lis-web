@@ -23,9 +23,15 @@ export class CertificadoService {
         return this.http.get<CertificadoCadastro | CertificadoLicencaAtividade>(`${this.apiUrl}/${id}`, { params });
     }
 
-    /** Fetch the server-generated certificate PDF (auth + ownership enforced server-side). */
-    getCertificadoPdf(id: number, aplicanteType: AplicanteType): Observable<Blob> {
-        const params = new HttpParams().append('type', aplicanteType);
+    /**
+     * Fetch the server-generated certificate PDF (auth + ownership enforced server-side).
+     * `regenerate=true` forces a staff-only re-render of an already-issued certificate (e.g. after a layout change).
+     */
+    getCertificadoPdf(id: number, aplicanteType: AplicanteType, regenerate = false): Observable<Blob> {
+        let params = new HttpParams().append('type', aplicanteType);
+        if (regenerate) {
+            params = params.append('regenerate', 'true');
+        }
         return this.http.get(`${this.apiUrl}/${id}/pdf`, { params, responseType: 'blob' });
     }
 

@@ -3,7 +3,11 @@
         <div class="col-span-6">
             <span class="text-2xl font-bold mb-4 mr-4">Alvará de Licença</span>
         </div>
-        <div class="col-span-6 flex justify-end mb-4">
+        <div class="col-span-6 flex justify-end gap-2 mb-4">
+            @if (isStaff) {
+            <p-button (click)="regenerate()" icon="pi pi-refresh" label="Regenerar" severity="secondary" size="large"
+                [outlined]="true" [raised]="true" [disabled]="loading()" />
+            }
             <p-button (click)="goBack()" icon="pi pi-chevron-circle-left" label="Voltar" severity="help" size="large"
                 [text]="true" [rounded]="true" [outlined]="true" [raised]="true" />
         </div>
