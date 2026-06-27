@@ -42,7 +42,11 @@ export const appConfig: ApplicationConfig = {
         },
         { provide: LOCALE_ID, useValue: 'pt' },
         provideHighcharts({
-            instance: () => import('highcharts'),
+            // MUST be the ESM core: the lazy modules below (and the dashboard map module) are ESM and
+            // register themselves onto 'highcharts/esm/highcharts'. Loading the UMD 'highcharts' build here
+            // gives a different instance, so those modules silently don't attach — that's why the map
+            // (mapChart series) rendered blank while built-in chart types still worked.
+            instance: () => import('highcharts/esm/highcharts').then(m => m.default),
             // Include Highcharts additional modules (e.g., exporting, accessibility) or custom themes
             modules: () => {
                 return [

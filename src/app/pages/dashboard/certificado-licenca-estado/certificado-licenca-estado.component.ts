@@ -1,7 +1,7 @@
 import { BarChartDto, CategoryDistributionDto } from '@/core/models/entities.model';
 import { randomColors } from '@/core/utils/global-function';
-import { Component, Input } from '@angular/core';
-import * as Highcharts from 'highcharts';
+import { Component, Input, SimpleChanges } from '@angular/core';
+import type * as Highcharts from 'highcharts';
 import { HighchartsChartComponent, } from 'highcharts-angular';
 
 @Component({
@@ -12,13 +12,27 @@ import { HighchartsChartComponent, } from 'highcharts-angular';
   styleUrl: './certificado-licenca-estado.component.scss'
 })
 export class CertificadoLicencaEstadoComponent {
-  Highcharts: typeof Highcharts = Highcharts;
   chartOptions!: Highcharts.Options;
+  updateFlag = false;
   @Input() data!: BarChartDto;
   @Input() title!: string;
 
   ngOnInit() {
+    this.updateChart();
+  }
+
+  // Without this the chart is built once and never reacts to the year-filter changing `data`
+  // (the highcharts-angular directive only re-applies options when [update] is toggled).
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['data'] && !changes['data'].firstChange && this.data) {
+      this.updateChart();
+    }
+  }
+
+  private updateChart(): void {
+    this.updateFlag = false;
     this.initChart();
+    setTimeout(() => this.updateFlag = true, 0);
   }
 
   initChart() {

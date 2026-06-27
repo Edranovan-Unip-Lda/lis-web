@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { HighchartsChartComponent } from 'highcharts-angular';
-import * as Highcharts from 'highcharts';
+import type * as Highcharts from 'highcharts';
 import { CategoryDistributionDto } from '@/core/models/entities.model';
 import { randomColors } from '@/core/utils/global-function';
 
@@ -12,7 +12,6 @@ import { randomColors } from '@/core/utils/global-function';
   styleUrl: './certificado-licenca-municipio-pie.component.scss'
 })
 export class CertificadoLicencaMunicipioPieComponent implements OnChanges {
-  Highcharts: typeof Highcharts = Highcharts;
   chartOptions!: Highcharts.Options;
   updateFlag: boolean = false;
   @Input() data!: CategoryDistributionDto;
