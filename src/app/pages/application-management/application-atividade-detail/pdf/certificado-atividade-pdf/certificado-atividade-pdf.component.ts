@@ -35,7 +35,8 @@ export class CertificadoAtividadePdfComponent {
     private messageService: MessageService,
     private authService: AuthenticationService,
   ) {
-    this.isStaff = this.authService.currentRole && this.authService.currentRole !== Role.client;
+    // role is stored as an object ({ name: 'ROLE_*' }); staff = any role except client
+    this.isStaff = !!this.authService.currentRole?.name && this.authService.currentRole.name !== Role.client;
   }
 
   ngOnInit(): void {

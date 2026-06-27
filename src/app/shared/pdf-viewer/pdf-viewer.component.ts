@@ -17,8 +17,24 @@ import { NgxExtendedPdfViewerModule, PdfSrcType } from 'ngx-extended-pdf-viewer'
         [filenameForDownload]="filename()"
         [language]="'pt-PT'"
         [textLayer]="true"
+        [showToolbar]="true"
         [showPrintButton]="true"
-        [showDownloadButton]="true">
+        [showZoomButtons]="true"
+        [showZoomDropdown]="true"
+        [showSidebarButton]="true"
+        [showFindButton]="true"
+        [showPagingButtons]="true"
+        [showPreviousAndNextPageButtons]="true"
+        [showPageNumber]="true"
+        [showPageLabel]="true"
+        [showPresentationModeButton]="true"
+        [showOpenFileButton]="false"
+        [showDownloadButton]="true"
+        [showSecondaryToolbarButton]="false"
+        [showEditorButtons]="false"
+        [showMovePageButton]="false"
+        [showRotateButton]="false"
+        [showHandToolButton]="false">
       </ngx-extended-pdf-viewer>
     }
   `,
