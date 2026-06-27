@@ -4,5 +4,6 @@ export const environment = {
     webUrl: 'http://localhost:4200',
     recaptchaSiteKey: '6LdWk1MsAAAAAL40nLfddjypPWhDdBlM4jkfNpjD',
     production: false,
-    sentryEnv: 'development'
+    sentryEnv: 'development',
+    testing: true // demo/practice build — shows testing banner + disables public search/QR
 };

@@ -30,6 +30,8 @@ import { environment } from 'src/environments/environment';
 })
 export class SearchComponent implements OnDestroy {
   private destroyRef = inject(DestroyRef);
+  // When true, public certificate search + QR-code verification are disabled (testing/demo build).
+  readonly testing = environment.testing;
   messages = signal<any[]>([]);
   searchInput = new FormControl(null, [Validators.required, Validators.minLength(1)]);
   loading = false;
