@@ -1,15 +1,18 @@
 import { Documento, User } from '@/core/models/entities.model';
 import { Role } from '@/core/models/enums';
 import { AuthenticationService, UserService } from '@/core/services';
+import { DocumentosService } from '@/core/services/documentos.service';
 import { mapToIdAndName, mapToIdAndNome, maxFileSizeUpload, roleOptions, statusOptions } from '@/core/utils/global-function';
 import { mustMatch } from '@/core/validators/must-match';
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnDestroy, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { FileUploadModule } from 'primeng/fileupload';
+import { Image } from 'primeng/image';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputText, InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
@@ -17,6 +20,7 @@ import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
 import { Select } from 'primeng/select';
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { Skeleton } from 'primeng/skeleton';
 import { TextareaModule } from 'primeng/textarea';
 import { Toast } from 'primeng/toast';
 import { environment } from 'src/environments/environment';
@@ -24,11 +28,11 @@ import { environment } from 'src/environments/environment';
 @Component({
     selector: 'user-create',
     standalone: true,
-    imports: [Select, InputText, TextareaModule, CommonModule, FileUploadModule, ButtonModule, InputGroupModule, RippleModule, ReactiveFormsModule, PasswordModule, MessageModule, SelectButtonModule, InputTextModule, Toast],
+    imports: [Select, InputText, TextareaModule, CommonModule, FileUploadModule, ButtonModule, InputGroupModule, RippleModule, ReactiveFormsModule, PasswordModule, MessageModule, SelectButtonModule, InputTextModule, Toast, Image, Skeleton],
     templateUrl: './user-form.html',
     providers: [MessageService]
 })
-export class UserCreate {
+export class UserCreate implements OnDestroy {
     userForm!: FormGroup;
     roleList: any[] = [];
     direcaoList: any[] = [];
@@ -45,6 +49,11 @@ export class UserCreate {
     uploadURLDocs = signal(`${environment.apiUrl}/documentos`);
     signatureDoc!: Documento;
     loadingRemoveBtn = false;
+    // Object URL of the fetched signature image (auth-protected blob); null when none/loading.
+    signatureImageUrl = signal<string | null>(null);
+    // True while the signature blob is being fetched, so the UI can show a skeleton.
+    signatureImageLoading = signal(false);
+    private destroyRef = inject(DestroyRef);
 
     constructor(
         private _fb: FormBuilder,
@@ -52,6 +61,7 @@ export class UserCreate {
         private route: ActivatedRoute,
         private authService: AuthenticationService,
         private messageService: MessageService,
+        private documentoService: DocumentosService,
     ) { }
 
     ngOnInit() {
@@ -93,6 +103,9 @@ export class UserCreate {
             if (this.userData.role.name === Role.manager) {
                 this.isDirector = true
                 this.signatureDoc = this.userData.signature;
+                if (this.signatureDoc) {
+                    this.loadSignatureImage(this.signatureDoc.id);
+                }
             } else {
                 this.isDirector = false;
             }
@@ -186,6 +199,7 @@ export class UserCreate {
     onUploadDocs(event: any) {
         if (event.originalEvent.body) {
             this.signatureDoc = event.originalEvent.body[0];
+            this.loadSignatureImage(this.signatureDoc.id);
         }
         this.messageService.add({
             severity: 'info',
@@ -204,6 +218,7 @@ export class UserCreate {
                     detail: 'Arquivo foi removido com sucesso!'
                 });
                 this.signatureDoc = undefined!;
+                this.revokeSignatureImage();
             },
             error: error => {
                 this.messageService.add({
@@ -214,6 +229,35 @@ export class UserCreate {
             },
             complete: () => this.loadingRemoveBtn = false
         });
+    }
+
+    // Fetch the signature blob from the auth-protected /documentos/{id} endpoint and
+    // expose it as an object URL for <p-image> preview.
+    private loadSignatureImage(id: number) {
+        this.signatureImageLoading.set(true);
+        this.documentoService.downloadById(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+            next: blob => {
+                this.revokeSignatureImage();
+                this.signatureImageUrl.set(URL.createObjectURL(blob));
+                this.signatureImageLoading.set(false);
+            },
+            error: () => {
+                this.signatureImageUrl.set(null);
+                this.signatureImageLoading.set(false);
+            },
+        });
+    }
+
+    private revokeSignatureImage() {
+        const url = this.signatureImageUrl();
+        if (url) {
+            URL.revokeObjectURL(url);
+        }
+        this.signatureImageUrl.set(null);
+    }
+
+    ngOnDestroy() {
+        this.revokeSignatureImage();
     }
 
     bytesToMBs(value: number): string {

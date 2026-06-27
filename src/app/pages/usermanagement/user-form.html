@@ -199,6 +199,17 @@
                                             [loading]="loadingRemoveBtn" severity="danger" (click)="removeDoc()" />
                                     </li>
                                 </ul>
+
+                                @if (signatureImageLoading()) {
+                                <div class="mt-3">
+                                    <p-skeleton width="200px" height="100px" borderRadius="6px" />
+                                </div>
+                                } @else if (signatureImageUrl()) {
+                                <div class="mt-3">
+                                    <p-image [src]="signatureImageUrl()!" alt="Assinatura" [preview]="true"
+                                        width="200" imageClass="rounded border border-surface object-contain" />
+                                </div>
+                                }
                                 }
                             </ng-template>
                         </p-fileupload>
