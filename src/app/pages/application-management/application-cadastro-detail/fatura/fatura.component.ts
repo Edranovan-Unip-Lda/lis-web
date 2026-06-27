@@ -1,62 +1,88 @@
 import { Aplicante, Fatura } from '@/core/models/entities.model';
 import { AplicanteStatus } from '@/core/models/enums';
-import { calculateCommercialLicenseTax, nivelRiscoOptions } from '@/core/utils/global-function';
-import { CurrencyPipe, DatePipe, Location } from '@angular/common';
-import { Component } from '@angular/core';
+import { FaturaService } from '@/core/services';
+import { PdfViewerComponent } from '@/shared/pdf-viewer/pdf-viewer.component';
+import { Location } from '@angular/common';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import { NgxPrintModule } from 'ngx-print';
+import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
-import { TableModule } from 'primeng/table';
+import { ProgressSpinner } from 'primeng/progressspinner';
+import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-fatura',
-  imports: [DatePipe, NgxPrintModule, Button, TableModule, CurrencyPipe],
+  imports: [Button, Toast, ProgressSpinner, PdfViewerComponent],
   templateUrl: './fatura.component.html',
-  styleUrl: './fatura.component.scss'
+  styleUrl: './fatura.component.scss',
+  providers: [MessageService]
 })
 export class FaturaComponent {
-  aplicanteData!: Aplicante
+  aplicanteData!: Aplicante;
   fatura!: Fatura | undefined;
-  seletedNivelRisco!: string;
-  nivelRiscoOpts = nivelRiscoOptions;
   type = 'CADASTRO';
+  pdfSrc = signal<Blob | null>(null);
+  loading = signal(true);
+  errorMsg = signal<string | null>(null);
+  filename = signal('fatura.pdf');
+
+  private destroyRef = inject(DestroyRef);
 
   constructor(
-    private router: ActivatedRoute,
+    private route: ActivatedRoute,
     private location: Location,
+    private faturaService: FaturaService,
+    private messageService: MessageService,
   ) { }
 
   ngOnInit() {
-    this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
-    this.selectFatura(this.router.snapshot.data['type']);
+    this.aplicanteData = this.route.snapshot.data['aplicanteResolver'];
+    this.selectFatura(this.route.snapshot.data['type']);
+
+    if (!this.fatura) {
+      this.loading.set(false);
+      this.errorMsg.set('Fatura não encontrada.');
+      return;
+    }
+    this.filename.set(`fatura-${this.fatura.id}.pdf`);
+    this.loadPdf();
   }
 
   selectFatura(tipo: string) {
     switch (tipo) {
       case 'CADASTRO':
-        this.fatura = this.aplicanteData.pedidoInscricaoCadastro.fatura;
+        this.fatura = this.aplicanteData.pedidoInscricaoCadastro?.fatura;
         break;
       case 'ATIVIDADE':
-        this.fatura = this.aplicanteData.pedidoLicencaAtividade.fatura;
+        this.fatura = this.aplicanteData.pedidoLicencaAtividade?.fatura;
         this.type = 'ATIVIDADE';
         break;
       case 'VISTORIA':
-        let pedidoVistoria = this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
-        if (pedidoVistoria) {
-          this.fatura = pedidoVistoria.fatura;
-        }
+        const pedidoVistoria = this.aplicanteData.pedidoLicencaAtividade?.listaPedidoVistoria
+          ?.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
+        this.fatura = pedidoVistoria?.fatura;
         this.type = 'VISTORIA';
         break;
     }
-    this.seletedNivelRisco = this.nivelRiscoOpts.find(item => item.value === this.fatura?.nivelRisco).name;
   }
 
-
-  getMontanteSubTotal(montanteMinimo: number, montanteMaximo: number): number {
-    if (this.fatura) {
-      return calculateCommercialLicenseTax(this.fatura.superficie, montanteMinimo, montanteMaximo);
-    }
-    return 0;
+  private loadPdf() {
+    this.loading.set(true);
+    this.faturaService.getFaturaPdf(this.fatura!.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: blob => {
+          this.pdfSrc.set(blob);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.loading.set(false);
+          const detail = 'Falha ao carregar a fatura.';
+          this.errorMsg.set(detail);
+          this.messageService.add({ severity: 'error', summary: 'Erro', detail, key: 'br' });
+        }
+      });
   }
 
   goBack() {

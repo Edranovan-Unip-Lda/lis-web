@@ -8,6 +8,7 @@ export * from './data-master.service';
 export * from './documentos.service';
 export * from './empresa.service';
 export * from './export.service';
+export * from './fatura.service';
 export * from './notificacao.service';
 export * from './otp-session.service';
 export * from './pedido.service';
