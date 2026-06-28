@@ -5,6 +5,7 @@ import { EmpresaService } from '@/core/services/empresa.service';
 import { estadoCivilOptions, maxFileSizeUpload, tipoDocumentoOptions, tipoNacionalidadeOptions, tipoPropriedadeOptions, tipoRelacaoFamiliaOptions, tipoRepresentante } from '@/core/utils/global-function';
 import { alphanumericValidator } from '@/core/validators/alphanumeric';
 import { greaterThanValidator } from '@/core/validators/greater-than';
+import { nifUniquenessValidator } from '@/core/validators/nif-uniqueness';
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -989,7 +990,12 @@ export class Register {
     private initForm(): void {
         this.empresaForm = this._fb.group({
             nome: [null, [Validators.required, Validators.minLength(3), this.sociedadeComercialNameValidator()]],
-            nif: [null, [Validators.required, alphanumericValidator()]],
+            // updateOn: 'blur' → the async uniqueness check hits the BE only when the cursor leaves the field.
+            nif: [null, {
+                validators: [Validators.required, alphanumericValidator()],
+                asyncValidators: [nifUniquenessValidator(this.empresaService)],
+                updateOn: 'blur'
+            }],
             sede: this._fb.group({
                 local: [null, [Validators.required]],
                 municipio: new FormControl({ value: null, disabled: true }),

@@ -41,6 +41,12 @@ export class EmpresaService {
     return this.http.post<any>(this.apiUrl, formData);
   }
 
+  /** Public registration check: is this NIF free? `available=false` means a company already uses it. */
+  checkNif(nif: string): Observable<{ available: boolean }> {
+    const params = new HttpParams().append('nif', nif);
+    return this.http.get<{ available: boolean }>(`${this.apiUrl}/check-nif`, { params }).pipe(take(1));
+  }
+
   update(username: string, formData: any): Observable<any> {
     return this.http.patch<any>(`${this.apiUrl}/${username}`, formData);
   }
