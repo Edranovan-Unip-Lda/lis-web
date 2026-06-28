@@ -53,10 +53,10 @@ export class SucoListComponent {
     });
 
     this.type = this.route.snapshot.data['type'];
-    this.dataList = this.route.snapshot.data['sucoResolve']._embedded.sucos;
+    this.dataList = (this.route.snapshot.data['sucoResolve']?._embedded?.sucos ?? []);
     this.totalData = this.route.snapshot.data['sucoResolve'].page.totalElements;
 
-    this.municipioList = mapToIdAndNome(this.route.snapshot.data['municipioResolve']._embedded.municipios);
+    this.municipioList = mapToIdAndNome((this.route.snapshot.data['municipioResolve']?._embedded?.municipios ?? []));
 
   }
 
@@ -84,7 +84,7 @@ export class SucoListComponent {
         data.municipio = response.municipio;
         this.service.getPostosByMunicipio(response.municipio.id).subscribe({
           next: response => {
-            this.postoList = mapToIdAndNome(response._embedded.postos);
+            this.postoList = mapToIdAndNome((response?._embedded?.postos ?? []));
             this.form.patchValue(data);
             this.selectedData = data;
             this.selectedData.index = index;
@@ -98,7 +98,7 @@ export class SucoListComponent {
   municipioSelectOnChange(event: any): void {
     this.service.getPostosByMunicipio(event.value.id).subscribe({
       next: response => {
-        this.postoList = mapToIdAndNome(response._embedded.postos);
+        this.postoList = mapToIdAndNome((response?._embedded?.postos ?? []));
       }
     });
   }
@@ -196,7 +196,7 @@ export class SucoListComponent {
     this.dataIsFetching = true;
     this.service.getSucos(page, size).subscribe({
       next: response => {
-        this.dataList = response._embedded.sucos;
+        this.dataList = (response?._embedded?.sucos ?? []);
         this.totalData = response.page.totalElements;
         this.dataIsFetching = false;
       }

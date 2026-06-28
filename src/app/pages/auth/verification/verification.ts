@@ -43,7 +43,15 @@ export class Verification {
         private route: ActivatedRoute,
     ) {
         this.route.queryParamMap.subscribe(params => this.username = params.get('u') ?? '');
-        this.email = this.router.getCurrentNavigation()?.extras.state?.['email'] ?? this.router.navigateByUrl('/auth/login');
+        // BUG-WEB-3: keep the redirect separate from the assignment — the old `?? navigateByUrl(...)` stored a
+        // Promise in this.email, which then broke maskEmail().split('@'). (getCurrentNavigation() is also null on a
+        // hard refresh, so email is simply absent then → redirect.)
+        const email = this.router.getCurrentNavigation()?.extras.state?.['email'];
+        if (email) {
+            this.email = email;
+        } else {
+            this.router.navigateByUrl('/auth/login');
+        }
     }
 
     focusOnNext(inputEl: InputNumber) {
@@ -89,6 +97,7 @@ export class Verification {
     }
 
     maskEmail(email: string): string {
+        if (!email || !email.includes('@')) return ''; // BUG-WEB-3: guard against missing email
         const [username, domain] = email.split('@');
         if (username.length <= 2) {
             return `${username[0]}***@${domain}`;

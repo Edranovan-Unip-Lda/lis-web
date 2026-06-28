@@ -28,7 +28,11 @@ export const canActivateByRole: CanActivateChildFn = (
 
     const allowedRoles: any[] = childRoute.data['role'];
 
-    if (!allowedRoles || allowedRoles.length === 0) {
+    // #13: guard against an unauthenticated user (currentUserValue null) so `user.role` can't throw.
+    if (!user || !user.role) {
+        location.back();
+        return of(false);
+    } else if (!allowedRoles || allowedRoles.length === 0) {
         // role not authorised so redirect to home page
         location.back();
         return of(false);

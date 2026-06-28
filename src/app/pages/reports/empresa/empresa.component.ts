@@ -54,10 +54,10 @@ export class EmpresaComponent {
 
   ngOnInit() {
     this.initForm();
-    this.listaSociedadeComercial = this.route.snapshot.data['listaSociedadeComercial']._embedded.sociedadeComercial.map((s: any) => ({ name: s.nome, value: s.id }));
-    this.listaMunicipios = this.route.snapshot.data['listaMunicipios']._embedded.municipios.map((m: any) => ({ name: m.nome, value: m.id }));
-    this.listaPostosAdministrativos = this.route.snapshot.data['listaPostosAdministrativos']._embedded.postos.map((p: any) => ({ name: p.nome, value: p.id }));
-    this.listaSucos = this.route.snapshot.data['listaSucos']._embedded.sucos.map((s: any) => ({ name: s.nome, value: s.id }));
+    this.listaSociedadeComercial = (this.route.snapshot.data['listaSociedadeComercial']?._embedded?.sociedadeComercial ?? []).map((s: any) => ({ name: s.nome, value: s.id }));
+    this.listaMunicipios = (this.route.snapshot.data['listaMunicipios']?._embedded?.municipios ?? []).map((m: any) => ({ name: m.nome, value: m.id }));
+    this.listaPostosAdministrativos = (this.route.snapshot.data['listaPostosAdministrativos']?._embedded?.postos ?? []).map((p: any) => ({ name: p.nome, value: p.id }));
+    this.listaSucos = (this.route.snapshot.data['listaSucos']?._embedded?.sucos ?? []).map((s: any) => ({ name: s.nome, value: s.id }));
     this.listaSucosAux = [...this.listaSucos];
     this.setupSucoSearch();
   }
@@ -84,7 +84,7 @@ export class EmpresaComponent {
     ).subscribe({
       next: (response) => {
         if (response) {
-          this.listaSucos = response._embedded.sucos.map((s: any) => ({ name: s.nome, value: s.id }));
+          this.listaSucos = (response?._embedded?.sucos ?? []).map((s: any) => ({ name: s.nome, value: s.id }));
         } else {
           this.listaSucos = [...this.listaSucosAux];
         }

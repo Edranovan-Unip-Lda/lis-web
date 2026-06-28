@@ -1,149 +1,87 @@
 import { CertificadoLicencaAtividade } from '@/core/models/entities.model';
-import { Categoria } from '@/core/models/enums';
-import { CertificadoService, DocumentosService } from '@/core/services';
-import { DatePipe, Location, NgStyle, UpperCasePipe } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { AplicanteType, Role } from '@/core/models/enums';
+import { AuthenticationService, CertificadoService } from '@/core/services';
+import { PdfViewerComponent } from '@/shared/pdf-viewer/pdf-viewer.component';
+import { Location } from '@angular/common';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import { QRCodeComponent } from 'angularx-qrcode';
-import html2canvas from 'html2canvas-pro';
-import { jsPDF } from 'jspdf';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
+import { ProgressSpinner } from 'primeng/progressspinner';
 import { Toast } from 'primeng/toast';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-certificado-atividade-pdf',
-  imports: [Button, DatePipe, NgStyle, UpperCasePipe, QRCodeComponent, Toast],
+  imports: [Button, Toast, ProgressSpinner, PdfViewerComponent],
   templateUrl: './certificado-atividade-pdf.component.html',
   styleUrl: './certificado-atividade-pdf.component.scss',
   providers: [MessageService]
 })
 export class CertificadoAtividadePdfComponent {
   certificadoData!: CertificadoLicencaAtividade;
-  dataValido = new Date();
-  industrialCSS!: any;
-  comercialCSS!: any;
-  imageUrl!: string;
-  qrcodeUrl = signal(`${environment.webUrl}/auth/search?numero=`);
-  private autoUpload = false;
+  pdfSrc = signal<Blob | null>(null);
+  loading = signal(true);
+  errorMsg = signal<string | null>(null);
+  filename = signal('alvara-licenca.pdf');
+  isStaff = false;
+
+  private destroyRef = inject(DestroyRef);
 
   constructor(
-    private router: ActivatedRoute,
+    private route: ActivatedRoute,
     private location: Location,
-    private documentoService: DocumentosService,
     private certificadoService: CertificadoService,
     private messageService: MessageService,
-  ) { }
+    private authService: AuthenticationService,
+  ) {
+    // role is stored as an object ({ name: 'ROLE_*' }); staff = any role except client
+    this.isStaff = !!this.authService.currentRole?.name && this.authService.currentRole.name !== Role.client;
+  }
 
   ngOnInit(): void {
-    this.certificadoData = this.router.snapshot.data['certificadoResolver'];
-    this.certificadoData.updatedAt = new Date(this.certificadoData.updatedAt)
-    this.certificadoData.updatedAt.setFullYear(this.certificadoData.updatedAt.getFullYear() + 1);
-
-    this.qrcodeUrl.set(`${environment.webUrl}/auth/search?numero=${this.certificadoData.pedidoLicencaAtividade.aplicante.numero}`);
-    this.loadImage(this.certificadoData.assinatura.id);
-
-    this.industrialCSS = {
-      'background-image': 'url("/images/bg-industrial.png")',
-      'background-size': 'cover',
-      'background-position': 'center',
-      'background-repeat': 'no-repeat',
+    this.certificadoData = this.route.snapshot.data['certificadoResolver'];
+    if (!this.certificadoData) {
+      this.loading.set(false);
+      this.errorMsg.set('Certificado não encontrado.');
+      return;
     }
-    this.comercialCSS = {
-      'background-image': 'url("/images/bg-comercial.png")',
-      'background-size': 'cover',
-      'background-position': 'center',
-      'background-repeat': 'no-repeat'
-    }
+    const empresa = this.certificadoData.pedidoLicencaAtividade?.nomeEmpresa ?? this.certificadoData.id;
+    this.filename.set(`alvara-licenca-${empresa}.pdf`);
+    this.loadPdf();
   }
 
-  ngAfterViewInit() {
-    this.autoUpload = this.router.snapshot.queryParamMap.get('autoUpload') === 'true';
+  /** Staff-only: force the backend to re-render the stored PDF (e.g. after a layout change). */
+  regenerate(): void {
+    this.errorMsg.set(null);
+    this.pdfSrc.set(null);
+    this.loadPdf(true);
   }
 
-  goBack() {
-    this.location.back();
-  }
-
-  getCategoriaStyle() {
-    const categoria = this.certificadoData.pedidoLicencaAtividade.aplicante.categoria;
-    switch (categoria) {
-      case Categoria.comercial: return this.comercialCSS;
-      case Categoria.industrial: return this.industrialCSS;
-    }
-  }
-
-  loadImage(id: number) {
-    this.documentoService.downloadById(id).subscribe(blob => {
-      if (this.imageUrl) {
-        URL.revokeObjectURL(this.imageUrl);
-      }
-
-      this.imageUrl = URL.createObjectURL(blob);
-
-      // Generate and upload PDF only after image is loaded
-      if (this.autoUpload) {
-        this.autoUpload = false; // Prevent duplicate uploads
-        setTimeout(() => {
-          this.generateAndUploadPDF();
-        }, 500); // Small delay for the image to render in the DOM
-      }
-    });
-  }
-
-  generatePDF() {
-    const data = document.getElementById('myDiv');
-    if (data) {
-      html2canvas(data).then(canvas => {
-        const imgWidth = 208;
-        const imgHeight = canvas.height * imgWidth / canvas.width;
-        const fileName = `alvara-licenca-${this.certificadoData.pedidoLicencaAtividade.nomeEmpresa}.pdf`;
-
-        const contentDataURL = canvas.toDataURL('image/jpeg', 0.75);
-        const pdf = new jsPDF('p', 'mm', 'a4'); // A4 size page of PDF
-
-        let position = 0;
-        pdf.addImage(contentDataURL, 'JPEG', 0, position, imgWidth, imgHeight);
-        pdf.save(fileName); // Generated PDF
-      });
-    }
-  }
-
-  formatNomeEmpresaComTipoSociedade(nome: string, tipoSociedade: string): string {
-    if (nome.toLowerCase().includes(tipoSociedade.toLowerCase())) {
-      return nome.toUpperCase(); // Já contém o tipo, retorna como está
-    } else {
-      return `${nome} ${tipoSociedade}`.toUpperCase(); // Adiciona o tipo ao nome
-    }
-  }
-
-  private generateAndUploadPDF() {
-    const data = document.getElementById('myDiv');
-    if (data) {
-      html2canvas(data).then(canvas => {
-        const imgWidth = 208;
-        const imgHeight = canvas.height * imgWidth / canvas.width;
-        const fileName = `alvara-licenca-${this.certificadoData.pedidoLicencaAtividade.nomeEmpresa}.pdf`;
-
-        const contentDataURL = canvas.toDataURL('image/jpeg', 0.75);
-        const pdf = new jsPDF('p', 'mm', 'a4');
-
-        pdf.addImage(contentDataURL, 'JPEG', 0, 0, imgWidth, imgHeight);
-
-        // Convert PDF to blob and upload in background
-        const pdfBlob = pdf.output('blob');
-        this.certificadoService.sendCertificadoToEmailById(this.certificadoData.id, this.certificadoData.pedidoLicencaAtividade.aplicante.tipo, pdfBlob, fileName).subscribe({
-          next: () => {
-            this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Certificado enviado por e-mail com sucesso.', key: 'br' });
-          },
-          error: (error) => {
-            this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao enviar o certificado por e-mail. ' + error, key: 'br' });
+  private loadPdf(regenerate = false): void {
+    this.loading.set(true);
+    this.certificadoService.getCertificadoPdf(this.certificadoData.id, AplicanteType.licenca, regenerate)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: blob => {
+          this.pdfSrc.set(blob);
+          this.loading.set(false);
+          if (regenerate) {
+            this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Alvará regenerado.', key: 'br' });
           }
-        });
-      }).catch(error => {
-        console.error('Error generating PDF:', error);
+        },
+        error: err => {
+          this.loading.set(false);
+          const detail = err?.status === 404
+            ? 'O PDF do alvará ainda não foi gerado.'
+            : 'Falha ao carregar o alvará.';
+          this.errorMsg.set(detail);
+          this.messageService.add({ severity: 'error', summary: 'Erro', detail, key: 'br' });
+        }
       });
-    }
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

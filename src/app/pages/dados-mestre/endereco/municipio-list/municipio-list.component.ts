@@ -41,7 +41,7 @@ export class MunicipioListComponent {
     private confirmationService: ConfirmationService,
     private messageService: MessageService
   ) {
-    this.dataList = this.route.snapshot.data['municipioResolve']._embedded.municipios;
+    this.dataList = (this.route.snapshot.data['municipioResolve']?._embedded?.municipios ?? []);
     this.type = this.route.snapshot.data['type'];
 
     this.form = this._fb.group({

@@ -15,6 +15,11 @@ export class DocumentosService {
         return this.http.get(`${this.apiUrl}/${id}`, { responseType: 'blob' as 'blob' });
     }
 
+    // #8: public endpoint that only serves signature images (used by the public certificate-verification page).
+    downloadSignatureById(id: number): Observable<Blob> {
+        return this.http.get(`${this.apiUrl}/signature/${id}`, { responseType: 'blob' as 'blob' });
+    }
+
     upload(username: string, file: File | Blob, fileName: string): Observable<any> {
         const formData = new FormData();
         formData.append('files', file, fileName);

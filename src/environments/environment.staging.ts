@@ -5,4 +5,5 @@ export const environment = {
     production: false,
     sentryEnv: 'staging',
     recaptchaSiteKey: '6LcNlVMsAAAAANtlr3dD611xHoj2XHrWpWeuKeih',
+    testing: true // demo/practice build — shows testing banner + disables public search/QR
 };

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { HighchartsChartComponent, providePartialHighcharts } from 'highcharts-angular';
-import * as Highcharts from 'highcharts/highmaps';
+import type * as Highcharts from 'highcharts';
 
 
 @Component({
@@ -17,11 +17,11 @@ export class EmpresaMapComponent {
   title = 'Empresas Registadas no Sistema — Distribuição Geográfica';
   @Input() data!: MapDataDto;
   @Output() municipioSelected = new EventEmitter<any>();
-  Highcharts: typeof Highcharts = Highcharts;
-  chartOptions: Highcharts.Options = {
-    title: { text: 'Loading map…' },
-    series: []
-  };
+  // Left undefined until the topology + data are both ready. The highcharts-angular directive builds
+  // the chart exactly once (~500ms after the element mounts) and does NOT react to a later options
+  // change unless [update] is toggled — so we keep the <highcharts-chart> out of the DOM (@if in the
+  // template) until options are complete, guaranteeing the map is created in one shot with topology + data.
+  chartOptions?: Highcharts.Options;
 
   private readonly sociedadeComercial = 'empresas_sociedade_comercial';
   private readonly tipoEmpresa = 'empresas_tipo_empresa';
@@ -32,7 +32,9 @@ export class EmpresaMapComponent {
   ) { }
 
   ngOnInit(): void {
-    this.http.get<any>('/maps/tl-all.topo.json').subscribe((topology) => {
+    this.http.get<any>('/maps/tl-all.topo.json').subscribe({
+      error: (err) => console.error('Failed to load map topology', err),
+      next: (topology) => {
       this.chartOptions = {
         chart: {
           map: topology as any,
@@ -129,6 +131,7 @@ export class EmpresaMapComponent {
           }
         }]
       };
+      }
     });
   }
 

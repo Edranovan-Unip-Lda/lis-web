@@ -16,10 +16,12 @@ export class OtpSessionService {
    * @returns The generated session token.
    */
   createSession(username: string): string {
-    const token = username;
+    // #29: this is a UX-only gate — the real protection is the server-side OTP check. Use an opaque random
+    // token rather than the username, which was trivially forgeable (anyone could set otpSessionToken = username).
+    const token = this.generateRandomToken();
     const expiration = Date.now() + 3 * 60 * 1000; // 3 minutes in milliseconds
 
-    this.storage.setItem(this.tokenKey, username);
+    this.storage.setItem(this.tokenKey, token);
     this.storage.setItem(this.expirationKey, expiration.toString());
 
     return token;

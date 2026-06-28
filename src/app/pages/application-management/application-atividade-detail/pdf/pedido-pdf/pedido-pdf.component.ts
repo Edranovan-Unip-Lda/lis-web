@@ -1,34 +1,122 @@
 import { Aplicante, Documento, PedidoAtividadeLicenca } from '@/core/models/entities.model';
-import { DocumentosService } from '@/core/services';
-import { DatePipe, Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { DocumentosService, PedidoService } from '@/core/services';
+import { PdfViewerComponent } from '@/shared/pdf-viewer/pdf-viewer.component';
+import { Location } from '@angular/common';
+import { Component, DestroyRef, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import { NgxPrintModule } from 'ngx-print';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
+import { ProgressSpinner } from 'primeng/progressspinner';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
+import { Toast } from 'primeng/toast';
+
+type DocKind = 'pdf' | 'image' | 'other';
+interface DocTab extends Documento { kind: DocKind; }
+interface LoadedDoc { kind: DocKind; blob?: Blob; url?: string; }
 
 @Component({
   selector: 'app-pedido-pdf',
-  imports: [DatePipe, NgxPrintModule, Button],
+  imports: [Button, Toast, ProgressSpinner, PdfViewerComponent, Tabs, TabList, Tab, TabPanels, TabPanel],
   templateUrl: './pedido-pdf.component.html',
   styleUrl: './pedido-pdf.component.scss',
   providers: [MessageService]
 })
-export class PedidoPdfComponent implements OnInit {
+export class PedidoPdfComponent implements OnInit, OnDestroy {
   aplicanteData!: Aplicante;
   pedido!: PedidoAtividadeLicenca;
+
+  // tab 0 = the form; tabs 1..N = attached documents. A single pdf viewer is reused (only the active tab's
+  // content is rendered), so there is never more than one ngx-extended-pdf-viewer instance on the page.
+  activeTab = signal(0);
+
+  // form PDF (tab 0)
+  pdfSrc = signal<Blob | null>(null);
+  loading = signal(true);
+  errorMsg = signal<string | null>(null);
+  filename = signal('pedido-atividade.pdf');
+
+  // attached documents (tabs 1..N), lazy-loaded + cached by index
+  docs: DocTab[] = [];
+  loaded = signal<Record<number, LoadedDoc>>({});
   loadingDownloadButtons = new Set<number>();
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
-    private router: ActivatedRoute,
+    private route: ActivatedRoute,
     private location: Location,
     private documentoService: DocumentosService,
+    private pedidoService: PedidoService,
     private messageService: MessageService,
   ) { }
 
   ngOnInit(): void {
-    this.aplicanteData = this.router.snapshot.data['aplicanteResolver'];
-    this.pedido = this.aplicanteData.pedidoLicencaAtividade;
+    this.aplicanteData = this.route.snapshot.data['aplicanteResolver'];
+    this.pedido = this.aplicanteData?.pedidoLicencaAtividade;
+    if (!this.pedido) {
+      this.loading.set(false);
+      this.errorMsg.set('Pedido não encontrado.');
+      return;
+    }
+    this.filename.set(`pedido-atividade-${this.pedido.id}.pdf`);
+    this.docs = (this.pedido.documentos ?? []).map(d => ({ ...d, kind: this.kindOf(d.nome) }));
+    this.loadPdf();
+  }
+
+  ngOnDestroy(): void {
+    Object.values(this.loaded()).forEach(d => d.url && URL.revokeObjectURL(d.url));
+  }
+
+  onTab(value: string | number): void {
+    const tab = Number(value);
+    this.activeTab.set(tab);
+    if (tab > 0) {
+      this.loadDoc(tab - 1);
+    }
+  }
+
+  private loadDoc(i: number): void {
+    if (this.loaded()[i] || !this.docs[i]) return;
+    const doc = this.docs[i];
+    this.documentoService.downloadById(doc.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: blob => {
+          const entry: LoadedDoc = doc.kind === 'image'
+            ? { kind: 'image', url: URL.createObjectURL(blob) }
+            : { kind: doc.kind, blob };
+          this.loaded.update(m => ({ ...m, [i]: entry }));
+        },
+        error: () => {
+          this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao carregar o documento.', key: 'br' });
+        }
+      });
+  }
+
+  private kindOf(nome: string): DocKind {
+    const ext = (nome?.split('.').pop() ?? '').toLowerCase();
+    if (ext === 'pdf') return 'pdf';
+    if (['png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp'].includes(ext)) return 'image';
+    return 'other';
+  }
+
+  private loadPdf(): void {
+    this.loading.set(true);
+    this.pedidoService.getAtividadeFormPdf(this.pedido.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: blob => {
+          this.pdfSrc.set(blob);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.loading.set(false);
+          const detail = 'Falha ao carregar o formulário.';
+          this.errorMsg.set(detail);
+          this.messageService.add({ severity: 'error', summary: 'Erro', detail, key: 'br' });
+        }
+      });
   }
 
   downloadDoc(file: Documento): void {
@@ -41,30 +129,15 @@ export class PedidoPdfComponent implements OnInit {
         a.download = file.nome;
         a.click();
         window.URL.revokeObjectURL(url);
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Sucesso',
-          detail: 'Arquivo descarregado com sucesso!'
-        });
       },
-      error: error => {
+      error: () => {
         this.loadingDownloadButtons.delete(file.id);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Erro',
-          detail: 'Falha no download do arquivo!'
-        });
+        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha no download do arquivo!', key: 'br' });
       },
       complete: () => {
         this.loadingDownloadButtons.delete(file.id);
       }
     });
-  }
-
-  bytesToMBs(value: number): string {
-    if (!value && value !== 0) return '';
-    const mb = value / (1024 * 1024);
-    return `${mb.toFixed(2)} MB`;
   }
 
   goBack() {

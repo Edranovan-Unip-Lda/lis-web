@@ -94,8 +94,8 @@ export class ApplicationCadastroDetailComponent {
   ngOnInit(): void {
     this.initForm();
 
-    this.listaAldeia = mapToIdAndNome(this.router.snapshot.data['aldeiasResolver']._embedded.aldeias);
-    this.listaSociedadeComercial = mapToIdAndNome(this.router.snapshot.data['sociedadeComercialResolver']._embedded.sociedadeComercial);
+    this.listaAldeia = mapToIdAndNome((this.router.snapshot.data['aldeiasResolver']?._embedded?.aldeias ?? []));
+    this.listaSociedadeComercial = mapToIdAndNome((this.router.snapshot.data['sociedadeComercialResolver']?._embedded?.sociedadeComercial ?? []));
 
 
     this.originalAldeias = this.listaAldeia;
@@ -108,8 +108,8 @@ export class ApplicationCadastroDetailComponent {
 
     this.disabledForms(this.aplicanteData.estado);
 
-    this.listaPedidoAto = mapToTaxa(this.router.snapshot.data['listaTaxaResolver']._embedded.taxas);
-    this.listaClasseAtividade = this.router.snapshot.data['classeAtividadeResolver']._embedded.classeAtividade;
+    this.listaPedidoAto = mapToTaxa((this.router.snapshot.data['listaTaxaResolver']?._embedded?.taxas ?? []));
+    this.listaClasseAtividade = (this.router.snapshot.data['classeAtividadeResolver']?._embedded?.classeAtividade ?? []);
 
     this.mapNewFatura(this.aplicanteData);
     this.mapEmpresaForm(this.aplicanteData.empresa);
@@ -195,8 +195,8 @@ export class ApplicationCadastroDetailComponent {
       this.dataMasterService.getAldeiasBySuco(pedido.localEstabelecimento.aldeia.suco.id)]).subscribe({
         next: responses => {
 
-          this.listaClasseAtividade = mapToAtividadeEconomica(responses[0]._embedded.classeAtividade);
-          this.listaAldeia = [...mapToIdAndNome(responses[1]._embedded.aldeias), ...this.listaAldeia];
+          this.listaClasseAtividade = mapToAtividadeEconomica((responses[0]?._embedded?.classeAtividade ?? []));
+          this.listaAldeia = [...mapToIdAndNome((responses[1]?._embedded?.aldeias ?? [])), ...this.listaAldeia];
 
           // Map Grupo Classe Atividade & Aldeia 
           this.requestForm.patchValue({
@@ -240,6 +240,7 @@ export class ApplicationCadastroDetailComponent {
         nif: empresa.nif,
         numeroRegistoComercial: empresa.numeroRegistoComercial,
         telemovel: empresa.telemovel,
+        telefone: empresa.telefone,
         email: empresa.email,
         gerente: empresa.gerente.nome,
       }
@@ -252,7 +253,7 @@ export class ApplicationCadastroDetailComponent {
       this.requestForm.get('grupoAtividadeCodigo')?.setValue(event.value.descricao);
 
       this.dataMasterService.getClassesByGrupoId(value.id).subscribe({
-        next: response => this.listaClasseAtividade = response._embedded.classeAtividade
+        next: response => this.listaClasseAtividade = (response?._embedded?.classeAtividade ?? [])
       });
     } else {
       this.requestForm.get('grupoAtividadeCodigo')?.reset();
@@ -447,7 +448,7 @@ export class ApplicationCadastroDetailComponent {
     if (query && query.length) {
       this.dataMasterService.searchAldeiasByNome(query)
         .subscribe(resp => {
-          this.listaAldeia = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, id: a.id }));
+          this.listaAldeia = (resp?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, id: a.id }));
           // this.loading = false;
         });
     } else {
@@ -462,7 +463,7 @@ export class ApplicationCadastroDetailComponent {
     if (query && query.length >= 2) {
       this.dataMasterService.searchClasseByCodigo(query).subscribe({
         next: resp => {
-          this.listaClasseAtividade = mapToAtividadeEconomica(resp._embedded.classeAtividade);
+          this.listaClasseAtividade = mapToAtividadeEconomica((resp?._embedded?.classeAtividade ?? []));
         }
       });
     }
@@ -656,7 +657,7 @@ export class ApplicationCadastroDetailComponent {
       tipoEstabelecimento: [null],
       tipoEmpresa: new FormControl({ value: null, disabled: true }),
       quantoAtividade: [null],
-      caraterizacaoEstabelecimento: [null],
+      caraterizacaoEstabelecimento: [null, Validators.required],
       risco: new FormControl({ value: null, disabled: true }),
       ato: [null],
       grupoAtividade: new FormControl({ value: null, disabled: true }),

@@ -13,6 +13,21 @@ export class PedidoService {
         private http: HttpClient,
     ) { }
 
+    /** Fetch the official "Pedido de Inscrição no Cadastro" form PDF, rendered fresh from current data. */
+    getCadastroFormPdf(pedidoId: number): Observable<Blob> {
+        return this.http.get(`${this.apiUrl}/${pedidoId}/form-pdf`, { responseType: 'blob' });
+    }
+
+    /** Fetch the official "Pedido de Vistoria" form PDF, rendered fresh from current data. */
+    getVistoriaFormPdf(pedidoVistoriaId: number): Observable<Blob> {
+        return this.http.get(`${this.apiUrl}-vistoria/${pedidoVistoriaId}/form-pdf`, { responseType: 'blob' });
+    }
+
+    /** Fetch the "Auto de Vistoria" inspection record PDF, rendered fresh from current data. */
+    getAutoVistoriaFormPdf(autoVistoriaId: number): Observable<Blob> {
+        return this.http.get(`${this.apiUrl}-vistoria/auto-vistorias/${autoVistoriaId}/form-pdf`, { responseType: 'blob' });
+    }
+
     saveFatura(pedidoId: number, formData: any): Observable<Fatura> {
         return this.http.post<Fatura>(`${this.apiUrl}/${pedidoId}/faturas`, formData);
     }
@@ -30,6 +45,11 @@ export class PedidoService {
     }
 
     // Pedido Licenca de Atividade
+
+    /** Fetch the official "Pedido de Licença para Atividade" form PDF, rendered fresh from current data. */
+    getAtividadeFormPdf(pedidoId: number): Observable<Blob> {
+        return this.http.get(`${this.apiUrl}-atividade/${pedidoId}/form-pdf`, { responseType: 'blob' });
+    }
 
     saveFaturaPedidoLicenca(pedidoId: number, formData: any): Observable<Fatura> {
         return this.http.post<Fatura>(`${this.apiUrl}-atividade/${pedidoId}/faturas`, formData);

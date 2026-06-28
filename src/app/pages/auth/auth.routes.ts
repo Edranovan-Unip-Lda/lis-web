@@ -36,7 +36,6 @@ export default [
                 resolve: {
                     aldeiasResolver: getAllAldeiasResolver,
                     listaSociedadeComercial: getSociedadeComercialResolver,
-                    roleListResolver: getRolesResolver,
                 }
             },
             {

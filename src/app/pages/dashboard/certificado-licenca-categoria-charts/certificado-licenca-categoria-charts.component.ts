@@ -1,6 +1,6 @@
 import { LicensesPerMonthDto } from '@/core/models/entities.model';
 import { Component, Input, SimpleChanges } from '@angular/core';
-import * as Highcharts from 'highcharts';
+import type * as Highcharts from 'highcharts';
 import { HighchartsChartComponent, } from 'highcharts-angular';
 
 @Component({
@@ -11,7 +11,6 @@ import { HighchartsChartComponent, } from 'highcharts-angular';
   styleUrl: './certificado-licenca-categoria-charts.component.scss',
 })
 export class CertificadoLicencaCategoriaChartsComponent {
-  Highcharts: typeof Highcharts = Highcharts;
   chartOptions!: Highcharts.Options;
   @Input() licensesPerMonth!: LicensesPerMonthDto;
   @Input() title!: string;

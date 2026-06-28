@@ -35,8 +35,10 @@ export class AuthenticationService {
     return this.http.put<User>(`${this.apiUrl}/otp/${username}`, { username });
   }
 
-  sendForgotPasswordEmail(email: string): Observable<any> {
-    return this.http.post<User>(`${this.apiUrl}/forgot-password?email=${email}`, { email });
+  sendForgotPasswordEmail(email: string, recaptchaToken: string): Observable<any> {
+    // #22: forward the reCAPTCHA v3 token for backend verification.
+    const params = `?email=${encodeURIComponent(email)}&recaptchaToken=${encodeURIComponent(recaptchaToken)}`;
+    return this.http.post<User>(`${this.apiUrl}/forgot-password${params}`, { email });
   }
 
   resetPassword(data: any): Observable<any> {
@@ -48,8 +50,11 @@ export class AuthenticationService {
    */
   logout(): void {
     localStorage.removeItem(this.userKey);
+    // BUG-WEB-4: redirect whether or not the logout POST succeeds — otherwise a failed call (e.g. the 401 that
+    // triggered logout) leaves the app stuck user-less with no navigation.
     this.http.post(`${this.apiUrl}/logout`, {}, { responseType: 'text' }).pipe(take(1)).subscribe({
-      next: () => this.router.navigateByUrl('/').then()
+      next: () => this.router.navigateByUrl('/').then(),
+      error: () => this.router.navigateByUrl('/').then()
     });
   }
 

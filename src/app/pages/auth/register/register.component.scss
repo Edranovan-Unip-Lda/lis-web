@@ -1,0 +1,242 @@
+
+/* =====================================================================================
+   Printed "Resumo da Inscrição" — mirrors the official MCI "Formulário de Registo de Empresa" PDF.
+   The on-screen summary keeps its own design; this document is hidden on screen (.resumo-print-host)
+   and only its innerHTML is cloned into the print window by ngxPrint (useExistingCss copies these rules).
+   ===================================================================================== */
+.resumo-print-host {
+    display: none;
+}
+
+.resumo-doc {
+    --rz-teal: #15806d;
+    --rz-ink: #1f2937;
+    --rz-muted: #6b7280;
+    --rz-box: #eef2f1;
+    --rz-line: #d1d5db;
+    background: #fff;
+    color: var(--rz-ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.35;
+    padding: 24px 28px;
+    margin: 0 auto;
+    max-width: 920px;
+}
+
+.resumo-doc .rz-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--rz-teal);
+}
+
+.resumo-doc .rz-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.resumo-doc .rz-brand img {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+}
+
+.resumo-doc .rz-brand .name {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .02em;
+    margin: 0;
+}
+
+.resumo-doc .rz-brand .sub {
+    font-size: 10.5px;
+    color: var(--rz-muted);
+    margin: 1px 0 0;
+}
+
+.resumo-doc .rz-formtitle {
+    text-align: right;
+    color: var(--rz-teal);
+    line-height: 1.2;
+}
+
+.resumo-doc .rz-formtitle .big {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.resumo-doc .rz-formtitle .small {
+    font-size: 10.5px;
+    letter-spacing: .08em;
+}
+
+.resumo-doc .rz-section {
+    margin-top: 20px;
+    break-inside: avoid;
+}
+
+.resumo-doc .rz-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--rz-teal);
+    color: #fff;
+    padding: 8px 13px;
+    border-radius: 7px;
+}
+
+.resumo-doc .rz-bar .left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.resumo-doc .rz-badge {
+    width: 21px;
+    height: 21px;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--rz-teal);
+    font-weight: 700;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.resumo-doc .rz-bar .ttl {
+    font-size: 13.5px;
+    font-weight: 600;
+}
+
+.resumo-doc .rz-bar .step {
+    font-size: 10.5px;
+    opacity: .85;
+}
+
+.resumo-doc .rz-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 10px 14px;
+    margin-top: 12px;
+}
+
+.resumo-doc .rz-f {
+    min-width: 0;
+}
+
+.resumo-doc .rz-f.s12 {
+    grid-column: span 12;
+}
+
+.resumo-doc .rz-f.s6 {
+    grid-column: span 6;
+}
+
+.resumo-doc .rz-f.s4 {
+    grid-column: span 4;
+}
+
+.resumo-doc .rz-f.s3 {
+    grid-column: span 3;
+}
+
+.resumo-doc .rz-label {
+    font-size: 10px;
+    color: var(--rz-muted);
+    margin-bottom: 3px;
+}
+
+.resumo-doc .rz-val {
+    background: var(--rz-box);
+    border-bottom: 1px solid var(--rz-line);
+    border-radius: 4px 4px 0 0;
+    padding: 6px 9px;
+    min-height: 30px;
+    word-break: break-word;
+}
+
+.resumo-doc .rz-sub {
+    color: var(--rz-teal);
+    font-weight: 600;
+    font-size: 12.5px;
+    margin: 16px 0 0;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--rz-line);
+}
+
+.resumo-doc .rz-docs {
+    margin-top: 12px;
+    display: grid;
+    gap: 7px;
+}
+
+.resumo-doc .rz-doc-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.resumo-doc .rz-check {
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+    flex: none;
+    border: 1px solid var(--rz-teal);
+    background: var(--rz-teal);
+    color: #fff;
+    font-size: 10px;
+    line-height: 15px;
+    text-align: center;
+}
+
+.resumo-doc .rz-sign {
+    display: flex;
+    justify-content: space-between;
+    gap: 48px;
+    margin-top: 44px;
+}
+
+.resumo-doc .rz-sign .ln {
+    flex: 1;
+    border-top: 1px solid #9ca3af;
+    padding-top: 4px;
+    font-size: 10.5px;
+    color: var(--rz-muted);
+}
+
+.resumo-doc .rz-footer {
+    margin-top: 24px;
+    padding-top: 8px;
+    border-top: 1px solid var(--rz-teal);
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--rz-muted);
+}
+
+/* Force the teal bars/badges/boxes to actually print, and set A4 page geometry. */
+@media print {
+    .resumo-doc {
+        max-width: none;
+        padding: 0;
+    }
+
+    .resumo-doc,
+    .resumo-doc .rz-bar,
+    .resumo-doc .rz-badge,
+    .resumo-doc .rz-val,
+    .resumo-doc .rz-check {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    @page {
+        size: A4;
+        margin: 14mm 13mm;
+    }
+}

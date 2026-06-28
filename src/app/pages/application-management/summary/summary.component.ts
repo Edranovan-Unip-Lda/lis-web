@@ -54,7 +54,8 @@ export class SummaryComponent {
     this.user = this.authService.currentUserValue;
 
     if (this.router.snapshot.data['userRoleStaffResolver']) {
-      this.userList = this.router.snapshot.data['userRoleStaffResolver']._embedded.users;
+      // by-direcao now returns a plain UserDto[] instead of a HAL _embedded.users payload
+      this.userList = this.router.snapshot.data['userRoleStaffResolver'];
     }
 
     this.form = this._fb.group({
@@ -203,8 +204,7 @@ export class SummaryComponent {
                 {
                   queryParams: {
                     categoria: this.aplicanteData.categoria,
-                    tipo: this.aplicanteData.tipo,
-                    autoUpload: 'true'
+                    tipo: this.aplicanteData.tipo
                   }
                 }
               );
@@ -213,8 +213,7 @@ export class SummaryComponent {
                 {
                   queryParams: {
                     categoria: this.aplicanteData.categoria,
-                    tipo: this.aplicanteData.tipo,
-                    autoUpload: 'true'
+                    tipo: this.aplicanteData.tipo
                   }
                 }
               );

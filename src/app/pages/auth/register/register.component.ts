@@ -6,7 +6,8 @@ import { estadoCivilOptions, maxFileSizeUpload, tipoDocumentoOptions, tipoNacion
 import { alphanumericValidator } from '@/core/validators/alphanumeric';
 import { greaterThanValidator } from '@/core/validators/greater-than';
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ReCaptchaV3Service, RecaptchaV3Module } from 'ng-recaptcha-2';
@@ -26,8 +27,8 @@ import { Ripple } from 'primeng/ripple';
 import { Select, SelectChangeEvent, SelectFilterEvent } from 'primeng/select';
 import { StepperModule } from 'primeng/stepper';
 import { Tooltip } from 'primeng/tooltip';
-import { Subject, of } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Observable, Subject, of } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 
 interface Notification {
     state: string,
@@ -40,6 +41,7 @@ interface Notification {
     standalone: true,
     imports: [Button, FileUpload, RouterLink, InputText, Fluid, Ripple, Password, ReactiveFormsModule, Select, Message, StepperModule, DatePicker, InputGroup, InputGroupAddonModule, InputNumber, Divider, Tooltip, DatePipe, NgxPrintModule, CurrencyPipe, RecaptchaV3Module, DecimalPipe],
     templateUrl: './register.component.html',
+    styleUrls: ['./register.component.scss']
 })
 export class Register {
     confirmed: boolean = false;
@@ -65,9 +67,16 @@ export class Register {
     tipoNacionalidadeOpts = tipoNacionalidadeOptions;
     tipoEstadoCivilOpts = estadoCivilOptions;
     showAddBtnAcionistas = false;
-    selectedRole!: Role;
     listaAldeiaAcionista: any[][] = [];
     uploadedDocs: any[] = [];
+    // B1: registration session token, opened on first file select; authorizes staging uploads + finalize.
+    sessionToken: string | null = null;
+    // Draft autosave: a recoverable draft was found in localStorage → show the continue/start-fresh banner.
+    draftAvailable = false;
+    private readonly destroyRef = inject(DestroyRef);
+    private static readonly DRAFT_KEY = 'lis:register:draft';
+    private static readonly DRAFT_MAX_AGE_MS = 24 * 60 * 60 * 1000;   // discard drafts older than 24h entirely
+    private static readonly SESSION_SAFE_AGE_MS = 25 * 60 * 1000;     // beyond this, the 30-min session is unsafe
     maxFileSize = maxFileSizeUpload;
     tipoRepresentanteOptions = tipoRepresentante;
     gerenteForeigner: boolean = false;
@@ -82,6 +91,9 @@ export class Register {
     representanteAldeiaIsLoading = false;
     acionistaAldeiaIsLoading: boolean[] = [];
     acceptedFileTypes = 'application/pdf,image/jpeg,image/jpg,image/png';
+    // Printed resumo (official PDF layout): absolute logo URL so it resolves inside the ngxPrint window.
+    printLogoUrl = `${window.location.origin}/images/logo.png`;
+    today = new Date();
 
     constructor(
         private _fb: FormBuilder,
@@ -95,9 +107,9 @@ export class Register {
     ngOnInit() {
         this.initForm();
 
-        this.aldeias = this.route.snapshot.data['aldeiasResolver']._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+        this.aldeias = (this.route.snapshot.data['aldeiasResolver']?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, value: a.id }));
 
-        this.listaSociedadeComercial = this.route.snapshot.data['listaSociedadeComercial']._embedded.sociedadeComercial.map((s: any) => ({ nome: s.nome, value: s.id }));
+        this.listaSociedadeComercial = (this.route.snapshot.data['listaSociedadeComercial']?._embedded?.sociedadeComercial ?? []).map((s: any) => ({ nome: s.nome, value: s.id }));
         // Re-validate now that the list is loaded
         this.empresaForm.get('nome')?.updateValueAndValidity();
         this.originalAldeias = [...this.aldeias];
@@ -133,13 +145,13 @@ export class Register {
             }
         });
 
-        const roles: any[] = this.route.snapshot.data['roleListResolver']._embedded.roles;
-        this.selectedRole = roles.find(r => r.name === 'ROLE_CLIENT')!;
-
         this.setUtilizadorEmail();
         this.setupAldeiaSearch();
         this.setupGerenteAldeiaSearch();
         this.setupRepresentanteAldeiaSearch();
+
+        this.setupDraftAutosave();
+        this.maybeOfferDraft();
     }
 
     setupAldeiaSearch(): void {
@@ -164,7 +176,7 @@ export class Register {
         ).subscribe({
             next: (response) => {
                 if (response) {
-                    this.aldeias = response._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+                    this.aldeias = (response?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, value: a.id }));
                 } else {
                     this.aldeias = [...this.originalAldeias];
                 }
@@ -195,7 +207,7 @@ export class Register {
         ).subscribe({
             next: (response) => {
                 if (response) {
-                    this.gerenteListaAldeias = response._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+                    this.gerenteListaAldeias = (response?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, value: a.id }));
                 } else {
                     this.gerenteListaAldeias = [...this.originalAldeias];
                 }
@@ -226,7 +238,7 @@ export class Register {
         ).subscribe({
             next: (response) => {
                 if (response) {
-                    this.representanteListaAldeias = response._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+                    this.representanteListaAldeias = (response?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, value: a.id }));
                 } else {
                     this.representanteListaAldeias = [...this.originalAldeias];
                 }
@@ -261,7 +273,7 @@ export class Register {
             ).subscribe({
                 next: (response) => {
                     if (response) {
-                        this.listaAldeiaAcionista[index] = response._embedded.aldeias.map((a: any) => ({ nome: a.nome, value: a.id }));
+                        this.listaAldeiaAcionista[index] = (response?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, value: a.id }));
                     } else {
                         this.listaAldeiaAcionista[index] = [...this.originalAldeias];
                     }
@@ -335,25 +347,28 @@ export class Register {
             formData.utilizador.lastName = parts.slice(1).join(' ') || parts[0];
 
             formData.utilizador.username = formData.gerente.email.split('@')[0] + new Date().getUTCMilliseconds().toString();
-            formData.utilizador.role = this.selectedRole;
             formData.utilizador.email = formData.gerente.email;
 
-            this.recaptchaV3Service.execute(RecaptchaAction.registerEmpresa).subscribe((token: string) => {
-                formData.recaptchaToken = token;
-                this.empresaService.save(formData, this.uploadedDocs).subscribe({
-                    next: (response) => {
-                        this.loading = false;
-                        this.isSuccess = true;
-                        this.emailVerification = response.utilizador.email;
-                        this.empresaForm.reset();
-                        this.setNotification();
-                    },
-                    error: (error) => {
-                        this.loading = false;
-                        this.isError = true;
-                        this.errorMessage = error;
-                    }
-                });
+            // B1: the session + the 6 documents were already established/uploaded while the form was filled.
+            // Finalize is a small JSON call carrying the staged document refs + the session token.
+            formData.sessionToken = this.sessionToken;
+            formData.documentRefs = this.uploadedDocs.map(d => d.ref);
+            this.empresaService.finalize(formData).subscribe({
+                next: (response) => {
+                    this.loading = false;
+                    this.isSuccess = true;
+                    this.emailVerification = response.utilizador.email;
+                    this.empresaForm.reset();
+                    this.uploadedDocs = [];
+                    this.sessionToken = null;
+                    this.clearDraft(); // registration done — drop any saved draft
+                    this.setNotification();
+                },
+                error: (error) => {
+                    this.loading = false;
+                    this.isError = true;
+                    this.errorMessage = error;
+                }
             });
 
         } else {
@@ -661,18 +676,180 @@ export class Register {
         this.listaAldeiaAcionista[index] = [...this.originalAldeias];
     }
 
+    /** Open the registration session once (verify reCAPTCHA → sessionToken), then reuse it for every upload. */
+    private ensureSession(): Observable<string> {
+        if (this.sessionToken) return of(this.sessionToken);
+        return this.recaptchaV3Service.execute(RecaptchaAction.registerEmpresa).pipe(
+            switchMap(token => this.empresaService.verifyRecaptcha(token)),
+            map(res => (this.sessionToken = res.sessionToken))
+        );
+    }
+
     onSelect(e: FileSelectEvent) {
-        this.uploadedDocs = [...this.uploadedDocs, ...e.files];
+        // e.files may be a FileList (array-like, not an Array) — normalize before iterating.
+        const files = Array.from(e.files ?? []);
+        // Bootstrap the session on the first selection, then stage each file immediately and independently.
+        this.ensureSession().subscribe({
+            next: () => files.forEach(file => this.stageOne(file)),
+            error: () => {
+                this.isError = true;
+                this.errorMessage = 'Falha na verificação reCAPTCHA. Tente novamente.';
+            }
+        });
+    }
+
+    private stageOne(file: File) {
+        const entry: any = {
+            file,
+            name: file.name,
+            size: file.size,
+            __key: `${file.name}-${file.size}-${(file as any).lastModified}`,
+            ref: null,
+            status: 'uploading'
+        };
+        this.uploadedDocs = [...this.uploadedDocs, entry];
+        this.empresaService.stageDocument(file, this.sessionToken!).subscribe({
+            next: h => { entry.ref = h.ref; entry.status = 'done'; },
+            error: () => { entry.status = 'error'; }
+        });
     }
 
     onFileRemove(e: { file: any }) {
-        const key = e.file.__key ?? `${e.file.name}-${e.file.size}-${e.file.lastModified}`;
+        const item = e.file;
+        // Best-effort: drop the staged object server-side too (lifecycle rule is the backstop).
+        if (item.ref && this.sessionToken) {
+            this.empresaService.deleteStagedDocument(item.ref, this.sessionToken).subscribe({ error: () => { } });
+        }
+        const key = item.__key ?? `${item.name}-${item.size}-${item.lastModified}`;
         this.uploadedDocs = this.uploadedDocs.filter(f => (f.__key ?? `${f.name}-${f.size}-${f.lastModified}`) !== key);
     }
 
     // Fired when the "clear" button is pressed
     onFileClear() {
+        const token = this.sessionToken;
+        if (token) {
+            this.uploadedDocs.forEach(d => {
+                if (d.ref) this.empresaService.deleteStagedDocument(d.ref, token).subscribe({ error: () => { } });
+            });
+        }
         this.uploadedDocs = [];
+    }
+
+    /** Step is valid only when all 6 documents finished staging (have a ref). */
+    allDocsStaged(): boolean {
+        return this.uploadedDocs.length === 6 && this.uploadedDocs.every(d => d.status === 'done' && !!d.ref);
+    }
+
+    // ---- Draft autosave (continue after reload) ------------------------------------------------------------
+
+    /** Persist a small draft (form JSON minus password + staged doc refs + session token) on every change. */
+    private setupDraftAutosave(): void {
+        this.empresaForm.valueChanges.pipe(
+            debounceTime(800),
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe(() => this.saveDraft());
+    }
+
+    private saveDraft(): void {
+        if (this.empresaForm.pristine) return; // nothing meaningful typed yet
+        const raw = this.empresaForm.getRawValue();
+        if (raw.utilizador) raw.utilizador = { ...raw.utilizador, password: null }; // never persist the password
+        const draft = {
+            savedAt: Date.now(),
+            form: raw,
+            sessionToken: this.sessionToken,
+            docs: this.uploadedDocs
+                .filter(d => d.ref && d.status === 'done')
+                .map(d => ({ name: d.name, size: d.size, ref: d.ref, __key: d.__key })),
+        };
+        try {
+            localStorage.setItem(Register.DRAFT_KEY, JSON.stringify(draft));
+        } catch { /* quota / private mode — non-fatal */ }
+    }
+
+    /** Read a non-expired draft. Drops session+docs if older than the session window (form fields are kept). */
+    private readDraft(): any | null {
+        try {
+            const raw = localStorage.getItem(Register.DRAFT_KEY);
+            if (!raw) return null;
+            const draft = JSON.parse(raw);
+            if (!draft?.savedAt || Date.now() - draft.savedAt > Register.DRAFT_MAX_AGE_MS) {
+                this.clearDraft();
+                return null;
+            }
+            if (Date.now() - draft.savedAt > Register.SESSION_SAFE_AGE_MS) {
+                draft.sessionToken = null; // the 30-min session/staged files are likely gone — make the user re-attach
+                draft.docs = [];
+            }
+            return draft;
+        } catch {
+            this.clearDraft();
+            return null;
+        }
+    }
+
+    private maybeOfferDraft(): void {
+        this.draftAvailable = !!this.readDraft();
+    }
+
+    /** "Continuar": restore the form (rebuilding the acionistas array first), plus fresh staged docs/session. */
+    restoreDraft(): void {
+        const draft = this.readDraft();
+        if (!draft) { this.draftAvailable = false; return; }
+        const data = draft.form ?? {};
+
+        // 0) JSON turned Date objects into ISO strings — revive them so the p-datepickers can render again.
+        this.reviveDates(data);
+
+        // 1) Rebuild the acionistas FormArray to the saved size before patching (patchValue can't grow an array).
+        const savedAcionistas: any[] = data.acionistas ?? [];
+        // Setting tipoPropriedade fires the handler that clears + pushes one acionista.
+        this.empresaForm.get('tipoPropriedade')?.setValue(data.tipoPropriedade ?? null, { emitEvent: true });
+        while (this.acionistasArray.length < savedAcionistas.length) {
+            this.acionistasArray.push(this.generateAcionistaForm(false));
+        }
+        while (this.acionistasArray.length > savedAcionistas.length) {
+            this.acionistasArray.removeAt(this.acionistasArray.length - 1);
+        }
+        this.acionistasArray.controls.forEach((_, idx) => this.listaAldeiaAcionista[idx] = [...this.originalAldeias]);
+
+        // 2) Patch every field (acionistas controls now exist). emitEvent:false so we don't immediately re-save.
+        this.empresaForm.patchValue(data, { emitEvent: false });
+        this.empresaForm.markAsDirty();
+
+        // 3) Restore the staged documents + session if still within the safe window.
+        if (draft.sessionToken && draft.docs?.length) {
+            this.sessionToken = draft.sessionToken;
+            this.uploadedDocs = draft.docs.map((d: any) => ({ ...d, status: 'done' }));
+        }
+
+        this.draftAvailable = false;
+    }
+
+    /** "Começar de novo": drop the draft (and best-effort delete any staged docs it referenced). */
+    discardDraft(): void {
+        const draft = this.readDraft();
+        if (draft?.sessionToken && draft?.docs?.length) {
+            draft.docs.forEach((d: any) =>
+                this.empresaService.deleteStagedDocument(d.ref, draft.sessionToken).subscribe({ error: () => { } }));
+        }
+        this.clearDraft();
+        this.draftAvailable = false;
+    }
+
+    private clearDraft(): void {
+        try { localStorage.removeItem(Register.DRAFT_KEY); } catch { /* non-fatal */ }
+    }
+
+    /** Convert the persisted ISO-string dates back into Date objects the DatePickers can bind. */
+    private reviveDates(data: any): void {
+        const toDate = (v: any) => (v ? new Date(v) : v);
+        data.dataRegisto = toDate(data.dataRegisto);
+        if (data.gerente) data.gerente.validadeVisto = toDate(data.gerente.validadeVisto);
+        if (data.representante) {
+            data.representante.dataNascimento = toDate(data.representante.dataNascimento);
+            data.representante.validadeVisto = toDate(data.representante.validadeVisto);
+        }
     }
 
     disableStepEmpresa(): boolean {
@@ -684,7 +861,7 @@ export class Register {
             this.empresaForm.get('nif')?.invalid ||
             this.empresaForm.get('numeroRegistoComercial')?.invalid ||
             this.empresaForm.get('capitalSocial')?.invalid ||
-            this.empresaForm.get('dataRegisto')?.invalid || this.uploadedDocs.length !== 6
+            this.empresaForm.get('dataRegisto')?.invalid || !this.allDocsStaged()
         );
     }
 

@@ -10,3 +10,17 @@
 #login {
     max-width: 350px;
 }
+
+/* Responsive license preview (p-image preview overlay is appended to <body>, so it must be
+   styled globally — component styles can't reach it). Fit the certificate to any screen. */
+.p-image-mask {
+    img,
+    .p-image-original,
+    .p-image-preview {
+        max-width: 96vw;
+        max-height: 92vh;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+    }
+}

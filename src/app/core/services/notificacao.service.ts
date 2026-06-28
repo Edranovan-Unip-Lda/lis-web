@@ -79,7 +79,9 @@ export class NotificacaoService {
    * returning it for external subscription.
    */
   markAsRead(notificacaoId: number): void {
-    this.http.patch<void>(`${this.apiUrl}/${notificacaoId}/mark-seen`, {}).pipe(take(1)).subscribe();
+    // #14: handle errors instead of swallowing them in a no-arg subscribe.
+    this.http.patch<void>(`${this.apiUrl}/${notificacaoId}/mark-seen`, {}).pipe(take(1))
+      .subscribe({ error: (err) => console.error('Falha ao marcar notificação como lida', err) });
   }
 
   /**
@@ -93,7 +95,9 @@ export class NotificacaoService {
    * @returns void
    */
   markAllAsRead(): void {
-    this.http.patch<void>(`${this.apiUrl}/mark-all-seen`, {}).pipe(take(1)).subscribe();
+    // #14: handle errors instead of swallowing them in a no-arg subscribe.
+    this.http.patch<void>(`${this.apiUrl}/mark-all-seen`, {}).pipe(take(1))
+      .subscribe({ error: (err) => console.error('Falha ao marcar todas as notificações como lidas', err) });
   }
 
 }

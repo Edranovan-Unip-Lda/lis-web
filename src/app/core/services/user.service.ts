@@ -61,17 +61,18 @@ export class UserService {
     return this.http.get<any[]>(`${this.apiUrl}/search`, { params }).pipe(take(1));
   }
 
+  // Backed by GET /api/v1/users/by-direcao (returns a plain UserDto[]), not Spring Data REST /data anymore.
   getByDirecaoId(direcaoId: number): Observable<any> {
     let params = new HttpParams();
     params = params.append('direcaoId', direcaoId);
-    return this.http.get<any>(`${environment.url}/data/users/search/byDirecao`, { params }).pipe(take(1));
+    return this.http.get<any>(`${this.apiUrl}/by-direcao`, { params }).pipe(take(1));
   }
 
   getByDirecaoIdAndRoleName(direcaoId: number, roleName: Role): Observable<any> {
     let params = new HttpParams();
     params = params.append('direcaoId', direcaoId);
     params = params.append('roleName', roleName);
-    return this.http.get<any>(`${environment.url}/data/users/search/byDirecaoAndRole`, { params }).pipe(take(1));
+    return this.http.get<any>(`${this.apiUrl}/by-direcao`, { params }).pipe(take(1));
   }
 
   /**

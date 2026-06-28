@@ -70,11 +70,11 @@ export class LicencasCertificadosComponent {
 
   ngOnInit() {
     this.listaEmpresa = this.route.snapshot.data['listaEmpresa'].content.map((e: any) => ({ name: e.nome, value: e.id }));
-    this.listaMunicipios = this.route.snapshot.data['listaMunicipios']._embedded.municipios.map((m: any) => ({ name: m.nome, value: m.id }));
-    this.listaPostosAdministrativos = this.route.snapshot.data['listaPostosAdministrativos']._embedded.postos.map((p: any) => ({ name: p.nome, value: p.id }));
-    this.listaSucos = this.route.snapshot.data['listaSucos']._embedded.sucos.map((s: any) => ({ name: s.nome, value: s.id }));
+    this.listaMunicipios = (this.route.snapshot.data['listaMunicipios']?._embedded?.municipios ?? []).map((m: any) => ({ name: m.nome, value: m.id }));
+    this.listaPostosAdministrativos = (this.route.snapshot.data['listaPostosAdministrativos']?._embedded?.postos ?? []).map((p: any) => ({ name: p.nome, value: p.id }));
+    this.listaSucos = (this.route.snapshot.data['listaSucos']?._embedded?.sucos ?? []).map((s: any) => ({ name: s.nome, value: s.id }));
     this.listaSucosAux = [...this.listaSucos];
-    this.listaClasseAtividade = this.route.snapshot.data['classeAtividadeResolver']._embedded.classeAtividade;
+    this.listaClasseAtividade = (this.route.snapshot.data['classeAtividadeResolver']?._embedded?.classeAtividade ?? []);
 
     this.applicanteTypeFormControl.valueChanges.subscribe((value) => {
       if (value) {
@@ -238,7 +238,7 @@ export class LicencasCertificadosComponent {
     ).subscribe({
       next: (response) => {
         if (response) {
-          this.listaSucos = response._embedded.sucos.map((s: any) => ({ name: s.nome, value: s.id }));
+          this.listaSucos = (response?._embedded?.sucos ?? []).map((s: any) => ({ name: s.nome, value: s.id }));
         } else {
           this.listaSucos = [...this.listaSucosAux];
         }

@@ -86,12 +86,12 @@ export class AutoVistoriaComponent implements OnInit {
     this.categoria = this.aplicante.categoria;
     this.pedidoVistoria = this.aplicante.pedidoLicencaAtividade.listaPedidoVistoria.find(p => p.status === AplicanteStatus.submetido)!;
 
-    this.listaClassificacaoAtividade = mapToAtividadeEconomica(this.route.snapshot.data['listaClasseAtividadeResolver']._embedded.classeAtividade);
+    this.listaClassificacaoAtividade = mapToAtividadeEconomica((this.route.snapshot.data['listaClasseAtividadeResolver']?._embedded?.classeAtividade ?? []));
 
-    this.listaPostoAdministrativo = this.route.snapshot.data['listaPostoAdministrativoResolver']._embedded.postos;
+    this.listaPostoAdministrativo = (this.route.snapshot.data['listaPostoAdministrativoResolver']?._embedded?.postos ?? []);
     this.listaPostoAdministrativoOriginal = [...this.listaPostoAdministrativo];
 
-    this.originalAldeias = this.route.snapshot.data['listaAldeiasResolver']._embedded.aldeias.map((a: any) => ({ nome: a.nome, id: a.id }));
+    this.originalAldeias = (this.route.snapshot.data['listaAldeiasResolver']?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, id: a.id }));
     this.listaAldeia = [...this.originalAldeias];
     this.listaAldeiaRequerente = [...this.originalAldeias];
     this.listaAldeiaResidencia = [...this.originalAldeias];
@@ -194,14 +194,14 @@ export class AutoVistoriaComponent implements OnInit {
       this.dataMasterService.searchAldeiasByNome(query)
         .subscribe(resp => {
           if (parentControlName && childControlName) {
-            this.autoVistoriaForm.get(parentControlName)?.get(childControlName)?.patchValue(resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, id: a.id })));
+            this.autoVistoriaForm.get(parentControlName)?.get(childControlName)?.patchValue((resp?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, id: a.id })));
             if (parentControlName === 'requerente' && childControlName === 'sede') {
-              this.listaAldeiaRequerente = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, id: a.id }));
+              this.listaAldeiaRequerente = (resp?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, id: a.id }));
             } else {
-              this.listaAldeiaResidencia = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, id: a.id }));
+              this.listaAldeiaResidencia = (resp?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, id: a.id }));
             }
           } else {
-            this.listaAldeia = resp._embedded.aldeias.map((a: any) => ({ nome: a.nome, id: a.id }));
+            this.listaAldeia = (resp?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, id: a.id }));
           }
           // this.loading = false;
         });
@@ -260,7 +260,7 @@ export class AutoVistoriaComponent implements OnInit {
     if (query && query.length) {
       this.dataMasterService.searchPostosByNome(query)
         .subscribe(resp => {
-          this.listaPostoAdministrativo = resp._embedded.postos.map((a: any) => ({ nome: a.nome, id: a.id }));
+          this.listaPostoAdministrativo = (resp?._embedded?.postos ?? []).map((a: any) => ({ nome: a.nome, id: a.id }));
           // this.loading = false;
         });
     } else {
