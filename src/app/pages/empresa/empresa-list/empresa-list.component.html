@@ -13,12 +13,12 @@
             </ng-template>
             <ng-template #header>
                 <tr>
-                    <th pSortableColumn="nome" class="white-space-nowrap">Nome
+                    <th pSortableColumn="nome" class="white-space-nowrap">Empresa
                         <p-sortIcon field="nome">
                         </p-sortIcon>
                     </th>
-                    <th pSortableColumn="email" class="white-space-nowrap">Email<p-sortIcon field="email">
-                        </p-sortIcon>
+                    <th>
+                        Sociedade Comercial
                     </th>
                     <th class="white-space-nowrap">
                         Local
@@ -43,7 +43,7 @@
                         {{ empresa.nome }}
                     </td>
                     <td>
-                        {{empresa.utilizador.email}}
+                        {{empresa.sociedadeComercial.nome}}
                     </td>
                     <td>
                         {{empresa.sede.local}} - {{empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome}}

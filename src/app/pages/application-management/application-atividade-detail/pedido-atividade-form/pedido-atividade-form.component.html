@@ -314,10 +314,10 @@
              </div>
              }
              <div class="flex justify-start pt-2">
-                 <p-fileupload [chooseLabel]="'Carregar'" name="files" method="post"
-                     [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUploadDocs($event, 'planta')"
-                     (onProgress)="uploadOnProgress($event, 'planta')" [maxFileSize]="maxFileSize"
-                     accept="application/pdf" mode="basic" [url]="uploadURLDocs()"
+                 <p-fileupload #fuPlanta [chooseLabel]="'Carregar'" name="files" [customUpload]="true"
+                     [chooseIcon]="'pi pi-file-arrow-up'" (uploadHandler)="onUploadDocs($event, 'planta', fuPlanta)"
+                     [maxFileSize]="maxFileSize"
+                     accept="application/pdf" mode="basic"
                      [disabled]="disabledAllForm || getFileByField('planta')" [auto]="true">
                  </p-fileupload>
              </div>
@@ -355,10 +355,10 @@
              </div>
              }
              <div class="flex justify-start pt-2">
-                 <p-fileupload [chooseLabel]="'Carregar'" name="files" method="post"
-                     [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUploadDocs($event, 'documentoPropriedade')"
-                     (onProgress)="uploadOnProgress($event, 'documentoPropriedade')" [maxFileSize]="maxFileSize"
-                     accept="application/pdf" mode="basic" [url]="uploadURLDocs()"
+                 <p-fileupload #fuDocProp [chooseLabel]="'Carregar'" name="files" [customUpload]="true"
+                     [chooseIcon]="'pi pi-file-arrow-up'" (uploadHandler)="onUploadDocs($event, 'documentoPropriedade', fuDocProp)"
+                     [maxFileSize]="maxFileSize"
+                     accept="application/pdf" mode="basic"
                      [disabled]="disabledAllForm || getFileByField('documentoPropriedade')" [auto]="true">
                  </p-fileupload>
              </div>
@@ -390,10 +390,10 @@
              </div>
              }
              <div class="flex justify-start pt-2">
-                 <p-fileupload [chooseLabel]="'Carregar'" name="files" method="post"
-                     (onUpload)="onUploadDocs($event, 'contratoArrendamento')" [chooseIcon]="'pi pi-file-arrow-up'"
-                     (onProgress)="uploadOnProgress($event, 'contratoArrendamento')" [maxFileSize]="maxFileSize"
-                     accept="application/pdf" mode="basic" [url]="uploadURLDocs()"
+                 <p-fileupload #fuContrato [chooseLabel]="'Carregar'" name="files" [customUpload]="true"
+                     (uploadHandler)="onUploadDocs($event, 'contratoArrendamento', fuContrato)" [chooseIcon]="'pi pi-file-arrow-up'"
+                     [maxFileSize]="maxFileSize"
+                     accept="application/pdf" mode="basic"
                      [disabled]="disabledAllForm || getFileByField('contratoArrendamento')" [auto]="true">
                  </p-fileupload>
              </div>
@@ -561,10 +561,9 @@
              </div>
              }
              <div class="flex justify-start pt-2">
-                 <p-fileupload [chooseLabel]="'Carregar'" name="files" method="post"
-                     [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUploadDocs($event, item.name)"
-                     [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic" [url]="uploadURLDocs()"
-                     (onProgress)="uploadOnProgress($event, item.name)"
+                 <p-fileupload #fuItem [chooseLabel]="'Carregar'" name="files" [customUpload]="true"
+                     [chooseIcon]="'pi pi-file-arrow-up'" (uploadHandler)="onUploadDocs($event, item.name, fuItem)"
+                     [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic"
                      [disabled]="disabledAllForm || getFileByField(item.name)" [auto]="true">
                  </p-fileupload>
              </div>
@@ -596,10 +595,10 @@
              </div>
              }
              <div class="flex justify-start pt-2">
-                 <p-fileupload [chooseLabel]="'Carregar'" name="files" method="post"
-                     [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUploadDocs($event, 'provasMOPFile')"
-                     (onProgress)="uploadOnProgress($event, 'provasMOPFile')" [maxFileSize]="maxFileSize"
-                     accept="application/pdf" mode="basic" [url]="uploadURLDocs()"
+                 <p-fileupload #fuMOP [chooseLabel]="'Carregar'" name="files" [customUpload]="true"
+                     [chooseIcon]="'pi pi-file-arrow-up'" (uploadHandler)="onUploadDocs($event, 'provasMOPFile', fuMOP)"
+                     [maxFileSize]="maxFileSize"
+                     accept="application/pdf" mode="basic"
                      [disabled]="disabledAllForm || getFileByField('provasMOPFile')" [auto]="true">
                  </p-fileupload>
              </div>
@@ -629,10 +628,10 @@
              </div>
              }
              <div class="flex justify-start pt-2">
-                 <p-fileupload [chooseLabel]="'Carregar'" name="files" method="post"
-                     [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUploadDocs($event, 'provasANLAFile')"
-                     (onProgress)="uploadOnProgress($event, 'provasANLAFile')" [maxFileSize]="maxFileSize"
-                     accept="application/pdf" mode="basic" [url]="uploadURLDocs()"
+                 <p-fileupload #fuANLA [chooseLabel]="'Carregar'" name="files" [customUpload]="true"
+                     [chooseIcon]="'pi pi-file-arrow-up'" (uploadHandler)="onUploadDocs($event, 'provasANLAFile', fuANLA)"
+                     [maxFileSize]="maxFileSize"
+                     accept="application/pdf" mode="basic"
                      [disabled]="disabledAllForm || getFileByField('provasANLAFile')" [auto]="true">
                  </p-fileupload>
              </div>

@@ -79,10 +79,24 @@
                                          NIF da Empresa
                                      </label>
                                      <input formControlName="nif" id="nif" type="text" pInputText fluid />
-                                     @if (empresaForm.get('nif')?.touched &&
+                                     @if (empresaForm.get('nif')?.pending) {
+                                     <p class="text-gray-500 text-sm mt-1">
+                                         <i class="pi pi-spin pi-spinner"></i> A verificar NIF...
+                                     </p>
+                                     } @else if (empresaForm.get('nif')?.touched &&
+                                     empresaForm.get('nif')?.errors?.['nifTaken']) {
+                                     <p class="text-red-500 text-sm mt-1">
+                                         Este NIF já está registado por outra empresa.
+                                     </p>
+                                     } @else if (empresaForm.get('nif')?.touched &&
                                      empresaForm.get('nif')?.invalid) {
                                      <p class="text-red-500 text-sm mt-1">
                                          Este campo é obrigatório e deve ser válido.
+                                     </p>
+                                     } @else if (empresaForm.get('nif')?.touched &&
+                                     empresaForm.get('nif')?.valid && empresaForm.get('nif')?.value) {
+                                     <p class="text-green-500 text-sm mt-1">
+                                         <i class="pi pi-check-circle"></i> NIF disponível.
                                      </p>
                                      }
                                  </div>

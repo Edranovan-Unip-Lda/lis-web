@@ -377,10 +377,9 @@
                  </div>
                  }
                  <div class="flex justify-start pt-2">
-                     <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
-                         [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, 'legislacaoUrbanistica')"
-                         [maxFileSize]="maxFileSize" [accept]="acceptedFileTypes" mode="basic" [url]="uploadUrl()"
-                         (onProgress)="uploadOnProgress($event, 'legislacaoUrbanistica')"
+                     <p-fileupload #fuLegis [chooseLabel]="'Selecione'" name="files" [customUpload]="true"
+                         [chooseIcon]="'pi pi-file-arrow-up'" (uploadHandler)="onUpload($event, 'legislacaoUrbanistica', fuLegis)"
+                         [maxFileSize]="maxFileSize" [accept]="acceptedFileTypes" mode="basic"
                          [disabled]="this.autoVistoriaForm.disable" [disabled]="getFileByField('legislacaoUrbanistica')"
                          [auto]="true">
                      </p-fileupload>
@@ -440,10 +439,9 @@
                  </div>
                  }
                  <div class="flex justify-start pt-2">
-                     <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
-                         [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, 'acessoEstrada')"
-                         [maxFileSize]="maxFileSize" [accept]="acceptedFileTypes" mode="basic" [url]="uploadUrl()"
-                         (onProgress)="uploadOnProgress($event, 'acessoEstrada')"
+                     <p-fileupload #fuAcesso [chooseLabel]="'Selecione'" name="files" [customUpload]="true"
+                         [chooseIcon]="'pi pi-file-arrow-up'" (uploadHandler)="onUpload($event, 'acessoEstrada', fuAcesso)"
+                         [maxFileSize]="maxFileSize" [accept]="acceptedFileTypes" mode="basic"
                          [disabled]="this.autoVistoriaForm.disable" [disabled]="getFileByField('acessoEstrada')"
                          [auto]="true">
                      </p-fileupload>
@@ -503,10 +501,9 @@
                  </div>
                  }
                  <div class="flex justify-start pt-2">
-                     <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
-                         [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, 'escoamentoAguas')"
-                         [maxFileSize]="maxFileSize" [accept]="acceptedFileTypes" mode="basic" [url]="uploadUrl()"
-                         (onProgress)="uploadOnProgress($event, 'escoamentoAguas')"
+                     <p-fileupload #fuEscoa [chooseLabel]="'Selecione'" name="files" [customUpload]="true"
+                         [chooseIcon]="'pi pi-file-arrow-up'" (uploadHandler)="onUpload($event, 'escoamentoAguas', fuEscoa)"
+                         [maxFileSize]="maxFileSize" [accept]="acceptedFileTypes" mode="basic"
                          [disabled]="this.autoVistoriaForm.disable" [disabled]="getFileByField('escoamentoAguas')"
                          [auto]="true">
                      </p-fileupload>
@@ -551,10 +548,9 @@
                  </div>
                  }
                  <div class="flex justify-start pt-2">
-                     <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
-                         [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, 'alimentacaoEnergia')"
-                         [maxFileSize]="maxFileSize" [accept]="acceptedFileTypes" mode="basic" [url]="uploadUrl()"
-                         (onProgress)="uploadOnProgress($event, 'alimentacaoEnergia')"
+                     <p-fileupload #fuEnergia [chooseLabel]="'Selecione'" name="files" [customUpload]="true"
+                         [chooseIcon]="'pi pi-file-arrow-up'" (uploadHandler)="onUpload($event, 'alimentacaoEnergia', fuEnergia)"
+                         [maxFileSize]="maxFileSize" [accept]="acceptedFileTypes" mode="basic"
                          [disabled]="this.autoVistoriaForm.disable" [disabled]="getFileByField('alimentacaoEnergia')"
                          [auto]="true">
                      </p-fileupload>
@@ -624,10 +620,10 @@
                  </div>
                  }
                  <div class="flex justify-start pt-2">
-                     <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
-                         [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, item.name)"
-                         [maxFileSize]="maxFileSize" [accept]="acceptedFileTypes" mode="basic" [url]="uploadUrl()"
-                         (onProgress)="uploadOnProgress($event, item.name)" [disabled]="getFileByField(item.name)"
+                     <p-fileupload #fuItem [chooseLabel]="'Selecione'" name="files" [customUpload]="true"
+                         [chooseIcon]="'pi pi-file-arrow-up'" (uploadHandler)="onUpload($event, item.name, fuItem)"
+                         [maxFileSize]="maxFileSize" [accept]="acceptedFileTypes" mode="basic"
+                         [disabled]="getFileByField(item.name)"
                          [auto]="true">
                      </p-fileupload>
                  </div>
@@ -677,10 +673,10 @@
                  </div>
                  }
                  <div class="flex justify-start pt-2">
-                     <p-fileupload [chooseLabel]="'Selecione'" name="files" method="post"
-                         [chooseIcon]="'pi pi-file-arrow-up'" (onUpload)="onUpload($event, item.name)"
-                         [maxFileSize]="maxFileSize" [accept]="acceptedFileTypes" mode="basic" [url]="uploadUrl()"
-                         (onProgress)="uploadOnProgress($event, item.name)" [disabled]="getFileByField(item.name)"
+                     <p-fileupload #fuItem [chooseLabel]="'Selecione'" name="files" [customUpload]="true"
+                         [chooseIcon]="'pi pi-file-arrow-up'" (uploadHandler)="onUpload($event, item.name, fuItem)"
+                         [maxFileSize]="maxFileSize" [accept]="acceptedFileTypes" mode="basic"
+                         [disabled]="getFileByField(item.name)"
                          [auto]="true">
                      </p-fileupload>
                  </div>

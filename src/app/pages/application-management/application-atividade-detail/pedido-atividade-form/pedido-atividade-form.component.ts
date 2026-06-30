@@ -1,7 +1,7 @@
 import { Aldeia } from '@/core/models/data-master.model';
 import { Aplicante, Documento, Empresa, Gerente, PedidoAtividadeLicenca, Representante } from '@/core/models/entities.model';
 import { Categoria } from '@/core/models/enums';
-import { AuthenticationService, EmpresaService } from '@/core/services';
+import { AuthenticationService, EmpresaService, FileUploadService } from '@/core/services';
 import { AplicanteService } from '@/core/services/aplicante.service';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { DocumentosService } from '@/core/services/documentos.service';
@@ -12,7 +12,7 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } 
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
-import { FileProgressEvent, FileUpload } from 'primeng/fileupload';
+import { FileUpload } from 'primeng/fileupload';
 import { InputGroup } from 'primeng/inputgroup';
 import { InputGroupAddon } from 'primeng/inputgroupaddon';
 import { InputNumber } from 'primeng/inputnumber';
@@ -21,7 +21,7 @@ import { ProgressBar } from 'primeng/progressbar';
 import { Select, SelectFilterEvent } from 'primeng/select';
 import { SelectButton, SelectButtonChangeEvent } from 'primeng/selectbutton';
 import { Toast } from 'primeng/toast';
-import { forkJoin } from 'rxjs';
+import { finalize, forkJoin } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -70,6 +70,7 @@ export class PedidoAtividadeFormComponent {
     private documentoService: DocumentosService,
     private authService: AuthenticationService,
     private empresaService: EmpresaService,
+    private fileUploadService: FileUploadService,
   ) { }
 
   ngOnInit(): void {
@@ -340,37 +341,47 @@ export class PedidoAtividadeFormComponent {
     }
   }
 
-  onUploadDocs(event: any, field?: string): void {
-    if (event.originalEvent.body && event.originalEvent.body.length > 0) {
-      const uploadedFiles: Documento[] = event.originalEvent.body;
-      if (field) {
-        const file = uploadedFiles[0];
-        file.coluna = field;
-        uploadedFiles.forEach(doc => {
-          doc.coluna = field;
-          return true;
-        });
-        this.requestForm.get(field)?.setValue(true); // Set true if file is uploaded
-        this.requestForm.get(`${field}File`)?.setValue(file);
-        this.requestForm.get(`${field}File`)?.updateValueAndValidity();
-        this.loadingUploadButtons.delete(field);
-      }
-      this.uploadedDocs = [...this.uploadedDocs, ...event.originalEvent.body];
-    }
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Sucesso',
-      detail: 'Arquivos carregado com sucesso!'
-    });
+  // Routes through HttpClient (interceptor adds auth + CSRF) instead of PrimeNG's native XHR.
+  onUploadDocs(event: any, field?: string, uploader?: FileUpload): void {
+    if (field) this.loadingUploadButtons.add(field);
+    this.fileUploadService.upload<Documento[]>(this.uploadURLDocs(), event.files, 'post', 'files')
+      .pipe(finalize(() => {
+        if (field) this.loadingUploadButtons.delete(field);
+        uploader?.clear();
+      }))
+      .subscribe({
+        next: (uploadedFiles) => {
+          if (uploadedFiles && uploadedFiles.length > 0) {
+            if (field) {
+              const file = uploadedFiles[0];
+              file.coluna = field;
+              uploadedFiles.forEach(doc => { doc.coluna = field; });
+              this.requestForm.get(field)?.setValue(true); // Set true if file is uploaded
+              this.requestForm.get(`${field}File`)?.setValue(file);
+              this.requestForm.get(`${field}File`)?.updateValueAndValidity();
+            }
+            this.uploadedDocs = [...this.uploadedDocs, ...uploadedFiles];
+          }
+          this.messageService.add({
+            severity: 'info',
+            summary: 'Sucesso',
+            detail: 'Arquivos carregado com sucesso!'
+          });
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Falha no carregamento do arquivo!'
+          });
+        }
+      });
   }
 
   getFileByField(field: string): Documento {
     return this.uploadedDocs.find(doc => doc.coluna === field) || null;
   }
 
-  uploadOnProgress(event: FileProgressEvent, field: string): void {
-    this.loadingUploadButtons.add(field);
-  }
 
   downloadDoc(file: Documento): void {
     this.loadingDownloadButtons.add(file.nome);
