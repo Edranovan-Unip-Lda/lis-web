@@ -1,7 +1,7 @@
 import { Aldeia, Role } from '@/core/models/data-master.model';
 import { Documento, Empresa } from '@/core/models/entities.model';
 import { TipoNacionalidade, TipoPropriedade } from '@/core/models/enums';
-import { AuthenticationService, DataMasterService, EmpresaService } from '@/core/services';
+import { AuthenticationService, DataMasterService, EmpresaService, FileUploadService } from '@/core/services';
 import { DocumentosService } from '@/core/services/documentos.service';
 import { estadoCivilOptions, maxFileSizeUpload, tipoDocumentoOptions, tipoNacionalidadeOptions, tipoPropriedadeOptions, tipoRelacaoFamiliaOptions, tipoRepresentante } from '@/core/utils/global-function';
 import { alphanumericValidator } from '@/core/validators/alphanumeric';
@@ -24,7 +24,7 @@ import { InputText } from 'primeng/inputtext';
 import { Select, SelectChangeEvent, SelectFilterEvent } from 'primeng/select';
 import { Step, StepList, StepPanel, StepPanels, Stepper } from 'primeng/stepper';
 import { Toast } from 'primeng/toast';
-import { firstValueFrom } from 'rxjs';
+import { finalize, firstValueFrom } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -78,6 +78,7 @@ export class EmpresaFormComponent implements OnInit {
     private documentoService: DocumentosService,
     private messageService: MessageService,
     private authService: AuthenticationService,
+    private fileUploadService: FileUploadService,
   ) {
   }
 
@@ -474,15 +475,29 @@ export class EmpresaFormComponent implements OnInit {
     this.listaAldeiaAcionista[index] = [...this.originalAldeias];
   }
 
-  onUploadDocs(event: any) {
-    if (event.originalEvent.body) {
-      this.uploadedDocs = [...this.uploadedDocs, ...event.originalEvent.body];
-    }
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Sucesso',
-      detail: 'Arquivos carregado com sucesso!'
-    });
+  // Routes through HttpClient (interceptor adds auth + CSRF) instead of PrimeNG's native XHR.
+  onUploadDocs(event: any, uploader?: FileUpload) {
+    this.fileUploadService.upload<Documento[]>(this.uploadURLDocs(), event.files, 'post', 'files')
+      .pipe(finalize(() => uploader?.clear()))
+      .subscribe({
+        next: (docs) => {
+          if (docs && docs.length > 0) {
+            this.uploadedDocs = [...this.uploadedDocs, ...docs];
+          }
+          this.messageService.add({
+            severity: 'info',
+            summary: 'Sucesso',
+            detail: 'Arquivos carregado com sucesso!'
+          });
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Falha no carregamento do arquivo!'
+          });
+        }
+      });
   }
 
   disableStepEmpresa(): boolean {

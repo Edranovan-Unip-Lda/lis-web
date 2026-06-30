@@ -1,6 +1,6 @@
 import { Aplicante, Documento, Fatura, PedidoVistoria } from '@/core/models/entities.model';
 import { AplicanteStatus, TipoPedidoLicenca, TipoPedidoVistoria } from '@/core/models/enums';
-import { AuthenticationService } from '@/core/services';
+import { AuthenticationService, FileUploadService } from '@/core/services';
 import { PedidoService } from '@/core/services/pedido.service';
 import { calculateCommercialLicenseTax } from '@/core/utils/global-function';
 import { Component, Input, output, signal } from '@angular/core';
@@ -14,7 +14,7 @@ import { InputGroupAddon } from 'primeng/inputgroupaddon';
 import { InputNumber } from 'primeng/inputnumber';
 import { MultiSelect } from 'primeng/multiselect';
 import { Toast } from 'primeng/toast';
-import { filter } from 'rxjs';
+import { filter, finalize } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -46,7 +46,8 @@ export class FaturaVistoriaFormComponent {
     private _fb: FormBuilder,
     private authService: AuthenticationService,
     private pedidoService: PedidoService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private fileUploadService: FileUploadService,
   ) { }
 
   ngOnInit(): void {
@@ -150,18 +151,32 @@ export class FaturaVistoriaFormComponent {
     }
   }
 
-  onUpload(event: any, arg: string) {
-    if (event.originalEvent.body) {
-      this.uploadedFiles.push(event.originalEvent.body)
-      this.pedidoVistoria.fatura.recibo = event.originalEvent.body;
-      this.fatura.recibo = event.originalEvent.body;
-      this.dataSent.emit(this.fatura);
-    }
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Sucesso',
-      detail: 'Arquivo carregado com sucesso!'
-    });
+  // Recibo upload via HttpClient (interceptor adds auth + CSRF) instead of PrimeNG's native XHR.
+  onUpload(event: any, arg: string, uploader?: FileUpload) {
+    this.fileUploadService.upload<any>(this.uploadUrl(), event.files, 'put', 'file')
+      .pipe(finalize(() => uploader?.clear()))
+      .subscribe({
+        next: (recibo) => {
+          if (recibo) {
+            this.uploadedFiles.push(recibo);
+            this.pedidoVistoria.fatura.recibo = recibo;
+            this.fatura.recibo = recibo;
+            this.dataSent.emit(this.fatura);
+          }
+          this.messageService.add({
+            severity: 'info',
+            summary: 'Sucesso',
+            detail: 'Arquivo carregado com sucesso!'
+          });
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Falha no carregamento do arquivo!'
+          });
+        }
+      });
   }
 
   updateUploadUrl() {

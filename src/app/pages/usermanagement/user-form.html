@@ -177,9 +177,9 @@
                         <label for="outrosDocumentos" class="font-medium mb-2 block">
                             Assinatura
                         </label>
-                        <p-fileupload name="files" method="post" [disabled]="signatureDoc"
-                            (onUpload)="onUploadDocs($event)" [maxFileSize]="maxFileSize" [multiple]="false"
-                            accept="image/*" mode="advanced" [url]="uploadURLDocs()">
+                        <p-fileupload #fuSignature name="files" [customUpload]="true" [disabled]="signatureDoc"
+                            (uploadHandler)="onUploadDocs($event, fuSignature)" [maxFileSize]="maxFileSize" [multiple]="false"
+                            accept="image/*" mode="advanced">
                             <ng-template #empty>
                                 @if (!this.signatureDoc) {
                                 Arraste e largue o ficheiro aqui para carregar.

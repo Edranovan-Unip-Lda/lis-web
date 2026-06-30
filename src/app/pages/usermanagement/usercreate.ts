@@ -1,6 +1,6 @@
 import { Documento, User } from '@/core/models/entities.model';
 import { Role } from '@/core/models/enums';
-import { AuthenticationService, UserService } from '@/core/services';
+import { AuthenticationService, FileUploadService, UserService } from '@/core/services';
 import { DocumentosService } from '@/core/services/documentos.service';
 import { mapToIdAndName, mapToIdAndNome, maxFileSizeUpload, roleOptions, statusOptions } from '@/core/utils/global-function';
 import { mustMatch } from '@/core/validators/must-match';
@@ -11,7 +11,7 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } 
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { FileUploadModule } from 'primeng/fileupload';
+import { FileUpload, FileUploadModule } from 'primeng/fileupload';
 import { Image } from 'primeng/image';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputText, InputTextModule } from 'primeng/inputtext';
@@ -23,6 +23,7 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { Skeleton } from 'primeng/skeleton';
 import { TextareaModule } from 'primeng/textarea';
 import { Toast } from 'primeng/toast';
+import { finalize } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -62,6 +63,7 @@ export class UserCreate implements OnDestroy {
         private authService: AuthenticationService,
         private messageService: MessageService,
         private documentoService: DocumentosService,
+        private fileUploadService: FileUploadService,
     ) { }
 
     ngOnInit() {
@@ -196,16 +198,30 @@ export class UserCreate implements OnDestroy {
         event.value === Role.manager ? this.isDirector = true : this.isDirector = false;
     }
 
-    onUploadDocs(event: any) {
-        if (event.originalEvent.body) {
-            this.signatureDoc = event.originalEvent.body[0];
-            this.loadSignatureImage(this.signatureDoc.id);
-        }
-        this.messageService.add({
-            severity: 'info',
-            summary: 'Sucesso',
-            detail: 'Arquivos carregado com sucesso!'
-        });
+    // Routes through HttpClient (interceptor adds auth + CSRF) instead of PrimeNG's native XHR.
+    onUploadDocs(event: any, uploader?: FileUpload) {
+        this.fileUploadService.upload<Documento[]>(this.uploadURLDocs(), event.files, 'post', 'files')
+            .pipe(finalize(() => uploader?.clear()))
+            .subscribe({
+                next: (docs) => {
+                    if (docs && docs.length > 0) {
+                        this.signatureDoc = docs[0];
+                        this.loadSignatureImage(this.signatureDoc.id);
+                    }
+                    this.messageService.add({
+                        severity: 'info',
+                        summary: 'Sucesso',
+                        detail: 'Arquivos carregado com sucesso!'
+                    });
+                },
+                error: () => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Erro',
+                        detail: 'Falha no carregamento do arquivo!'
+                    });
+                }
+            });
     }
 
     removeDoc() {

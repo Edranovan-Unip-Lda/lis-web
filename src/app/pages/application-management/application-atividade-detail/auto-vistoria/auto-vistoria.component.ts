@@ -1,7 +1,7 @@
 import { Aldeia } from '@/core/models/data-master.model';
 import { Aplicante, AutoVistoria, Documento, Empresa, PedidoVistoria } from '@/core/models/entities.model';
 import { AplicanteStatus, Categoria } from '@/core/models/enums';
-import { AuthenticationService, DataMasterService } from '@/core/services';
+import { AuthenticationService, DataMasterService, FileUploadService } from '@/core/services';
 import { DocumentosService } from '@/core/services/documentos.service';
 import { PedidoService } from '@/core/services/pedido.service';
 import { autoVistoriaComercialFields, autoVistoriaIndustrialFields, mapToAtividadeEconomica, stateOptions, tipoAreaRepresentanteComercial, tipoAreaRepresentanteIndustrial, tipoDocumentoOptions, tipoEletricidadeOptions, tipoLocalOptions } from '@/core/utils/global-function';
@@ -13,7 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
-import { FileProgressEvent, FileUpload } from 'primeng/fileupload';
+import { FileUpload } from 'primeng/fileupload';
 import { InputGroup } from 'primeng/inputgroup';
 import { InputGroupAddon } from 'primeng/inputgroupaddon';
 import { InputNumber } from 'primeng/inputnumber';
@@ -23,6 +23,7 @@ import { Select, SelectFilterEvent } from 'primeng/select';
 import { SelectButton } from 'primeng/selectbutton';
 import { Textarea } from 'primeng/textarea';
 import { Toast } from 'primeng/toast';
+import { finalize } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -77,6 +78,7 @@ export class AutoVistoriaComponent implements OnInit {
     private pedidoService: PedidoService,
     private documentoService: DocumentosService,
     private router: Router,
+    private fileUploadService: FileUploadService,
   ) { }
 
   ngOnInit(): void {
@@ -303,35 +305,44 @@ export class AutoVistoriaComponent implements OnInit {
     return this.tipoAreaRepresentanteOpts.filter(p => !picked.has(p.value));
   }
 
-  onUpload(event: any, arg: string) {
-    if (event.originalEvent.body) {
-      const files: Documento[] = event.originalEvent.body;
-      if (arg) {
-        const file = files[0];
-        file.coluna = arg;
-        files.forEach(doc => {
-          doc.coluna = arg;
-          return true;
-        });
-        this.autoVistoriaForm.get(`${arg}File`)?.setValue(file);
-        this.autoVistoriaForm.get(`${arg}File`)?.updateValueAndValidity();
-        this.loadingUploadButtons.delete(arg);
-      }
-      this.uploadedFiles = [...this.uploadedFiles, ...event.originalEvent.body];
-    }
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Sucesso',
-      detail: 'Arquivo carregado com sucesso!'
-    });
+  // Routes through HttpClient (interceptor adds auth + CSRF) instead of PrimeNG's native XHR.
+  onUpload(event: any, arg: string, uploader?: FileUpload) {
+    if (arg) this.loadingUploadButtons.add(arg);
+    this.fileUploadService.upload<Documento[]>(this.uploadUrl(), event.files, 'post', 'files')
+      .pipe(finalize(() => {
+        if (arg) this.loadingUploadButtons.delete(arg);
+        uploader?.clear();
+      }))
+      .subscribe({
+        next: (files) => {
+          if (files && files.length > 0) {
+            if (arg) {
+              const file = files[0];
+              file.coluna = arg;
+              files.forEach(doc => { doc.coluna = arg; });
+              this.autoVistoriaForm.get(`${arg}File`)?.setValue(file);
+              this.autoVistoriaForm.get(`${arg}File`)?.updateValueAndValidity();
+            }
+            this.uploadedFiles = [...this.uploadedFiles, ...files];
+          }
+          this.messageService.add({
+            severity: 'info',
+            summary: 'Sucesso',
+            detail: 'Arquivo carregado com sucesso!'
+          });
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Falha no carregamento do arquivo!'
+          });
+        }
+      });
   }
 
   getFileByField(field: string): Documento {
     return this.uploadedFiles.find(doc => doc.coluna === field) || null;
-  }
-
-  uploadOnProgress(event: FileProgressEvent, field: string): void {
-    this.loadingUploadButtons.add(field);
   }
 
   downloadDoc(file: Documento): void {

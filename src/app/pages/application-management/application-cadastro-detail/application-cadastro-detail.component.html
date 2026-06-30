@@ -536,9 +536,9 @@
                                          Documentos
                                      </span>
                                  </div>
-                                 <p-fileupload name="files" [disabled]="!requestForm.valid" method="post"
-                                     (onUpload)="onUploadDocs($event)" [maxFileSize]="maxFileSize" [multiple]="true"
-                                     accept="application/pdf" mode="advanced" [url]="uploadURLDocs()">
+                                 <p-fileupload #fuCadDocs name="files" [disabled]="!requestForm.valid" [customUpload]="true"
+                                     (uploadHandler)="onUploadDocs($event, fuCadDocs)" [maxFileSize]="maxFileSize" [multiple]="true"
+                                     accept="application/pdf" mode="advanced">
                                      <ng-template #empty>
                                          @if (uploadedDocs.length === 0) {
                                          Arraste e largue os ficheiros aqui para carregar.
@@ -644,9 +644,9 @@
                                  Carregar Recibo
                              </span>
                              <div class="card">
-                                 <p-fileupload name="file" [disabled]="uploadedFiles.length > 0" method="put"
-                                     (onUpload)="onUpload($event, 'advanced')" [maxFileSize]="maxFileSize"
-                                     [multiple]="false" accept="application/pdf,image/*" mode="advanced" [url]="uploadUrl()">
+                                 <p-fileupload #fuCadRecibo name="file" [disabled]="uploadedFiles.length > 0" [customUpload]="true"
+                                     (uploadHandler)="onUpload($event, 'advanced', fuCadRecibo)" [maxFileSize]="maxFileSize"
+                                     [multiple]="false" accept="application/pdf,image/*" mode="advanced">
                                      <ng-template #empty>
                                          @if (uploadedFiles.length === 0) {
                                          Arraste e largue os ficheiros aqui para carregar.

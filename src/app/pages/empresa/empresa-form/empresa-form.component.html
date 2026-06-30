@@ -237,9 +237,9 @@
                                 <label for="outrosDocumentos" class="font-medium mb-2 block">
                                     DOCUMENTOS
                                 </label>
-                                <p-fileupload name="files" method="post" (onUpload)="onUploadDocs($event)"
+                                <p-fileupload #fuEmpresaDocs name="files" [customUpload]="true" (uploadHandler)="onUploadDocs($event, fuEmpresaDocs)"
                                     [maxFileSize]="maxFileSize" [multiple]="true" accept="application/pdf"
-                                    mode="advanced" [url]="uploadURLDocs()">
+                                    mode="advanced">
                                     <ng-template #empty>
                                         Arraste e largue os ficheiros aqui para carregar.
                                     </ng-template>
