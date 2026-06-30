@@ -328,11 +328,11 @@
                  </a>
                  @if (getFileByField('planta').id) {
                  <p-button (click)="downloadDoc(getFileByField('planta'))"
-                     [loading]="loadingDownloadButtons.has(getFileByField('planta').nome)" icon="pi pi-download"
+                     [loading]="loadingDownloadButtons.has(getFileByField('planta').id)" icon="pi pi-download"
                      [rounded]="true" [text]="true" severity="success" />
                  }
                  <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
-                     [loading]="loadingRemoveButtons.has(getFileByField('planta').nome)" severity="danger"
+                     [loading]="loadingRemoveButtons.has(getFileByField('planta').id)" severity="danger"
                      [disabled]="disabledAllForm" (click)="removeDoc(getFileByField('planta'))" />
              </div>
              }
@@ -369,11 +369,11 @@
                  </a>
                  @if (getFileByField('documentoPropriedade').id) {
                  <p-button (click)="downloadDoc(getFileByField('documentoPropriedade'))"
-                     [loading]="loadingDownloadButtons.has(getFileByField('documentoPropriedade').nome)"
+                     [loading]="loadingDownloadButtons.has(getFileByField('documentoPropriedade').id)"
                      icon="pi pi-download" [rounded]="true" [text]="true" severity="success" />
                  }
                  <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
-                     [loading]="loadingRemoveButtons.has(getFileByField('documentoPropriedade').nome)" severity="danger"
+                     [loading]="loadingRemoveButtons.has(getFileByField('documentoPropriedade').id)" severity="danger"
                      [disabled]="disabledAllForm" (click)="removeDoc(getFileByField('documentoPropriedade'))" />
              </div>
              }
@@ -404,11 +404,11 @@
                  </a>
                  @if (getFileByField('contratoArrendamento').id) {
                  <p-button (click)="downloadDoc(getFileByField('contratoArrendamento'))"
-                     [loading]="loadingDownloadButtons.has(getFileByField('contratoArrendamento').nome)"
+                     [loading]="loadingDownloadButtons.has(getFileByField('contratoArrendamento').id)"
                      icon="pi pi-download" [rounded]="true" [text]="true" severity="success" />
                  }
                  <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
-                     [loading]="loadingRemoveButtons.has(getFileByField('contratoArrendamento').nome)" severity="danger"
+                     [loading]="loadingRemoveButtons.has(getFileByField('contratoArrendamento').id)" severity="danger"
                      [disabled]="disabledAllForm" (click)="removeDoc(getFileByField('contratoArrendamento'))" />
              </div>
              }
@@ -574,11 +574,11 @@
                  </a>
                  @if (getFileByField(item.name).id) {
                  <p-button (click)="downloadDoc(getFileByField(item.name))"
-                     [loading]="loadingDownloadButtons.has(getFileByField(item.name).nome)" icon="pi pi-download"
+                     [loading]="loadingDownloadButtons.has(getFileByField(item.name).id)" icon="pi pi-download"
                      [rounded]="true" [text]="true" severity="success" />
                  }
                  <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
-                     [loading]="loadingRemoveButtons.has(getFileByField(item.name).nome)" severity="danger"
+                     [loading]="loadingRemoveButtons.has(getFileByField(item.name).id)" severity="danger"
                      [disabled]="disabledAllForm" (click)="removeDoc(getFileByField(item.name))" />
              </div>
              }
@@ -609,11 +609,11 @@
                  </a>
                  @if (getFileByField('provasMOPFile').id) {
                  <p-button (click)="downloadDoc(getFileByField('provasMOPFile'))"
-                     [loading]="loadingDownloadButtons.has(getFileByField('provasMOPFile').nome)" icon="pi pi-download"
+                     [loading]="loadingDownloadButtons.has(getFileByField('provasMOPFile').id)" icon="pi pi-download"
                      [rounded]="true" [text]="true" severity="success" />
                  }
                  <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
-                     [loading]="loadingRemoveButtons.has(getFileByField('provasMOPFile').nome)" severity="danger"
+                     [loading]="loadingRemoveButtons.has(getFileByField('provasMOPFile').id)" severity="danger"
                      [disabled]="disabledAllForm" (click)="removeDoc(getFileByField('provasMOPFile'))" />
              </div>
              }
@@ -642,11 +642,11 @@
                  </a>
                  @if (getFileByField('provasANLAFile').id) {
                  <p-button (click)="downloadDoc(getFileByField('provasANLAFile'))"
-                     [loading]="loadingDownloadButtons.has(getFileByField('provasANLAFile').nome)" icon="pi pi-download"
+                     [loading]="loadingDownloadButtons.has(getFileByField('provasANLAFile').id)" icon="pi pi-download"
                      [rounded]="true" [text]="true" severity="success" />
                  }
                  <p-button icon="pi pi-trash" [rounded]="true" [text]="true"
-                     [loading]="loadingRemoveButtons.has(getFileByField('provasANLAFile').nome)" severity="danger"
+                     [loading]="loadingRemoveButtons.has(getFileByField('provasANLAFile').id)" severity="danger"
                      [disabled]="disabledAllForm" (click)="removeDoc(getFileByField('provasANLAFile'))" />
              </div>
              }

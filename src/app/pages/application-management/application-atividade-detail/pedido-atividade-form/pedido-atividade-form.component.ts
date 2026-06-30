@@ -50,8 +50,9 @@ export class PedidoAtividadeFormComponent {
   uploadURLDocs = signal(`${environment.apiUrl}/documentos`);
   maxFileSize = maxFileSizeUpload;
   loadingUploadButtons = new Set<String>();
-  loadingDownloadButtons = new Set<string>();
-  loadingRemoveButtons = new Set<string>();
+  // Keyed by file.id (unique) — NOT file.nome, which collides when two docs share a name.
+  loadingDownloadButtons = new Set<number>();
+  loadingRemoveButtons = new Set<number>();
   showcontratoArrendamentoForm = false;
   showArrendadorForm = false;
   tipoDocumentoOpts = tipoDocumentoOptions;
@@ -110,16 +111,13 @@ export class PedidoAtividadeFormComponent {
     const numeroDocumentoCtrl = arrendadorGroup.get('numeroDocumento');
 
 
-    // 🔹 When contratoArrendamento changes
+    // 🔹 When contratoArrendamento changes — toggle the arrendador field validators.
+    // Visibility of the subform is driven by documentoPropriedade === false (see
+    // documentoPropriedadeOnChange / mapRequestFormData), so it's always on-screen
+    // whenever a contract makes these fields required — no hidden-required lockout.
     contratoArrendamentoCtrl?.valueChanges.subscribe((value) => {
       const arrendadorGroup = this.requestForm.get('arrendador') as FormGroup;
-      if (value === true) {
-        // ✅ Add required validators when contratoArrendamento is TRUE
-        this.setArrendadorValidators(arrendadorGroup, true);
-      } else {
-        // ❌ Clear validators when contratoArrendamento is FALSE
-        this.setArrendadorValidators(arrendadorGroup, false);
-      }
+      this.setArrendadorValidators(arrendadorGroup, value === true);
     });
 
     // 🔹 When tipo changes (to control nome requirement)
@@ -325,18 +323,17 @@ export class PedidoAtividadeFormComponent {
   }
 
   documentoPropriedadeOnChange(event: SelectButtonChangeEvent): void {
-    if (event.value === false) {
-      this.showcontratoArrendamentoForm = true;
-    } else {
-      this.showcontratoArrendamentoForm = false;
-    }
-  }
+    const needsContrato = event.value === false;
+    // NAO → reveal the whole rental path (contrato upload + Arrendador block).
+    this.showcontratoArrendamentoForm = needsContrato;
+    this.showArrendadorForm = needsContrato;
 
-  contratoArrendamentoOnChange(event: SelectButtonChangeEvent): void {
-    if (event.value) {
-      this.showArrendadorForm = true;
-    } else {
-      this.showArrendadorForm = false;
+    if (!needsContrato) {
+      // true (owns the property) or cleared → no rental path. Clear contrato so its
+      // required validators — and the Arrendador subform (via valueChanges) — stop
+      // blocking Save. Resetting contratoArrendamento cascades through the subscription.
+      this.requestForm.get('contratoArrendamento')?.reset();
+      this.requestForm.get('contratoArrendamentoFile')?.reset();
       this.requestForm.get('arrendador')?.reset();
     }
   }
@@ -384,7 +381,7 @@ export class PedidoAtividadeFormComponent {
 
 
   downloadDoc(file: Documento): void {
-    this.loadingDownloadButtons.add(file.nome);
+    this.loadingDownloadButtons.add(file.id);
     this.documentoService.downloadById(file.id).subscribe({
       next: (response) => {
         const url = window.URL.createObjectURL(response);
@@ -405,45 +402,46 @@ export class PedidoAtividadeFormComponent {
           summary: 'Erro',
           detail: 'Falha no download do arquivo!'
         });
-        this.loadingDownloadButtons.delete(file.nome);
+        this.loadingDownloadButtons.delete(file.id);
       },
       complete: () => {
-        this.loadingDownloadButtons.delete(file.nome);
+        this.loadingDownloadButtons.delete(file.id);
       }
     });
   }
 
   removeDoc(file: Documento) {
-    this.loadingRemoveButtons.add(file.nome);
     const index = this.uploadedDocs.indexOf(file);
-    if (index !== -1) {
-      if (!file.id) {
-        this.uploadedDocs.splice(index, 1);
-        file
-        this.requestForm.get(`${file.coluna}File`)?.setValue(null);
-        this.requestForm.get(`${file.coluna}File`)?.updateValueAndValidity();
-        return;
-      }
-      this.documentoService.deleteById(file.id).subscribe({
-        next: () => {
-          this.uploadedDocs.splice(index, 1);
-          this.messageService.add({
-            severity: 'info',
-            summary: 'Sucesso',
-            detail: 'Arquivo foi removido com sucesso!'
-          });
-          this.loadingRemoveButtons.delete(file.nome);
-        },
-        error: error => {
-          this.loadingRemoveButtons.delete(file.nome);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Erro',
-            detail: 'Falha no removero arquivo!'
-          });
-        },
-      });
+    if (index === -1) return;
+
+    if (!file.id) {
+      // Local (not yet persisted) file — remove synchronously, no spinner needed.
+      this.uploadedDocs.splice(index, 1);
+      this.requestForm.get(`${file.coluna}File`)?.setValue(null);
+      this.requestForm.get(`${file.coluna}File`)?.updateValueAndValidity();
+      return;
     }
+
+    this.loadingRemoveButtons.add(file.id);
+    this.documentoService.deleteById(file.id).subscribe({
+      next: () => {
+        this.uploadedDocs.splice(index, 1);
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Sucesso',
+          detail: 'Arquivo foi removido com sucesso!'
+        });
+        this.loadingRemoveButtons.delete(file.id);
+      },
+      error: error => {
+        this.loadingRemoveButtons.delete(file.id);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Falha no removero arquivo!'
+        });
+      },
+    });
   }
 
   bytesToMBs(value: number): string {
@@ -566,7 +564,11 @@ export class PedidoAtividadeFormComponent {
     const representanteService = this.dataMasterService.getAldeiasBySuco(request.representante.morada.aldeia.suco.id);
     const gerenteService = this.dataMasterService.getAldeiasBySuco(request.gerente.morada.aldeia.suco.id);
 
-    this.showArrendadorForm = request.contratoArrendamento ? true : false;
+    // Restore the rental path on load: documentoPropriedade === NAO reveals both the
+    // contrato upload and the Arrendador subform (the latter is nested inside the former).
+    const isRental = request.documentoPropriedade === false;
+    this.showcontratoArrendamentoForm = isRental;
+    this.showArrendadorForm = isRental;
 
     forkJoin([empresaSedeService, representanteService, gerenteService]).subscribe({
       next: ([empresaSedeResponse, representanteResponse, gerenteResponse]) => {
@@ -606,7 +608,7 @@ export class PedidoAtividadeFormComponent {
         endereco: {
           ...formData.arrendador.endereco,
           aldeia: {
-            id: formData.gerente.morada.aldeia
+            id: formData.arrendador.endereco.aldeia
           }
         },
         dataInicio: formatDateForLocalDate(formData.arrendador.dataInicio),
