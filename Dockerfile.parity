@@ -1,0 +1,18 @@
+# Prod-parity image: builds the SPA with the same-origin "local" environment and serves it via NGINX,
+# reverse-proxying /api/** to the backend so the browser talks to ONE origin (reproduces prod CSRF/cookies).
+# Build context = lis-web/. Used by ../prod-parity/docker-compose.yml.
+
+# 1) Build the Angular bundle
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build -- --configuration local
+
+# 2) Serve static + reverse-proxy
+FROM nginx:1.27-alpine
+COPY nginx.parity.conf /etc/nginx/conf.d/default.conf
+# Angular 17+ application builder emits to dist/<project>/browser
+COPY --from=build /app/dist/mci-license/browser /usr/share/nginx/html
+EXPOSE 80
