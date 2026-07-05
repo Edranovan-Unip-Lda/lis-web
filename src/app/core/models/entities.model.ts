@@ -410,6 +410,28 @@ export interface LicensesStatusPerMonthDto {
     series: ChartSeriesDto[];
 }
 
+export interface Receita {
+    year: number;
+    categories: string[];            // 12 month short names ["Jan", ...]
+
+    // Monthly series per (categoria x tipo).
+    comercialCadastro: number[];
+    comercialAtividade: number[];
+    industrialCadastro: number[];
+    industrialAtividade: number[];
+
+    // Annual roll-ups.
+    totalComercialCadastro: number;
+    totalComercialAtividade: number;
+    totalIndustrialCadastro: number;
+    totalIndustrialAtividade: number;
+    totalComercial: number;
+    totalIndustrial: number;
+    totalCadastro: number;
+    totalAtividade: number;
+    totalGeral: number;
+}
+
 export interface DashboardResponse {
     kpis: Kpis;
 
@@ -424,6 +446,8 @@ export interface DashboardResponse {
     empresasByMunicipio: CategoryDistributionDto;
     empresasBySociedadeComercial: CategoryDistributionDto;
     empresasByTipoEmpresa: CategoryDistributionDto;
+
+    receita: Receita;
 }
 
 export interface BarChartDto {

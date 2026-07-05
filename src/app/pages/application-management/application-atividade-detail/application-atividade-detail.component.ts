@@ -1,5 +1,5 @@
 import { Aplicante, AutoVistoria, Documento, Fatura, PedidoVistoria } from '@/core/models/entities.model';
-import { AplicanteStatus, Role } from '@/core/models/enums';
+import { AplicanteStatus, PedidoStatus, Role } from '@/core/models/enums';
 import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService, EmpresaService } from '@/core/services';
 import { PedidoService } from '@/core/services/pedido.service';
@@ -177,7 +177,8 @@ export class ApplicationAtividadeDetailComponent {
 
   onPedidoLicencaReceived(payload: any) {
     this.aplicanteData.pedidoLicencaAtividade = payload;
-    this.disabledPedidoLicencaNextBtn = false;
+    // Only allow advancing once the pedido is actually submitted — a saved draft (EM_CURSO) stays blocked.
+    this.disabledPedidoLicencaNextBtn = payload?.status === PedidoStatus.emCurso;
   }
 
   onFaturaPedidoReceived(payload: Fatura) {
@@ -224,7 +225,8 @@ export class ApplicationAtividadeDetailComponent {
   private checkedForms(aplicante: Aplicante) {
     if (aplicante.pedidoLicencaAtividade) {
       this.pedidoVistoria = this.aplicanteData.pedidoLicencaAtividade.listaPedidoVistoria.find(item => item.status === AplicanteStatus.submetido || item.status === AplicanteStatus.aprovado);
-      this.disabledPedidoLicencaNextBtn = false;
+      // A loaded draft (EM_CURSO) must not unlock the next step.
+      this.disabledPedidoLicencaNextBtn = aplicante.pedidoLicencaAtividade.status === PedidoStatus.emCurso;
       if (aplicante.pedidoLicencaAtividade.fatura && aplicante.pedidoLicencaAtividade.fatura.recibo) {
         this.disabledFaturaLicencaNextBtn = false;
       }

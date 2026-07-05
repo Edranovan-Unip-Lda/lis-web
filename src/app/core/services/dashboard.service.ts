@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, take } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { CategoryDistributionDto, DashboardResponse } from '../models/entities.model';
+import { CategoryDistributionDto, DashboardResponse, Receita } from '../models/entities.model';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +34,17 @@ export class DashboardService {
 
   getByCategory(nome: string): Observable<CategoryDistributionDto[]> {
     return this.http.get<CategoryDistributionDto[]>(`${this.apiUrl}/category`, { params: { nome } }).pipe(take(1));
+  }
+
+  /**
+   * Retrieves the tax-income (receita) report data for a given year.
+   *
+   * @param year - The reference year to filter the receita data.
+   * @returns An Observable emitting the standalone Receita object.
+   */
+  getReceitas(year: number): Observable<Receita> {
+    const params = new HttpParams().set('year', year);
+    return this.http.get<Receita>(`${this.apiUrl}/receitas`, { params }).pipe(take(1));
   }
 
 }

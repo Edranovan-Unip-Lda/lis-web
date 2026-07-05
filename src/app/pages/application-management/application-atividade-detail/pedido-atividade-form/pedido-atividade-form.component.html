@@ -670,9 +670,15 @@
              <input formControlName="numEmpregadosCriar" id="numEmpregadosCriar" type="number" pInputText fluid />
          </div>
      </div>
-     <p-button [disabled]="!requestForm.valid" (click)="isNew? save(requestForm): update(requestForm)"
-         [loading]="isLoading" [label]="isNew? 'Guardar' : 'Actualizar'" severity="success"
-         [icon]="isNew? 'pi pi-save' : 'pi pi-sync'" />
+     <div class="flex items-center gap-3">
+         @if (pedidoIsDraft) {
+         <p-tag value="Rascunho" [severity]="'warn'" icon="pi pi-pencil" />
+         }
+         <p-button label="Guardar rascunho" [outlined]="true" severity="secondary" icon="pi pi-save" iconPos="left"
+             [loading]="draftLoading" [disabled]="isLoading || disabledAllForm" (click)="saveDraft(requestForm)" />
+         <p-button [disabled]="!requestForm.valid || draftLoading" (click)="isNew? save(requestForm): update(requestForm)"
+             [loading]="isLoading" label="Submeter" severity="success" icon="pi pi-send" />
+     </div>
  </form>
  }
  <p-toast position="bottom-center" />

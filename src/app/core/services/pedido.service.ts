@@ -75,8 +75,14 @@ export class PedidoService {
         return this.http.put<PedidoVistoria>(`${this.apiUrl}-atividade/${id}/pedidos-vistoria/${pedidoVistoriaId}`, formData);
     }
 
-    saveAutoVistoria(aplicanteId: number, formData: any): Observable<any> {
-        return this.http.post<any>(`${this.apiUrl}-vistoria/${aplicanteId}/auto-vistorias`, formData);
+    saveAutoVistoria(pedidoVistoriaId: number, formData: any, draft = false): Observable<any> {
+        const params = new HttpParams().set('draft', draft);
+        return this.http.post<any>(`${this.apiUrl}-vistoria/${pedidoVistoriaId}/auto-vistorias`, formData, { params });
+    }
+
+    updateAutoVistoria(pedidoVistoriaId: number, autoVistoriaId: number, formData: any, draft = false): Observable<any> {
+        const params = new HttpParams().set('draft', draft);
+        return this.http.put<any>(`${this.apiUrl}-vistoria/${pedidoVistoriaId}/auto-vistorias/${autoVistoriaId}`, formData, { params });
     }
 
 }

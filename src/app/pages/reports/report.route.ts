@@ -35,4 +35,9 @@ export default [
             classeAtividadeResolver: getAllClasseAtividadeResolver,
         }
     },
+    {
+        path: 'receitas',
+        data: { breadcrumb: 'Receitas' },
+        loadComponent: () => import('./receitas/receitas.component').then(m => m.ReceitasComponent),
+    },
 ] as Routes;

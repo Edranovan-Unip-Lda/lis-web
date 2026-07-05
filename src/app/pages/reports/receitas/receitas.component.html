@@ -1,0 +1,68 @@
+<div class="card">
+    <div class="flex justify-between items-end flex-wrap gap-4 py-4">
+        <div>
+            <label for="yearFilter" class="font-medium mb-2 block">
+                Ano de referência
+            </label>
+            <p-select inputId="yearFilter" [(ngModel)]="selectedYear" (ngModelChange)="onYearChange()"
+                [options]="yearOptions" optionLabel="name" optionValue="value" placeholder="Selecione o ano"
+                styleClass="w-40" [fluid]="true">
+            </p-select>
+        </div>
+
+        <div>
+            <p-button (onClick)="exportToExcel()" [disabled]="rows.length === 0" label="Exportar para Excel"
+                icon="pi pi-file-excel" [raised]="true" severity="success" />
+        </div>
+    </div>
+
+    @if (rows.length > 0) {
+    <h1 class="text-2xl font-bold text-white pt-2 pb-4">
+        Relatório de Receitas — {{ selectedYear }}
+    </h1>
+
+    <p-table [value]="rows" responsiveLayout="scroll" [scrollable]="true" [rowHover]="true" [loading]="dataIsFetching">
+        <ng-template #header>
+            <tr>
+                <th rowspan="2" class="align-bottom">Mês</th>
+                <th colspan="2" class="text-center">Comercial</th>
+                <th colspan="2" class="text-center">Industrial</th>
+                <th rowspan="2" class="text-right align-bottom">Total</th>
+            </tr>
+            <tr>
+                <th class="text-right">Cadastro</th>
+                <th class="text-right">Licença</th>
+                <th class="text-right">Cadastro</th>
+                <th class="text-right">Licença</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-row>
+            <tr>
+                <td>{{ row.mes }}</td>
+                <td class="text-right">{{ row.comercialCadastro | currency }}</td>
+                <td class="text-right">{{ row.comercialAtividade | currency }}</td>
+                <td class="text-right">{{ row.industrialCadastro | currency }}</td>
+                <td class="text-right">{{ row.industrialAtividade | currency }}</td>
+                <td class="text-right">{{ row.total | currency }}</td>
+            </tr>
+        </ng-template>
+        @if (receita) {
+        <ng-template #footer>
+            <tr class="font-bold">
+                <td>TOTAL</td>
+                <td class="text-right">{{ receita.totalComercialCadastro | currency }}</td>
+                <td class="text-right">{{ receita.totalComercialAtividade | currency }}</td>
+                <td class="text-right">{{ receita.totalIndustrialCadastro | currency }}</td>
+                <td class="text-right">{{ receita.totalIndustrialAtividade | currency }}</td>
+                <td class="text-right">{{ receita.totalGeral | currency }}</td>
+            </tr>
+        </ng-template>
+        }
+    </p-table>
+    }
+    @else {
+    @for (message of messages(); track message; let first = $first) {
+    <p-message [icon]="message.icon" [size]="message.size" [severity]="message.severity" [text]="message.content" />
+    }
+    }
+</div>

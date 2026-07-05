@@ -1,5 +1,10 @@
  <p-toast key="tr" position="bottom-right" />
  <div class="card">
+     @if (autoVistoria?.status === PedidoStatus.emCurso) {
+     <div class="mb-4">
+         <p-tag value="Rascunho" severity="warn" icon="pi pi-pencil" />
+     </div>
+     }
      <form [formGroup]="autoVistoriaForm">
          <div class="grid grid-cols-12 gap-4">
              <div class="mb-6 col-span-12">
@@ -777,9 +782,11 @@
                  </p>
              </div>
          </div>
-         <div class="flex justify-content-end mt-6 mb-6">
+         <div class="flex justify-content-end gap-3 mt-6 mb-6">
+             <p-button label="Guardar rascunho" icon="pi pi-file-edit" (click)="saveDraft()" [loading]="savingDraft"
+                 [disabled]="autoVistoriaForm.disabled || loading" severity="secondary" [outlined]="true" />
              <p-button label="Guardar" icon="pi pi-save" (click)="save(autoVistoriaForm)" [loading]="loading"
-                 [disabled]="!autoVistoriaForm.valid" severity="success" />
+                 [disabled]="!autoVistoriaForm.valid || savingDraft" severity="success" />
          </div>
      </form>
  </div>

@@ -569,14 +569,22 @@
                              </div> -->
                          </div>
                      </form>
-                     <p-button [label]="isNew? 'Guardar': 'Atualizar'" [disabled]="!requestForm.valid"
-                         [icon]=" isNew? 'pi pi-save': 'pi pi-sync' " [loading]="pedidoLoading" iconPos="left"
-                         (click)="submit(requestForm, activateCallback)" />
+                     <div class="flex items-center gap-3">
+                         @if (pedidoIsDraft) {
+                         <p-tag value="Rascunho" [severity]="'warn'" icon="pi pi-pencil" />
+                         }
+                         <p-button label="Guardar rascunho" [outlined]="true" severity="secondary" icon="pi pi-save"
+                             iconPos="left" [loading]="draftLoading" [disabled]="pedidoLoading || disableAllForm"
+                             (click)="saveDraft(requestForm)" />
+                         <p-button label="Submeter" [disabled]="!requestForm.valid || draftLoading"
+                             icon="pi pi-send" [loading]="pedidoLoading" iconPos="left"
+                             (click)="submit(requestForm, activateCallback)" />
+                     </div>
                      <div class="flex pt-6 justify-between">
                          <p-button label="Voltar" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
                              (onClick)="activateCallback(1)" />
-                         <p-button [disabled]="!pedidoId" label="Próximo" severity="secondary" icon="pi pi-arrow-right"
-                             iconPos="right" (onClick)="activateCallback(3)" />
+                         <p-button [disabled]="!pedidoId || pedidoIsDraft" label="Próximo" severity="secondary"
+                             icon="pi pi-arrow-right" iconPos="right" (onClick)="activateCallback(3)" />
                      </div>
                  </ng-template>
              </p-step-panel>

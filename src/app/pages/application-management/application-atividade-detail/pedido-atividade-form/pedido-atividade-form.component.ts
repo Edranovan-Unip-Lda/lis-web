@@ -1,13 +1,14 @@
 import { Aldeia } from '@/core/models/data-master.model';
 import { Aplicante, Documento, Empresa, Gerente, PedidoAtividadeLicenca, Representante } from '@/core/models/entities.model';
-import { Categoria } from '@/core/models/enums';
+import { Categoria, PedidoStatus } from '@/core/models/enums';
 import { AuthenticationService, EmpresaService, FileUploadService } from '@/core/services';
 import { AplicanteService } from '@/core/services/aplicante.service';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { DocumentosService } from '@/core/services/documentos.service';
 import { formatDateForLocalDate, mapToAtividadeEconomica, mapToIdAndNome, maxFileSizeUpload, pedidoLicencaDocumentsFields, stateOptions, tipoArrendadorOptions, tipoDocumentoOptions, tipoPedidoAtividadeComercialOptions, tipoPedidoAtividadeIndustrialOptions } from '@/core/utils/global-function';
 import { pedidoAtividadeWithFilesValidator } from '@/core/validators/must-match';
-import { Component, Input, output, signal } from '@angular/core';
+import { Component, DestroyRef, inject, Input, output, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
@@ -20,13 +21,14 @@ import { InputText } from 'primeng/inputtext';
 import { ProgressBar } from 'primeng/progressbar';
 import { Select, SelectFilterEvent } from 'primeng/select';
 import { SelectButton, SelectButtonChangeEvent } from 'primeng/selectbutton';
+import { Tag } from 'primeng/tag';
 import { Toast } from 'primeng/toast';
 import { finalize, forkJoin } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-pedido-atividade-form',
-  imports: [ReactiveFormsModule, Select, SelectButton, InputText, Button, Toast, FileUpload, DatePicker, InputGroup, InputGroupAddon, InputNumber, ProgressBar],
+  imports: [ReactiveFormsModule, Select, SelectButton, InputText, Button, Toast, FileUpload, DatePicker, InputGroup, InputGroupAddon, InputNumber, ProgressBar, Tag],
   templateUrl: './pedido-atividade-form.component.html',
   styleUrl: './pedido-atividade-form.component.scss',
   providers: [MessageService]
@@ -46,6 +48,11 @@ export class PedidoAtividadeFormComponent {
   listaAldeiaArrendador: any[] = [];
   isNew = false;
   isLoading = false;
+  draftLoading = false;
+
+  // Exposed for the template Rascunho tag.
+  PedidoStatus = PedidoStatus;
+  private destroyRef = inject(DestroyRef);
   uploadedDocs: any[] = [];
   uploadURLDocs = signal(`${environment.apiUrl}/documentos`);
   maxFileSize = maxFileSizeUpload;
@@ -142,21 +149,22 @@ export class PedidoAtividadeFormComponent {
 
   save(form: FormGroup): void {
     this.isLoading = true;
-    let formData = this.mapFormData(form);
+    let formData = this.mapFormData(form, false);
 
-    this.aplicanteService.savePedidoAtividade(this.aplicanteData.id, formData).subscribe({
+    this.aplicanteService.savePedidoAtividade(this.aplicanteData.id, formData).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.requestForm.get('id')?.setValue(res.id);
+        this.aplicanteData.pedidoLicencaAtividade = res;
+        this.isNew = false;
+        this.addMessages(true, true);
         this.dataSent.emit(res);
       },
       error: (err) => {
         this.isLoading = false;
-        this.addMessages(false, true, err);
+        this.handleSubmitError(err, true);
       },
       complete: () => {
         this.isLoading = false;
-        this.isNew = false;
-        this.addMessages(true, true);
       }
     });
   }
@@ -164,22 +172,70 @@ export class PedidoAtividadeFormComponent {
   update(form: FormGroup): void {
     this.isLoading = true;
 
-    let formData = this.mapFormData(form);
+    let formData = this.mapFormData(form, false);
 
-    this.aplicanteService.updatePedidoAtividade(this.aplicanteData.id, this.aplicanteData.pedidoLicencaAtividade.id, formData).subscribe({
+    this.aplicanteService.updatePedidoAtividade(this.aplicanteData.id, this.aplicanteData.pedidoLicencaAtividade.id, formData).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.requestForm.get('id')?.setValue(res.id);
+        this.aplicanteData.pedidoLicencaAtividade = res;
+        this.isNew = false;
+        this.addMessages(true, false);
+        this.dataSent.emit(res);
       },
       error: (err) => {
         this.isLoading = false;
-        this.addMessages(false, false, err);
+        this.handleSubmitError(err, false);
       },
       complete: () => {
         this.isLoading = false;
-        this.isNew = false;
-        this.addMessages(true, false);
       }
     });
+  }
+
+  // Null-safe draft save (EM_CURSO): tolerates a partial form, does NOT require form.valid.
+  // Creates when no pedido exists yet, otherwise updates. Emits so the parent refreshes its gate.
+  saveDraft(form: FormGroup): void {
+    this.draftLoading = true;
+    const formData = this.mapFormData(form, true);
+
+    if (this.isNew) {
+      this.aplicanteService.savePedidoAtividade(this.aplicanteData.id, formData, true).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+        next: (res) => {
+          this.requestForm.get('id')?.setValue(res.id);
+          this.aplicanteData.pedidoLicencaAtividade = res;
+          this.isNew = false;
+          this.addMessages(true, true);
+          this.dataSent.emit(res);
+        },
+        error: (err) => this.handleSubmitError(err, true),
+        complete: () => this.draftLoading = false
+      });
+    } else {
+      this.aplicanteService.updatePedidoAtividade(this.aplicanteData.id, this.aplicanteData.pedidoLicencaAtividade.id, formData, true).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+        next: (res) => {
+          this.requestForm.get('id')?.setValue(res.id);
+          this.aplicanteData.pedidoLicencaAtividade = res;
+          this.addMessages(true, false);
+          this.dataSent.emit(res);
+        },
+        error: (err) => this.handleSubmitError(err, false),
+        complete: () => this.draftLoading = false
+      });
+    }
+  }
+
+  get pedidoIsDraft(): boolean {
+    return this.aplicanteData?.pedidoLicencaAtividade?.status === PedidoStatus.emCurso;
+  }
+
+  // 400 from draft=false submit → server returns a Portuguese message listing missing fields; surface it.
+  private handleSubmitError(error: any, isNew: boolean): void {
+    const serverMessage = error?.error?.message;
+    if (error?.status === 400 && serverMessage) {
+      this.messageService.add({ severity: 'error', summary: 'Erro de validação', detail: serverMessage });
+    } else {
+      this.addMessages(false, isNew, error);
+    }
   }
 
   aldeiaOnChange(event: any, controlName: string): void {
@@ -599,7 +655,8 @@ export class PedidoAtividadeFormComponent {
     this.listaClasseAtividade.push(this.requestForm.get('classeAtividade')?.value);
   }
 
-  private mapFormData(form: FormGroup): any {
+  // draft=true keeps the mapping null-safe so a partially-filled form can still be persisted as EM_CURSO.
+  private mapFormData(form: FormGroup, draft = false): any {
     const formData = form.getRawValue();
     let mapArrendador = null;
     if (formData.contratoArrendamento) {
@@ -623,9 +680,9 @@ export class PedidoAtividadeFormComponent {
           id: formData.empresaSede.aldeia,
         }
       },
-      classeAtividade: {
-        id: formData.classeAtividade.id
-      },
+      classeAtividade: draft
+        ? (formData.classeAtividade?.id ? { id: formData.classeAtividade.id } : null)
+        : { id: formData.classeAtividade.id },
 
       representante: {
         ...formData.representante,

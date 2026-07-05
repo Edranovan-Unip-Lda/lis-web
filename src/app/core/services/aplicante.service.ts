@@ -37,20 +37,25 @@ export class AplicanteService {
     return this.http.delete<string>(`${this.apiUrl}/${aplicanteId}`);
   }
 
-    savePedidoCadastro(aplicanteId: number, formData: any): Observable<PedidoInscricaoCadastro> {
-        return this.http.post<PedidoInscricaoCadastro>(`${this.apiUrl}/${aplicanteId}/pedidos/cadastro`, formData);
+    savePedidoCadastro(aplicanteId: number, formData: any, draft = false): Observable<PedidoInscricaoCadastro> {
+        return this.http.post<PedidoInscricaoCadastro>(`${this.apiUrl}/${aplicanteId}/pedidos/cadastro`, formData, { params: this.draftParams(draft) });
     }
 
-    updatePedidoCadastro(aplicanteId: number, pedidoId: number, formData: any): Observable<PedidoInscricaoCadastro> {
-        return this.http.put<PedidoInscricaoCadastro>(`${this.apiUrl}/${aplicanteId}/pedidos/cadastro/${pedidoId}`, formData);
+    updatePedidoCadastro(aplicanteId: number, pedidoId: number, formData: any, draft = false): Observable<PedidoInscricaoCadastro> {
+        return this.http.put<PedidoInscricaoCadastro>(`${this.apiUrl}/${aplicanteId}/pedidos/cadastro/${pedidoId}`, formData, { params: this.draftParams(draft) });
     }
 
-    savePedidoAtividade(aplicanteId: number, formData: any): Observable<PedidoAtividadeLicenca> {
-        return this.http.post<PedidoAtividadeLicenca>(`${this.apiUrl}/${aplicanteId}/pedidos/atividade`, formData);
+    savePedidoAtividade(aplicanteId: number, formData: any, draft = false): Observable<PedidoAtividadeLicenca> {
+        return this.http.post<PedidoAtividadeLicenca>(`${this.apiUrl}/${aplicanteId}/pedidos/atividade`, formData, { params: this.draftParams(draft) });
     }
 
-    updatePedidoAtividade(aplicanteId: number, pedidoId: number, formData: any): Observable<PedidoAtividadeLicenca> {
-        return this.http.put<PedidoAtividadeLicenca>(`${this.apiUrl}/${aplicanteId}/pedidos/atividade/${pedidoId}`, formData);
+    updatePedidoAtividade(aplicanteId: number, pedidoId: number, formData: any, draft = false): Observable<PedidoAtividadeLicenca> {
+        return this.http.put<PedidoAtividadeLicenca>(`${this.apiUrl}/${aplicanteId}/pedidos/atividade/${pedidoId}`, formData, { params: this.draftParams(draft) });
+    }
+
+    // Only sends ?draft=true when saving a draft; omitted otherwise so the server default (submit) applies.
+    private draftParams(draft: boolean): HttpParams {
+        return draft ? new HttpParams().set('draft', 'true') : new HttpParams();
     }
 
     getPedidoAtividade(aplicanteId: number): Observable<PedidoAtividadeLicenca> {

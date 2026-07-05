@@ -700,15 +700,35 @@ export class Register {
     }
 
     private stageOne(file: File) {
-        const entry: any = {
+        const key = `${file.name}-${file.size}-${(file as any).lastModified}`;
+
+        // Dedup by __key: the basic p-fileupload re-fires onSelect for files already chosen when the user
+        // adds documents in several batches, which otherwise stages the same file twice (duplicate refs →
+        // duplicate Documento rows on finalize). Skip if already present; only re-stage a previously failed one.
+        const existing = this.uploadedDocs.find(d => d.__key === key);
+        if (existing && existing.status !== 'error') {
+            this.isError = true;
+            this.errorMessage = 'Documento já adicionado.';
+            return;
+        }
+
+        const entry: any = existing ?? {
             file,
             name: file.name,
             size: file.size,
-            __key: `${file.name}-${file.size}-${(file as any).lastModified}`,
+            __key: key,
             ref: null,
             status: 'uploading'
         };
-        this.uploadedDocs = [...this.uploadedDocs, entry];
+        if (existing) {
+            // Retry a failed upload in place (keep its position in the list).
+            existing.file = file;
+            existing.ref = null;
+            existing.status = 'uploading';
+        } else {
+            this.uploadedDocs = [...this.uploadedDocs, entry];
+        }
+
         this.empresaService.stageDocument(file, this.sessionToken!).subscribe({
             next: h => { entry.ref = h.ref; entry.status = 'done'; },
             error: () => { entry.status = 'error'; }

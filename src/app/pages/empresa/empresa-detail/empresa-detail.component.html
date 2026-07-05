@@ -1,3 +1,5 @@
+<p-toast />
+<p-confirmdialog />
 @if (empresa) {
 <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-10">
     <div class="flex items-center mb-4 md:mb-0">
@@ -345,9 +347,15 @@
                                 {{doc.nome}}
                             </span>
                         </div>
-                        <p-button class="text-emerald-400 hover:text-emerald-300" (click)="downloadDoc(doc)"
-                            [loading]="loadingDownloadButtons.has(doc.nome)" icon="pi pi-download" [rounded]="true"
-                            [text]="true" severity="success" />
+                        <div class="flex items-center">
+                            <p-button class="text-emerald-400 hover:text-emerald-300" (click)="downloadDoc(doc)"
+                                [loading]="loadingDownloadButtons.has(doc.nome)" icon="pi pi-download" [rounded]="true"
+                                [text]="true" severity="success" />
+                            @if (role === 'ROLE_ADMIN') {
+                            <p-button (click)="deleteDoc(doc, $event)" [loading]="deletingDocs.has(doc.id)"
+                                icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" />
+                            }
+                        </div>
                     </li>
                     }
                 </ul>

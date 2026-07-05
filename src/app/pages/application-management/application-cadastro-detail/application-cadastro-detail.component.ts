@@ -1,6 +1,6 @@
 import { Aldeia } from '@/core/models/data-master.model';
 import { Aplicante, Documento, Empresa, Fatura, HistoricoEstadoAplicante, PedidoInscricaoCadastro } from '@/core/models/entities.model';
-import { AplicanteStatus, Categoria, TipoEstabelecimento, TipoPedidoCadastro } from '@/core/models/enums';
+import { AplicanteStatus, Categoria, PedidoStatus, TipoEstabelecimento, TipoPedidoCadastro } from '@/core/models/enums';
 import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService, FileUploadService } from '@/core/services';
 import { AplicanteService } from '@/core/services/aplicante.service';
@@ -10,7 +10,8 @@ import { EmpresaService } from '@/core/services/empresa.service';
 import { PedidoService } from '@/core/services/pedido.service';
 import { calculateCommercialLicenseTax, caraterizacaEstabelecimentoOptions, mapToAtividadeEconomica, mapToIdAndNome, mapToTaxa, maxFileSizeUpload, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEmpresaOptions, tipoEstabelecimentoOptions, tipoPedidoCadastroOptions } from '@/core/utils/global-function';
 import { DatePipe, TitleCasePipe } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -42,6 +43,7 @@ export class ApplicationCadastroDetailComponent {
   faturaForm!: FormGroup;
   aplicanteLoading = false;
   pedidoLoading = false;
+  draftLoading = false;
   faturaLoading = false;
   pedidoId!: number;
   faturaId!: number;
@@ -77,6 +79,10 @@ export class ApplicationCadastroDetailComponent {
   faturaActive = false;
   motivoRejeicao: any;
   showGpsCoordinates = false;
+
+  // Exposed for the template (Rascunho tag / Fatura-step gating).
+  PedidoStatus = PedidoStatus;
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private _fb: FormBuilder,
@@ -316,57 +322,17 @@ export class ApplicationCadastroDetailComponent {
   submit(form: FormGroup, callback: any): void {
     this.pedidoLoading = true;
 
-
-    let formData: any = {
-      ...form.getRawValue(),
-      nomeEmpresa: this.aplicanteData.empresa.nome,
-      empresaNif: this.aplicanteData.empresa.nif,
-      empresaGerente: this.aplicanteData.empresa.gerente.nome,
-      empresaNumeroRegistoComercial: this.aplicanteData.empresa.numeroRegistoComercial,
-      empresaEmail: this.aplicanteData.empresa.email,
-      empresaTelefone: this.aplicanteData.empresa.telefone,
-      empresaTelemovel: this.aplicanteData.empresa.telemovel,
-    }
-
-    formData.tipoPedidoCadastro = form.value.tipoPedidoCadastro.value;
-    formData.caraterizacaoEstabelecimento = form.value.caraterizacaoEstabelecimento.value;
-    formData.risco = form.getRawValue().risco;
-    formData.documentos = this.uploadedDocs;
-
-    if (this.aplicanteData.categoria === Categoria.comercial) {
-      formData.tipoEstabelecimento = form.getRawValue().tipoEstabelecimento.value;
-      formData.ato = form.getRawValue().ato.value;
-    } else {
-      formData.tipoEmpresa = form.getRawValue().tipoEmpresa;
-      formData.quantoAtividade = form.getRawValue().quantoAtividade;
-    }
+    const formData = this.buildPedidoPayload(form, false);
 
     if (this.isNew) {
-      formData.empresaSede = {
-        local: this.aplicanteData.empresa.sede.local,
-        aldeia: { id: this.aplicanteData.empresa.sede.aldeia.id }
-      }
-
-      this.aplicanteService.savePedidoCadastro(this.aplicanteData.id, formData).subscribe({
+      this.aplicanteService.savePedidoCadastro(this.aplicanteData.id, formData).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (response) => {
           this.addMessages(true, true);
           callback(3);
-
-          this.pedidoId = response.id;
-          this.aplicanteData.pedidoInscricaoCadastro = response;
-          this.requestForm.patchValue({
-            id: response.id,
-          });
-          this.isNew = false;
-          this.requestForm.get('localEstabelecimento')?.patchValue({
-            id: response.localEstabelecimento.id
-          });
-          // Set data in Fatura form
-          this.mapNewFatura(this.aplicanteData);
-          this.pedidoActive = true;
+          this.handleCreateSuccess(response);
         },
         error: error => {
-          this.addMessages(false, true, error);
+          this.handleSubmitError(error);
           this.pedidoLoading = false;
         },
         complete: () => {
@@ -376,14 +342,15 @@ export class ApplicationCadastroDetailComponent {
         }
       });
     } else {
-      this.aplicanteService.updatePedidoCadastro(this.aplicanteData.id, formData.id, formData).subscribe({
+      this.aplicanteService.updatePedidoCadastro(this.aplicanteData.id, formData.id, formData).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (response) => {
           this.addMessages(true, false);
+          this.aplicanteData.pedidoInscricaoCadastro = response;
           this.setTaxaAto(response.tipoPedidoCadastro);
           callback(3);
         },
         error: error => {
-          this.addMessages(false, true, error);
+          this.handleSubmitError(error);
           this.pedidoLoading = false;
         },
         complete: () => {
@@ -392,6 +359,105 @@ export class ApplicationCadastroDetailComponent {
         }
       });
     }
+  }
+
+  // Null-safe draft save (EM_CURSO): reuses submit()'s payload assembly but tolerates a partially-filled
+  // form and does NOT require form.valid. Creates the pedido if none exists yet, otherwise updates it.
+  saveDraft(form: FormGroup): void {
+    this.draftLoading = true;
+
+    const formData = this.buildPedidoPayload(form, true);
+
+    if (this.isNew) {
+      this.aplicanteService.savePedidoCadastro(this.aplicanteData.id, formData, true).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+        next: (response) => {
+          this.addMessages(true, true);
+          this.handleCreateSuccess(response);
+        },
+        error: error => this.handleSubmitError(error),
+        complete: () => this.draftLoading = false
+      });
+    } else {
+      this.aplicanteService.updatePedidoCadastro(this.aplicanteData.id, formData.id, formData, true).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+        next: (response) => {
+          this.addMessages(true, false);
+          this.aplicanteData.pedidoInscricaoCadastro = response;
+        },
+        error: error => this.handleSubmitError(error),
+        complete: () => this.draftLoading = false
+      });
+    }
+  }
+
+  // Shared payload assembly. When draft, every wrapped-object read is null-safe so a partial form doesn't throw.
+  private buildPedidoPayload(form: FormGroup, draft: boolean): any {
+    const raw = form.getRawValue();
+
+    let formData: any = {
+      ...raw,
+      nomeEmpresa: this.aplicanteData.empresa.nome,
+      empresaNif: this.aplicanteData.empresa.nif,
+      empresaGerente: this.aplicanteData.empresa.gerente.nome,
+      empresaNumeroRegistoComercial: this.aplicanteData.empresa.numeroRegistoComercial,
+      empresaEmail: this.aplicanteData.empresa.email,
+      empresaTelefone: this.aplicanteData.empresa.telefone,
+      empresaTelemovel: this.aplicanteData.empresa.telemovel,
+    };
+
+    if (draft) {
+      formData.tipoPedidoCadastro = raw.tipoPedidoCadastro?.value ?? null;
+      formData.caraterizacaoEstabelecimento = raw.caraterizacaoEstabelecimento?.value ?? null;
+    } else {
+      formData.tipoPedidoCadastro = raw.tipoPedidoCadastro.value;
+      formData.caraterizacaoEstabelecimento = raw.caraterizacaoEstabelecimento.value;
+    }
+    formData.risco = raw.risco;
+    formData.documentos = this.uploadedDocs;
+
+    if (this.aplicanteData.categoria === Categoria.comercial) {
+      formData.tipoEstabelecimento = draft ? (raw.tipoEstabelecimento?.value ?? null) : raw.tipoEstabelecimento.value;
+      formData.ato = draft ? (raw.ato?.value ?? null) : raw.ato.value;
+    } else {
+      formData.tipoEmpresa = raw.tipoEmpresa;
+      formData.quantoAtividade = raw.quantoAtividade;
+    }
+
+    if (this.isNew) {
+      formData.empresaSede = {
+        local: this.aplicanteData.empresa.sede.local,
+        aldeia: { id: this.aplicanteData.empresa.sede.aldeia.id }
+      };
+    }
+
+    return formData;
+  }
+
+  // Stores the created pedido exactly as submit() did so subsequent saves update instead of re-create.
+  private handleCreateSuccess(response: PedidoInscricaoCadastro): void {
+    this.pedidoId = response.id;
+    this.aplicanteData.pedidoInscricaoCadastro = response;
+    this.requestForm.patchValue({ id: response.id });
+    this.isNew = false;
+    if (response.localEstabelecimento) {
+      this.requestForm.get('localEstabelecimento')?.patchValue({ id: response.localEstabelecimento.id });
+    }
+    // Set data in Fatura form
+    this.mapNewFatura(this.aplicanteData);
+    this.pedidoActive = true;
+  }
+
+  // 400 from draft=false submit → server returns a Portuguese message listing missing fields; surface it.
+  private handleSubmitError(error: any): void {
+    const serverMessage = error?.error?.message;
+    if (error?.status === 400 && serverMessage) {
+      this.messageService.add({ severity: 'error', summary: 'Erro de validação', detail: serverMessage });
+    } else {
+      this.addMessages(false, true, error);
+    }
+  }
+
+  get pedidoIsDraft(): boolean {
+    return this.aplicanteData?.pedidoInscricaoCadastro?.status === PedidoStatus.emCurso;
   }
 
   saveFatura(form: FormGroup): void {

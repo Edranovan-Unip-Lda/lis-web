@@ -5,24 +5,28 @@ import { DocumentosService } from '@/core/services/documentos.service';
 import { CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
+import { ConfirmDialog } from 'primeng/confirmdialog';
+import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-empresa-detail',
-  imports: [Button, RouterLink, DatePipe, CurrencyPipe, TitleCasePipe],
+  imports: [Button, RouterLink, DatePipe, CurrencyPipe, TitleCasePipe, ConfirmDialog, Toast],
   templateUrl: './empresa-detail.component.html',
   styleUrl: './empresa-detail.component.scss',
-  providers: [MessageService]
+  providers: [MessageService, ConfirmationService]
 })
 export class EmpresaDetailComponent implements OnInit {
   empresa!: Empresa;
   loadingDownloadButtons = new Set<string>();
+  deletingDocs = new Set<number>();
   role!: string;
 
   constructor(
     private documentoService: DocumentosService,
     private messageService: MessageService,
+    private confirmationService: ConfirmationService,
     private router: ActivatedRoute,
     private authService: AuthenticationService
   ) { }
@@ -57,6 +61,31 @@ export class EmpresaDetailComponent implements OnInit {
       },
       complete: () => {
         this.loadingDownloadButtons.delete(file.nome);
+      }
+    });
+  }
+
+  deleteDoc(doc: Documento, event: Event): void {
+    this.messageService.clear();
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: `Tem certeza que deseja eliminar o documento "${doc.nome}"?`,
+      header: 'Confirmação',
+      icon: 'pi pi-info-circle',
+      rejectButtonProps: { label: 'Cancelar', severity: 'secondary', outlined: true },
+      acceptButtonProps: { label: 'Eliminar', severity: 'danger' },
+      accept: () => {
+        this.deletingDocs.add(doc.id);
+        this.documentoService.deleteById(doc.id).subscribe({
+          next: () => {
+            this.empresa.documentos = this.empresa.documentos.filter(d => d.id !== doc.id);
+            this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Documento eliminado com sucesso' });
+          },
+          error: (err) => {
+            this.messageService.add({ severity: 'error', summary: 'Erro', detail: err || 'Ocorreu um erro ao eliminar o documento' });
+          },
+          complete: () => this.deletingDocs.delete(doc.id)
+        });
       }
     });
   }
