@@ -1,41 +1,22 @@
 <div class="card widget-visitor-graph">
     <div class="card-header leading-loose">
         <span class="text-xl">
-            {{ title }}
+            {{ resolvedTitle }}
         </span>
     </div>
 
     <div class="graph-content grid grid-cols-12 gap-4 mt-6">
         <div class="col-span-12 md:col-span-4">
-            <div class="text-3xl font-semibold">{{ receita.totalComercial | currency }}</div>
-            <div class="font-semibold my-4">TOTAL COMERCIAL</div>
+            <div class="text-3xl font-semibold">{{ totalCadastro | currency }}</div>
+            <div class="font-semibold my-4">TOTAL CADASTRO</div>
         </div>
         <div class="col-span-12 md:col-span-4">
-            <div class="text-3xl font-semibold">{{ receita.totalIndustrial | currency }}</div>
-            <div class="font-semibold my-4">TOTAL INDUSTRIAL</div>
+            <div class="text-3xl font-semibold">{{ totalLicenca | currency }}</div>
+            <div class="font-semibold my-4">TOTAL LICENÇA</div>
         </div>
         <div class="col-span-12 md:col-span-4">
-            <div class="text-3xl font-semibold">{{ receita.totalGeral | currency }}</div>
-            <div class="font-semibold my-4">TOTAL GERAL</div>
-        </div>
-    </div>
-
-    <div class="grid grid-cols-12 gap-4 mt-2 text-sm opacity-80">
-        <div class="col-span-6 md:col-span-3">
-            <div class="font-semibold">{{ receita.totalComercialCadastro | currency }}</div>
-            <div class="my-2">Comercial · Cadastro</div>
-        </div>
-        <div class="col-span-6 md:col-span-3">
-            <div class="font-semibold">{{ receita.totalComercialAtividade | currency }}</div>
-            <div class="my-2">Comercial · Licença</div>
-        </div>
-        <div class="col-span-6 md:col-span-3">
-            <div class="font-semibold">{{ receita.totalIndustrialCadastro | currency }}</div>
-            <div class="my-2">Industrial · Cadastro</div>
-        </div>
-        <div class="col-span-6 md:col-span-3">
-            <div class="font-semibold">{{ receita.totalIndustrialAtividade | currency }}</div>
-            <div class="my-2">Industrial · Licença</div>
+            <div class="text-3xl font-semibold">{{ totalCategoria | currency }}</div>
+            <div class="font-semibold my-4">TOTAL {{ isIndustrial ? 'INDUSTRIAL' : 'COMERCIAL' }}</div>
         </div>
     </div>
 

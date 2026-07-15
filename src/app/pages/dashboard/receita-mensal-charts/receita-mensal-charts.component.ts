@@ -14,16 +14,37 @@ import { HighchartsChartComponent } from 'highcharts-angular';
 export class ReceitaMensalChartsComponent {
   chartOptions!: Highcharts.Options;
   @Input() receita!: Receita;
-  @Input() title = 'Receita por Mês (Comercial / Industrial → Cadastro / Licença)';
+  /** Which category this chart shows: a dedicated Comercial or Industrial breakdown (Cadastro vs Licença). */
+  @Input() categoria: 'COMERCIAL' | 'INDUSTRIAL' = 'COMERCIAL';
+  @Input() title?: string;
 
   updateFlag = false;
+
+  get isIndustrial(): boolean {
+    return this.categoria === 'INDUSTRIAL';
+  }
+
+  get resolvedTitle(): string {
+    return this.title ?? `Receita ${this.isIndustrial ? 'Industrial' : 'Comercial'} por Mês (Cadastro vs Licença)`;
+  }
+
+  /** Category-scoped annual totals for the KPI row. */
+  get totalCadastro(): number {
+    return this.isIndustrial ? this.receita.totalIndustrialCadastro : this.receita.totalComercialCadastro;
+  }
+  get totalLicenca(): number {
+    return this.isIndustrial ? this.receita.totalIndustrialAtividade : this.receita.totalComercialAtividade;
+  }
+  get totalCategoria(): number {
+    return this.isIndustrial ? this.receita.totalIndustrial : this.receita.totalComercial;
+  }
 
   ngOnInit() {
     this.updateChart();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['receita'] && !changes['receita'].firstChange && this.receita) {
+    if ((changes['receita'] || changes['categoria']) && this.receita) {
       this.updateChart();
     }
   }
@@ -102,42 +123,26 @@ export class ReceitaMensalChartsComponent {
       },
       plotOptions: {
         column: {
-          stacking: 'normal',
           borderWidth: 0,
+          dataLabels: {
+            enabled: true,
+            color: '#e5e7eb',
+          },
         },
       },
-      tooltip: {
-        shared: false,
-      },
-      // Two stacks per month — Comercial and Industrial — each split into Cadastro/Licença.
+      // Two grouped columns per month — Cadastro and Licença — for this chart's category.
       series: [
         {
           type: 'column',
-          name: 'Comercial · Cadastro',
-          stack: 'comercial',
-          data: this.receita.comercialCadastro,
-          color: documentStyle.getPropertyValue('--primary-color') || '#3B82F6',
+          name: 'Cadastro',
+          data: this.isIndustrial ? this.receita.industrialCadastro : this.receita.comercialCadastro,
+          color: this.isIndustrial ? '#F59E0B' : (documentStyle.getPropertyValue('--primary-color') || '#3B82F6'),
         },
         {
           type: 'column',
-          name: 'Comercial · Licença',
-          stack: 'comercial',
-          data: this.receita.comercialAtividade,
-          color: '#60A5FA',
-        },
-        {
-          type: 'column',
-          name: 'Industrial · Cadastro',
-          stack: 'industrial',
-          data: this.receita.industrialCadastro,
-          color: '#F59E0B',
-        },
-        {
-          type: 'column',
-          name: 'Industrial · Licença',
-          stack: 'industrial',
-          data: this.receita.industrialAtividade,
-          color: '#FC6161',
+          name: 'Licença',
+          data: this.isIndustrial ? this.receita.industrialAtividade : this.receita.comercialAtividade,
+          color: this.isIndustrial ? '#FC6161' : '#60A5FA',
         },
       ] as Highcharts.SeriesOptionsType[],
     };

@@ -31,10 +31,13 @@
              [chartType]="'tipo'" [attr.data-chart-id]="'tipo-empresa'" />
      </div>
 
-     <!-- Receita -->
+     <!-- Receita (Tax Income) — separate charts for Comercial and Industrial -->
      @if (receita) {
-     <div class="col-span-12 mb-8">
-         <app-receita-mensal-charts [receita]="receita" />
+     <div class="col-span-12 md:col-span-6 mb-8">
+         <app-receita-mensal-charts [receita]="receita" categoria="COMERCIAL" />
+     </div>
+     <div class="col-span-12 md:col-span-6 mb-8">
+         <app-receita-mensal-charts [receita]="receita" categoria="INDUSTRIAL" />
      </div>
      }
 
