@@ -1,68 +1,229 @@
 <div class="card">
-    <div class="flex justify-between items-end flex-wrap gap-4 py-4">
-        <div>
-            <label for="yearFilter" class="font-medium mb-2 block">
-                Ano de referência
-            </label>
-            <p-select inputId="yearFilter" [(ngModel)]="selectedYear" (ngModelChange)="onYearChange()"
-                [options]="yearOptions" optionLabel="name" optionValue="value" placeholder="Selecione o ano"
-                styleClass="w-40" [fluid]="true">
-            </p-select>
-        </div>
-
-        <div>
-            <p-button (onClick)="exportToExcel()" [disabled]="rows.length === 0" label="Exportar para Excel"
-                icon="pi pi-file-excel" [raised]="true" severity="success" />
-        </div>
-    </div>
-
-    @if (rows.length > 0) {
     <h1 class="text-2xl font-bold text-white pt-2 pb-4">
         Relatório de Receitas — {{ selectedYear }}
     </h1>
 
-    <p-table [value]="rows" responsiveLayout="scroll" [scrollable]="true" [rowHover]="true" [loading]="dataIsFetching">
-        <ng-template #header>
-            <tr>
-                <th rowspan="2" class="align-bottom">Mês</th>
-                <th colspan="2" class="text-center">Comercial</th>
-                <th colspan="2" class="text-center">Industrial</th>
-                <th rowspan="2" class="text-right align-bottom">Total</th>
-            </tr>
-            <tr>
-                <th class="text-right">Cadastro</th>
-                <th class="text-right">Licença</th>
-                <th class="text-right">Cadastro</th>
-                <th class="text-right">Licença</th>
-            </tr>
-        </ng-template>
-        <ng-template #body let-row>
-            <tr>
-                <td>{{ row.mes }}</td>
-                <td class="text-right">{{ row.comercialCadastro | currency }}</td>
-                <td class="text-right">{{ row.comercialAtividade | currency }}</td>
-                <td class="text-right">{{ row.industrialCadastro | currency }}</td>
-                <td class="text-right">{{ row.industrialAtividade | currency }}</td>
-                <td class="text-right">{{ row.total | currency }}</td>
-            </tr>
-        </ng-template>
-        @if (receita) {
-        <ng-template #footer>
-            <tr class="font-bold">
-                <td>TOTAL</td>
-                <td class="text-right">{{ receita.totalComercialCadastro | currency }}</td>
-                <td class="text-right">{{ receita.totalComercialAtividade | currency }}</td>
-                <td class="text-right">{{ receita.totalIndustrialCadastro | currency }}</td>
-                <td class="text-right">{{ receita.totalIndustrialAtividade | currency }}</td>
-                <td class="text-right">{{ receita.totalGeral | currency }}</td>
-            </tr>
-        </ng-template>
-        }
-    </p-table>
-    }
-    @else {
-    @for (message of messages(); track message; let first = $first) {
-    <p-message [icon]="message.icon" [size]="message.size" [severity]="message.severity" [text]="message.content" />
-    }
-    }
+    <p-tabs [value]="activeTab" (valueChange)="onTabChange($event)">
+        <p-tablist>
+            <p-tab [value]="0">Resumo mensal</p-tab>
+            <p-tab [value]="1">Por empresa</p-tab>
+        </p-tablist>
+        <p-tabpanels>
+
+            <!-- ============ Tab 1: monthly summary ============ -->
+            <p-tabpanel [value]="0">
+                <div class="flex justify-between items-end flex-wrap gap-4 py-4">
+                    <div>
+                        <label for="yearFilter" class="font-medium mb-2 block">
+                            Ano de referência
+                        </label>
+                        <p-select inputId="yearFilter" [(ngModel)]="selectedYear" (ngModelChange)="onYearChange()"
+                            [options]="yearOptions" optionLabel="name" optionValue="value" placeholder="Selecione o ano"
+                            styleClass="w-40" [fluid]="true">
+                        </p-select>
+                    </div>
+
+                    <div>
+                        <p-button (onClick)="exportToExcel()" [disabled]="rows.length === 0" label="Exportar para Excel"
+                            icon="pi pi-file-excel" [raised]="true" severity="success" />
+                    </div>
+                </div>
+
+                @if (rows.length > 0) {
+                <p-table [value]="rows" responsiveLayout="scroll" [scrollable]="true" [rowHover]="true"
+                    [loading]="dataIsFetching">
+                    <ng-template #header>
+                        <tr>
+                            <th rowspan="2" class="align-bottom">Mês</th>
+                            <th colspan="2" class="text-center">Comercial</th>
+                            <th colspan="2" class="text-center">Industrial</th>
+                            <th rowspan="2" class="text-right align-bottom">Total</th>
+                        </tr>
+                        <tr>
+                            <th class="text-right">Cadastro</th>
+                            <th class="text-right">Licença</th>
+                            <th class="text-right">Cadastro</th>
+                            <th class="text-right">Licença</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template #body let-row>
+                        <tr>
+                            <td>{{ row.mes }}</td>
+                            <td class="text-right">{{ row.comercialCadastro | currency }}</td>
+                            <td class="text-right">{{ row.comercialAtividade | currency }}</td>
+                            <td class="text-right">{{ row.industrialCadastro | currency }}</td>
+                            <td class="text-right">{{ row.industrialAtividade | currency }}</td>
+                            <td class="text-right">{{ row.total | currency }}</td>
+                        </tr>
+                    </ng-template>
+                    @if (receita) {
+                    <ng-template #footer>
+                        <tr class="font-bold">
+                            <td>TOTAL</td>
+                            <td class="text-right">{{ receita.totalComercialCadastro | currency }}</td>
+                            <td class="text-right">{{ receita.totalComercialAtividade | currency }}</td>
+                            <td class="text-right">{{ receita.totalIndustrialCadastro | currency }}</td>
+                            <td class="text-right">{{ receita.totalIndustrialAtividade | currency }}</td>
+                            <td class="text-right">{{ receita.totalGeral | currency }}</td>
+                        </tr>
+                    </ng-template>
+                    }
+                </p-table>
+                }
+                @else {
+                @for (message of messages(); track message; let first = $first) {
+                <p-message [icon]="message.icon" [size]="message.size" [severity]="message.severity"
+                    [text]="message.content" />
+                }
+                }
+            </p-tabpanel>
+
+            <!-- ============ Tab 2: per-company breakdown ============ -->
+            <p-tabpanel [value]="1">
+                <div class="flex justify-between items-end flex-wrap gap-4 py-4">
+                    <div class="flex items-end flex-wrap gap-4">
+                        <div>
+                            <label for="yearFilterEmp" class="font-medium mb-2 block">Ano</label>
+                            <p-select inputId="yearFilterEmp" [(ngModel)]="selectedYear"
+                                (ngModelChange)="onYearChange()" [options]="yearOptions" optionLabel="name"
+                                optionValue="value" styleClass="w-32" [fluid]="true" />
+                        </div>
+                        <div>
+                            <label for="monthFilter" class="font-medium mb-2 block">Mês</label>
+                            <p-select inputId="monthFilter" [(ngModel)]="selectedMonth"
+                                (ngModelChange)="onMonthChange()" [options]="monthOptions" optionLabel="name"
+                                optionValue="value" styleClass="w-40" [fluid]="true" />
+                        </div>
+                        <div>
+                            <label for="categoriaFilter" class="font-medium mb-2 block">Categoria</label>
+                            <p-select inputId="categoriaFilter" [(ngModel)]="selectedCategoria"
+                                (ngModelChange)="applyEmpresaFilters()" [options]="categoriaOptions" optionLabel="name"
+                                optionValue="value" styleClass="w-40" [fluid]="true" />
+                        </div>
+                        <div>
+                            <label for="tipoFilter" class="font-medium mb-2 block">Tipo</label>
+                            <p-select inputId="tipoFilter" [(ngModel)]="selectedTipo"
+                                (ngModelChange)="applyEmpresaFilters()" [options]="tipoOptions" optionLabel="name"
+                                optionValue="value" styleClass="w-40" [fluid]="true" />
+                        </div>
+                        <div>
+                            <label for="empresaSearch" class="font-medium mb-2 block">Empresa</label>
+                            <p-iconfield>
+                                <p-inputicon styleClass="pi pi-search" />
+                                <input pInputText id="empresaSearch" type="text" [(ngModel)]="searchTerm"
+                                    (ngModelChange)="applyEmpresaFilters()" placeholder="Nome ou NIF" />
+                            </p-iconfield>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p-button (onClick)="exportEmpresasToExcel()" [disabled]="empresaRows.length === 0"
+                            label="Exportar para Excel" icon="pi pi-file-excel" [raised]="true" severity="success" />
+                    </div>
+                </div>
+
+                @if (empresaRows.length > 0 || empresasFetching) {
+                <p-table [value]="empresaRows" dataKey="empresaId" responsiveLayout="scroll" [scrollable]="true"
+                    [rowHover]="true" [loading]="empresasFetching">
+                    <ng-template #header>
+                        <tr>
+                            <th rowspan="2" style="width: 3rem"></th>
+                            <th rowspan="2" class="align-bottom">Empresa</th>
+                            @if (showComercial) {
+                            <th [attr.colspan]="(showCadastro ? 1 : 0) + (showLicenca ? 1 : 0)" class="text-center">
+                                Comercial</th>
+                            }
+                            @if (showIndustrial) {
+                            <th [attr.colspan]="(showCadastro ? 1 : 0) + (showLicenca ? 1 : 0)" class="text-center">
+                                Industrial</th>
+                            }
+                            <th rowspan="2" class="text-right align-bottom">Total</th>
+                        </tr>
+                        <tr>
+                            @if (showComercial) {
+                            @if (showCadastro) {<th class="text-right">Cadastro</th>}
+                            @if (showLicenca) {<th class="text-right">Licença</th>}
+                            }
+                            @if (showIndustrial) {
+                            @if (showCadastro) {<th class="text-right">Cadastro</th>}
+                            @if (showLicenca) {<th class="text-right">Licença</th>}
+                            }
+                        </tr>
+                    </ng-template>
+                    <ng-template #body let-row let-expanded="expanded">
+                        <tr>
+                            <td>
+                                <p-button type="button" [pRowToggler]="row" [text]="true" [rounded]="true"
+                                    [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" />
+                            </td>
+                            <td>
+                                <span class="font-medium">{{ row.nome }}</span>
+                                <span class="block text-sm text-gray-400">NIF {{ row.nif }}</span>
+                            </td>
+                            @if (showComercial) {
+                            @if (showCadastro) {<td class="text-right">{{ row.comercialCadastro | currency }}</td>}
+                            @if (showLicenca) {<td class="text-right">{{ row.comercialAtividade | currency }}</td>}
+                            }
+                            @if (showIndustrial) {
+                            @if (showCadastro) {<td class="text-right">{{ row.industrialCadastro | currency }}</td>}
+                            @if (showLicenca) {<td class="text-right">{{ row.industrialAtividade | currency }}</td>}
+                            }
+                            <td class="text-right font-medium">{{ row.total | currency }}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template #expandedrow let-row>
+                        <tr>
+                            <td [attr.colspan]="visibleColumnCount">
+                                <div class="p-3">
+                                    <p-table [value]="row.pagamentos" responsiveLayout="scroll">
+                                        <ng-template #header>
+                                            <tr>
+                                                <th>Fatura</th>
+                                                <th>Data de pagamento</th>
+                                                <th>Categoria</th>
+                                                <th>Tipo</th>
+                                                <th class="text-right">Valor</th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template #body let-pagamento>
+                                            <tr>
+                                                <td>#{{ pagamento.faturaId }}</td>
+                                                <td>{{ pagamento.dataPagamento | date: 'dd/MM/yyyy' }}</td>
+                                                <td>{{ pagamento.categoria === 'INDUSTRIAL' ? 'Industrial' : 'Comercial' }}</td>
+                                                <td>{{ pagamento.tipo === 'CADASTRO' ? 'Cadastro' : 'Licença' }}</td>
+                                                <td class="text-right">{{ pagamento.valor | currency }}</td>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template #footer>
+                        <tr class="font-bold">
+                            <td></td>
+                            <td>TOTAL</td>
+                            @if (showComercial) {
+                            @if (showCadastro) {<td class="text-right">{{ empresaFooter.comercialCadastro | currency }}</td>}
+                            @if (showLicenca) {<td class="text-right">{{ empresaFooter.comercialAtividade | currency }}</td>}
+                            }
+                            @if (showIndustrial) {
+                            @if (showCadastro) {<td class="text-right">{{ empresaFooter.industrialCadastro | currency }}</td>}
+                            @if (showLicenca) {<td class="text-right">{{ empresaFooter.industrialAtividade | currency }}</td>}
+                            }
+                            <td class="text-right">{{ empresaFooter.total | currency }}</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                }
+                @else {
+                @for (message of empresaMessages(); track message; let first = $first) {
+                <p-message [icon]="message.icon" [size]="message.size" [severity]="message.severity"
+                    [text]="message.content" />
+                }
+                }
+            </p-tabpanel>
+
+        </p-tabpanels>
+    </p-tabs>
 </div>

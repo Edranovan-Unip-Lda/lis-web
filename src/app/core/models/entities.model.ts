@@ -432,6 +432,26 @@ export interface Receita {
     totalGeral: number;
 }
 
+export interface ReceitaPagamento {
+    faturaId: number;
+    dataPagamento: string;   // ISO date
+    categoria: string;       // COMERCIAL / INDUSTRIAL
+    tipo: string;            // CADASTRO / ATIVIDADE
+    valor: number;
+}
+
+export interface ReceitaEmpresa {
+    empresaId: number;
+    nome: string;
+    nif: string;
+    comercialCadastro: number;
+    comercialAtividade: number;
+    industrialCadastro: number;
+    industrialAtividade: number;
+    total: number;
+    pagamentos: ReceitaPagamento[];
+}
+
 export interface DashboardResponse {
     kpis: Kpis;
 

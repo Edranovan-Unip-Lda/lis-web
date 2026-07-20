@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, take } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { CategoryDistributionDto, DashboardResponse, Receita } from '../models/entities.model';
+import { CategoryDistributionDto, DashboardResponse, Receita, ReceitaEmpresa } from '../models/entities.model';
 
 @Injectable({
   providedIn: 'root'
@@ -45,6 +45,18 @@ export class DashboardService {
   getReceitas(year: number): Observable<Receita> {
     const params = new HttpParams().set('year', year);
     return this.http.get<Receita>(`${this.apiUrl}/receitas`, { params }).pipe(take(1));
+  }
+
+  /**
+   * Per-company tax income: paid totals per company (Comercial/Industrial x Cadastro/Licença)
+   * with the individual payments. Optional month (1-12) narrows within the year.
+   */
+  getReceitasPorEmpresa(year: number, mes?: number): Observable<ReceitaEmpresa[]> {
+    let params = new HttpParams().set('year', year);
+    if (mes != null) {
+      params = params.set('mes', mes);
+    }
+    return this.http.get<ReceitaEmpresa[]>(`${this.apiUrl}/receitas/empresas`, { params }).pipe(take(1));
   }
 
 }
