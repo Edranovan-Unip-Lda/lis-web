@@ -29,6 +29,14 @@ export enum AplicanteStatus {
     expirado = 'EXPIRADO'
 }
 
+export enum PedidoStatus {
+    emCurso = 'EM_CURSO',
+    submetido = 'SUBMETIDO',
+    emAnalise = 'EM_ANALISE',
+    aprovado = 'APROVADO',
+    rejeitado = 'REJEITADO'
+}
+
 export enum Categoria {
     com = 'COM',
     ind = 'IND',

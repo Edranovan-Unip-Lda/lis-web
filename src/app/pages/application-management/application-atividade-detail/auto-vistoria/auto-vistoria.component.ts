@@ -1,13 +1,14 @@
 import { Aldeia } from '@/core/models/data-master.model';
 import { Aplicante, AutoVistoria, Documento, Empresa, PedidoVistoria } from '@/core/models/entities.model';
-import { AplicanteStatus, Categoria } from '@/core/models/enums';
+import { AplicanteStatus, Categoria, PedidoStatus } from '@/core/models/enums';
 import { AuthenticationService, DataMasterService, FileUploadService } from '@/core/services';
 import { DocumentosService } from '@/core/services/documentos.service';
 import { PedidoService } from '@/core/services/pedido.service';
 import { autoVistoriaComercialFields, autoVistoriaIndustrialFields, mapToAtividadeEconomica, stateOptions, tipoAreaRepresentanteComercial, tipoAreaRepresentanteIndustrial, tipoDocumentoOptions, tipoEletricidadeOptions, tipoLocalOptions } from '@/core/utils/global-function';
 import { alphanumericValidator } from '@/core/validators/alphanumeric';
 import { autoVistoriaWithFilesValidator } from '@/core/validators/must-match';
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -23,12 +24,13 @@ import { Select, SelectFilterEvent } from 'primeng/select';
 import { SelectButton } from 'primeng/selectbutton';
 import { Textarea } from 'primeng/textarea';
 import { Toast } from 'primeng/toast';
+import { Tag } from 'primeng/tag';
 import { finalize } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-auto-vistoria',
-  imports: [ReactiveFormsModule, SelectButton, Textarea, DatePicker, FileUpload, InputText, Select, Button, Toast, InputGroup, InputGroupAddon, InputNumber, ProgressBar],
+  imports: [ReactiveFormsModule, SelectButton, Textarea, DatePicker, FileUpload, InputText, Select, Button, Toast, InputGroup, InputGroupAddon, InputNumber, ProgressBar, Tag],
   templateUrl: './auto-vistoria.component.html',
   styleUrl: './auto-vistoria.component.scss',
   providers: [MessageService]
@@ -56,6 +58,8 @@ export class AutoVistoriaComponent implements OnInit {
   maxFileSize = 20 * 1024 * 1024; // 20 MB
   acceptedFileTypes = 'application/pdf,image/jpeg,image/jpg,image/png';
   loading = false;
+  savingDraft = false;
+  PedidoStatus = PedidoStatus;
   loadingDownloadButtons = new Set<string>();
   loadingRemoveButtons = new Set<string>();
   minLengthParticipantes = 1;
@@ -68,6 +72,7 @@ export class AutoVistoriaComponent implements OnInit {
   industrialFormFields = autoVistoriaIndustrialFields;
   loadingUploadButtons = new Set<String>();
   protected readonly TRINTA_DIAS: number = 30;
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private _fb: FormBuilder,
@@ -148,7 +153,12 @@ export class AutoVistoriaComponent implements OnInit {
       this.loading = true;
       const formData = this.mapFormToData(form);
 
-      this.pedidoService.saveAutoVistoria(this.pedidoVistoria.id, formData).subscribe({
+      // Finalize an existing draft via PUT, or POST a fresh finalized report.
+      const request$ = this.autoVistoria?.id
+        ? this.pedidoService.updateAutoVistoria(this.pedidoVistoria.id, this.autoVistoria.id, formData, false)
+        : this.pedidoService.saveAutoVistoria(this.pedidoVistoria.id, formData, false);
+
+      request$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: () => {
           this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Auto Vistoria submetida com sucesso', life: 3000, key: 'tr' });
           this.autoVistoriaForm.disable();
@@ -161,9 +171,13 @@ export class AutoVistoriaComponent implements OnInit {
             }
           });
         },
-        error: () => {
+        error: (err) => {
           this.loading = false;
-          this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao submeter a Auto Vistoria', life: 3000, key: 'tr' });
+          // 403 = report already finalized (SUBMETIDO); cannot re-finalize.
+          const detail = err?.status === 403
+            ? 'Esta Auto Vistoria já foi submetida e não pode ser alterada'
+            : 'Falha ao submeter a Auto Vistoria';
+          this.messageService.add({ severity: 'error', summary: 'Erro', detail, life: 3000, key: 'tr' });
         }
       });
     } else {
@@ -171,6 +185,32 @@ export class AutoVistoriaComponent implements OnInit {
       const invalidControls = this.findInvalidControls(this.autoVistoriaForm);
       return;
     }
+  }
+
+  /**
+   * Save the report as a draft (EM_CURSO) without full validation and without
+   * triggering finalize side effects. Stays on the page and tracks the returned
+   * id/status so a later finalize updates the same record.
+   */
+  saveDraft() {
+    this.savingDraft = true;
+    const formData = this.mapFormToData(this.autoVistoriaForm);
+
+    const request$ = this.autoVistoria?.id
+      ? this.pedidoService.updateAutoVistoria(this.pedidoVistoria.id, this.autoVistoria.id, formData, true)
+      : this.pedidoService.saveAutoVistoria(this.pedidoVistoria.id, formData, true);
+
+    request$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (autoVistoria: AutoVistoria) => {
+        this.autoVistoria = autoVistoria;
+        this.savingDraft = false;
+        this.messageService.add({ severity: 'info', summary: 'Rascunho guardado', detail: 'Auto Vistoria guardada como rascunho', life: 3000, key: 'tr' });
+      },
+      error: () => {
+        this.savingDraft = false;
+        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao guardar o rascunho', life: 3000, key: 'tr' });
+      }
+    });
   }
 
   private findInvalidControls(formGroup: FormGroup, parentKey: string = ''): string[] {
@@ -679,6 +719,17 @@ export class AutoVistoriaComponent implements OnInit {
       ...autoVistoria,
       dataHora: new Date(autoVistoria.updatedAt)
     });
+
+    // Restore previously uploaded documents so they render/download on reload.
+    if (autoVistoria.documentos?.length) {
+      this.uploadedFiles = [...autoVistoria.documentos];
+    }
+
+    // A draft (EM_CURSO) stays editable; a finalized report (SUBMETIDO) or a
+    // legacy record with no status is read-only.
+    if (autoVistoria.status !== PedidoStatus.emCurso) {
+      this.autoVistoriaForm.disable();
+    }
   }
 
   private mapRequerenteForm(empresa: Empresa): void {

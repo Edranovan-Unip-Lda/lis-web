@@ -1,4 +1,4 @@
-import { BarChartDto, CategoryDistributionDto, Kpis, LicensesPerMonthDto, MapDataDto } from '@/core/models/entities.model';
+import { BarChartDto, CategoryDistributionDto, Kpis, LicensesPerMonthDto, MapDataDto, Receita } from '@/core/models/entities.model';
 import { DashboardService } from '@/core/services';
 import { StatsWidget } from '@/pages/dashboard/components/statswidget';
 import { Component } from '@angular/core';
@@ -10,11 +10,12 @@ import { CertificadoLicencaCategoriaChartsComponent } from './certificado-licenc
 import { CertificadoLicencaEstadoComponent } from './certificado-licenca-estado/certificado-licenca-estado.component';
 import { CertificadoLicencaMunicipioPieComponent } from './certificado-licenca-municipio-pie/certificado-licenca-municipio-pie.component';
 import { EmpresaMapComponent } from './empresa-map/empresa-map.component';
+import { ReceitaMensalChartsComponent } from './receita-mensal-charts/receita-mensal-charts.component';
 
 @Component({
     selector: 'app-dashboard',
     standalone: true,
-    imports: [FormsModule, Select, StatsWidget, EmpresaMapComponent, CertificadoLicencaCategoriaChartsComponent, CertificadoLicencaMunicipioPieComponent, CertificadoLicencaEstadoComponent],
+    imports: [FormsModule, Select, StatsWidget, EmpresaMapComponent, CertificadoLicencaCategoriaChartsComponent, CertificadoLicencaMunicipioPieComponent, CertificadoLicencaEstadoComponent, ReceitaMensalChartsComponent],
     providers: [providePartialHighcharts({ modules: () => [import('highcharts/esm/modules/map')] })],
     templateUrl: './dashboard.component.html',
     styleUrl: './dashboard.component.scss',
@@ -32,6 +33,8 @@ export class DashboardComponent {
     empresasByMunicipio!: MapDataDto;
     empresasBySociedadeComercial!: CategoryDistributionDto;
     empresasByTipoEmpresa!: CategoryDistributionDto;
+
+    receita!: Receita;
 
     yearCtrl = {
         name: new Date().getFullYear().toString(),
@@ -65,6 +68,7 @@ export class DashboardComponent {
         this.empresasByMunicipio = dashboardData.empresasByMunicipio;
         this.empresasBySociedadeComercial = dashboardData.empresasBySociedadeComercial;
         this.empresasByTipoEmpresa = dashboardData.empresasByTipoEmpresa;
+        this.receita = dashboardData.receita;
     }
 
     yearChange(value: any) {
@@ -79,6 +83,7 @@ export class DashboardComponent {
                 this.certificatesPerMonth = dashboardData.certificatesPerMonth;
                 this.certificatesByMunicipio = dashboardData.certificatesByMunicipio;
                 this.certificatesStatusPerMonth = dashboardData.certificatesStatusPerMonth;
+                this.receita = dashboardData.receita;
             }
         });
     }

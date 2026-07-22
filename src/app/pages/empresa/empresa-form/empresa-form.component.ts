@@ -145,6 +145,9 @@ export class EmpresaFormComponent implements OnInit {
       next: (response) => {
         this.loading = false;
         this.isSuccess = true;
+        // Docs in this batch are now persisted server-side; clear them so a second save doesn't
+        // resend the same id-less documents and create duplicate rows.
+        this.uploadedDocs = [];
         this.messageService.add({
           severity: 'success',
           summary: 'Sucesso',

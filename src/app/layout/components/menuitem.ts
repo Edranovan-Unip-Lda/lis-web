@@ -141,6 +141,11 @@ export const model_admin: MenuItem[] = [
                 label: 'Licenças e Certificados',
                 icon: 'bi bi-fw bi-journal-check',
                 routerLink: ['relatorios/licencas-certificados']
+            },
+            {
+                label: 'Receitas',
+                icon: 'bi bi-fw bi-currency-dollar',
+                routerLink: ['relatorios/receitas']
             }
         ]
     },
@@ -320,6 +325,11 @@ export const model_manager: MenuItem[] = [
                 label: 'Licenças e Certificados',
                 icon: 'bi bi-fw bi-journal-check',
                 routerLink: ['relatorios/licencas-certificados']
+            },
+            {
+                label: 'Receitas',
+                icon: 'bi bi-fw bi-currency-dollar',
+                routerLink: ['relatorios/receitas']
             }
         ]
     },

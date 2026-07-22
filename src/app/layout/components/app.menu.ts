@@ -30,22 +30,26 @@ export class AppMenu {
     constructor(
         private authService: AuthenticationService
     ) {
+        // Pick the role's base menu. These are shared module-level constants, so never mutate them —
+        // build a fresh array (spread) below, otherwise pushing docMenu accumulates duplicates across
+        // AppMenu re-instantiations (logout→login, layout recreation) for every role sharing the array.
+        let base: any[] = [];
         switch (this.authService.currentRole.name) {
             case Role.admin:
-                this.model = model_admin;
+                base = model_admin;
                 break;
             case Role.manager:
             case Role.chief:
-                this.model = model_manager;
+                base = model_manager;
                 break;
             case Role.staff:
-                this.model = model_staff;
+                base = model_staff;
                 break;
             case Role.client:
-                this.model = model_client;
+                base = model_client;
                 break;
         }
-        let docMenu = {
+        const docMenu = {
             label: 'Documentação',
             items: [
                 {
@@ -56,8 +60,7 @@ export class AppMenu {
                 }
             ]
         };
-        this.model.push(docMenu);
-
+        this.model = [...base, docMenu];
     }
 
 }

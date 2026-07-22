@@ -1,0 +1,27 @@
+<div class="card widget-visitor-graph">
+    <div class="card-header leading-loose">
+        <span class="text-xl">
+            {{ resolvedTitle }}
+        </span>
+    </div>
+
+    <div class="graph-content grid grid-cols-12 gap-4 mt-6">
+        <div class="col-span-12 md:col-span-4">
+            <div class="text-3xl font-semibold">{{ totalCadastro | currency }}</div>
+            <div class="font-semibold my-4">TOTAL CADASTRO</div>
+        </div>
+        <div class="col-span-12 md:col-span-4">
+            <div class="text-3xl font-semibold">{{ totalLicenca | currency }}</div>
+            <div class="font-semibold my-4">TOTAL LICENÇA</div>
+        </div>
+        <div class="col-span-12 md:col-span-4">
+            <div class="text-3xl font-semibold">{{ totalCategoria | currency }}</div>
+            <div class="font-semibold my-4">TOTAL {{ isIndustrial ? 'INDUSTRIAL' : 'COMERCIAL' }}</div>
+        </div>
+    </div>
+
+    <div class="graph">
+        <highcharts-chart [options]="chartOptions" [update]="updateFlag"
+            style="width: 100%; min-height: 400px; display: block;"></highcharts-chart>
+    </div>
+</div>

@@ -32,6 +32,23 @@ export class ExportService {
     }
 
     /**
+     * Export multiple datasets to a single Excel workbook, one sheet per entry.
+     * Sheet names are truncated to Excel's 31-character limit.
+     *
+     * @param sheets Ordered list of { name, data } pairs — each becomes one worksheet.
+     * @param filename The filename for the exported spreadsheet (without extension).
+     */
+    toExcelSheets(sheets: { name: string; data: any[] }[], filename: string): void {
+        const workbook = utils.book_new();
+        sheets.forEach((sheet) => {
+            const sheetName = sheet.name.length > 31 ? sheet.name.substring(0, 31) : sheet.name;
+            utils.book_append_sheet(workbook, utils.json_to_sheet(sheet.data), sheetName);
+        });
+
+        writeFile(workbook, `${filename}.xlsx`, { compression: true });
+    }
+
+    /**
      * Export an HTML element to a PDF file in landscape orientation.
      * 
      * @param elementId The ID of the HTML element to capture.
