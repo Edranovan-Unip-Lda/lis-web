@@ -107,6 +107,12 @@
                                 optionValue="value" styleClass="w-40" [fluid]="true" />
                         </div>
                         <div>
+                            <label for="sociedadeFilter" class="font-medium mb-2 block">Sociedade Comercial</label>
+                            <p-select inputId="sociedadeFilter" [(ngModel)]="selectedSociedade"
+                                (ngModelChange)="applyEmpresaFilters()" [options]="sociedadeOptions" optionLabel="name"
+                                optionValue="value" [filter]="true" filterBy="name" styleClass="w-56" [fluid]="true" />
+                        </div>
+                        <div>
                             <label for="empresaSearch" class="font-medium mb-2 block">Empresa</label>
                             <p-iconfield>
                                 <p-inputicon styleClass="pi pi-search" />
@@ -129,6 +135,7 @@
                         <tr>
                             <th rowspan="2" style="width: 3rem"></th>
                             <th rowspan="2" class="align-bottom">Empresa</th>
+                            <th rowspan="2" class="align-bottom">Sociedade Comercial</th>
                             @if (showComercial) {
                             <th [attr.colspan]="(showCadastro ? 1 : 0) + (showLicenca ? 1 : 0)" class="text-center">
                                 Comercial</th>
@@ -158,8 +165,9 @@
                             </td>
                             <td>
                                 <span class="font-medium">{{ row.nome }}</span>
-                                <span class="block text-sm text-gray-400">NIF {{ row.nif }}</span>
+                                <span class="block text-sm text-muted-color">NIF {{ row.nif }}</span>
                             </td>
+                            <td>{{ row.sociedadeComercial || '—' }}</td>
                             @if (showComercial) {
                             @if (showCadastro) {<td class="text-right">{{ row.comercialCadastro | currency }}</td>}
                             @if (showLicenca) {<td class="text-right">{{ row.comercialAtividade | currency }}</td>}
@@ -203,6 +211,7 @@
                         <tr class="font-bold">
                             <td></td>
                             <td>TOTAL</td>
+                            <td></td>
                             @if (showComercial) {
                             @if (showCadastro) {<td class="text-right">{{ empresaFooter.comercialCadastro | currency }}</td>}
                             @if (showLicenca) {<td class="text-right">{{ empresaFooter.comercialAtividade | currency }}</td>}

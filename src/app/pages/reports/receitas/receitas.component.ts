@@ -28,6 +28,7 @@ interface EmpresaRow {
   empresaId: number;
   nome: string;
   nif: string;
+  sociedadeComercial: string | null;
   comercialCadastro: number;
   comercialAtividade: number;
   industrialCadastro: number;
@@ -78,6 +79,10 @@ export class ReceitasComponent {
     { name: 'Licença', value: 'ATIVIDADE' },
   ];
 
+  /** Sentinel for companies with no sociedade comercial on record (null can't distinguish "all" from "none"). */
+  static readonly SEM_SOCIEDADE = '__SEM_SOCIEDADE__';
+  readonly semSociedade = ReceitasComponent.SEM_SOCIEDADE;
+
   activeTab = 0;
   selectedYear = new Date().getFullYear();
 
@@ -92,6 +97,9 @@ export class ReceitasComponent {
   searchTerm = '';
   selectedCategoria: 'TODAS' | 'COMERCIAL' | 'INDUSTRIAL' = 'TODAS';
   selectedTipo: 'TODOS' | 'CADASTRO' | 'ATIVIDADE' = 'TODOS';
+  selectedSociedade: string | null = null; // null = todas
+  /** Derived from the loaded data — master data isn't fetched separately, only values actually present are offered. */
+  sociedadeOptions: { name: string; value: string | null }[] = [{ name: 'Todas', value: null }];
   empresas: ReceitaEmpresa[] = [];
   empresaRows: EmpresaRow[] = [];
   empresasFetching = false;
@@ -135,10 +143,10 @@ export class ReceitasComponent {
   get showLicenca(): boolean {
     return this.selectedTipo !== 'CADASTRO';
   }
-  /** 1 (empresa) + visible value columns + 1 (total) — for the expansion row colspan. */
+  /** 1 (expander) + empresa + sociedade comercial + visible value columns + 1 (total) — for the expansion row colspan. */
   get visibleColumnCount(): number {
     const perCategoria = (this.showCadastro ? 1 : 0) + (this.showLicenca ? 1 : 0);
-    return 2 + perCategoria * ((this.showComercial ? 1 : 0) + (this.showIndustrial ? 1 : 0)) + 1;
+    return 3 + perCategoria * ((this.showComercial ? 1 : 0) + (this.showIndustrial ? 1 : 0)) + 1;
   }
 
   loadReceitas() {
@@ -176,6 +184,7 @@ export class ReceitasComponent {
           this.empresas = empresas ?? [];
           this.empresasLoaded = true;
           this.empresasFetching = false;
+          this.buildSociedadeOptions();
           this.applyEmpresaFilters();
         },
         error: (error) => {
@@ -192,19 +201,48 @@ export class ReceitasComponent {
     this.loadEmpresas();
   }
 
+  /**
+   * Build the sociedade comercial options from the loaded companies (distinct, alphabetical), plus an entry for
+   * companies with none. Clears a selection that no longer exists in the new period's data.
+   */
+  private buildSociedadeOptions(): void {
+    const nomes = [...new Set(
+      this.empresas.map(e => e.sociedadeComercial).filter((s): s is string => !!s && s.trim().length > 0)
+    )].sort((a, b) => a.localeCompare(b, 'pt'));
+
+    const options: { name: string; value: string | null }[] = [{ name: 'Todas', value: null }];
+    options.push(...nomes.map(n => ({ name: n, value: n })));
+    if (this.empresas.some(e => !e.sociedadeComercial || e.sociedadeComercial.trim().length === 0)) {
+      options.push({ name: '(Sem sociedade comercial)', value: this.semSociedade });
+    }
+    this.sociedadeOptions = options;
+
+    if (this.selectedSociedade != null && !options.some(o => o.value === this.selectedSociedade)) {
+      this.selectedSociedade = null;
+    }
+  }
+
+  private matchesSociedade(e: ReceitaEmpresa): boolean {
+    if (this.selectedSociedade == null) return true;
+    const has = !!e.sociedadeComercial && e.sociedadeComercial.trim().length > 0;
+    return this.selectedSociedade === this.semSociedade ? !has : e.sociedadeComercial === this.selectedSociedade;
+  }
+
   /** Recompute view rows from the raw payments so cells, totals, and footer respect every active filter. */
   applyEmpresaFilters() {
     const term = this.searchTerm.trim().toLowerCase();
 
     this.empresaRows = this.empresas
-      .filter(e => !term || e.nome?.toLowerCase().includes(term) || e.nif?.toLowerCase().includes(term))
+      .filter(e => !term || e.nome?.toLowerCase().includes(term) || e.nif?.toLowerCase().includes(term)
+        || e.sociedadeComercial?.toLowerCase().includes(term))
+      .filter(e => this.matchesSociedade(e))
       .map(e => {
         const pagamentos = (e.pagamentos ?? []).filter(p =>
           (this.selectedCategoria === 'TODAS' || p.categoria === this.selectedCategoria) &&
           (this.selectedTipo === 'TODOS' || p.tipo === this.selectedTipo)
         );
         const row: EmpresaRow = {
-          empresaId: e.empresaId, nome: e.nome, nif: e.nif,
+          empresaId: e.empresaId, nome: e.nome, nif: e.nif, sociedadeComercial: e.sociedadeComercial,
           comercialCadastro: 0, comercialAtividade: 0, industrialCadastro: 0, industrialAtividade: 0,
           total: 0, pagamentos,
         };
@@ -268,6 +306,7 @@ export class ReceitasComponent {
     const resumo: any[] = this.empresaRows.map(r => ({
       'Empresa': r.nome,
       'NIF': r.nif,
+      'Sociedade Comercial': r.sociedadeComercial ?? '',
       'Comercial - Cadastro': r.comercialCadastro,
       'Comercial - Licença': r.comercialAtividade,
       'Industrial - Cadastro': r.industrialCadastro,
@@ -275,7 +314,7 @@ export class ReceitasComponent {
       'Total': r.total,
     }));
     resumo.push({
-      'Empresa': 'TOTAL', 'NIF': '',
+      'Empresa': 'TOTAL', 'NIF': '', 'Sociedade Comercial': '',
       'Comercial - Cadastro': this.empresaFooter.comercialCadastro,
       'Comercial - Licença': this.empresaFooter.comercialAtividade,
       'Industrial - Cadastro': this.empresaFooter.industrialCadastro,
@@ -286,6 +325,7 @@ export class ReceitasComponent {
     const pagamentos = this.empresaRows.flatMap(r => r.pagamentos.map(p => ({
       'Empresa': r.nome,
       'NIF': r.nif,
+      'Sociedade Comercial': r.sociedadeComercial ?? '',
       'Fatura': p.faturaId,
       'Data Pagamento': datePipe.transform(p.dataPagamento, 'dd/MM/yyyy'),
       'Categoria': p.categoria === 'INDUSTRIAL' ? 'Industrial' : 'Comercial',
