@@ -1,29 +1,29 @@
 @if (aplicanteData) {
 <div class="card rounded-xl shadow-lg p-8">
     <div class="mb-8">
-        <h1 class="text-3xl font-bold text-white mb-2">
+        <h1 class="text-3xl font-bold text-color mb-2">
             Resumo do Aplicante
         </h1>
-        <p class="text-gray-400">
+        <p class="text-muted-color">
             Visão geral da candidatura para registo {{aplicanteData.categoria.toLocaleLowerCase()}}.
         </p>
     </div>
     <div class="grid grid-cols-4 md:grid-cols-5 gap-6 mb-8">
-        <div class="col-span-4 md:col-span-3 bg-[#26262B] p-6 rounded-lg">
-            <h2 class="text-xl font-semibold text-white mb-4">Detalhes do Aplicante</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-gray-300">
+        <div class="col-span-4 md:col-span-3 bg-surface-100 dark:bg-surface-800 p-6 rounded-lg">
+            <h2 class="text-xl font-semibold text-color mb-4">Detalhes do Aplicante</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-color">
                 <div>
-                    <p class="font-medium text-gray-400">Nº do Aplicante:</p>
+                    <p class="font-medium text-muted-color">Nº do Aplicante:</p>
                     <p class="text-lg">
                         {{aplicanteData.numero}}
                     </p>
                 </div>
                 <div>
-                    <p class="font-medium text-gray-400">Estado:</p>
+                    <p class="font-medium text-muted-color">Estado:</p>
                     <p-tag [value]="aplicanteData.estado" [severity]="aplicanteData.estado| statusSeverity" />
                 </div>
                 <div>
-                    <p class="font-medium text-gray-400">
+                    <p class="font-medium text-muted-color">
                         Criado Em:
                     </p>
                     <p>
@@ -31,37 +31,37 @@
                     </p>
                 </div>
                 <div>
-                    <p class="font-medium text-gray-400">Atualizado Em:</p>
+                    <p class="font-medium text-muted-color">Atualizado Em:</p>
                     <p>
                         {{aplicanteData.updatedAt | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                     </p>
                 </div>
             </div>
         </div>
-        <div class="col-span-4 md:col-span-2 bg-[#26262B] p-6 rounded-lg flex flex-col justify-center">
-            <h2 class="text-xl font-semibold text-white mb-4">Informação da Empresa</h2>
-            <div class="space-y-2 text-gray-300">
+        <div class="col-span-4 md:col-span-2 bg-surface-100 dark:bg-surface-800 p-6 rounded-lg flex flex-col justify-center">
+            <h2 class="text-xl font-semibold text-color mb-4">Informação da Empresa</h2>
+            <div class="space-y-2 text-color">
                 <p>
-                    <span class="font-medium text-gray-400">Nome:</span>
+                    <span class="font-medium text-muted-color">Nome:</span>
                     {{aplicanteData.empresa.nome}}
                 </p>
                 <p>
-                    <span class="font-medium text-gray-400">NIF:</span>
+                    <span class="font-medium text-muted-color">NIF:</span>
                     {{aplicanteData.empresa.nif}}
                 </p>
                 <p>
-                    <span class="font-medium text-gray-400">Telefone/Telemovel:</span>
+                    <span class="font-medium text-muted-color">Telefone/Telemovel:</span>
                     {{aplicanteData.empresa.telefone}} / {{aplicanteData.empresa.telemovel}}
                 </p>
                 <p>
-                    <span class="font-medium text-gray-400">Sede:</span>
+                    <span class="font-medium text-muted-color">Sede:</span>
                     {{aplicanteData.empresa.sede.local}} - {{aplicanteData.empresa.sede.aldeia.nome}},
                     {{aplicanteData.empresa.sede.aldeia.suco.nome}},
                     {{aplicanteData.empresa.sede.aldeia.suco.postoAdministrativo.nome}},
                     {{aplicanteData.empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
                 </p>
                 <p>
-                    <span class="font-medium text-gray-400">Coordenadas:</span>
+                    <span class="font-medium text-muted-color">Coordenadas:</span>
                     <a [href]="'https://www.google.com/maps?q=' + aplicanteData.empresa.latitude + ',' + aplicanteData.empresa.longitude"
                         target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:text-emerald-300 hover:underline cursor-pointer">
                         {{aplicanteData.empresa.longitude}} / {{aplicanteData.empresa.latitude}}
@@ -71,8 +71,8 @@
         </div>
     </div>
     @if (showDispatchActions(aplicanteData)) {
-    <div class="bg-[#26262B] p-6 rounded-lg mb-8">
-        <h2 class="text-xl font-semibold text-white mb-4">
+    <div class="bg-surface-100 dark:bg-surface-800 p-6 rounded-lg mb-8">
+        <h2 class="text-xl font-semibold text-color mb-4">
             Atribuir Aplicante
         </h2>
 
@@ -109,23 +109,23 @@
 
     }
 
-    <div class="bg-[#26262B] p-6 rounded-lg mb-8">
-        <h2 class="text-xl font-semibold text-white mb-6">
+    <div class="bg-surface-100 dark:bg-surface-800 p-6 rounded-lg mb-8">
+        <h2 class="text-xl font-semibold text-color mb-6">
             Etapas do Aplicante
         </h2>
         @if (aplicanteData.tipo === 'CADASTRO') {
         <div class="space-y-6">
             <div
-                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-surface-0 dark:bg-surface-700 rounded-lg">
                 <div class="flex items-center mb-4 sm:mb-0">
                     <div class="flex items-center justify-center h-12 w-12 rounded-full bg-blue-500 text-white mr-4">
                         <i class="bi bi-file-text text-2xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-white">
+                        <h3 class="text-lg font-semibold text-color">
                             Formulário do Pedido Inscrição do Cadastro
                         </h3>
-                        <p class="text-sm text-gray-400">
+                        <p class="text-sm text-muted-color">
                             Detalhes do Pedido Inscrição do Cadastro
                         </p>
                     </div>
@@ -138,16 +138,16 @@
                 </div>
             </div>
             <div
-                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-surface-0 dark:bg-surface-700 rounded-lg">
                 <div class="flex items-center mb-4 sm:mb-0">
                     <div class="flex items-center justify-center h-12 w-12 rounded-full bg-green-500 text-white mr-4">
                         <i class="bi bi-credit-card text-2xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-white">
+                        <h3 class="text-lg font-semibold text-color">
                             Fatura
                         </h3>
-                        <p class="text-sm text-gray-400">Informação da Fatura</p>
+                        <p class="text-sm text-muted-color">Informação da Fatura</p>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
@@ -158,16 +158,16 @@
                 </div>
             </div>
             <div
-                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-surface-0 dark:bg-surface-700 rounded-lg">
                 <div class="flex items-center mb-4 sm:mb-0">
                     <div class="flex items-center justify-center h-12 w-12 rounded-full bg-zinc-500 text-white mr-4">
                         <i class="bi bi-receipt text-2xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-white">
+                        <h3 class="text-lg font-semibold text-color">
                             Recibo
                         </h3>
-                        <p class="text-sm text-gray-400">Informação do Recibo</p>
+                        <p class="text-sm text-muted-color">Informação do Recibo</p>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
@@ -179,16 +179,16 @@
                 </div>
             </div>
             <div
-                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-surface-0 dark:bg-surface-700 rounded-lg">
                 <div class="flex items-center mb-4 sm:mb-0">
                     <div class="flex items-center justify-center h-12 w-12 rounded-full bg-orange-500 text-white mr-4">
                         <i class="bi bi-person-check text-2xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-white">
+                        <h3 class="text-lg font-semibold text-color">
                             Em Análise
                         </h3>
-                        <p class="text-sm text-gray-400">
+                        <p class="text-sm text-muted-color">
                             Em análise pelo chefe de departamento.
                         </p>
                     </div>
@@ -212,14 +212,14 @@
                 </div>
             </div>
             <div
-                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-surface-0 dark:bg-surface-700 rounded-lg">
                 <div class="flex items-center mb-4 sm:mb-0">
                     <div class="flex items-center justify-center h-12 w-12 rounded-full bg-purple-500 text-white mr-4">
                         <i class="bi bi-award text-2xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-white">Certificado</h3>
-                        <p class="text-sm text-gray-400">Certificado oficial de registo
+                        <h3 class="text-lg font-semibold text-color">Certificado</h3>
+                        <p class="text-sm text-muted-color">Certificado oficial de registo
                             {{aplicanteData.categoria |titlecase}}.</p>
                     </div>
                 </div>
@@ -238,7 +238,7 @@
         </div>
         }@else {
         <div class="space-y-6">
-            <div class="bg-[#3A3A41] rounded-lg">
+            <div class="bg-surface-0 dark:bg-surface-700 rounded-lg">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4">
                     <div class="flex items-center mb-4 sm:mb-0">
                         <div
@@ -246,11 +246,11 @@
                             <i class="bi bi-file-text text-2xl"></i>
                         </div>
                         <div>
-                            <h3 class="text-lg font-semibold text-white">
+                            <h3 class="text-lg font-semibold text-color">
                                 Formulário do Pedido de Licença para Exercício de Atividade
                                 {{aplicanteData.categoria |titlecase}}
                             </h3>
-                            <p class="text-sm text-gray-400">
+                            <p class="text-sm text-muted-color">
                                 Detalhes do Pedido de Licença para Exercício de Atividade
                                 {{aplicanteData.categoria |titlecase}}
                             </p>
@@ -268,22 +268,22 @@
                         }
                     </div>
                 </div>
-                <div class="border-t border-gray-600 mx-4"></div>
+                <div class="border-t border-surface-300 dark:border-surface-600 mx-4"></div>
                 <!-- Pedido Vistoria -->
                 <div
-                    class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                    class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-surface-0 dark:bg-surface-700 rounded-lg">
                     <div class="flex items-center mb-4 sm:mb-0">
                         <div
                             class="flex items-center justify-center h-12 w-12 rounded-full bg-amber-500 text-white mr-4">
                             <i class="bi bi-file-text text-2xl"></i>
                         </div>
                         <div>
-                            <h3 class="text-lg font-semibold text-white">
+                            <h3 class="text-lg font-semibold text-color">
                                 Formulário do Pedido de Vistoria para Licença de Exercício de
                                 Atividade
                                 {{aplicanteData.categoria |titlecase}}
                             </h3>
-                            <p class="text-sm text-gray-400">
+                            <p class="text-sm text-muted-color">
                                 Detalhes do Pedido de Vistoria
                                 {{aplicanteData.categoria |titlecase}}
                             </p>
@@ -310,10 +310,10 @@
                             <i class="bi bi-credit-card text-2xl"></i>
                         </div>
                         <div>
-                            <h3 class="text-lg font-semibold text-white">
+                            <h3 class="text-lg font-semibold text-color">
                                 Fatura
                             </h3>
-                            <p class="text-sm text-gray-400">Informação da Fatura do Pedido de
+                            <p class="text-sm text-muted-color">Informação da Fatura do Pedido de
                                 Licença
                                 para Exercício de Atividade</p>
                         </div>
@@ -332,19 +332,19 @@
                     </div>
                 </div>
                 
-                <div class="border-t border-gray-600 mx-4"></div>
+                <div class="border-t border-surface-300 dark:border-surface-600 mx-4"></div>
                 <div
-                    class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                    class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-surface-0 dark:bg-surface-700 rounded-lg">
                     <div class="flex items-center mb-4 sm:mb-0">
                         <div
                             class="flex items-center justify-center h-12 w-12 rounded-full bg-zinc-500 text-white mr-4">
                             <i class="bi bi-receipt text-2xl"></i>
                         </div>
                         <div>
-                            <h3 class="text-lg font-semibold text-white">
+                            <h3 class="text-lg font-semibold text-color">
                                 Recibo
                             </h3>
-                            <p class="text-sm text-gray-400">
+                            <p class="text-sm text-muted-color">
                                 Informação do Recibo da Fatura do Pedido de Licença
                                 para Exercício de Atividade
                             </p>
@@ -369,19 +369,19 @@
                 <!-- End Fatura Pedido Licenca -->
             </div>
 
-            <div class="bg-[#3A3A41] rounded-lg">
+            <div class="bg-surface-0 dark:bg-surface-700 rounded-lg">
                 <div
-                    class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                    class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-surface-0 dark:bg-surface-700 rounded-lg">
                     <div class="flex items-center mb-4 sm:mb-0">
                         <div
                             class="flex items-center justify-center h-12 w-12 rounded-full bg-green-500 text-white mr-4">
                             <i class="bi bi-credit-card text-2xl"></i>
                         </div>
                         <div>
-                            <h3 class="text-lg font-semibold text-white">
+                            <h3 class="text-lg font-semibold text-color">
                                 Fatura
                             </h3>
-                            <p class="text-sm text-gray-400">Informação da Fatura do Pedido de
+                            <p class="text-sm text-muted-color">Informação da Fatura do Pedido de
                                 Vistoria
                                 para Licença de Exercício de Atividade
                                 {{aplicanteData.categoria |titlecase}}</p>
@@ -400,19 +400,19 @@
 
                     </div>
                 </div>
-                <div class="border-t border-gray-600 mx-4"></div>
+                <div class="border-t border-surface-300 dark:border-surface-600 mx-4"></div>
                 <div
-                    class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                    class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-surface-0 dark:bg-surface-700 rounded-lg">
                     <div class="flex items-center mb-4 sm:mb-0">
                         <div
                             class="flex items-center justify-center h-12 w-12 rounded-full bg-zinc-500 text-white mr-4">
                             <i class="bi bi-receipt text-2xl"></i>
                         </div>
                         <div>
-                            <h3 class="text-lg font-semibold text-white">
+                            <h3 class="text-lg font-semibold text-color">
                                 Recibo
                             </h3>
-                            <p class="text-sm text-gray-400">
+                            <p class="text-sm text-muted-color">
                                 Informação do Recibo da Fatura do Pedido de Vistoria
                                 para Licença de Exercício de Atividade
                                 {{aplicanteData.categoria |titlecase}}
@@ -438,17 +438,17 @@
             </div>
 
             <div
-                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-surface-0 dark:bg-surface-700 rounded-lg">
                 <div class="flex items-center mb-4 sm:mb-0">
                     <div class="flex items-center justify-center h-12 w-12 rounded-full bg-cyan-500 text-white mr-4">
                         <i class="bi bi-list-check text-2xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-white">
+                        <h3 class="text-lg font-semibold text-color">
                             Formulário de Auto Vistoria
                             {{aplicanteData.categoria |titlecase}}
                         </h3>
-                        <p class="text-sm text-gray-400">
+                        <p class="text-sm text-muted-color">
                             Detalhes do Auto Vistoria
                             {{aplicanteData.categoria |titlecase}}
                         </p>
@@ -482,16 +482,16 @@
                 </div>
             </div>
             <div
-                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-surface-0 dark:bg-surface-700 rounded-lg">
                 <div class="flex items-center mb-4 sm:mb-0">
                     <div class="flex items-center justify-center h-12 w-12 rounded-full bg-orange-500 text-white mr-4">
                         <i class="bi bi-person-check text-2xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-white">
+                        <h3 class="text-lg font-semibold text-color">
                             Em Análise
                         </h3>
-                        <p class="text-sm text-gray-400">
+                        <p class="text-sm text-muted-color">
                             Em análise pelo chefe de departamento.
                         </p>
                     </div>
@@ -507,14 +507,14 @@
                 </div>
             </div>
             <div
-                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#3A3A41] rounded-lg">
+                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-surface-0 dark:bg-surface-700 rounded-lg">
                 <div class="flex items-center mb-4 sm:mb-0">
                     <div class="flex items-center justify-center h-12 w-12 rounded-full bg-purple-500 text-white mr-4">
                         <i class="bi bi-award text-2xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-white">Certificado</h3>
-                        <p class="text-sm text-gray-400">
+                        <h3 class="text-lg font-semibold text-color">Certificado</h3>
+                        <p class="text-sm text-muted-color">
                             Alvará de Licença para Exercício da Atividade
                             {{aplicanteData.categoria |titlecase}}.
                         </p>
@@ -535,162 +535,162 @@
         </div>
         }
     </div>
-    <div class="bg-[#26262B] p-6 rounded-lg mb-8">
-        <h2 class="text-xl font-semibold text-white mb-6">Histórico do Aplicante</h2>
+    <div class="bg-surface-100 dark:bg-surface-800 p-6 rounded-lg mb-8">
+        <h2 class="text-xl font-semibold text-color mb-6">Histórico do Aplicante</h2>
         <div class="relative pl-8">
-            <div class="absolute left-2 top-2 bottom-2 w-0.5 bg-gray-600"></div>
+            <div class="absolute left-2 top-2 bottom-2 w-0.5 bg-surface-300 dark:bg-surface-600"></div>
             <div class="space-y-8">
                 @for (item of aplicanteData.historicoStatus; track $index) {
                 <div class="relative">
                     @switch (item.status) {
                     @case ('EM_CURSO') {
                     <div
-                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-gray-500 ring-4 ring-[#2D3748]">
+                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-surface-400 dark:bg-surface-500 ring-4 ring-surface-100 dark:ring-surface-800">
                         <i class="bi bi-clock-history"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-white">Aplicante Criado</p>
-                        <p class="text-sm text-gray-400">
+                        <p class="font-semibold text-color">Aplicante Criado</p>
+                        <p class="text-sm text-muted-color">
                             Aplicante criado pelo:
-                            <span class="font-medium text-gray-300">
+                            <span class="font-medium text-color">
                                 {{item.alteradoPor}}
                             </span>
                         </p>
-                        <p class="text-xs text-gray-500 mt-1">
+                        <p class="text-xs text-muted-color mt-1">
                             {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                         </p>
                     </div>
                     }
                     @case ('REVISAO') {
                     <div
-                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-yellow-500 ring-4 ring-[#2D3748]">
+                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-yellow-500 ring-4 ring-surface-100 dark:ring-surface-800">
                         <i class="bi bi-search"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-white">Aplicante em Revisão</p>
-                        <p class="text-sm text-gray-400">Alterado pelo: <span class="font-medium text-gray-300">
+                        <p class="font-semibold text-color">Aplicante em Revisão</p>
+                        <p class="text-sm text-muted-color">Alterado pelo: <span class="font-medium text-color">
                                 {{item.alteradoPor}}
                             </span></p>
-                        <p class="text-xs text-gray-500 mt-1">
+                        <p class="text-xs text-muted-color mt-1">
                             {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                         </p>
                     </div>
                     }
                     @case ('APROVADO') {
                     <div
-                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-green-500 ring-4 ring-[#2D3748]">
+                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-green-500 ring-4 ring-surface-100 dark:ring-surface-800">
                         <i class="bi bi-check-circle"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-white">Aplicante Aprovado</p>
-                        <p class="text-sm text-gray-400">Aplicante foi aprovado pelo Gestor.</p>
-                        <p class="text-xs text-gray-500 mt-1">
+                        <p class="font-semibold text-color">Aplicante Aprovado</p>
+                        <p class="text-sm text-muted-color">Aplicante foi aprovado pelo Gestor.</p>
+                        <p class="text-xs text-muted-color mt-1">
                             {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                         </p>
                     </div>
                     }
                     @case ('ATRIBUIDO') {
                     <div
-                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-blue-500 ring-4 ring-[#2D3748]">
+                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-blue-500 ring-4 ring-surface-100 dark:ring-surface-800">
                         <i class="bi bi-person"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-white">Aplicante Atribuído ao Funcionário</p>
-                        <p class="text-sm text-gray-400">Alterado pelo: <span class="font-medium text-gray-300">
+                        <p class="font-semibold text-color">Aplicante Atribuído ao Funcionário</p>
+                        <p class="text-sm text-muted-color">Alterado pelo: <span class="font-medium text-color">
                                 {{item.alteradoPor}}
                             </span></p>
-                        <p class="text-xs text-gray-500 mt-1">
+                        <p class="text-xs text-muted-color mt-1">
                             {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                         </p>
                     </div>
                     }
                     @case ('SUBMETIDO') {
                     <div
-                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-emerald-500 ring-4 ring-[#2D3748]">
+                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-emerald-500 ring-4 ring-surface-100 dark:ring-surface-800">
                         <i class="bi bi-send-check"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-white">Aplicante foi Submetido</p>
-                        <p class="text-sm text-gray-400">Alterado pelo: <span class="font-medium text-gray-300">
+                        <p class="font-semibold text-color">Aplicante foi Submetido</p>
+                        <p class="text-sm text-muted-color">Alterado pelo: <span class="font-medium text-color">
                                 {{item.alteradoPor}}
                             </span></p>
-                        <p class="text-xs text-gray-500 mt-1">
+                        <p class="text-xs text-muted-color mt-1">
                             {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                         </p>
                     </div>
                     }
                     @case ('REVISTO') {
                     <div
-                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-orange-500 ring-4 ring-[#2D3748]">
+                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-orange-500 ring-4 ring-surface-100 dark:ring-surface-800">
                         <i class="bi bi-person-check-fill"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-white">Aplicante foi revisto</p>
-                        <p class="text-sm text-gray-400">Revisto pelo: <span class="font-medium text-gray-300">
+                        <p class="font-semibold text-color">Aplicante foi revisto</p>
+                        <p class="text-sm text-muted-color">Revisto pelo: <span class="font-medium text-color">
                                 {{item.alteradoPor}}
                             </span></p>
-                        <p class="text-xs text-gray-500 mt-1">
+                        <p class="text-xs text-muted-color mt-1">
                             {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                         </p>
                     </div>
                     }
                     @case ('REJEITADO') {
                     <div
-                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-red-500 ring-4 ring-[#2D3748]">
+                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-red-500 ring-4 ring-surface-100 dark:ring-surface-800">
                         <i class="bi bi-ban"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-white">Aplicante foi Rejeitado</p>
-                        <p class="text-sm text-gray-400">Alterado pelo: <span class="font-medium text-gray-300">
+                        <p class="font-semibold text-color">Aplicante foi Rejeitado</p>
+                        <p class="text-sm text-muted-color">Alterado pelo: <span class="font-medium text-color">
                                 {{item.alteradoPor}}
                             </span></p>
                         @if (item.descricao) {
-                        <p class="text-sm text-gray-400 mt-1">Motivo: <span class="font-medium text-gray-300">
+                        <p class="text-sm text-muted-color mt-1">Motivo: <span class="font-medium text-color">
                                 {{item.descricao}}
                             </span></p>
                         }
-                        <p class="text-xs text-gray-500 mt-1">
+                        <p class="text-xs text-muted-color mt-1">
                             {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                         </p>
                     </div>
                     }
                     @case ('DEVOLVIDO') {
                     <div
-                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-amber-500 ring-4 ring-[#2D3748]">
+                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-amber-500 ring-4 ring-surface-100 dark:ring-surface-800">
                         <i class="bi bi-arrow-counterclockwise"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-white">Aplicante Devolvido para Correção</p>
-                        <p class="text-sm text-gray-400">Devolvido pelo: <span class="font-medium text-gray-300">
+                        <p class="font-semibold text-color">Aplicante Devolvido para Correção</p>
+                        <p class="text-sm text-muted-color">Devolvido pelo: <span class="font-medium text-color">
                                 {{item.alteradoPor}}
                             </span></p>
                         @if (item.descricao) {
-                        <p class="text-sm text-gray-400 mt-1">Motivo: <span class="font-medium text-gray-300">
+                        <p class="text-sm text-muted-color mt-1">Motivo: <span class="font-medium text-color">
                                 {{item.descricao}}
                             </span></p>
                         }
-                        <p class="text-xs text-gray-500 mt-1">
+                        <p class="text-xs text-muted-color mt-1">
                             {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                         </p>
                     </div>
                     }
                     @case ('SUSPENDE') {
                     <div
-                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-amber-600 ring-4 ring-[#2D3748]">
+                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-amber-600 ring-4 ring-surface-100 dark:ring-surface-800">
                         <i class="bi bi-pause-circle"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-white">Aplicante Suspenso</p>
-                        <p class="text-sm text-gray-400">Suspenso após a vistoria pelo: <span
-                                class="font-medium text-gray-300">
+                        <p class="font-semibold text-color">Aplicante Suspenso</p>
+                        <p class="text-sm text-muted-color">Suspenso após a vistoria pelo: <span
+                                class="font-medium text-color">
                                 {{item.alteradoPor}}
                             </span></p>
                         @if (item.descricao) {
-                        <p class="text-sm text-gray-400 mt-1">Motivo: <span class="font-medium text-gray-300">
+                        <p class="text-sm text-muted-color mt-1">Motivo: <span class="font-medium text-color">
                                 {{item.descricao}}
                             </span></p>
                         }
-                        <p class="text-xs text-gray-500 mt-1">
+                        <p class="text-xs text-muted-color mt-1">
                             {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                         </p>
                     </div>
@@ -698,20 +698,20 @@
                     @default {
                     <!-- Any status without a dedicated case still shows on the timeline instead of a blank gap. -->
                     <div
-                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-gray-500 ring-4 ring-[#2D3748]">
+                        class="absolute -left-10 top-0 flex items-center justify-center h-8 w-8 rounded-full bg-surface-400 dark:bg-surface-500 ring-4 ring-surface-100 dark:ring-surface-800">
                         <i class="bi bi-record-circle"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-white">{{item.status | titlecase}}</p>
-                        <p class="text-sm text-gray-400">Alterado pelo: <span class="font-medium text-gray-300">
+                        <p class="font-semibold text-color">{{item.status | titlecase}}</p>
+                        <p class="text-sm text-muted-color">Alterado pelo: <span class="font-medium text-color">
                                 {{item.alteradoPor}}
                             </span></p>
                         @if (item.descricao) {
-                        <p class="text-sm text-gray-400 mt-1">Motivo: <span class="font-medium text-gray-300">
+                        <p class="text-sm text-muted-color mt-1">Motivo: <span class="font-medium text-color">
                                 {{item.descricao}}
                             </span></p>
                         }
-                        <p class="text-xs text-gray-500 mt-1">
+                        <p class="text-xs text-muted-color mt-1">
                             {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                         </p>
                     </div>

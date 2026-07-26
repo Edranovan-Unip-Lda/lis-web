@@ -61,10 +61,37 @@ npm run format       # prettier
   Portuguese-only and mirroring the official MCI PDF form.
 - Domain terms **Portuguese**, code/comments **English**. `develop` → `main`; commit only when asked.
 
+## Styling & dark mode
+Dark mode is **class-based**: `LayoutService.toggleDarkMode()` puts `.app-dark` on `<html>`, and PrimeNG is
+pointed at it via `darkModeSelector: '.app-dark'` (`app.config.ts`). It defaults to **on** (`darkTheme: true`).
+
+- **Never delete `@custom-variant dark` from `src/tailwind.css`.** Tailwind v4 has no `darkMode` config option;
+  without that line every `dark:` utility silently compiles to `@media (prefers-color-scheme: dark)` and follows
+  the OS instead of the toggle — the app goes dark while the text stays dark. This exact regression happened in
+  the v3 → v4 migration. It must stay in sync with `darkModeSelector`.
+- **Text colours: use the PrimeNG semantic utilities** (from `tailwindcss-primeui`, resolving `--p-*` tokens that
+  PrimeNG itself rewrites under `.app-dark`, so they work whatever Tailwind is doing):
+  - body / headings / labels → `text-color`
+  - secondary, helper, muted text → `text-muted-color`
+  - also available: `text-color-emphasis`, `text-muted-color-emphasis`, `bg-emphasis`, `bg-highlight`,
+    `border-surface`, `rounded-border`
+- Use `text-surface-N dark:text-surface-M` pairs only when a specific shade matters (see `search.component.html`,
+  `app.topbar.html`, `app.breadcrumb.ts`).
+- **Never bare `text-gray-*` / `text-white` / `text-black`.** The two exceptions: print/PDF templates (the
+  certificate documents, `#resumoPrint`) which are deliberately light-on-white, and text on a fixed-colour chip
+  or the branded topbar.
+- **Known debt:** several pages (`summary`, `inicio`, `empresa-detail`, `empresa-form`, `register`, the
+  atividade/cadastro details) were authored dark-first with a hardcoded palette (`text-gray-100`, `bg-gray-800`,
+  `bg-[#26262B]`) and are **broken in light mode**. Convert to the utilities above when you touch them.
+- **Highcharts is not theme-aware** — the dashboard charts hardcode `#e5e7eb` / `#9ca3af` and none re-render on
+  theme change. New charts should read tokens via `getComputedStyle(document.documentElement)`.
+
 ## Adding a feature — checklist
 1. New protected route → add `canActivate`/guards + `data.role`.
 2. New API call → go through a `core/services/*` service using `environment.apiUrl`; the interceptor handles
    credentials + CSRF.
 3. Reading `_embedded` HAL data → use `?._embedded?.x ?? []`.
 4. New subscription → `takeUntilDestroyed` + an error callback.
-5. Verify: `npm run build` must succeed (it type-checks the whole app).
+5. New markup → `text-color` / `text-muted-color`, never bare `text-gray-*` (see **Styling & dark mode**);
+   check it in both themes with the topbar moon/sun toggle.
+6. Verify: `npm run build` must succeed (it type-checks the whole app).

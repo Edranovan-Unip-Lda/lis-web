@@ -1,2 +1,8 @@
 @import "tailwindcss";
 @plugin "tailwindcss-primeui";
+
+/* Tailwind v4 replacement for the v3 `darkMode: ['selector', '[class*="app-dark"]']` config that was lost
+   in the v4 migration. Must stay in sync with `darkModeSelector` in app.config.ts — without it every `dark:`
+   utility silently compiles to `@media (prefers-color-scheme: dark)` and follows the OS instead of the
+   in-app toggle (LayoutService.toggleDarkMode puts `.app-dark` on <html>). */
+@custom-variant dark (&:where(.app-dark, .app-dark *));

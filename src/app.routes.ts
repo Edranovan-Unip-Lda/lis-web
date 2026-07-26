@@ -115,10 +115,6 @@ export const appRoutes: Routes = [
         loadChildren: () => import('@/pages/auth/auth.routes')
     },
     {
-        path: 'landing',
-        loadComponent: () => import('@/pages/landing/landing').then((c) => c.Landing)
-    },
-    {
         path: 'notfound',
         loadComponent: () => import('@/pages/notfound/notfound').then((c) => c.Notfound)
     },
