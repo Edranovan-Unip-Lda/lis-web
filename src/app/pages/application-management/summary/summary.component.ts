@@ -31,6 +31,8 @@ export class SummaryComponent {
   user!: User;
   form!: FormGroup;
   descricao: FormControl = new FormControl('', [Validators.required, Validators.minLength(2)]);
+  motivoDevolucao: FormControl = new FormControl('', [Validators.required, Validators.minLength(2)]);
+  motivoReabrir: FormControl = new FormControl('');
   pedidoVistoria!: PedidoVistoria | undefined;
   autoVistoria!: AutoVistoria | undefined;
   userList: User[] = [];
@@ -268,6 +270,76 @@ export class SummaryComponent {
           },
           error: () => {
             this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao rejeitar o aplicante', life: 3000, key: 'tr' });
+          }
+        });
+      },
+    });
+  }
+
+  // Devolver para correção: available to the assigned staff / chief / manager while the application is submitted,
+  // assigned, under review, or suspended. Opens the client's edit window (enforced server-side).
+  showDevolverAction(aplicante: Aplicante): boolean {
+    const estado = aplicante?.estado;
+    const role = this.user?.role.name;
+    const returnable =
+      estado === AplicanteStatus.submetido ||
+      estado === AplicanteStatus.atribuido ||
+      estado === AplicanteStatus.revisao ||
+      estado === AplicanteStatus.suspende;
+    return returnable && (role === Role.chief || role === Role.staff || role === Role.manager);
+  }
+
+  devolver(event: any) {
+    this.confirmationService.confirm({
+      key: 'devolver',
+      target: event.currentTarget as EventTarget,
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        const formData = {
+          id: null,
+          status: AplicanteStatus.devolvido,
+          descricao: this.motivoDevolucao.value,
+          alteradoPor: this.user.username,
+        }
+        this.userService.devolverAplicante(this.user.username, this.aplicanteData.id, formData).subscribe({
+          next: response => {
+            this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Aplicante devolvido para correção', life: 3000, key: 'tr' });
+            this.aplicanteData = response;
+            this.route.navigate(['gestor/application', this.aplicanteData.id],
+              { queryParams: { categoria: this.aplicanteData.categoria, tipo: this.aplicanteData.tipo } });
+          },
+          error: () => {
+            this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao devolver o aplicante', life: 3000, key: 'tr' });
+          }
+        });
+      },
+    });
+  }
+
+  // Reabrir vistoria: only a suspended application whose inspection is finalized, for staff/chief.
+  showReabrirAction(aplicante: Aplicante): boolean {
+    const estado = aplicante?.estado;
+    const role = this.user?.role.name;
+    return estado === AplicanteStatus.suspende
+      && !!this.pedidoVistoria && !!this.autoVistoria
+      && (role === Role.staff || role === Role.chief);
+  }
+
+  reabrirVistoria(event: any) {
+    if (!this.pedidoVistoria || !this.autoVistoria) return;
+    this.confirmationService.confirm({
+      key: 'reabrir',
+      target: event.currentTarget as EventTarget,
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.pedidoService.reopenAutoVistoria(this.pedidoVistoria!.id, this.autoVistoria!.id, this.motivoReabrir.value).subscribe({
+          next: () => {
+            this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Vistoria reaberta com sucesso', life: 3000, key: 'tr' });
+            this.route.navigate(['gestor/application', this.aplicanteData.id],
+              { queryParams: { categoria: this.aplicanteData.categoria, tipo: this.aplicanteData.tipo } });
+          },
+          error: () => {
+            this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao reabrir a vistoria', life: 3000, key: 'tr' });
           }
         });
       },

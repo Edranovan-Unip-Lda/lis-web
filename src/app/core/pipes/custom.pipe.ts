@@ -16,6 +16,8 @@ export class StatusIconPipe implements PipeTransform {
         REJEITADO: 'bi bi-fw bi-ban',
         REVISAO: 'bi bi-fw bi-chat-text',
         APROVADO: 'bi bi-fw bi-check2-circle',
+        DEVOLVIDO: 'bi bi-fw bi-arrow-counterclockwise',
+        SUSPENDE: 'bi bi-fw bi-pause-circle',
     };
 
     transform(status: string): string {
@@ -47,6 +49,8 @@ export class StatusSeverityPipe implements PipeTransform {
         REJEITADO: 'danger',
         REVISAO: 'warn',
         APROVADO: 'success',
+        DEVOLVIDO: 'warn',
+        SUSPENDE: 'warn',
         SUCCESS: 'success',
         FAILURE: 'danger',
     };

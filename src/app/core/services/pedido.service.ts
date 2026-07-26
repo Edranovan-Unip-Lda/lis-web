@@ -85,4 +85,11 @@ export class PedidoService {
         return this.http.put<any>(`${this.apiUrl}-vistoria/${pedidoVistoriaId}/auto-vistorias/${autoVistoriaId}`, formData, { params });
     }
 
+    // Reopen a finalized inspection on a SUSPENDE application so a re-inspection can be performed.
+    reopenAutoVistoria(pedidoVistoriaId: number, autoVistoriaId: number, motivo?: string): Observable<any> {
+        let params = new HttpParams();
+        if (motivo) params = params.set('motivo', motivo);
+        return this.http.post<any>(`${this.apiUrl}-vistoria/${pedidoVistoriaId}/auto-vistorias/${autoVistoriaId}/reabrir`, {}, { params });
+    }
+
 }

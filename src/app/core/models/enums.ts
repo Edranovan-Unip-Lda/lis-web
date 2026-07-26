@@ -26,7 +26,8 @@ export enum AplicanteStatus {
     revisao = 'REVISAO',
     revisto = 'REVISTO',
     suspende = 'SUSPENDE',
-    expirado = 'EXPIRADO'
+    expirado = 'EXPIRADO',
+    devolvido = 'DEVOLVIDO'
 }
 
 export enum PedidoStatus {

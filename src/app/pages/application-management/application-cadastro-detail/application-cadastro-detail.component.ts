@@ -78,6 +78,7 @@ export class ApplicationCadastroDetailComponent {
   pedidoActive = false;
   faturaActive = false;
   motivoRejeicao: any;
+  motivoDevolucao: string | null | undefined;
   showGpsCoordinates = false;
 
   // Exposed for the template (Rascunho tag / Fatura-step gating).
@@ -112,6 +113,7 @@ export class ApplicationCadastroDetailComponent {
     this.categoria = this.aplicanteData.categoria;
     this.aplicanteEstado = this.aplicanteData.estado;
     this.motivoRejeicao = this.getRejectedReason(this.aplicanteData.historicoStatus);
+    this.motivoDevolucao = this.getLatestReasonForStatus(this.aplicanteData.historicoStatus, AplicanteStatus.devolvido);
 
     this.disabledForms(this.aplicanteData.estado);
 
@@ -733,6 +735,14 @@ export class ApplicationCadastroDetailComponent {
     } else {
       return;
     }
+  }
+
+  private getLatestReasonForStatus(historico: HistoricoEstadoAplicante[], status: AplicanteStatus): string | null | undefined {
+    if (!historico || !historico.length) return null;
+    return historico
+      .filter(h => h.status === status)
+      .reduce<HistoricoEstadoAplicante | null>((max, curr) =>
+        !max || new Date(curr.createdAt) > new Date(max.createdAt) ? curr : max, null)?.descricao;
   }
 
   private initForm(): void {
