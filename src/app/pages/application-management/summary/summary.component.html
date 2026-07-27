@@ -535,6 +535,45 @@
         </div>
         }
     </div>
+    <!-- Admin-only: correct a wrong attachment at any application status. Form snapshots and recibos are
+         excluded (the backend refuses them) — recibos are managed from the fatura above. -->
+    @if (isAdmin && adminDocs.length > 0) {
+    <div class="bg-surface-100 dark:bg-surface-800 p-6 rounded-lg mb-8">
+        <div class="flex items-center mb-6">
+            <i class="bi bi-folder2-open text-emerald-600 dark:text-emerald-400 text-2xl mr-3"></i>
+            <h2 class="text-xl font-semibold text-color">Documentos Carregados</h2>
+        </div>
+        <div class="space-y-3">
+            @for (row of adminDocs; track row.doc.id) {
+            <div
+                class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-surface-0 dark:bg-surface-700 rounded-lg">
+                <div class="min-w-0">
+                    <p class="font-semibold text-color truncate">{{ row.doc.nome }}</p>
+                    <p class="text-sm text-muted-color">
+                        {{ row.origem }}
+                        @if (row.doc.coluna) { · {{ row.doc.coluna }} }
+                        · {{ fileSize(row.doc.tamanho) }}
+                        @if (row.doc.updatedAt) { · {{ row.doc.updatedAt | date:'dd/MM/yyyy HH:mm' }} }
+                    </p>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                    <p-button (click)="downloadDoc(row)" [loading]="downloadingDocs.has(row.doc.id)"
+                        icon="pi pi-download" severity="success" [rounded]="true" [text]="true"
+                        pTooltip="Descarregar" tooltipPosition="top" />
+                    <p-fileupload #uploader mode="basic" [customUpload]="true" [auto]="true" [multiple]="false"
+                        [accept]="acceptedDocTypes" [maxFileSize]="30000000" chooseIcon="pi pi-refresh"
+                        chooseLabel="Substituir" chooseStyleClass="p-button-outlined p-button-warn"
+                        (uploadHandler)="replaceDoc(row, $event, uploader)"
+                        pTooltip="Substituir ficheiro" tooltipPosition="top" />
+                    @if (replacingDocs.has(row.doc.id)) {
+                    <i class="pi pi-spin pi-spinner text-muted-color"></i>
+                    }
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+    }
     <div class="bg-surface-100 dark:bg-surface-800 p-6 rounded-lg mb-8">
         <h2 class="text-xl font-semibold text-color mb-6">Histórico do Aplicante</h2>
         <div class="relative pl-8">
