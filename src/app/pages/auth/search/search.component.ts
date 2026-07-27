@@ -6,7 +6,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { QRCodeComponent } from 'angularx-qrcode';
-import html2canvas from 'html2canvas-pro';
 import { RecaptchaV3Module, ReCaptchaV3Service } from 'ng-recaptcha-2';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
@@ -46,7 +45,7 @@ export class SearchComponent implements OnDestroy {
 
   // NEW: rasterized certificate (data URL) shown via <p-image>, and a flag so we can render
   // the "invalid" card only after the user has actually searched.
-  certificadoImage = signal<string | null>(null);
+  // certificadoImage = signal<string | null>(null);
   searched = signal(false);
 
   constructor(
@@ -96,7 +95,6 @@ export class SearchComponent implements OnDestroy {
 
   private getData(numero: string) {
     this.searched.set(true);
-    this.certificadoImage.set(null); // reset previous capture
 
     if (numero.match(this.numeroRegex)) {
       this.recaptchaV3Service.execute(RecaptchaAction.certificadoSearch).subscribe(token => {
@@ -117,7 +115,6 @@ export class SearchComponent implements OnDestroy {
               this.certificadoData.updatedAt.setDate(0);
             }
             this.dataValido = this.certificadoData.updatedAt;
-            this.loadImage(this.certificadoData.assinatura.id);
             this.loading = false;
           },
           error: (error) => {
@@ -148,32 +145,6 @@ export class SearchComponent implements OnDestroy {
       case Categoria.industrial: return this.industrialCSS;
       default: return this.comercialCSS;
     }
-  }
-
-  loadImage(id: number) {
-    this.documentoService.downloadSignatureById(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(blob => { // #8: public signature endpoint
-      if (this.imageUrl) {
-        URL.revokeObjectURL(this.imageUrl);
-      }
-
-      this.imageUrl = URL.createObjectURL(blob);
-
-      // Rasterize the off-screen certificate once the signature is in the DOM.
-      // A short delay lets Angular render the signature <img> + background images first.
-      setTimeout(() => this.captureCertificado(), 600);
-    });
-  }
-
-  // Reuses the codebase's certificate-PDF pattern: html2canvas-pro handles Tailwind v4 oklch
-  // colors, and #myDiv is the same A4 markup used by the PDF export components.
-  private captureCertificado() {
-    const el = document.getElementById('myDiv');
-    if (!el) {
-      return;
-    }
-    html2canvas(el, { scale: 2, useCORS: true, backgroundColor: '#ffffff' })
-      .then(canvas => this.certificadoImage.set(canvas.toDataURL('image/jpeg', 0.92)))
-      .catch(err => console.error('Falha ao gerar a imagem da licença:', err));
   }
 
   // ---- Unified accessors so the status card works for both certificate types ----
