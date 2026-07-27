@@ -21,8 +21,10 @@ export class AuthenticationService {
     return this.http.post<User>(`${this.apiUrl}/authenticate`, form);
   }
 
-  validateOTP(username: string, otp: string): Observable<any> {
-    return this.http.post<User>(`${this.apiUrl}/otp/${otp}`, { username })
+  // loginToken: the single-use transaction token issued by /authenticate — the backend rejects OTP
+  // validation/resend without it, so a third party can't burn a victim's OTP attempts.
+  validateOTP(username: string, otp: string, loginToken: string): Observable<any> {
+    return this.http.post<User>(`${this.apiUrl}/otp/${otp}`, { username, loginToken })
       .pipe(
         map(response => {
           this.setSession(response);
@@ -31,8 +33,8 @@ export class AuthenticationService {
       );
   }
 
-  regenerateOTP(username: string): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}/otp/${username}`, { username });
+  regenerateOTP(username: string, loginToken: string): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/otp/${username}`, { username, loginToken });
   }
 
   sendForgotPasswordEmail(email: string, recaptchaToken: string): Observable<any> {
