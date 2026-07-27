@@ -11,6 +11,8 @@ export interface User {
     password: string;
     role: Role;
     jwtSession: string;
+    // Opaque single-use token from /users/authenticate; required by the OTP validate/resend endpoints.
+    loginToken: string;
     status: string;
     oneTimePassword: string;
     updatedAt: Date;

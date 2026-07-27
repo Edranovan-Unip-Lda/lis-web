@@ -1,0 +1,126 @@
+// Validation animation for the six OTP boxes: on submit they fly to the horizontal centre while a spinner
+// takes their place, then the spinner resolves to a check or a cross. Everything is driven by the single
+// [data-state] attribute the component binds, so the TypeScript only sequences states.
+//
+// Geometry: PrimeNG gives .p-inputotp a 0.5rem gap and each .p-inputotp-input a 2.5rem width, so the pitch
+// between box centres is 3rem and the group centre sits at index 3.5 (1-based).
+$otp-box-pitch: 3rem;
+$otp-circle-size: 2.5rem;
+
+:host ::ng-deep .otp-anim {
+    .p-inputotp-input {
+        transition:
+            transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+            opacity 0.3s ease;
+    }
+
+    @for $i from 1 through 6 {
+        .p-inputotp-input:nth-child(#{$i}) {
+            transition-delay: #{($i - 1) * 40}ms;
+        }
+    }
+
+    &[data-state='loading'],
+    &[data-state='success'],
+    &[data-state='error'] {
+        .p-inputotp-input {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @for $i from 1 through 6 {
+            .p-inputotp-input:nth-child(#{$i}) {
+                transform: translateX(#{(3.5 - $i) * $otp-box-pitch}) scale(0.35);
+            }
+        }
+    }
+
+    .otp-result {
+        position: absolute;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+    }
+
+    &[data-state='loading'] .otp-result,
+    &[data-state='success'] .otp-result,
+    &[data-state='error'] .otp-result {
+        display: flex;
+    }
+
+    .otp-circle {
+        width: $otp-circle-size;
+        height: $otp-circle-size;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        color: #fff;
+    }
+
+    &[data-state='loading'] .otp-circle {
+        border: 3px solid var(--p-content-border-color);
+        border-top-color: var(--p-primary-color);
+        animation: otp-spin 0.7s linear infinite;
+    }
+
+    &[data-state='success'] .otp-circle {
+        background: var(--p-green-500);
+        animation: otp-pop 0.3s ease-out;
+    }
+
+    &[data-state='error'] .otp-circle {
+        background: var(--p-red-500);
+        animation:
+            otp-pop 0.3s ease-out,
+            otp-shake 0.4s 0.25s ease-in-out;
+    }
+}
+
+@keyframes otp-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes otp-pop {
+    0% {
+        transform: scale(0.5);
+    }
+    60% {
+        transform: scale(1.15);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes otp-shake {
+    25% {
+        transform: translateX(-6px);
+    }
+    50% {
+        transform: translateX(6px);
+    }
+    75% {
+        transform: translateX(-4px);
+    }
+}
+
+// Respect a reduced-motion preference: states still change, they just snap instead of flying.
+@media (prefers-reduced-motion: reduce) {
+    :host ::ng-deep .otp-anim {
+        .p-inputotp-input,
+        .otp-circle {
+            transition: none;
+            animation-duration: 0.01ms;
+        }
+
+        &[data-state='loading'] .otp-circle {
+            animation: otp-spin 0.7s linear infinite;
+        }
+    }
+}

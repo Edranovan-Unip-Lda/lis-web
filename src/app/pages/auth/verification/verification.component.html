@@ -19,27 +19,49 @@
                       {{ maskEmail(email) }}
                   </span>
               </div>
-              <div class="mb-6">
-                  @if (erroMessage) {
-                  <p-message severity="error" [text]="erroMessage" icon="pi pi-times-circle" closable>
-                  </p-message>
-                  }
+              @if (!isTerminal()) {
+              <div class="flex items-center gap-2 mt-2 mb-6 text-muted-color text-sm">
+                  <i class="pi pi-clock"></i>
+                  <span>O código expira em
+                      <span class="font-bold" [class.text-red-500]="timeLeft() < 60000">{{ timeDisplay() }}</span>
+                  </span>
               </div>
-              <div class="flex justify-between w-full items-center gap-4">
+              } @else {
+              <div class="mb-6"></div>
+              }
+              @if (!isTerminal()) {
+              <div class="otp-anim relative flex justify-center w-full" [attr.data-state]="animState()">
                   <p-inputOtp [formControl]="otpInput" [length]="6" [variant]="'filled'" [autofocus]="true"
                       [integerOnly]="true">
                   </p-inputOtp>
+                  <div class="otp-result" aria-live="polite">
+                      <span class="otp-circle">
+                          <i class="pi" [class.pi-check]="animState() === 'success'"
+                              [class.pi-times]="animState() === 'error'"></i>
+                      </span>
+                  </div>
               </div>
+              }
+              @if (feedbackMessage()) {
+              <p-message class="mt-4 block" [severity]="animState() === 'success' ? 'success' : 'error'"
+                  [text]="feedbackMessage()!">
+              </p-message>
+              }
           </div>
           <div class="mt-6 text-left" style="max-width: 320px; min-width: 270px">
               <div class="flex items-center justify-center gap-4">
+                  @if (isTerminal()) {
+                  <p-button label="Iniciar sessão novamente" icon="pi pi-sign-in" fluid
+                      [routerLink]="['/auth/login']" pRipple>
+                  </p-button>
+                  } @else {
                   <p-button icon="pi pi-times" [routerLink]="['/']" severity="danger" label="Cancelar" outlined>
                   </p-button>
-                  <p-button label="Validar" icon="pi pi-check-circle" fluid [loading]="otpLoading"
-                      (click)="validateOTP(otpInput)" [disabled]="!otpInput.valid" pRipple>
+                  <p-button label="Validar" icon="pi pi-check-circle" fluid [loading]="animState() === 'loading'"
+                      (click)="validateOTP(otpInput)" [disabled]="!otpInput.valid || animState() !== 'idle'" pRipple>
                   </p-button>
+                  }
               </div>
           </div>
       </div>
   </div>
-  <p-toast position="bottom-right" />

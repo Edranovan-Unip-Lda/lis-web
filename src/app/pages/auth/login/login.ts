@@ -61,7 +61,9 @@ export class Login {
                 this.router.navigate(['/auth/verification'],
                     {
                         queryParams: { u: response.username },
-                        state: { email: response.email }
+                        // loginToken rides in navigation state (never a query param — it must not hit
+                        // the URL bar, history, or server logs); a hard refresh loses it → back to login.
+                        state: { email: response.email, loginToken: response.loginToken }
                     }).then();
             },
             error: err => {

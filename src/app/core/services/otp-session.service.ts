@@ -1,5 +1,11 @@
 import { Injectable } from '@angular/core';
 
+/**
+ * How long an OTP stays valid. Must match the backend `otp.expiration-minutes`
+ * (lis-api application.yaml / OneTimePasswordService) — the TTL is not published to the client.
+ */
+export const OTP_SESSION_DURATION_MS = 8 * 60 * 1000;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -12,14 +18,14 @@ export class OtpSessionService {
   private expirationKey = 'otpSessionExpiration';
 
   /**
-   * Creates an OTP session that lasts 3 minutes.
+   * Creates an OTP session lasting OTP_SESSION_DURATION_MS.
    * @returns The generated session token.
    */
   createSession(username: string): string {
     // #29: this is a UX-only gate — the real protection is the server-side OTP check. Use an opaque random
     // token rather than the username, which was trivially forgeable (anyone could set otpSessionToken = username).
     const token = this.generateRandomToken();
-    const expiration = Date.now() + 3 * 60 * 1000; // 3 minutes in milliseconds
+    const expiration = Date.now() + OTP_SESSION_DURATION_MS;
 
     this.storage.setItem(this.tokenKey, token);
     this.storage.setItem(this.expirationKey, expiration.toString());
