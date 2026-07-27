@@ -444,6 +444,7 @@ export interface ReceitaEmpresa {
     empresaId: number;
     nome: string;
     nif: string;
+    sociedadeComercial: string | null;
     comercialCadastro: number;
     comercialAtividade: number;
     industrialCadastro: number;

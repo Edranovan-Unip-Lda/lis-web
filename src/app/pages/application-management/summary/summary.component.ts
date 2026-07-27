@@ -1,7 +1,7 @@
-import { Aplicante, AutoVistoria, PedidoVistoria, User } from '@/core/models/entities.model';
+import { Aplicante, AutoVistoria, Documento, PedidoVistoria, User } from '@/core/models/entities.model';
 import { AplicanteStatus, AplicanteType, Role } from '@/core/models/enums';
 import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
-import { AuthenticationService, UserService } from '@/core/services';
+import { AuthenticationService, DocumentosService, UserService } from '@/core/services';
 import { PedidoService } from '@/core/services/pedido.service';
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
@@ -10,6 +10,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
+import { FileUpload } from 'primeng/fileupload';
 import { Select } from 'primeng/select';
 import { Tag } from 'primeng/tag';
 import { Textarea } from 'primeng/textarea';
@@ -17,9 +18,18 @@ import { Toast } from 'primeng/toast';
 import { Tooltip } from 'primeng/tooltip';
 import { environment } from 'src/environments/environment';
 
+/**
+ * A replaceable attachment plus where it hangs, so one list can show the pedido's and the vistoria's.
+ * `doc` is the live object from the aplicante graph (never a copy), so a replace patches both at once.
+ */
+interface AdminDoc {
+  doc: Documento;
+  origem: string;
+}
+
 @Component({
   selector: 'app-summary',
-  imports: [Tag, StatusSeverityPipe, DatePipe, Button, RouterLink, Toast, ConfirmDialog, Textarea, Textarea, ReactiveFormsModule, TitleCasePipe, Select, Tooltip],
+  imports: [Tag, StatusSeverityPipe, DatePipe, Button, RouterLink, Toast, ConfirmDialog, Textarea, Textarea, ReactiveFormsModule, TitleCasePipe, Select, Tooltip, FileUpload],
   templateUrl: './summary.component.html',
   styleUrl: './summary.component.scss',
   providers: [MessageService, ConfirmationService, Textarea]
@@ -31,12 +41,21 @@ export class SummaryComponent {
   user!: User;
   form!: FormGroup;
   descricao: FormControl = new FormControl('', [Validators.required, Validators.minLength(2)]);
+  motivoDevolucao: FormControl = new FormControl('', [Validators.required, Validators.minLength(2)]);
+  motivoReabrir: FormControl = new FormControl('');
   pedidoVistoria!: PedidoVistoria | undefined;
   autoVistoria!: AutoVistoria | undefined;
   userList: User[] = [];
   selectedFuncionario = new FormControl(null, [Validators.required]);
   notes = new FormControl(null, [Validators.required]);
 
+  // Admin-only document management (see buildAdminDocs). Replace only — an attachment is never dropped from
+  // here: the aplicante is already in progress, so an empty slot would just break the form it belongs to.
+  isAdmin = false;
+  adminDocs: AdminDoc[] = [];
+  acceptedDocTypes = '.pdf,.png,.jpg,.jpeg,.gif,.webp,.doc,.docx,.xls,.xlsx';
+  downloadingDocs = new Set<number>();
+  replacingDocs = new Set<number>();
 
   constructor(
     private router: ActivatedRoute,
@@ -45,6 +64,7 @@ export class SummaryComponent {
     private confirmationService: ConfirmationService,
     private userService: UserService,
     private authService: AuthenticationService,
+    private documentoService: DocumentosService,
     private _fb: FormBuilder,
     private route: Router
   ) { }
@@ -63,6 +83,11 @@ export class SummaryComponent {
     });
 
     this.checkedForms(this.aplicanteData);
+
+    this.isAdmin = this.user?.role.name === Role.admin;
+    if (this.isAdmin) {
+      this.buildAdminDocs(this.aplicanteData);
+    }
   }
 
   atribuir(): void {
@@ -274,6 +299,76 @@ export class SummaryComponent {
     });
   }
 
+  // Devolver para correção: available to the assigned staff / chief / manager while the application is submitted,
+  // assigned, under review, or suspended. Opens the client's edit window (enforced server-side).
+  showDevolverAction(aplicante: Aplicante): boolean {
+    const estado = aplicante?.estado;
+    const role = this.user?.role.name;
+    const returnable =
+      estado === AplicanteStatus.submetido ||
+      estado === AplicanteStatus.atribuido ||
+      estado === AplicanteStatus.revisao ||
+      estado === AplicanteStatus.suspende;
+    return returnable && (role === Role.chief || role === Role.staff || role === Role.manager);
+  }
+
+  devolver(event: any) {
+    this.confirmationService.confirm({
+      key: 'devolver',
+      target: event.currentTarget as EventTarget,
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        const formData = {
+          id: null,
+          status: AplicanteStatus.devolvido,
+          descricao: this.motivoDevolucao.value,
+          alteradoPor: this.user.username,
+        }
+        this.userService.devolverAplicante(this.user.username, this.aplicanteData.id, formData).subscribe({
+          next: response => {
+            this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Aplicante devolvido para correção', life: 3000, key: 'tr' });
+            this.aplicanteData = response;
+            this.route.navigate(['gestor/application', this.aplicanteData.id],
+              { queryParams: { categoria: this.aplicanteData.categoria, tipo: this.aplicanteData.tipo } });
+          },
+          error: () => {
+            this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao devolver o aplicante', life: 3000, key: 'tr' });
+          }
+        });
+      },
+    });
+  }
+
+  // Reabrir vistoria: only a suspended application whose inspection is finalized, for staff/chief.
+  showReabrirAction(aplicante: Aplicante): boolean {
+    const estado = aplicante?.estado;
+    const role = this.user?.role.name;
+    return estado === AplicanteStatus.suspende
+      && !!this.pedidoVistoria && !!this.autoVistoria
+      && (role === Role.staff || role === Role.chief);
+  }
+
+  reabrirVistoria(event: any) {
+    if (!this.pedidoVistoria || !this.autoVistoria) return;
+    this.confirmationService.confirm({
+      key: 'reabrir',
+      target: event.currentTarget as EventTarget,
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.pedidoService.reopenAutoVistoria(this.pedidoVistoria!.id, this.autoVistoria!.id, this.motivoReabrir.value).subscribe({
+          next: () => {
+            this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Vistoria reaberta com sucesso', life: 3000, key: 'tr' });
+            this.route.navigate(['gestor/application', this.aplicanteData.id],
+              { queryParams: { categoria: this.aplicanteData.categoria, tipo: this.aplicanteData.tipo } });
+          },
+          error: () => {
+            this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao reabrir a vistoria', life: 3000, key: 'tr' });
+          }
+        });
+      },
+    });
+  }
+
   downloadFile(aplicanteId: number, pedidoId: number, faturaId: number, reciboId: number) {
     this.downloadLoading = true;
     this.pedidoService.downloadRecibo(aplicanteId, pedidoId, faturaId, reciboId).subscribe({
@@ -353,4 +448,72 @@ export class SummaryComponent {
       }
     }
   }
+
+  /**
+   * Collects every file a user attached to this application — the pedido's own documents plus those of every
+   * auto de vistoria. Deliberately walks all listaPedidoVistoria entries instead of reusing checkedForms(),
+   * which only resolves an auto vistoria once its invoice has a recibo.
+   *
+   * Frozen form PDFs (coluna FORM_SNAPSHOT) are the audit copies and are never listed: the backend refuses to
+   * delete or replace them.
+   */
+  private buildAdminDocs(aplicante: Aplicante): void {
+    const rows: AdminDoc[] = [];
+
+    const collect = (source: Documento[] | undefined, origem: string) =>
+      (source ?? [])
+        .filter(doc => doc.coluna !== 'FORM_SNAPSHOT')
+        .forEach(doc => rows.push({ doc, origem }));
+
+    collect(aplicante.pedidoInscricaoCadastro?.documentos, 'Pedido de Inscrição');
+    collect(aplicante.pedidoLicencaAtividade?.documentos, 'Pedido de Licença');
+    (aplicante.pedidoLicencaAtividade?.listaPedidoVistoria ?? [])
+      .forEach(pv => collect(pv.autoVistoria?.documentos, 'Auto de Vistoria'));
+
+    this.adminDocs = rows;
+  }
+
+  fileSize(bytes: number): string {
+    if (!bytes) return '—';
+    return bytes < 1024 * 1024
+      ? `${Math.round(bytes / 1024)} KB`
+      : `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  }
+
+  downloadDoc(row: AdminDoc): void {
+    this.downloadingDocs.add(row.doc.id);
+    this.documentoService.downloadById(row.doc.id).subscribe({
+      next: blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = row.doc.nome;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: () => this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha no download do arquivo!' }),
+      complete: () => this.downloadingDocs.delete(row.doc.id)
+    });
+  }
+
+  /**
+   * The row keeps its id and its `coluna` slot server-side, so patching the live Documento in place is enough —
+   * the form that reads that slot now points at the new file.
+   */
+  replaceDoc(row: AdminDoc, event: { files: File[] }, uploader?: FileUpload): void {
+    const file = event.files?.[0];
+    uploader?.clear();
+    if (!file) return;
+
+    this.replacingDocs.add(row.doc.id);
+    this.documentoService.replaceById(row.doc.id, file).subscribe({
+      next: updated => {
+        Object.assign(row.doc, updated);
+        this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Documento substituído com sucesso' });
+      },
+      error: err => this.messageService.add({ severity: 'error', summary: 'Erro', detail: err || 'Ocorreu um erro ao substituir o documento' }),
+      complete: () => this.replacingDocs.delete(row.doc.id)
+    });
+  }
+
 }

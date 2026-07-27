@@ -87,27 +87,13 @@ export class PedidoVistoriaFormComponent {
         this.vistoriaRequestForm.patchValue({
           tipoEmpresa: this.aplicanteData.empresa.tipoEmpresa
         });
-        const request = this.aplicanteData.pedidoLicencaAtividade;
-        this.vistoriaRequestForm.patchValue({
-          risco: request.risco,
-          classeAtividade: {
-            id: request.classeAtividade.id,
-            codigo: request.classeAtividade.codigo,
-            descricao: request.classeAtividade.descricao,
-            tipoRisco: request.classeAtividade.tipoRisco,
-            grupoAtividade: {
-              id: request.classeAtividade.grupoAtividade.id,
-              codigo: request.classeAtividade.grupoAtividade.codigo,
-              descricao: request.classeAtividade.grupoAtividade.descricao,
-            }
-          },
-          classeAtividadeCodigo: request.classeAtividade.descricao,
-          grupoAtividade: request.classeAtividade.grupoAtividade.codigo,
-          grupoAtividadeCodigo: request.classeAtividade.grupoAtividade.descricao,
-        });
+        this.patchClasseFromLicenca();
 
         if (this.pedido) {
           this.mapPedidoForm(this.pedido);
+          // Atividade Principal is licença-sourced: re-patch after mapping so the licença's current value wins
+          // even when the stored vistoria diverged (the backend re-syncs on save anyway).
+          this.patchClasseFromLicenca();
           if (this.disabledAllForm) {
             this.vistoriaRequestForm.disable();
           }
@@ -147,9 +133,8 @@ export class PedidoVistoriaFormComponent {
           id: form.getRawValue().localEstabelecimento.aldeia
         }
       },
-      classeAtividade: {
-        id: form.getRawValue().classeAtividade.id
-      },
+      // Informational only — the backend derives classeAtividade/risco from the parent Pedido de Licença.
+      classeAtividade: values.classeAtividade?.id ? { id: values.classeAtividade.id } : null,
     }
 
     if (this.pedido) {
@@ -305,24 +290,40 @@ export class PedidoVistoriaFormComponent {
       },
       tipoEmpresa: pedido.tipoEmpresa,
       tipoEstabelecimento: pedido.tipoEstabelecimento,
-      risco: pedido.risco,
       atividade: pedido.atividade,
-      grupoAtividade: pedido.classeAtividade.grupoAtividade.codigo,
-      grupoAtividadeCodigo: pedido.classeAtividade.grupoAtividade.descricao,
+      // classeAtividade / grupo / risco intentionally NOT mapped from the stored pedido — the licença is the
+      // single source of the Atividade Principal; patchClasseFromLicenca() fills them right after this call.
+    });
+  }
+
+  /**
+   * The licença is the single source of the "Atividade Principal": the vistoria always displays (and the backend
+   * always persists) the licença's current classe + derived risco — on a new form and when editing an existing one.
+   */
+  private patchClasseFromLicenca(): void {
+    const classe = this.aplicanteData.pedidoLicencaAtividade?.classeAtividade;
+    if (!classe) return; // draft licença without a classe yet — leave the fields empty
+    this.vistoriaRequestForm.patchValue({
+      risco: classe.tipoRisco,
       classeAtividade: {
-        id: pedido.classeAtividade.id,
-        codigo: pedido.classeAtividade.codigo,
-        descricao: pedido.classeAtividade.descricao,
-        tipoRisco: pedido.classeAtividade.tipoRisco,
+        id: classe.id,
+        codigo: classe.codigo,
+        descricao: classe.descricao,
+        tipoRisco: classe.tipoRisco,
         grupoAtividade: {
-          id: pedido.classeAtividade.grupoAtividade.id,
-          codigo: pedido.classeAtividade.grupoAtividade.codigo,
-          descricao: pedido.classeAtividade.grupoAtividade.descricao,
+          id: classe.grupoAtividade.id,
+          codigo: classe.grupoAtividade.codigo,
+          descricao: classe.grupoAtividade.descricao,
         }
       },
-      classeAtividadeCodigo: pedido.classeAtividade.descricao,
+      classeAtividadeCodigo: classe.descricao,
+      grupoAtividade: classe.grupoAtividade.codigo,
+      grupoAtividadeCodigo: classe.grupoAtividade.descricao,
     });
-    this.listaClasseAtividade.push(this.vistoriaRequestForm.get('classeAtividade')?.value);
+    // Make the disabled select render the value even when it isn't in the loaded options.
+    if (!this.listaClasseAtividade.some(item => item?.id === classe.id)) {
+      this.listaClasseAtividade.push(this.vistoriaRequestForm.get('classeAtividade')?.value);
+    }
   }
 
   private initForm(): void {

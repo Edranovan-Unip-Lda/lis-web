@@ -424,7 +424,7 @@
                                      <div class="mb-6 col-span-12 md:col-span-6">
                                          <label for="acoes" class="font-medium  mb-2 block">
                                              Ações
-                                             <span class="text-sm font-normal text-gray-600 ml-2">
+                                             <span class="text-sm font-normal text-muted-color ml-2">
                                                  (Máximo disponível: {{ getMaxAcoesForAcionista(i) | number:'1.2-2' }}%)
                                              </span>
                                          </label>
@@ -456,7 +456,7 @@
                                          </p>
                                          }
                                          @if (getTotalAcoes() > 0 && !item.get('acoes')?.invalid) {
-                                         <p class="text-gray-600 text-sm mt-1">
+                                         <p class="text-muted-color text-sm mt-1">
                                              Total de ações: {{ getTotalAcoes() | number:'1.2-2' }}% / 100%
                                          </p>
                                          }

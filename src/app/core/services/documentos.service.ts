@@ -1,11 +1,14 @@
+import { Documento } from "@/core/models/entities.model";
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { environment } from "src/environments/environment";
+import { FileUploadService } from "./file-upload.service";
 
 @Injectable({ providedIn: 'root' })
 export class DocumentosService {
     protected apiUrl = `${environment.apiUrl}/documentos`;
+    private readonly fileUploadService = inject(FileUploadService);
 
     constructor(
         private http: HttpClient,
@@ -24,6 +27,15 @@ export class DocumentosService {
         const formData = new FormData();
         formData.append('files', file, fileName);
         return this.http.post(`${this.apiUrl}/${username}/upload`, formData);
+    }
+
+    /**
+     * ROLE_ADMIN only: swaps the stored file of an application document in place — the returned Documento keeps
+     * its id and `coluna` slot, so nothing needs re-linking to the pedido/auto vistoria.
+     * Goes through FileUploadService so the auth cookie + CSRF header ride along.
+     */
+    replaceById(id: number, file: File): Observable<Documento> {
+        return this.fileUploadService.upload<Documento>(`${this.apiUrl}/${id}/replace`, [file], 'put', 'file');
     }
 
     deleteById(id: number): Observable<any> {

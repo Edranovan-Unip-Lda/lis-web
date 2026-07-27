@@ -36,6 +36,20 @@
             @for (doc of docs; track doc.id; let i = $index) {
             <p-tabpanel [value]="i + 1">
                 @if (activeTab() === i + 1) {
+                <!-- Admin-only: correct a wrong attachment at any status. Never on a frozen form snapshot. -->
+                @if (isAdmin && doc.coluna !== 'FORM_SNAPSHOT') {
+                <div class="flex flex-wrap items-center justify-end gap-2 mb-3">
+                    @if (replacingDocs.has(doc.id)) {
+                    <i class="pi pi-spin pi-spinner text-muted-color"></i>
+                    }
+                    <p-fileupload #uploader mode="basic" [customUpload]="true" [auto]="true" [multiple]="false"
+                        [accept]="acceptedDocTypes" [maxFileSize]="30000000" chooseIcon="pi pi-refresh"
+                        chooseLabel="Substituir" chooseStyleClass="p-button-outlined p-button-warn"
+                        (uploadHandler)="replaceDoc(i, $event, uploader)" />
+                    <p-button (click)="deleteDoc(i, $event)" [loading]="deletingDocs.has(doc.id)" icon="pi pi-trash"
+                        label="Eliminar" severity="danger" [outlined]="true" />
+                </div>
+                }
                 @if (loaded()[i]; as entry) {
                 @switch (entry.kind) {
                 @case ('pdf') {
@@ -66,3 +80,4 @@
     </p-tabs>
 </div>
 <p-toast position="bottom-right" key="br" />
+<p-confirmdialog />

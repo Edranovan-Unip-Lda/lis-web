@@ -33,6 +33,7 @@ export class ApplicationAtividadeDetailComponent {
   loading = false;
   aplicanteEstado!: AplicanteStatus;
   motivoRejeicao!: string | null;
+  motivoDevolucao!: string | null;
   listaAldeia: any[] = [];
   listaGrupoAtividade: any[] = [];
   listaClasseAtividade: any[] = [];
@@ -108,7 +109,16 @@ export class ApplicationAtividadeDetailComponent {
         : null;
     }
 
-    if (this.aplicanteData.estado === AplicanteStatus.emCurso || this.aplicanteData.estado === AplicanteStatus.rejeitado) {
+    // A returned-for-correction application is editable again — show the motivo and unlock the forms.
+    if (this.aplicanteData.estado === AplicanteStatus.devolvido) {
+      const latest = this.aplicanteData.historicoStatus
+        .reduce((max, curr) => new Date(curr.createdAt) > new Date(max.createdAt) ? curr : max);
+      this.motivoDevolucao = latest?.status === AplicanteStatus.devolvido ? latest.descricao : null;
+    }
+
+    if (this.aplicanteData.estado === AplicanteStatus.emCurso
+      || this.aplicanteData.estado === AplicanteStatus.rejeitado
+      || this.aplicanteData.estado === AplicanteStatus.devolvido) {
       this.disabledAllForm = false;
     }
   }

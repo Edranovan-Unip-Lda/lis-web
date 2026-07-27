@@ -106,6 +106,11 @@ export class UserService {
     return this.http.patch<any>(`${this.apiUrl}/${username}/aplicantes/${aplicanteId}/revisto`, form);
   }
 
+  // Devolver para correção: hand the application back to the company; the motivo travels in the historico descricao.
+  devolverAplicante(username: string, aplicanteId: number, form: any): Observable<any> {
+    return this.http.patch<any>(`${this.apiUrl}/${username}/aplicantes/${aplicanteId}/devolver`, form);
+  }
+
   /**
    * Sends a PATCH request to approve an aplicante associated with a user.
    *
