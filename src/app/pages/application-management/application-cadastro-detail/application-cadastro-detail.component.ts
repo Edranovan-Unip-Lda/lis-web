@@ -348,6 +348,7 @@ export class ApplicationCadastroDetailComponent {
         next: (response) => {
           this.addMessages(true, false);
           this.aplicanteData.pedidoInscricaoCadastro = response;
+          this.refreshUploadedDocs(response);
           this.setTaxaAto(response.tipoPedidoCadastro);
           callback(3);
         },
@@ -384,11 +385,22 @@ export class ApplicationCadastroDetailComponent {
         next: (response) => {
           this.addMessages(true, false);
           this.aplicanteData.pedidoInscricaoCadastro = response;
+          this.refreshUploadedDocs(response);
         },
         error: error => this.handleSubmitError(error),
         complete: () => this.draftLoading = false
       });
     }
+  }
+
+  /**
+   * Swap the transient upload objects (id: null — the upload endpoint never persists) for the
+   * persisted ones returned by the save, so the next save re-references them by id instead of
+   * re-creating documento rows.
+   */
+  private refreshUploadedDocs(response: PedidoInscricaoCadastro): void {
+    if (!response?.documentos) return;
+    this.uploadedDocs = [...response.documentos];
   }
 
   // Shared payload assembly. When draft, every wrapped-object read is null-safe so a partial form doesn't throw.
@@ -438,6 +450,7 @@ export class ApplicationCadastroDetailComponent {
   private handleCreateSuccess(response: PedidoInscricaoCadastro): void {
     this.pedidoId = response.id;
     this.aplicanteData.pedidoInscricaoCadastro = response;
+    this.refreshUploadedDocs(response);
     this.requestForm.patchValue({ id: response.id });
     this.isNew = false;
     if (response.localEstabelecimento) {
