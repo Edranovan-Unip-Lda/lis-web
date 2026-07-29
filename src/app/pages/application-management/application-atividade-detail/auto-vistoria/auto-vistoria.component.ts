@@ -715,8 +715,12 @@ export class AutoVistoriaComponent implements OnInit {
   }
 
   private mapAutoVistoriaEdit(autoVistoria: AutoVistoria): void {
+    // local/requerente hold scalar dropdown ids populated from
+    // pedidoVistoria/empresa; the server's nested Endereco objects
+    // must not clobber them (aldeia object where the form holds an id).
+    const { local: _local, requerente: _requerente, ...rest } = autoVistoria;
     this.autoVistoriaForm.patchValue({
-      ...autoVistoria,
+      ...rest,
       dataHora: new Date(autoVistoria.updatedAt)
     });
 
