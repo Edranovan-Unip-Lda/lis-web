@@ -236,7 +236,6 @@ export class AutoVistoriaComponent implements OnInit {
       this.dataMasterService.searchAldeiasByNome(query)
         .subscribe(resp => {
           if (parentControlName && childControlName) {
-            this.autoVistoriaForm.get(parentControlName)?.get(childControlName)?.patchValue((resp?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, id: a.id })));
             if (parentControlName === 'requerente' && childControlName === 'sede') {
               this.listaAldeiaRequerente = (resp?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, id: a.id }));
             } else {
@@ -675,6 +674,13 @@ export class AutoVistoriaComponent implements OnInit {
     this.membrosEquipaVistoria.removeAt(index);
   }
 
+  /** Resize the participante FormArray to `count`, never below one blank row. */
+  private syncParticipanteForms(count: number): void {
+    const target = Math.min(Math.max(count, 1), this.maxLengthParticipantes);
+    while (this.membrosEquipaVistoria.length < target) this.addParticipanteForm();
+    while (this.membrosEquipaVistoria.length > target) this.removeParticipanteForm(this.membrosEquipaVistoria.length - 1);
+  }
+
   get membrosEquipaVistoria(): FormArray {
     return this.autoVistoriaForm.get('membrosEquipaVistoria') as FormArray;
   }
@@ -715,8 +721,17 @@ export class AutoVistoriaComponent implements OnInit {
   }
 
   private mapAutoVistoriaEdit(autoVistoria: AutoVistoria): void {
+    // local/requerente hold scalar dropdown ids populated from
+    // pedidoVistoria/empresa; the server's nested Endereco objects
+    // must not clobber them (aldeia object where the form holds an id).
+    const { local: _local, requerente: _requerente, ...rest } = autoVistoria;
+
+    // patchValue never grows a FormArray — size it to the stored team first,
+    // otherwise only the first participante comes back on reload.
+    this.syncParticipanteForms(autoVistoria.membrosEquipaVistoria?.length ?? 0);
+
     this.autoVistoriaForm.patchValue({
-      ...autoVistoria,
+      ...rest,
       dataHora: new Date(autoVistoria.updatedAt)
     });
 

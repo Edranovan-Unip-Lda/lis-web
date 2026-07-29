@@ -100,17 +100,6 @@
                  </dl>
              </div>
 
-             <!-- Medium license image — tap to preview (responsive) -->
-             <div class="mt-6">
-                 @if (certificadoImage()) {
-                 <p class="text-sm text-surface-500 mb-2">Toque na licença para ampliar</p>
-                 <p-image [src]="certificadoImage()!" alt="Licença" [preview]="true"
-                     styleClass="license-image" />
-                 } @else {
-                 <p-skeleton width="100%" height="320px" />
-                 }
-             </div>
-
              } @else if (searched()) {
 
              <!-- Invalid / not-found card -->
