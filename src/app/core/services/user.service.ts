@@ -87,15 +87,15 @@ export class UserService {
     return this.http.post<any>(`${this.apiUrl}/activate?token=${token}`, form);
   }
 
-  getPaginationAssignedAplicante(username: string, page?: number, size?: number): Observable<any> {
-    let params = new HttpParams();
-    if (page && size) {
-      params.append('page', page)
-      params.append('size', size);
-      return this.http.get<any>(`${this.apiUrl}/${username}/aplicantes`, { params }).pipe(take(1));
-    } else {
-      return this.http.get<any>(`${this.apiUrl}/${username}/aplicantes`, { params }).pipe(take(1));
-    }
+  // HttpParams is immutable — append() returns a NEW instance. The previous version discarded the results,
+  // so the task list always re-fetched page 0 whichever page the paginator asked for.
+  getPaginationAssignedAplicante(username: string, page = 0, size = 50, q?: string, sort?: string): Observable<any> {
+    let params = new HttpParams()
+      .append('page', page)
+      .append('size', size);
+    if (q) params = params.append('q', q);
+    if (sort) params = params.append('sort', sort);
+    return this.http.get<any>(`${this.apiUrl}/${username}/aplicantes`, { params }).pipe(take(1));
   }
 
   getAssignedAplicante(username: string, aplicanteId: number): Observable<any> {
@@ -123,15 +123,13 @@ export class UserService {
     return this.http.patch<any>(`${this.apiUrl}/${username}/aplicantes/${aplicanteId}`, form);
   }
 
-  getPaginationAtribuidoAplicante(username: string, page?: number, size?: number): Observable<any> {
-    let params = new HttpParams();
-    if (page && size) {
-      params.append('page', page)
-      params.append('size', size);
-      return this.http.get<any>(`${this.apiUrl}/${username}/aplicantes/atribuidos`, { params }).pipe(take(1));
-    } else {
-      return this.http.get<any>(`${this.apiUrl}/${username}/aplicantes/atribuidos`, { params }).pipe(take(1));
-    }
+  getPaginationAtribuidoAplicante(username: string, page = 0, size = 50, q?: string, sort?: string): Observable<any> {
+    let params = new HttpParams()
+      .append('page', page)
+      .append('size', size);
+    if (q) params = params.append('q', q);
+    if (sort) params = params.append('sort', sort);
+    return this.http.get<any>(`${this.apiUrl}/${username}/aplicantes/atribuidos`, { params }).pipe(take(1));
   }
 
   atribuirAplicante(username: string, aplicanteId: number, staffUsername: string, note: string): Observable<any> {

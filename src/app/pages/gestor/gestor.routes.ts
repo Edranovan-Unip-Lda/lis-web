@@ -33,6 +33,8 @@ export default [
                         path: '',
                         data: {
                             breadcrumb: 'List',
+                            // listMode tells the shared list component which paged endpoint to call.
+                            listMode: 'task',
                         },
                         loadComponent: () => import('@/pages/application-management/application-list/application-list.component').then((c) => c.ApplicationListComponent),
                         resolve: {
@@ -75,6 +77,7 @@ export default [
                 path: 'list',
                 data: {
                     breadcrumb: 'Lista',
+                    listMode: 'gestor',
                 },
                 loadComponent: () => import('@/pages/application-management/application-list/application-list.component').then((c) => c.ApplicationListComponent),
                 resolve: {
