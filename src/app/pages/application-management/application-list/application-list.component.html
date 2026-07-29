@@ -17,9 +17,10 @@
                         <p-sortIcon field="candidatura.numero">
                         </p-sortIcon>
                     </th>
-                    @if (currentRole === roleAdmin) {
-                    <th pSortableColumn="firstName" class="white-space-nowrap">Empresa
-                        <p-sortIcon field="firstName">
+                    <!-- Empresa: shown to every back-office role; a client only ever sees its own company -->
+                    @if (currentRole !== roleClient) {
+                    <th pSortableColumn="empresa.nome" class="white-space-nowrap">Empresa
+                        <p-sortIcon field="empresa.nome">
                         </p-sortIcon>
                     </th>
                     }
@@ -44,9 +45,9 @@
                     <td>
                         {{ candidatura.numero }}
                     </td>
-                    @if (currentRole === roleAdmin) {
+                    @if (currentRole !== roleClient) {
                     <td>
-                        {{candidatura.empresa.nome}}
+                        {{ candidatura.empresa?.nome }}
                     </td>
                     }
                     <td>
