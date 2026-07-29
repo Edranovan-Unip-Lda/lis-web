@@ -145,9 +145,10 @@ export class EmpresaFormComponent implements OnInit {
       next: (response) => {
         this.loading = false;
         this.isSuccess = true;
-        // Docs in this batch are now persisted server-side; clear them so a second save doesn't
-        // resend the same id-less documents and create duplicate rows.
-        this.uploadedDocs = [];
+        // Swap the transient uploads (id: null) for the persisted documents from the response so a
+        // second save re-references them by id instead of duplicating rows — emptying the list here
+        // would blank the doc table, re-block the wizard step and make the next PUT send documentos: [].
+        this.uploadedDocs = [...(response?.documentos ?? [])];
         this.messageService.add({
           severity: 'success',
           summary: 'Sucesso',
@@ -861,31 +862,11 @@ export class EmpresaFormComponent implements OnInit {
 
     switch (empresa.tipoPropriedade) {
       case TipoPropriedade.individual:
-        this.acionistasArray.push(this.generateAcionistaForm(true));
-        const idx = this.acionistasArray.length - 1;
+        this.acionistasArray.clear();
         if (empresa.acionistas && empresa.acionistas.length) {
-          const acionista = empresa.acionistas[0];
-          this.listaAldeiaAcionista[idx] = await this.setAldeiaListBySucoId(acionista.endereco.aldeia.suco.id);
-          this.acionistasArray.at(0).patchValue({
-            id: acionista.id,
-            nome: acionista.nome,
-            nif: acionista.nif,
-            tipoDocumento: acionista.tipoDocumento ? this.tipoDocumentoOpts.find(td => td.value === acionista.tipoDocumento).value : null,
-            numeroDocumento: acionista.numeroDocumento,
-            telefone: acionista.telefone,
-            email: acionista.email,
-            acoes: acionista.acoes,
-            agregadoFamilia: acionista.agregadoFamilia,
-            relacaoFamilia: acionista.relacaoFamilia,
-            endereco: {
-              id: acionista.endereco.id,
-              local: acionista.endereco.local,
-              municipio: acionista.endereco.aldeia?.suco.postoAdministrativo.municipio.nome,
-              postoAdministrativo: acionista.endereco.aldeia?.suco.postoAdministrativo.nome,
-              suco: acionista.endereco.aldeia?.suco.nome,
-              aldeia: acionista.endereco.aldeia ? { nome: acionista.endereco.aldeia.nome, value: acionista.endereco.aldeia.id } : null,
-            },
-          });
+          await this.patchAcionistas(empresa.acionistas, true);
+        } else {
+          this.acionistasArray.push(this.generateAcionistaForm(true));
         }
         break;
 
@@ -893,32 +874,7 @@ export class EmpresaFormComponent implements OnInit {
         this.acionistasArray.clear();
         this.showAddBtnAcionistas = true;
         if (empresa.acionistas && empresa.acionistas.length) {
-          for (let index = 0; index < empresa.acionistas.length; index++) {
-            const acionista = empresa.acionistas[index];
-            this.acionistasArray.push(this.generateAcionistaForm(false));
-            const idx = this.acionistasArray.length - 1;
-            this.listaAldeiaAcionista[idx] = await this.setAldeiaListBySucoId(acionista.endereco.aldeia.suco.id);
-            this.acionistasArray.at(index).patchValue({
-              id: acionista.id,
-              nome: acionista.nome,
-              nif: acionista.nif,
-              tipoDocumento: acionista.tipoDocumento ? this.tipoDocumentoOpts.find(td => td.value === acionista.tipoDocumento).value : null,
-              numeroDocumento: acionista.numeroDocumento,
-              telefone: acionista.telefone,
-              email: acionista.email,
-              acoes: acionista.acoes,
-              agregadoFamilia: acionista.agregadoFamilia,
-              relacaoFamilia: acionista.relacaoFamilia,
-              endereco: {
-                id: acionista.endereco.id,
-                local: acionista.endereco.local,
-                municipio: acionista.endereco.aldeia?.suco.postoAdministrativo.municipio.nome,
-                postoAdministrativo: acionista.endereco.aldeia?.suco.postoAdministrativo.nome,
-                suco: acionista.endereco.aldeia?.suco.nome,
-                aldeia: acionista.endereco.aldeia ? { nome: acionista.endereco.aldeia.nome, value: acionista.endereco.aldeia.id } : null,
-              },
-            });
-          }
+          await this.patchAcionistas(empresa.acionistas, false);
         }
         break;
     }
@@ -930,5 +886,36 @@ export class EmpresaFormComponent implements OnInit {
   private async setAldeiaListBySucoId(sucoId: number): Promise<any[]> {
     const response = await firstValueFrom(this.dataMasterService.getAldeiasBySuco(sucoId));
     return (response?._embedded?.aldeias ?? []).map((a: any) => ({ nome: a.nome, value: a.id }));
+  }
+
+  // Shared by both tipoPropriedade branches — the individual branch used to patch only
+  // acionistas[0], silently dropping (and then persisting away) any further rows.
+  private async patchAcionistas(acionistas: any[], individual: boolean): Promise<void> {
+    for (let index = 0; index < acionistas.length; index++) {
+      const acionista = acionistas[index];
+      this.acionistasArray.push(this.generateAcionistaForm(individual));
+      const idx = this.acionistasArray.length - 1;
+      this.listaAldeiaAcionista[idx] = await this.setAldeiaListBySucoId(acionista.endereco.aldeia.suco.id);
+      this.acionistasArray.at(index).patchValue({
+        id: acionista.id,
+        nome: acionista.nome,
+        nif: acionista.nif,
+        tipoDocumento: acionista.tipoDocumento ? this.tipoDocumentoOpts.find(td => td.value === acionista.tipoDocumento).value : null,
+        numeroDocumento: acionista.numeroDocumento,
+        telefone: acionista.telefone,
+        email: acionista.email,
+        acoes: acionista.acoes,
+        agregadoFamilia: acionista.agregadoFamilia,
+        relacaoFamilia: acionista.relacaoFamilia,
+        endereco: {
+          id: acionista.endereco.id,
+          local: acionista.endereco.local,
+          municipio: acionista.endereco.aldeia?.suco.postoAdministrativo.municipio.nome,
+          postoAdministrativo: acionista.endereco.aldeia?.suco.postoAdministrativo.nome,
+          suco: acionista.endereco.aldeia?.suco.nome,
+          aldeia: acionista.endereco.aldeia ? { nome: acionista.endereco.aldeia.nome, value: acionista.endereco.aldeia.id } : null,
+        },
+      });
+    }
   }
 }

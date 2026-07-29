@@ -83,10 +83,12 @@ export class UserCreate implements OnDestroy {
             this.userData.password = ''; // Do not show password in edit form
 
             this.userForm.patchValue(this.userData);
+            // The direcao select is optionValue="id" — the patch above leaves the whole Direcao
+            // object in the control; normalize to a scalar id for every role (null-safe).
+            this.userForm.get('direcao')?.setValue(this.userData.direcao?.id ?? null);
 
             if (this.userData.role.name === Role.manager || this.userData.role.name === Role.chief || this.userData.role.name === Role.staff) {
                 this.showCategoria = true;
-                this.userForm.get('direcao')?.setValue(this.userData.direcao.id);
                 this.userForm.get('direcao')?.setValidators(Validators.required);
             }
 
@@ -137,6 +139,9 @@ export class UserCreate implements OnDestroy {
                     this.loading = false;
                     this.addMessage(true, `User created successfully and verification link sent to ${response.email}`);
                     this.userForm.reset();
+                    // Clear the staged signature too — it belongs to the user just created.
+                    this.signatureDoc = undefined!;
+                    this.revokeSignatureImage();
                 },
                 error: (error) => {
                     this.loading = false;
@@ -165,6 +170,11 @@ export class UserCreate implements OnDestroy {
                 next: (response) => {
                     this.loading = false;
                     this.addMessage(true, 'User updated successfully');
+                    // Swap the transient signature (id: null) for the persisted one so a second
+                    // save re-references it by id instead of creating another documento row.
+                    if (response?.signature) {
+                        this.signatureDoc = response.signature;
+                    }
                 },
                 error: (error) => {
                     this.loading = false;
@@ -206,7 +216,10 @@ export class UserCreate implements OnDestroy {
                 next: (docs) => {
                     if (docs && docs.length > 0) {
                         this.signatureDoc = docs[0];
-                        this.loadSignatureImage(this.signatureDoc.id);
+                        // The upload returns a transient Documento (id: null) — it is only fetchable
+                        // by id after a save, so preview from the just-selected local file instead.
+                        this.revokeSignatureImage();
+                        this.signatureImageUrl.set(URL.createObjectURL(event.files[0]));
                     }
                     this.messageService.add({
                         severity: 'info',

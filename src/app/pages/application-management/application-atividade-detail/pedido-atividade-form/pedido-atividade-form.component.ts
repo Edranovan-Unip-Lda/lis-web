@@ -155,6 +155,7 @@ export class PedidoAtividadeFormComponent {
       next: (res) => {
         this.requestForm.get('id')?.setValue(res.id);
         this.aplicanteData.pedidoLicencaAtividade = res;
+        this.refreshUploadedDocs(res);
         this.isNew = false;
         this.addMessages(true, true);
         this.dataSent.emit(res);
@@ -178,6 +179,7 @@ export class PedidoAtividadeFormComponent {
       next: (res) => {
         this.requestForm.get('id')?.setValue(res.id);
         this.aplicanteData.pedidoLicencaAtividade = res;
+        this.refreshUploadedDocs(res);
         this.isNew = false;
         this.addMessages(true, false);
         this.dataSent.emit(res);
@@ -203,6 +205,7 @@ export class PedidoAtividadeFormComponent {
         next: (res) => {
           this.requestForm.get('id')?.setValue(res.id);
           this.aplicanteData.pedidoLicencaAtividade = res;
+          this.refreshUploadedDocs(res);
           this.isNew = false;
           this.addMessages(true, true);
           this.dataSent.emit(res);
@@ -215,6 +218,7 @@ export class PedidoAtividadeFormComponent {
         next: (res) => {
           this.requestForm.get('id')?.setValue(res.id);
           this.aplicanteData.pedidoLicencaAtividade = res;
+          this.refreshUploadedDocs(res);
           this.addMessages(true, false);
           this.dataSent.emit(res);
         },
@@ -222,6 +226,19 @@ export class PedidoAtividadeFormComponent {
         complete: () => this.draftLoading = false
       });
     }
+  }
+
+  /**
+   * Swap the transient upload objects (id: null — the upload endpoint never persists) for the
+   * persisted ones returned by the save, so the next save re-references them by id instead of
+   * re-creating documento rows.
+   */
+  private refreshUploadedDocs(res: PedidoAtividadeLicenca): void {
+    if (!res?.documentos) return;
+    this.uploadedDocs = [...res.documentos];
+    this.uploadedDocs.forEach(doc => {
+      this.requestForm.get(`${doc.coluna}File`)?.setValue(doc, { emitEvent: false });
+    });
   }
 
   get pedidoIsDraft(): boolean {
@@ -584,6 +601,36 @@ export class PedidoAtividadeFormComponent {
   private mapRequestFormData(request: PedidoAtividadeLicenca) {
     this.requestForm.patchValue({
       ...request,
+      // The aldeia selects are optionValue="id" — remap every address to scalars synchronously,
+      // otherwise the spread leaves whole Aldeia objects in the controls and a save before (or
+      // without) the async list load sends `aldeia: { id: {…} }` to the backend.
+      empresaSede: {
+        ...request.empresaSede,
+        aldeia: request.empresaSede.aldeia.id,
+        suco: request.empresaSede.aldeia.suco.nome,
+        postoAdministrativo: request.empresaSede.aldeia.suco.postoAdministrativo.nome,
+        municipio: request.empresaSede.aldeia.suco.postoAdministrativo.municipio.nome
+      },
+      representante: {
+        ...request.representante,
+        morada: {
+          ...request.representante.morada,
+          aldeia: request.representante.morada.aldeia.id,
+          suco: request.representante.morada.aldeia.suco.nome,
+          postoAdministrativo: request.representante.morada.aldeia.suco.postoAdministrativo.nome,
+          municipio: request.representante.morada.aldeia.suco.postoAdministrativo.municipio.nome
+        }
+      },
+      gerente: {
+        ...request.gerente,
+        morada: {
+          ...request.gerente.morada,
+          aldeia: request.gerente.morada.aldeia.id,
+          suco: request.gerente.morada.aldeia.suco.nome,
+          postoAdministrativo: request.gerente.morada.aldeia.suco.postoAdministrativo.nome,
+          municipio: request.gerente.morada.aldeia.suco.postoAdministrativo.municipio.nome
+        }
+      },
       tipoAtividade: request.classeAtividade.grupoAtividade.codigo,
       tipoAtividadeCodigo: request.classeAtividade.grupoAtividade.descricao,
       classeAtividade: {
@@ -626,31 +673,14 @@ export class PedidoAtividadeFormComponent {
     this.showcontratoArrendamentoForm = isRental;
     this.showArrendadorForm = isRental;
 
+    // Control values are patched synchronously above — this only feeds the dropdown option lists.
     forkJoin([empresaSedeService, representanteService, gerenteService]).subscribe({
       next: ([empresaSedeResponse, representanteResponse, gerenteResponse]) => {
         this.listaAldeiaEmpresa = [...mapToIdAndNome((empresaSedeResponse?._embedded?.aldeias ?? [])), ...this.listaAldeia];
         this.listaAldeiaRepresentante = [...mapToIdAndNome((representanteResponse?._embedded?.aldeias ?? []))];
         this.listaAldeiaGerente = [...mapToIdAndNome((gerenteResponse?._embedded?.aldeias ?? []))];
-
-        this.requestForm.get('empresaSede')?.patchValue({
-          aldeia: request.empresaSede.aldeia.id,
-          suco: request.empresaSede.aldeia.suco.nome,
-          postoAdministrativo: request.empresaSede.aldeia.suco.postoAdministrativo.nome,
-          municipio: request.empresaSede.aldeia.suco.postoAdministrativo.municipio.nome
-        });
-        this.requestForm.get('representante')?.get('morada')?.patchValue({
-          aldeia: request.representante.morada.aldeia.id,
-          suco: request.representante.morada.aldeia.suco.nome,
-          postoAdministrativo: request.representante.morada.aldeia.suco.postoAdministrativo.nome,
-          municipio: request.representante.morada.aldeia.suco.postoAdministrativo.municipio.nome
-        });
-        this.requestForm.get('gerente')?.get('morada')?.patchValue({
-          aldeia: request.gerente.morada.aldeia.id,
-          suco: request.gerente.morada.aldeia.suco.nome,
-          postoAdministrativo: request.gerente.morada.aldeia.suco.postoAdministrativo.nome,
-          municipio: request.gerente.morada.aldeia.suco.postoAdministrativo.municipio.nome
-        });
-      }
+      },
+      error: (err) => console.error('Falha ao carregar as listas de aldeias', err)
     });
     this.listaClasseAtividade.push(this.requestForm.get('classeAtividade')?.value);
   }

@@ -203,6 +203,9 @@ export class AutoVistoriaComponent implements OnInit {
     request$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (autoVistoria: AutoVistoria) => {
         this.autoVistoria = autoVistoria;
+        // Swap the transient upload objects for the persisted ones (with ids) so the
+        // next save re-references them instead of re-creating documento rows.
+        this.uploadedFiles = [...(autoVistoria.documentos ?? [])];
         this.savingDraft = false;
         this.messageService.add({ severity: 'info', summary: 'Rascunho guardado', detail: 'Auto Vistoria guardada como rascunho', life: 3000, key: 'tr' });
       },
@@ -555,7 +558,7 @@ export class AutoVistoriaComponent implements OnInit {
       legislacaoUrbanisticaDescricao: [null],
 
       acessoEstrada: [null],
-      acesoEstradaFile: [null],
+      acessoEstradaFile: [null],
       acessoEstradaDescricao: [null],
       superficie: [null],
       larguraEstrada: [null],
@@ -685,7 +688,18 @@ export class AutoVistoriaComponent implements OnInit {
     return this.autoVistoriaForm.get('membrosEquipaVistoria') as FormArray;
   }
 
+  /**
+   * The address selects are display-only (disabled) but optionValue="id" — the selected aldeia must exist
+   * in the options list or the dropdown renders blank (the resolver list is paged, so it usually doesn't).
+   * The full Aldeia is already in hand, so inject it instead of re-fetching the suco's list.
+   */
+  private withAldeiaOption(lista: { nome: string; id: number }[], aldeia?: Aldeia): { nome: string; id: number }[] {
+    if (!aldeia || lista.some(a => a.id === aldeia.id)) return lista;
+    return [{ nome: aldeia.nome, id: aldeia.id }, ...lista];
+  }
+
   private mapAutoVistoriaForm(aplicanteData: Aplicante, pedidoVistoria: PedidoVistoria): void {
+    this.listaAldeia = this.withAldeiaOption(this.listaAldeia, pedidoVistoria.localEstabelecimento.aldeia);
     this.autoVistoriaForm.patchValue({
       numeroProcesso: aplicanteData.numero,
       local: {
@@ -748,6 +762,8 @@ export class AutoVistoriaComponent implements OnInit {
   }
 
   private mapRequerenteForm(empresa: Empresa): void {
+    this.listaAldeiaRequerente = this.withAldeiaOption(this.listaAldeiaRequerente, empresa.sede.aldeia);
+    this.listaAldeiaResidencia = this.withAldeiaOption(this.listaAldeiaResidencia, empresa.representante.morada.aldeia);
     this.autoVistoriaForm.patchValue({
       requerente: {
         denominacaoSocial: empresa.nome,
