@@ -10,7 +10,6 @@ import { RecaptchaV3Module, ReCaptchaV3Service } from 'ng-recaptcha-2';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { Fluid } from 'primeng/fluid';
-import { Image } from 'primeng/image';
 import { InputGroup } from 'primeng/inputgroup';
 import { InputGroupAddon } from 'primeng/inputgroupaddon';
 import { InputText } from 'primeng/inputtext';
@@ -22,7 +21,7 @@ import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-search',
   // CHANGED: added Image (license preview) + Tag (status badge)
-  imports: [Fluid, Message, Button, InputGroup, InputGroupAddon, InputText, Skeleton, Image, Tag, RecaptchaV3Module, DatePipe, NgClass, NgStyle, QRCodeComponent, NgTemplateOutlet, ReactiveFormsModule, UpperCasePipe],
+  imports: [Fluid, Message, Button, InputGroup, InputGroupAddon, InputText, Skeleton, Tag, RecaptchaV3Module, DatePipe, NgClass, NgStyle, QRCodeComponent, NgTemplateOutlet, ReactiveFormsModule, UpperCasePipe],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
   providers: [MessageService]

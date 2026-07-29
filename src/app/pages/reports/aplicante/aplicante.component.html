@@ -102,7 +102,7 @@
             </tr>
         </ng-template>
     </p-table>
-    <p-paginator (onPageChange)="onPageChange($event)" [rows]="size" [totalRecords]="totalData"
+    <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="size" [totalRecords]="totalData"
         [rowsPerPageOptions]="[50, 250, 500, 1000]" [showCurrentPageReport]="true"
         currentPageReportTemplate="A mostrar {first} até {last} de {totalRecords}" />
     }

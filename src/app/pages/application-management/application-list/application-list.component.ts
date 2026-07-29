@@ -1,10 +1,11 @@
 import { Aplicante } from '@/core/models/entities.model';
 import { Role } from '@/core/models/enums';
 import { StatusIconPipe, StatusSeverityPipe } from '@/core/pipes/custom.pipe';
-import { AplicanteService, AuthenticationService } from '@/core/services';
+import { AplicanteService, AuthenticationService, UserService } from '@/core/services';
 import { EmpresaService } from '@/core/services/empresa.service';
 import { DatePipe, UpperCasePipe } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
@@ -17,7 +18,10 @@ import { Table, TableModule } from 'primeng/table';
 import { Tag } from 'primeng/tag';
 import { Toast } from 'primeng/toast';
 import { Tooltip } from 'primeng/tooltip';
-import { Subject, debounceTime, distinctUntilChanged, switchMap, catchError, of } from 'rxjs';
+import { Observable, Subject, catchError, debounceTime, distinctUntilChanged, map, of, switchMap, tap } from 'rxjs';
+
+/** Which paged endpoint this list instance talks to — set per route via `data.listMode`. */
+type ListMode = 'client' | 'gestor' | 'task';
 
 @Component({
   selector: 'app-application-list',
@@ -26,18 +30,25 @@ import { Subject, debounceTime, distinctUntilChanged, switchMap, catchError, of 
   styleUrl: './application-list.component.scss',
   providers: [ConfirmationService, MessageService]
 })
-export class ApplicationListComponent implements OnInit, OnDestroy {
+export class ApplicationListComponent implements OnInit {
   applications: any[] = [];
-  applicationsCached: any[] = [];
   page = 0;
+  first = 0;
   size = 50;
   totalData = 0;
   dataIsFetching = false;
   currentRole: any;
   roleAdmin = Role.admin;
   roleClient = Role.client;
+  private sortField?: string;
+  private sortOrder = -1;
+  private q = '';
+  private listMode: ListMode;
+  // The resolver already supplied page 1; p-table fires onLazyLoad once on init, which we must not turn into
+  // a duplicate request.
+  private initialized = false;
   private searchSubject = new Subject<string>();
-  private searchSubscription: any;
+  private fetchTrigger = new Subject<void>();
 
   constructor(
     private router: Router,
@@ -47,87 +58,91 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
     private aplicanteService: AplicanteService,
+    private userService: UserService,
+    private destroyRef: DestroyRef,
   ) {
     this.currentRole = this.authService.currentRole.name;
-    
+    this.listMode = (this.route.snapshot.data['listMode'] ?? 'gestor') as ListMode;
 
-    this.applications = this.route.snapshot.data['applicationPage'].content;
-    this.applicationsCached = this.applications;
-
-    if (this.authService.currentRole.name === Role.manager || this.authService.currentRole.name === Role.chief || this.authService.currentRole.name === Role.staff) {
-      this.applications = this.applications.filter(item => item.categoria === this.authService.currentUserValue.direcao.nome);
-    }
-
-    this.totalData = this.route.snapshot.data['applicationPage'].totalElements;
+    // No client-side direcao filter here: the backend already scopes every list by direcao/ownership, and
+    // filtering a fetched page locally silently dropped rows while the paginator still counted them.
+    const resolved = this.route.snapshot.data['applicationPage'];
+    this.applications = resolved?.content ?? [];
+    this.totalData = resolved?.totalElements ?? 0;
   }
 
   ngOnInit(): void {
     this.setupSearch();
+    this.setupFetch();
   }
 
-  ngOnDestroy(): void {
-    if (this.searchSubscription) {
-      this.searchSubscription.unsubscribe();
-    }
+  /**
+   * Every page/search/sort fetch goes through one switchMap'd stream, so an in-flight request is cancelled when
+   * a newer one starts — a slow page-2 response can never land on top of fresher search results.
+   */
+  private setupFetch(): void {
+    this.fetchTrigger.pipe(
+      tap(() => this.dataIsFetching = true),
+      switchMap(() => {
+        const sort = this.sortField ? `${this.sortField},${this.sortOrder === 1 ? 'asc' : 'desc'}` : undefined;
+        return this.request(sort).pipe(
+          catchError(() => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erro',
+              detail: 'Ocorreu um erro ao obter a lista de aplicantes'
+            });
+            return of(null);
+          })
+        );
+      }),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe(response => {
+      if (response) {
+        this.applications = response.content ?? [];
+        this.totalData = response.totalElements ?? 0;
+      }
+      this.dataIsFetching = false;
+    });
   }
 
   private setupSearch(): void {
-    this.searchSubscription = this.searchSubject.pipe(
+    this.searchSubject.pipe(
       debounceTime(500),
+      // Below the 3-char threshold the query is dropped rather than ignored, so deleting back to 1-2 characters
+      // returns to the unfiltered list instead of leaving stale search results on screen.
+      map(raw => raw.trim().length >= 3 ? raw.trim() : ''),
       distinctUntilChanged(),
-      switchMap(query => {
-        if (query.length >= 3) {
-          this.dataIsFetching = true;
-          if (this.authService.currentRole.name === Role.client) {
-            const empresaId = this.authService.currentUserValue.empresa.id;
-            return this.service.searchAplicanteById(empresaId, query).pipe(
-              catchError(error => {
-                this.messageService.add({
-                  severity: 'error',
-                  summary: 'Erro',
-                  detail: error
-                });
-                return of(this.applicationsCached);
-              })
-            );
-          } else {
-            return this.aplicanteService.search(query).pipe(
-              catchError(error => {
-                this.messageService.add({
-                  severity: 'error',
-                  summary: 'Erro',
-                  detail: error
-                });
-                return of(this.applicationsCached);
-              })
-            );
-          }
-
-        } else if (query.length === 0) {
-          this.dataIsFetching = true;
-          return of(this.applicationsCached);
-        }
-        return of(null);
-      })
-    ).subscribe(result => {
-      if (result) {
-        this.applications = result;
-
-        if (this.authService.currentRole.name === Role.manager ||
-          this.authService.currentRole.name === Role.chief ||
-          this.authService.currentRole.name === Role.staff) {
-          this.applications = this.applications.filter(
-            item => item.categoria === this.authService.currentUserValue.direcao.nome
-          );
-        }
-      }
-      this.dataIsFetching = false;
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe(query => {
+      this.q = query;
+      this.resetPage();
+      this.getData();
     });
   }
 
   onGlobalFilter(table: Table, event: Event): void {
     const query = (event.target as HTMLInputElement).value;
     this.searchSubject.next(query);
+  }
+
+  // Sorting is server-side: the table only reports which column was clicked, the fetch does the ordering.
+  onLazyLoad(event: any): void {
+    if (!this.initialized) {
+      this.initialized = true;
+      return;
+    }
+    if (!event.sortField) return;
+
+    this.sortField = event.sortField;
+    this.sortOrder = event.sortOrder ?? -1;
+    this.resetPage();
+    this.getData();
+  }
+
+  private resetPage(): void {
+    this.page = 0;
+    this.first = 0;
   }
 
   toDetail(aplicante: Aplicante) {
@@ -185,7 +200,9 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
         if (this.roleAdmin === this.authService.currentRole.name) {
           this.aplicanteService.deleteById(aplicante.id).subscribe({
             next: () => {
-              this.applications = this.applications.filter(item => item.id !== aplicante.id);
+              // Refetch rather than splice locally: with server-side paging, dropping a row in memory leaves the
+              // page one short and totalData off by one.
+              this.getData();
               this.messageService.add({
                 severity: 'success',
                 summary: 'Sucesso',
@@ -205,7 +222,9 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
           const empresaId = this.authService.currentUserValue.empresa.id;
           this.service.deleteApicante(empresaId, aplicante.id).subscribe({
             next: () => {
-              this.applications = this.applications.filter(item => item.id !== aplicante.id);
+              // Refetch rather than splice locally: with server-side paging, dropping a row in memory leaves the
+              // page one short and totalData off by one.
+              this.getData();
               this.messageService.add({
                 severity: 'success',
                 summary: 'Sucesso',
@@ -228,36 +247,41 @@ export class ApplicationListComponent implements OnInit, OnDestroy {
   }
 
   onPageChange(event: any): void {
-    this.dataIsFetching = true;
     this.page = event.page;
+    this.first = event.first;
     this.size = event.rows;
-    this.getData(this.page, this.size);
+    this.getData();
   }
 
-  private getData(page: number, size: number): void {
-    if (this.authService.currentRole.name === Role.client) {
-      const empresaId = this.authService.currentUserValue.empresa.id;
-      this.service.getAplicantesPage(empresaId, page, size).subscribe({
-        next: response => {
-          this.applications = response.content;
-          this.totalData = response.totalElements;
-          this.dataIsFetching = false;
-        },
-        error: err => {
-          this.dataIsFetching = false;
-        },
-      });
-    } else {
-      this.aplicanteService.getPage(page, size).subscribe({
-        next: response => {
-          this.applications = response.content;
-          this.totalData = response.totalElements;
-          this.dataIsFetching = false;
-        },
-        error: err => {
-          this.dataIsFetching = false;
-        },
-      });
+  /** Page, search and sort all travel to the server together, so the paginator always describes what's on screen. */
+  private getData(): void {
+    this.fetchTrigger.next();
+  }
+
+  // Route-driven, not role-driven: a chief on /gestor/application/task must keep querying the task endpoint when
+  // paging, otherwise page 2 silently swaps in the whole back-office dataset.
+  private request(sort?: string): Observable<any> {
+    const user = this.authService.currentUserValue;
+    // Null right after a forced logout/redirect — don't fire a request we can't scope.
+    if (!user) return of(null);
+
+    const empresaId = user.empresa?.id;
+
+    switch (this.listMode) {
+      case 'client':
+        // /application/list is reachable by back-office roles too, and they have no empresa. Mirror
+        // getPageAplicanteOrByEmpresaIdResolver: company-scoped only for an actual client.
+        if (user.role?.name === Role.client && empresaId) {
+          return this.service.getAplicantesPage(empresaId, this.page, this.size, this.q, sort);
+        }
+        return this.aplicanteService.getPage(this.page, this.size, this.q, sort);
+      case 'task':
+        // Mirrors the role switch in getPageAplicanteByUsernameResolver.
+        return user.role?.name === Role.staff
+          ? this.userService.getPaginationAtribuidoAplicante(user.username, this.page, this.size, this.q, sort)
+          : this.userService.getPaginationAssignedAplicante(user.username, this.page, this.size, this.q, sort);
+      default:
+        return this.aplicanteService.getPage(this.page, this.size, this.q, sort);
     }
   }
 }

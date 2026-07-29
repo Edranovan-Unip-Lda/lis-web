@@ -59,15 +59,13 @@ export class EmpresaService {
     return this.http.delete<number>(`${this.apiUrl}/${username}`);
   }
 
-  getPage(page?: number, size?: number): Observable<any> {
-    let params = new HttpParams();
-    if (page && size) {
-      params.append('page', page)
-      params.append('size', size);
-      return this.http.get<any>(this.apiUrl, { params }).pipe(take(1));
-    } else {
-      return this.http.get<any>(this.apiUrl).pipe(take(1));
-    }
+  // HttpParams is immutable — append() returns a NEW instance. The previous version discarded the results,
+  // so the empresa list always requested page 0 no matter which page the paginator asked for.
+  getPage(page = 0, size = 50): Observable<any> {
+    const params = new HttpParams()
+      .append('page', page)
+      .append('size', size);
+    return this.http.get<any>(this.apiUrl, { params }).pipe(take(1));
   }
 
   search(query: string): Observable<any[]> {
@@ -84,15 +82,13 @@ export class EmpresaService {
     return this.http.patch<any>(`${this.apiUrl}/${empresaId}/aplicantes/${aplicanteId}`, formData);
   }
 
-  getAplicantesPage(empresaId: number, page?: number, size?: number): Observable<any> {
-    let params = new HttpParams();
-    if (page !== undefined && size !== undefined) {
-      params = params.append('page', page);
-      params = params.append('size', size);
-      return this.http.get<any>(`${this.apiUrl}/${empresaId}/aplicantes`, { params }).pipe(take(1));
-    } else {
-      return this.http.get<any>(`${this.apiUrl}/${empresaId}/aplicantes`).pipe(take(1));
-    }
+  getAplicantesPage(empresaId: number, page = 0, size = 50, q?: string, sort?: string): Observable<any> {
+    let params = new HttpParams()
+      .append('page', page)
+      .append('size', size);
+    if (q) params = params.append('q', q);
+    if (sort) params = params.append('sort', sort);
+    return this.http.get<any>(`${this.apiUrl}/${empresaId}/aplicantes`, { params }).pipe(take(1));
   }
 
   searchAplicanteById(id: number, query: string): Observable<any[]> {

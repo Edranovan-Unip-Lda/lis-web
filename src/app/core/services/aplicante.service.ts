@@ -13,20 +13,15 @@ export class AplicanteService {
         private http: HttpClient,
     ) { }
 
-    getPage(page?: number, size?: number): Observable<any> {
-        let params = new HttpParams();
-        if (page && size) {
-            params.append('page', page)
-            params.append('size', size);
-            return this.http.get<any>(this.apiUrl, { params }).pipe(take(1));
-        } else {
-            return this.http.get<any>(this.apiUrl).pipe(take(1));
-        }
-    }
-
-    search(query: string): Observable<any[]> {
-        let params = new HttpParams().append('q', query);
-        return this.http.get<any[]>(`${this.apiUrl}/search`, { params }).pipe(take(1));
+    // HttpParams is immutable — append() returns a NEW instance, so every param must be reassigned.
+    // The previous version discarded the results and silently sent no page/size at all.
+    getPage(page = 0, size = 50, q?: string, sort?: string): Observable<any> {
+        let params = new HttpParams()
+            .append('page', page)
+            .append('size', size);
+        if (q) params = params.append('q', q);
+        if (sort) params = params.append('sort', sort);
+        return this.http.get<any>(this.apiUrl, { params }).pipe(take(1));
     }
 
     getById(id: number): Observable<any> {

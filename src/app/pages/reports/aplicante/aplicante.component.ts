@@ -29,6 +29,7 @@ export class AplicanteComponent {
   listaEstadoAplicante = aplicanteStatusOptions;
   data: any[] = [];
   page = 0;
+  first = 0;
   size = 50;
   totalData = 0;
   dataIsFetching = false;
@@ -49,21 +50,12 @@ export class AplicanteComponent {
 
   onSubmit() {
     this.dataIsFetching = true;
-    const formData = { ...this.reportForm.value };
+    // A new filter always starts at page 1 — otherwise re-running a filter after paging queries page N of a
+    // result set that may not have N pages.
+    this.page = 0;
+    this.first = 0;
 
-    if (formData.updatedAtRange != null) {
-      const startDate = new Date(formData.updatedAtRange[0]);
-      startDate.setHours(0, 0, 0, 0);
-
-      const endDate = new Date(formData.updatedAtRange[1]);
-      endDate.setHours(23, 59, 59, 999);
-
-      formData.updatedAtFrom = startDate;
-      formData.updatedAtTo = endDate;
-      delete formData.updatedAtRange;
-    }
-
-    this.reportService.getAplicanteReport(formData, this.page, this.size).subscribe({
+    this.reportService.getAplicanteReport(this.buildFilter(), this.page, this.size).subscribe({
       next: (response) => {
         this.data = response.content;
         this.totalData = response.totalElements;
@@ -91,6 +83,7 @@ export class AplicanteComponent {
   onPageChange(event: any): void {
     this.dataIsFetching = true;
     this.page = event.page;
+    this.first = event.first;
     this.size = event.rows;
     this.getPaginationData(this.page, this.size);
   }
@@ -131,8 +124,29 @@ export class AplicanteComponent {
       });
   }
 
+  /** Form value -> report filter: the date picker gives a range, the API wants two bounds. */
+  private buildFilter(): any {
+    const formData = { ...this.reportForm.value };
+
+    if (formData.updatedAtRange != null) {
+      const startDate = new Date(formData.updatedAtRange[0]);
+      startDate.setHours(0, 0, 0, 0);
+
+      const endDate = new Date(formData.updatedAtRange[1]);
+      endDate.setHours(23, 59, 59, 999);
+
+      formData.updatedAtFrom = startDate;
+      formData.updatedAtTo = endDate;
+      delete formData.updatedAtRange;
+    }
+
+    return formData;
+  }
+
   private getPaginationData(page: number, size: number): void {
-    this.reportService.getEmpresaReport(this.reportForm.value, page, size).subscribe({
+    // Was calling getEmpresaReport with the raw form value: page 2 replaced the aplicante rows with empresa
+    // rows and dropped the date range entirely.
+    this.reportService.getAplicanteReport(this.buildFilter(), page, size).subscribe({
       next: (response) => {
         this.data = response.content;
         this.totalData = response.totalElements;

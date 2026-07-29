@@ -18,7 +18,8 @@ import { canActivateByRole } from '@/core/security/route.guard';
 export default [
     {
         path: 'list',
-        data: { breadcrumb: 'Lista' },
+        // listMode tells the shared list component which paged endpoint to call for page/search/sort.
+        data: { breadcrumb: 'Lista', listMode: 'client' },
         component: ApplicationListComponent,
         resolve: {
             applicationPage: getPageAplicanteOrByEmpresaIdResolver
