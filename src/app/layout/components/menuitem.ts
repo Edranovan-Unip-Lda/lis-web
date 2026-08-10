@@ -226,6 +226,16 @@ export const model_admin: MenuItem[] = [
                 routerLink: ['historicos/acoes']
             },
         ]
+    },
+    {
+        label: 'Definições',
+        items: [
+            {
+                label: 'Segurança',
+                icon: 'bi bi-fw bi-shield-lock',
+                routerLink: ['definicoes/seguranca']
+            },
+        ]
     }
 ];
 

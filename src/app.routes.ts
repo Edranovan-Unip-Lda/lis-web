@@ -100,6 +100,15 @@ export const appRoutes: Routes = [
                 loadComponent: () => import('@/pages/profile/profile.component').then((c) => c.ProfileComponent)
             },
             {
+                path: 'definicoes',
+                data: {
+                    breadcrumb: 'Definições',
+                    role: [Role.admin]
+                },
+                loadChildren: () => import('@/pages/definicoes/definicoes.routes'),
+                canActivate: [canActivateByRole],
+            },
+            {
                 path: 'historicos',
                 data: {
                     breadcrumb: 'Históricos',

@@ -5,6 +5,7 @@ export * from './authentication.service';
 export * from './certificado.service';
 export * from './dashboard.service';
 export * from './data-master.service';
+export * from './definicoes.service';
 export * from './documentos.service';
 export * from './empresa.service';
 export * from './export.service';
