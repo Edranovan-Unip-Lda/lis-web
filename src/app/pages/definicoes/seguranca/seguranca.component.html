@@ -1,0 +1,92 @@
+<p-toast />
+<p-confirmDialog [style]="{ width: '32rem' }" />
+
+<div class="card">
+    <div class="mb-6">
+        <h5 class="text-color">Definições de Segurança</h5>
+        <p class="text-muted-color m-0">Configurações globais que se aplicam a todos os utilizadores do sistema.</p>
+    </div>
+
+    @if (loading()) {
+        <div class="flex items-center gap-2 text-muted-color">
+            <i class="pi pi-spin pi-spinner"></i>
+            <span>A carregar definições…</span>
+        </div>
+    } @else if (loadError()) {
+        <p-message severity="error" [text]="loadError()!" styleClass="w-full" />
+    } @else {
+        <div class="border border-surface rounded-border p-4">
+            <div class="flex flex-wrap items-start justify-between gap-4">
+                <div class="flex-1 min-w-64">
+                    <h6 class="text-color mb-1">Verificação em duas etapas (2FA)</h6>
+                    <p class="text-muted-color m-0">
+                        Quando ativada, é enviado um código de 6 dígitos por email após a introdução das credenciais.
+                        Esta definição é global e aplica-se a todos os utilizadores.
+                    </p>
+                    <p class="text-muted-color mt-2 mb-0">
+                        A alteração aplica-se apenas aos próximos inícios de sessão. As sessões já iniciadas não são
+                        terminadas.
+                    </p>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <span class="text-color font-medium">{{ serverOtpEnabled() ? 'Ativada' : 'Desativada' }}</span>
+                    <!-- requestToggle owns this value: it mirrors the click, then reverts it unless the change is
+                         confirmed AND accepted by the server. The label and banner above read server state, so a
+                         setting can never appear saved when no request was sent. -->
+                    <p-toggleswitch
+                        inputId="otpEnabled"
+                        [ngModel]="otpEnabledUi"
+                        (ngModelChange)="requestToggle($event)"
+                        [disabled]="saving()" />
+                </div>
+            </div>
+
+            @if (serverOtpEnabled()) {
+                <div class="mt-4">
+                    <label for="motivo" class="block text-color font-medium mb-2">
+                        Motivo da desativação <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        pInputText
+                        id="motivo"
+                        class="w-full"
+                        [class.ng-invalid]="motivoError()"
+                        [class.p-invalid]="motivoError()"
+                        [(ngModel)]="motivo"
+                        maxlength="500"
+                        placeholder="Ex.: servidor de email indisponível"
+                        [disabled]="saving()" />
+                    @if (motivoError()) {
+                        <small class="text-red-500 block">
+                            Preencha o motivo antes de desativar. A definição não foi alterada.
+                        </small>
+                    } @else {
+                        <small class="text-muted-color">
+                            Obrigatório para desativar. Este motivo fica registado no histórico de alterações.
+                        </small>
+                    }
+                </div>
+            } @else {
+                <p-message severity="warn" styleClass="w-full mt-4">
+                    <span>
+                        <strong>Atenção:</strong> a verificação em duas etapas está DESATIVADA. O início de sessão
+                        passa a depender apenas da palavra-passe. Esta definição afeta todos os utilizadores do
+                        sistema.
+                    </span>
+                </p-message>
+            }
+
+            @if (settings(); as s) {
+                <div class="mt-4 pt-4 border-t border-surface text-muted-color">
+                    @if (s.updatedBy) {
+                        <div>Última alteração por {{ s.updatedBy }} em {{ s.updatedAt | date: 'dd/MM/yyyy HH:mm' }}</div>
+                    }
+                    @if (s.otpDisabledReason) {
+                        <div>Motivo: {{ s.otpDisabledReason }}</div>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>

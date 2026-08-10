@@ -18,7 +18,18 @@ export class AuthenticationService {
   ) { }
 
   authServer(form: User): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/authenticate`, form);
+    return this.http.post<User>(`${this.apiUrl}/authenticate`, form)
+      .pipe(
+        map(response => {
+          // 2FA globally disabled by an admin: this response IS the session — the jwt HttpOnly cookie arrived
+          // with it, so store the profile here exactly as validateOTP does. Strict === false so a backend that
+          // omits the field keeps the OTP path (fail closed on the client too).
+          if (response.otpRequired === false) {
+            this.setSession(response);
+          }
+          return response;
+        })
+      );
   }
 
   // loginToken: the single-use transaction token issued by /authenticate — the backend rejects OTP

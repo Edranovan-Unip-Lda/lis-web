@@ -106,9 +106,12 @@ export class Verification {
                 // Mirrors the BLOCKED message thrown in lis-api UserServices.getJWTByOTP — the interceptor
                 // only surfaces message strings, so the burned-OTP signal rides in the wording.
                 const isBlocked = typeof err === 'string' && err.includes('número máximo');
+                // Same idiom for the other terminal case: an administrator turned 2FA off while this screen was
+                // open, so the OTP endpoints now reject outright. Mirrors OTP_GLOBALLY_DISABLED in lis-api.
+                const otpDisabled = typeof err === 'string' && err.includes('duas etapas foi desativada');
                 setTimeout(() => {
                     this.otpInput.reset();
-                    if (isBlocked) {
+                    if (isBlocked || otpDisabled) {
                         this.animState.set('blocked');
                         this.otpInput.disable();
                     // The countdown can run out while the request is in flight; expiry wins over a retry.

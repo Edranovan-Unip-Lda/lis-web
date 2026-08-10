@@ -15,9 +15,21 @@ export interface User {
     loginToken: string;
     status: string;
     oneTimePassword: string;
+    // Which login path /users/authenticate took. true = go to the OTP screen; false = 2FA is globally
+    // disabled and the jwt cookie already arrived with this response. Optional: an older backend omits it,
+    // and the client must treat "absent" as "OTP required" (fail closed).
+    otpRequired?: boolean;
     updatedAt: Date;
     direcao: Direcao;
     signature: Documento;
+}
+
+/** Global, admin-controlled security settings (Definições → Segurança). */
+export interface SecuritySettings {
+    otpEnabled: boolean;
+    otpDisabledReason?: string;
+    updatedAt?: string;
+    updatedBy?: string;
 }
 
 export interface Direcao extends BaseModel {

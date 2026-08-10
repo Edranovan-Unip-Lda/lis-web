@@ -1,3 +1,4 @@
+import { Role } from '@/core/models/enums';
 import { AuthenticationService } from '@/core/services';
 import { OtpSessionService } from '@/core/services/otp-session.service';
 import { LayoutService } from '@/layout/service/layout.service';
@@ -54,10 +55,20 @@ export class Login {
         this.authService.authServer(form.value).subscribe({
             next: response => {
                 this.loginForm.reset();
+                this.loading = false;
+
+                // 2FA globally disabled: there is no second step — AuthenticationService already stored the
+                // session and the jwt cookie is set, so go straight into the app.
+                if (response.otpRequired === false) {
+                    // Defensive: drop any OTP gate left over from an earlier attempt made while 2FA was on,
+                    // so a stale otpSessionToken can never open /auth/verification later.
+                    this.otpSessionService.clearSession();
+                    this.router.navigate([response.role?.name === Role.client ? '/home' : '/dashboard']).then();
+                    return;
+                }
 
                 // Redirect to OTP route session
                 this.otpSessionService.createSession(response.username);
-                this.loading = false;
                 this.router.navigate(['/auth/verification'],
                     {
                         queryParams: { u: response.username },
