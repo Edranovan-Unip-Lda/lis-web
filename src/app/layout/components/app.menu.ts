@@ -60,7 +60,26 @@ export class AppMenu {
                 }
             ]
         };
-        this.model = [...base, docMenu];
+        this.model = this.scopeToDirecao([...base, docMenu]);
+    }
+
+    /**
+     * Drop the menu entries belonging to the other Direcao. Leaves that are categoria-specific carry their
+     * Categoria in `id` (see menuitem.ts); everything untagged always survives. ADMIN has no Direcao and keeps
+     * both. This is UX only — the backend rejects an out-of-direcao request regardless.
+     */
+    private scopeToDirecao(items: any[]): any[] {
+        const user = this.authService.currentUserValue;
+        const direcao = user?.direcao?.nome;
+        if (!direcao || user?.role?.name === Role.admin) return items;
+
+        // Rebuild rather than mutate: `items` still holds the shared module-level constants' child arrays.
+        const prune = (list: any[]): any[] =>
+            list
+                .filter((item) => !item.id || item.id === direcao)
+                .map((item) => (item.items ? { ...item, items: prune(item.items) } : item));
+
+        return prune(items);
     }
 
 }

@@ -54,7 +54,7 @@
              Carregar Recibo
          </span>
          <div class="card">
-             <p-fileupload #fuRecibo name="file" [disabled]="uploadedFiles.length > 0" [customUpload]="true"
+             <p-fileupload #fuRecibo name="file" [disabled]="uploadedFiles.length > 0 || uploadLoading" [customUpload]="true"
                  (uploadHandler)="onUpload($event, 'advanced', fuRecibo)" [maxFileSize]="maxFileSize" [multiple]="false"
                  accept="application/pdf" mode="advanced">
                  <ng-template #empty>

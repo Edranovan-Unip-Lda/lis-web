@@ -20,6 +20,8 @@ export default [
                     breadcrumb: 'Comércio',
                     type: AplicanteType.licenca,
                     categoria: Categoria.comercial,
+                    // listMode tells the shared list component which paged endpoint to call.
+                    listMode: 'client',
                 },
                 component: LicencasListaComponent,
                 resolve: {
@@ -44,6 +46,7 @@ export default [
                     breadcrumb: 'Indústria',
                     type: AplicanteType.licenca,
                     categoria: Categoria.industrial,
+                    listMode: 'client',
                 },
                 component: LicencasListaComponent,
                 resolve: {
@@ -74,6 +77,7 @@ export default [
                     breadcrumb: 'Comércio',
                     type: AplicanteType.cadastro,
                     categoria: Categoria.comercial,
+                    listMode: 'client',
                 },
                 component: CertificadosListaComponent,
                 resolve: {
@@ -98,6 +102,7 @@ export default [
                     breadcrumb: 'Indústria',
                     type: AplicanteType.cadastro,
                     categoria: Categoria.industrial,
+                    listMode: 'client',
                 },
                 component: CertificadosListaComponent,
                 resolve: {

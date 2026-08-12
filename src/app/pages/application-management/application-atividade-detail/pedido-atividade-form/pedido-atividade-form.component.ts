@@ -156,6 +156,7 @@ export class PedidoAtividadeFormComponent {
         this.requestForm.get('id')?.setValue(res.id);
         this.aplicanteData.pedidoLicencaAtividade = res;
         this.refreshUploadedDocs(res);
+        this.refreshPersistedIds(res); // ADDED — keep nested ids in sync so the next save updates instead of re-creating
         this.isNew = false;
         this.addMessages(true, true);
         this.dataSent.emit(res);
@@ -180,6 +181,7 @@ export class PedidoAtividadeFormComponent {
         this.requestForm.get('id')?.setValue(res.id);
         this.aplicanteData.pedidoLicencaAtividade = res;
         this.refreshUploadedDocs(res);
+        this.refreshPersistedIds(res); // ADDED — keep nested ids in sync so the next save updates instead of re-creating
         this.isNew = false;
         this.addMessages(true, false);
         this.dataSent.emit(res);
@@ -206,6 +208,7 @@ export class PedidoAtividadeFormComponent {
           this.requestForm.get('id')?.setValue(res.id);
           this.aplicanteData.pedidoLicencaAtividade = res;
           this.refreshUploadedDocs(res);
+          this.refreshPersistedIds(res); // ADDED — keep nested ids in sync so the next save updates instead of re-creating
           this.isNew = false;
           this.addMessages(true, true);
           this.dataSent.emit(res);
@@ -219,6 +222,7 @@ export class PedidoAtividadeFormComponent {
           this.requestForm.get('id')?.setValue(res.id);
           this.aplicanteData.pedidoLicencaAtividade = res;
           this.refreshUploadedDocs(res);
+          this.refreshPersistedIds(res); // ADDED — keep nested ids in sync so the next save updates instead of re-creating
           this.addMessages(true, false);
           this.dataSent.emit(res);
         },
@@ -239,6 +243,27 @@ export class PedidoAtividadeFormComponent {
     this.uploadedDocs.forEach(doc => {
       this.requestForm.get(`${doc.coluna}File`)?.setValue(doc, { emitEvent: false });
     });
+  }
+
+  /**
+   * ADDED: same idea as refreshUploadedDocs, for the nested entity ids. mapRequestFormData — the only
+   * place that fills them from the server — runs solely in ngOnInit, so a second save without a page
+   * reload re-sent `empresaSede.id: null` and made the backend build a brand-new Endereco. That is what
+   * produced the production TransientObjectException on PUT .../pedidos/atividade/{id}.
+   */
+  private refreshPersistedIds(res: PedidoAtividadeLicenca): void {
+    const setId = (path: string, id: number | undefined) => {
+      if (id == null) return;
+      this.requestForm.get(path)?.setValue(id, { emitEvent: false });
+    };
+
+    setId('empresaSede.id', res?.empresaSede?.id);
+    setId('representante.id', res?.representante?.id);
+    setId('representante.morada.id', res?.representante?.morada?.id);
+    setId('gerente.id', res?.gerente?.id);
+    setId('gerente.morada.id', res?.gerente?.morada?.id);
+    setId('arrendador.id', res?.arrendador?.id);
+    setId('arrendador.endereco.id', res?.arrendador?.endereco?.id);
   }
 
   get pedidoIsDraft(): boolean {

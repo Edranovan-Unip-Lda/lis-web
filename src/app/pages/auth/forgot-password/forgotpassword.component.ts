@@ -3,7 +3,7 @@ import { AuthenticationService } from '@/core/services';
 import { Component, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { RecaptchaV3Module, ReCaptchaV3Service } from 'ng-recaptcha-2';
+import { RecaptchaGuardService } from '@/core/services/recaptcha-guard.service';
 import { Button } from 'primeng/button';
 import { Fluid } from 'primeng/fluid';
 import { IconField } from 'primeng/iconfield';
@@ -15,7 +15,8 @@ import { Ripple } from 'primeng/ripple';
 @Component({
     standalone: true,
     selector: 'app-forgot-password',
-    imports: [IconField, InputIcon, InputText, Button, Ripple, Fluid, RouterLink, ReactiveFormsModule, Message, RecaptchaV3Module],
+    // CHANGED: RecaptchaV3Module dropped — it only ever contributed providers, now hoisted to root in app.config.
+    imports: [IconField, InputIcon, InputText, Button, Ripple, Fluid, RouterLink, ReactiveFormsModule, Message],
     templateUrl: './forgot-password.component.html',
 })
 export class ForgotPassword {
@@ -25,7 +26,7 @@ export class ForgotPassword {
 
     constructor(
         private authService: AuthenticationService,
-        private recaptchaV3Service: ReCaptchaV3Service,
+        private recaptchaGuard: RecaptchaGuardService,
     ) { }
 
     submit() {
@@ -36,11 +37,12 @@ export class ForgotPassword {
         }
         this.loading = true;
         // #22: obtain a reCAPTCHA v3 token, then request the reset email.
-        this.recaptchaV3Service.execute(RecaptchaAction.forgotPassword).subscribe({
+        this.recaptchaGuard.execute(RecaptchaAction.forgotPassword).subscribe({
             next: (token) => this.requestReset(token),
-            error: () => {
+            // CHANGED: the guard bounds a hung mint and reports the cause instead of one catch-all string.
+            error: (err) => {
                 this.loading = false;
-                this.messages.set([{ severity: 'error', content: 'Falha na verificação reCAPTCHA. Tente novamente.' }]);
+                this.messages.set([{ severity: 'error', content: this.recaptchaGuard.messageFor(err) }]);
             }
         });
     }

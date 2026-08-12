@@ -1,6 +1,6 @@
 import { AplicanteType, Categoria } from '@/core/models/enums';
 import { StatusIconPipe, StatusSeverityPipe } from '@/core/pipes/custom.pipe';
-import { AuthenticationService, EmpresaService } from '@/core/services';
+import { AuthenticationService, EmpresaService, UserService } from '@/core/services';
 import { DatePipe, UpperCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -25,11 +25,14 @@ export class LicencasListaComponent {
   totalData = 0;
   dataIsFetching = false;
   categoria!: Categoria;
+  // Which paged endpoint to call: the back-office list ('gestor') or the company's own ('client').
+  private listMode: 'gestor' | 'client' = 'client';
 
   constructor(
     private route: ActivatedRoute,
     private authService: AuthenticationService,
     private empresaService: EmpresaService,
+    private userService: UserService,
     private router: Router,
   ) { }
 
@@ -37,6 +40,7 @@ export class LicencasListaComponent {
     this.dataList = this.route.snapshot.data['licencaListResolver'].content;
     this.totalData = this.route.snapshot.data['licencaListResolver'].totalElements;
     this.categoria = this.route.snapshot.data['categoria'];
+    this.listMode = this.route.snapshot.data['listMode'] ?? 'client';
   }
   onGlobalFilter(table: Table, event: Event) {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
@@ -50,7 +54,19 @@ export class LicencasListaComponent {
   }
 
   getData(page: number, size: number): void {
-    this.empresaService.getPageCertificados(this.authService.currentUserValue.empresa.id, this.categoria, AplicanteType.licenca, page, size).subscribe({
+    // Mirrors the resolver: staff page through /users/{id}/certificados (they have no empresa), a company
+    // through /empresas/{id}/certificados. Note the two services take their args in a different order.
+    const user = this.authService.currentUserValue;
+    if (!user) {
+      this.dataIsFetching = false;
+      return;
+    }
+
+    const request$ = this.listMode === 'gestor'
+      ? this.userService.getPageCertificados(user.id, AplicanteType.licenca, this.categoria, page, size)
+      : this.empresaService.getPageCertificados(user.empresa?.id, this.categoria, AplicanteType.licenca, page, size);
+
+    request$.subscribe({
       next: data => {
         this.dataList = data.content;
         this.totalData = data.totalElements;

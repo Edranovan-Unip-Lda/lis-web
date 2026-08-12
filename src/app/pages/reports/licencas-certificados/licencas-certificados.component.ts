@@ -1,6 +1,6 @@
 import { Empresa } from '@/core/models/entities.model';
-import { AplicanteType } from '@/core/models/enums';
-import { DataMasterService } from '@/core/services';
+import { AplicanteType, Role } from '@/core/models/enums';
+import { AuthenticationService, DataMasterService } from '@/core/services';
 import { ExportService } from '@/core/services/export.service';
 import { ReportService } from '@/core/services/report.service';
 import { applicationTypesOptions, caraterizacaEstabelecimentoOptions, categoryTpesOptions, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEstabelecimentoOptions, tipoPedidoVitoriaAll } from '@/core/utils/global-function';
@@ -66,6 +66,7 @@ export class LicencasCertificadosComponent {
     private reportService: ReportService,
     private exportService: ExportService,
     private dataMasterService: DataMasterService,
+    private authService: AuthenticationService,
   ) { }
 
   ngOnInit() {
@@ -84,6 +85,15 @@ export class LicencasCertificadosComponent {
         this.tipoAplicante = undefined as any;
       }
     });
+
+    // Offer only the caller's own Direcao. Set here rather than in initForm — this is the p-select's options
+    // array, not a form control, so it survives the rebuild initForm does on every aplicante-type change. Left
+    // unselected on purpose: the backend fills a null categoria in with the caller's Direcao, and pre-selecting
+    // it would make isFormEmpty() never fire. categoryTpesOptions is shared — filter a copy, never mutate it.
+    const user = this.authService.currentUserValue;
+    if (user?.role?.name !== Role.admin && user?.direcao?.nome) {
+      this.listaCategoria = categoryTpesOptions.filter((o: any) => o.value === user.direcao.nome);
+    }
 
     this.setupSucoSearch();
   }
