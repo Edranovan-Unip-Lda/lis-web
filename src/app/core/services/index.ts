@@ -14,5 +14,6 @@ export * from './file-upload.service';
 export * from './notificacao.service';
 export * from './otp-session.service';
 export * from './pedido.service';
+export * from './recaptcha-guard.service';
 export * from './report.service';
 export * from './user.service';

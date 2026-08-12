@@ -2,6 +2,7 @@ import { Aldeia, Role } from '@/core/models/data-master.model';
 import { RecaptchaAction, TipoNacionalidade, TipoPropriedade } from '@/core/models/enums';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { EmpresaService } from '@/core/services/empresa.service';
+import { RecaptchaGuardService } from '@/core/services/recaptcha-guard.service';
 import { estadoCivilOptions, maxFileSizeUpload, tipoDocumentoOptions, tipoNacionalidadeOptions, tipoPropriedadeOptions, tipoRelacaoFamiliaOptions, tipoRepresentante } from '@/core/utils/global-function';
 import { alphanumericValidator } from '@/core/validators/alphanumeric';
 import { greaterThanValidator } from '@/core/validators/greater-than';
@@ -11,7 +12,6 @@ import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { ReCaptchaV3Service, RecaptchaV3Module } from 'ng-recaptcha-2';
 import { NgxPrintModule } from 'ngx-print';
 import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
@@ -40,7 +40,8 @@ interface Notification {
 @Component({
     selector: 'app-register',
     standalone: true,
-    imports: [Button, FileUpload, RouterLink, InputText, Fluid, Ripple, Password, ReactiveFormsModule, Select, Message, StepperModule, DatePicker, InputGroup, InputGroupAddonModule, InputNumber, Divider, Tooltip, DatePipe, NgxPrintModule, CurrencyPipe, RecaptchaV3Module, DecimalPipe],
+    // CHANGED: RecaptchaV3Module dropped — it only ever contributed providers, now hoisted to root in app.config.
+    imports: [Button, FileUpload, RouterLink, InputText, Fluid, Ripple, Password, ReactiveFormsModule, Select, Message, StepperModule, DatePicker, InputGroup, InputGroupAddonModule, InputNumber, Divider, Tooltip, DatePipe, NgxPrintModule, CurrencyPipe, DecimalPipe],
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss']
 })
@@ -101,7 +102,7 @@ export class Register {
         private route: ActivatedRoute,
         private dataMasterService: DataMasterService,
         private empresaService: EmpresaService,
-        private recaptchaV3Service: ReCaptchaV3Service
+        private recaptchaGuard: RecaptchaGuardService
     ) { }
 
 
@@ -680,7 +681,9 @@ export class Register {
     /** Open the registration session once (verify reCAPTCHA → sessionToken), then reuse it for every upload. */
     private ensureSession(): Observable<string> {
         if (this.sessionToken) return of(this.sessionToken);
-        return this.recaptchaV3Service.execute(RecaptchaAction.registerEmpresa).pipe(
+        // CHANGED: via RecaptchaGuardService, which bounds + retries the token mint. Without it a blocked
+        // api.js leaves execute() queued forever and step 1 hangs with no error at all.
+        return this.recaptchaGuard.execute(RecaptchaAction.registerEmpresa).pipe(
             switchMap(token => this.empresaService.verifyRecaptcha(token)),
             map(res => (this.sessionToken = res.sessionToken))
         );
@@ -692,9 +695,11 @@ export class Register {
         // Bootstrap the session on the first selection, then stage each file immediately and independently.
         this.ensureSession().subscribe({
             next: () => files.forEach(file => this.stageOne(file)),
-            error: () => {
+            // CHANGED: was one generic string for every cause. The guard maps a local mint failure to actionable
+            // advice, and lets the API's own message (which now names the real reason) through untouched.
+            error: (err) => {
                 this.isError = true;
-                this.errorMessage = 'Falha na verificação reCAPTCHA. Tente novamente.';
+                this.errorMessage = this.recaptchaGuard.messageFor(err);
             }
         });
     }

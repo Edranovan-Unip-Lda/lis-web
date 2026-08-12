@@ -6,7 +6,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { QRCodeComponent } from 'angularx-qrcode';
-import { RecaptchaV3Module, ReCaptchaV3Service } from 'ng-recaptcha-2';
+import { RecaptchaGuardService } from '@/core/services/recaptcha-guard.service';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { Fluid } from 'primeng/fluid';
@@ -21,7 +21,8 @@ import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-search',
   // CHANGED: added Image (license preview) + Tag (status badge)
-  imports: [Fluid, Message, Button, InputGroup, InputGroupAddon, InputText, Skeleton, Tag, RecaptchaV3Module, DatePipe, NgClass, NgStyle, QRCodeComponent, NgTemplateOutlet, ReactiveFormsModule, UpperCasePipe],
+  // CHANGED: RecaptchaV3Module dropped — it only ever contributed providers, now hoisted to root in app.config.
+  imports: [Fluid, Message, Button, InputGroup, InputGroupAddon, InputText, Skeleton, Tag, DatePipe, NgClass, NgStyle, QRCodeComponent, NgTemplateOutlet, ReactiveFormsModule, UpperCasePipe],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
   providers: [MessageService]
@@ -51,7 +52,7 @@ export class SearchComponent implements OnDestroy {
     private route: ActivatedRoute,
     private certificadoService: CertificadoService,
     private documentoService: DocumentosService,
-    private recaptchaV3Service: ReCaptchaV3Service,
+    private recaptchaGuard: RecaptchaGuardService,
   ) { }
 
   ngOnInit(): void {
@@ -96,7 +97,15 @@ export class SearchComponent implements OnDestroy {
     this.searched.set(true);
 
     if (numero.match(this.numeroRegex)) {
-      this.recaptchaV3Service.execute(RecaptchaAction.certificadoSearch).subscribe(token => {
+      this.recaptchaGuard.execute(RecaptchaAction.certificadoSearch).subscribe({
+        // CHANGED: this subscribe had no error callback at all — a failed token mint left the spinner running
+        // forever with no message. The guard also bounds the mint so it cannot hang indefinitely.
+        error: (err) => {
+          this.messages.set([{ severity: 'error', content: this.recaptchaGuard.messageFor(err) }]);
+          this.certificadoData = null;
+          this.loading = false;
+        },
+        next: (token) => {
         this.certificadoService.searchByNumero(numero, token).subscribe({
           next: (certificado) => {
             // Type guards: check for unique properties
@@ -125,6 +134,7 @@ export class SearchComponent implements OnDestroy {
             this.loading = false;
           }
         });
+        }
       });
 
     } else {
