@@ -68,6 +68,8 @@ export class ApplicationCadastroDetailComponent {
   originalAldeias: any = [];
 
   uploadedFiles: any[] = [];
+  uploadLoading = false; // ADDED — in-flight guard: uploadedFiles only fills on success, so without this a
+                         // second click during the request fires a duplicate PUT and the server 409s.
   uploadedDocs: any[] = [];
   uploadUrl = signal(`${environment.apiUrl}/aplicantes`);
   uploadURLDocs = signal(`${environment.apiUrl}/documentos`);
@@ -582,8 +584,13 @@ export class ApplicationCadastroDetailComponent {
   }
 
   onUpload(event: any, arg: string, uploader?: FileUpload) {
+    if (this.uploadLoading) return; // ADDED — drop a duplicate click while the PUT is still in flight
+    this.uploadLoading = true;
     this.fileUploadService.upload<any>(this.uploadUrl(), event.files, 'put', 'file')
-      .pipe(finalize(() => uploader?.clear()))
+      .pipe(finalize(() => {
+        this.uploadLoading = false;
+        uploader?.clear();
+      }))
       .subscribe({
         next: (recibo) => {
           if (recibo) {
@@ -596,11 +603,15 @@ export class ApplicationCadastroDetailComponent {
             detail: 'Arquivo carregado com sucesso!'
           });
         },
-        error: () => {
+        error: (err) => {
           this.messageService.add({
             severity: 'error',
             summary: 'Erro',
-            detail: 'Falha no carregamento do arquivo!'
+            // CHANGED: 409 = the fatura already has a recibo. Show the server's message instead of the
+            // generic failure, so the user knows to remove the existing one first.
+            detail: err?.status === 409
+              ? (err.error?.message ?? 'Fatura já possui recibo vinculado.')
+              : 'Falha no carregamento do arquivo!'
           });
         }
       });

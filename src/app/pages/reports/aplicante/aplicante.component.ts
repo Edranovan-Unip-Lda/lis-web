@@ -1,5 +1,7 @@
 import { Aplicante } from '@/core/models/entities.model';
+import { Role } from '@/core/models/enums';
 import { StatusIconPipe, StatusSeverityPipe } from '@/core/pipes/custom.pipe';
+import { AuthenticationService } from '@/core/services';
 import { ExportService } from '@/core/services/export.service';
 import { ReportService } from '@/core/services/report.service';
 import { aplicanteStatusOptions, applicationTypesOptions, categoryTpesOptions } from '@/core/utils/global-function';
@@ -41,11 +43,20 @@ export class AplicanteComponent {
     private route: ActivatedRoute,
     private reportService: ReportService,
     private exportService: ExportService,
+    private authService: AuthenticationService,
   ) { }
 
   ngOnInit() {
     this.initForm();
     this.listaEmpresa = this.route.snapshot.data['listaEmpresa'].content.map((e: any) => ({ name: e.nome, value: e.id }));
+
+    // Offer only the caller's own Direcao. Left unselected on purpose: the backend fills a null categoria in
+    // with the caller's Direcao, and pre-selecting it would make the "fill at least one field" guard never fire.
+    // categoryTpesOptions is a shared constant — assign a filtered copy, never mutate it.
+    const user = this.authService.currentUserValue;
+    if (user?.role?.name !== Role.admin && user?.direcao?.nome) {
+      this.listaCategoriaAplicante = categoryTpesOptions.filter((o: any) => o.value === user.direcao.nome);
+    }
   }
 
   onSubmit() {

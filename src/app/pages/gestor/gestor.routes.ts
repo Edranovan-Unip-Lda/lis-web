@@ -3,7 +3,7 @@ import { getByIdResolver, getPageResolver } from "@/core/resolvers/aplicante.res
 import { getCertificadoById } from "@/core/resolvers/certificados.resolver";
 import { getAllAldeiasResolver, getPageClasseAtividadeResolver, getPostosResolver, getSociedadeComercialResolver, getTaxaByCategoriaAndTipoResolver } from "@/core/resolvers/data-master.resolver";
 import { getAssignedAplicanteByIdResolver, getPageAplicanteByUsernameResolver, getPageCertificadosByUsername, getPageUserResolver, getUsersByDirecaoIdAndRole_Staff } from "@/core/resolvers/user.resolver";
-import { canActivateByRole } from "@/core/security/route.guard";
+import { canActivateByDirecao, canActivateByRole } from "@/core/security/route.guard";
 import { Routes } from "@angular/router";
 import { AutoVistoriaComponent } from "../application-management/application-atividade-detail/auto-vistoria/auto-vistoria.component";
 import { AutoVistoriaPdfComponent } from "../application-management/application-atividade-detail/pdf/auto-vistoria-pdf/auto-vistoria-pdf.component";
@@ -200,7 +200,10 @@ export default [
                     breadcrumb: 'Comércio',
                     type: AplicanteType.licenca,
                     categoria: Categoria.comercial,
+                    // listMode tells the shared list component which paged endpoint to call.
+                    listMode: 'gestor',
                 },
+                canActivate: [canActivateByDirecao],
                 component: LicencasListaComponent,
                 resolve: {
                     licencaListResolver: getPageCertificadosByUsername
@@ -213,6 +216,7 @@ export default [
                     type: AplicanteType.licenca,
                     categoria: Categoria.comercial,
                 },
+                canActivate: [canActivateByDirecao],
                 component: CertificadoAtividadePdfComponent,
                 resolve: {
                     certificadoResolver: getCertificadoById
@@ -224,7 +228,9 @@ export default [
                     breadcrumb: 'Indústria',
                     type: AplicanteType.licenca,
                     categoria: Categoria.industrial,
+                    listMode: 'gestor',
                 },
+                canActivate: [canActivateByDirecao],
                 component: LicencasListaComponent,
                 resolve: {
                     licencaListResolver: getPageCertificadosByUsername
@@ -237,6 +243,7 @@ export default [
                     type: AplicanteType.licenca,
                     categoria: Categoria.industrial,
                 },
+                canActivate: [canActivateByDirecao],
                 component: CertificadoAtividadePdfComponent,
                 resolve: {
                     certificadoResolver: getCertificadoById
@@ -254,7 +261,9 @@ export default [
                     breadcrumb: 'Comércio',
                     type: AplicanteType.cadastro,
                     categoria: Categoria.comercial,
+                    listMode: 'gestor',
                 },
+                canActivate: [canActivateByDirecao],
                 component: CertificadosListaComponent,
                 resolve: {
                     licencaListResolver: getPageCertificadosByUsername
@@ -267,6 +276,7 @@ export default [
                     type: AplicanteType.cadastro,
                     categoria: Categoria.comercial,
                 },
+                canActivate: [canActivateByDirecao],
                 component: CertificatePdfComponent,
                 resolve: {
                     certificadoResolver: getCertificadoById
@@ -278,7 +288,9 @@ export default [
                     breadcrumb: 'Indústria',
                     type: AplicanteType.cadastro,
                     categoria: Categoria.industrial,
+                    listMode: 'gestor',
                 },
+                canActivate: [canActivateByDirecao],
                 component: CertificadosListaComponent,
                 resolve: {
                     licencaListResolver: getPageCertificadosByUsername
@@ -291,6 +303,7 @@ export default [
                     type: AplicanteType.cadastro,
                     categoria: Categoria.industrial,
                 },
+                canActivate: [canActivateByDirecao],
                 component: CertificatePdfComponent,
                 resolve: {
                     certificadoResolver: getCertificadoById

@@ -1,3 +1,4 @@
+import { Categoria } from '@/core/models/enums';
 
 interface MenuItem {
     label?: string;
@@ -287,11 +288,14 @@ export const model_manager: MenuItem[] = [
                 icon: 'bi bi-fw bi-journal-text',
                 items: [
                     {
+                        // id = the Direcao this entry belongs to; AppMenu drops the other one for non-admins.
+                        id: Categoria.comercial,
                         label: 'Comercio',
                         icon: 'bi bi-fw bi-bag',
                         routerLink: ['gestor/certificados/comercio']
                     },
                     {
+                        id: Categoria.industrial,
                         label: 'Industria',
                         icon: 'bi bi-fw bi-buildings',
                         routerLink: ['gestor/certificados/industria']
@@ -304,11 +308,13 @@ export const model_manager: MenuItem[] = [
                 icon: 'bi bi-fw bi-journal-medical',
                 items: [
                     {
+                        id: Categoria.comercial,
                         label: 'Comercio',
                         icon: 'bi bi-fw bi-bag',
                         routerLink: ['gestor/licencas/comercio']
                     },
                     {
+                        id: Categoria.industrial,
                         label: 'Industria',
                         icon: 'bi bi-fw bi-buildings',
                         routerLink: ['gestor/licencas/industria']
@@ -394,11 +400,14 @@ export const model_staff: MenuItem[] = [
                 icon: 'bi bi-fw bi-journal-text',
                 items: [
                     {
+                        // id = the Direcao this entry belongs to; AppMenu drops the other one for non-admins.
+                        id: Categoria.comercial,
                         label: 'Comercio',
                         icon: 'bi bi-fw bi-bag',
                         routerLink: ['gestor/certificados/comercio']
                     },
                     {
+                        id: Categoria.industrial,
                         label: 'Industria',
                         icon: 'bi bi-fw bi-buildings',
                         routerLink: ['gestor/certificados/industria']
@@ -411,11 +420,13 @@ export const model_staff: MenuItem[] = [
                 icon: 'bi bi-fw bi-journal-medical',
                 items: [
                     {
+                        id: Categoria.comercial,
                         label: 'Comercio',
                         icon: 'bi bi-fw bi-bag',
                         routerLink: ['gestor/licencas/comercio']
                     },
                     {
+                        id: Categoria.industrial,
                         label: 'Industria',
                         icon: 'bi bi-fw bi-buildings',
                         routerLink: ['gestor/licencas/industria']

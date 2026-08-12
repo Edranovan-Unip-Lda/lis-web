@@ -55,7 +55,7 @@
              Carregar Recibo
          </span>
          <div class="card">
-             <p-fileupload #fuRecibo name="file" [disabled]="uploadedFiles.length > 0" [customUpload]="true" [chooseLabel]="'Selecione'"
+             <p-fileupload #fuRecibo name="file" [disabled]="uploadedFiles.length > 0 || uploadLoading" [customUpload]="true" [chooseLabel]="'Selecione'"
                  [uploadLabel]="'Carregar'" [cancelLabel]="'Cancelar'" (uploadHandler)="onUpload($event, 'advanced', fuRecibo)"
                  [maxFileSize]="maxFileSize" [multiple]="false" accept="application/pdf,image/*" mode="advanced">
                  <ng-template #empty>
