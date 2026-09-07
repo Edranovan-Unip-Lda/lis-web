@@ -7,6 +7,7 @@ import { estadoCivilOptions, maxFileSizeUpload, tipoDocumentoOptions, tipoNacion
 import { alphanumericValidator } from '@/core/validators/alphanumeric';
 import { greaterThanValidator } from '@/core/validators/greater-than';
 import { nifUniquenessValidator } from '@/core/validators/nif-uniqueness';
+import { sociedadeComercialNameValidator } from '@/core/validators/sociedade-comercial-name';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { Component, OnInit, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -63,6 +64,8 @@ export class EmpresaFormComponent implements OnInit {
   empresa!: Empresa;
   // The company's NIF as loaded — lets the async validator skip the check while the value is unchanged.
   private originalNif: string | null = null;
+  // Likewise for the name: records saved before the legal-form rule existed must stay editable.
+  private originalNome: string | null = null;
   uploadURLDocs = signal(`${environment.apiUrl}/documentos`);
   loadingDownloadButtons = new Set<string>();
   loadingRemoveButtons = new Set<string>();
@@ -678,7 +681,7 @@ export class EmpresaFormComponent implements OnInit {
   private initForm(): void {
     this.empresaForm = this._fb.group({
       id: [null],
-      nome: [null, [Validators.required, Validators.minLength(3)]],
+      nome: [null, [Validators.required, Validators.minLength(3), sociedadeComercialNameValidator(() => this.listaSociedadeComercial, () => this.originalNome)]],
       // updateOn: 'blur' → async uniqueness check hits the BE on blur; skipped while NIF equals the loaded value.
       nif: [null, {
         validators: [Validators.required, alphanumericValidator()],
@@ -823,6 +826,7 @@ export class EmpresaFormComponent implements OnInit {
   private async mapEmpresaForm(empresa: Empresa): Promise<void> {
     this.aldeias = await this.setAldeiaListBySucoId(empresa.sede.aldeia?.suco.id);
     this.originalNif = empresa.nif ?? null;
+    this.originalNome = empresa.nome ?? null;
 
     this.empresaForm.patchValue({
       id: empresa.id,
