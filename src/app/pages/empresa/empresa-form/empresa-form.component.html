@@ -16,6 +16,14 @@
                                     Nome da Empresa
                                 </label>
                                 <input formControlName="nome" id="nome" type="text" pInputText fluid />
+                                @if (empresaForm.get('nome')?.errors?.['sociedadeComercialInName']) {
+                                <p class="text-amber-600 text-sm mt-1">
+                                    <i class="pi pi-exclamation-triangle mr-1"></i>
+                                    Ups! O nome da empresa não deve conter o tipo de sociedade
+                                    (<strong>{{ empresaForm.get('nome')?.errors?.['sociedadeComercialInName'].matched.join(', ') }}</strong>).
+                                    Esse tipo será definido no campo "Tipo de Sociedade Comercial" abaixo.
+                                </p>
+                                }
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="sociedadeComercial" class="font-medium  mb-2 block">

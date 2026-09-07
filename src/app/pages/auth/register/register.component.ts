@@ -7,10 +7,11 @@ import { estadoCivilOptions, maxFileSizeUpload, tipoDocumentoOptions, tipoNacion
 import { alphanumericValidator } from '@/core/validators/alphanumeric';
 import { greaterThanValidator } from '@/core/validators/greater-than';
 import { nifUniquenessValidator } from '@/core/validators/nif-uniqueness';
+import { sociedadeComercialNameValidator } from '@/core/validators/sociedade-comercial-name';
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NgxPrintModule } from 'ngx-print';
 import { Button } from 'primeng/button';
@@ -993,28 +994,9 @@ export class Register {
         (this as any)[key] = value;
     }
 
-    private sociedadeComercialNameValidator(): ValidatorFn {
-        const normalize = (v: unknown) =>
-            (v ?? '')
-                .toString()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .trim()
-                .toLowerCase();
-        return (control: AbstractControl): ValidationErrors | null => {
-            const raw = normalize(control.value);
-            if (!raw) return null;
-            const list: any[] = this.listaSociedadeComercial || [];
-            const matched = list
-                .map(s => (s?.nome ?? '').toString().trim())
-                .filter(nome => !!nome && raw.includes(normalize(nome)));
-            return matched.length ? { sociedadeComercialInName: { matched } } : null;
-        };
-    }
-
     private initForm(): void {
         this.empresaForm = this._fb.group({
-            nome: [null, [Validators.required, Validators.minLength(3), this.sociedadeComercialNameValidator()]],
+            nome: [null, [Validators.required, Validators.minLength(3), sociedadeComercialNameValidator(() => this.listaSociedadeComercial)]],
             // updateOn: 'blur' → the async uniqueness check hits the BE only when the cursor leaves the field.
             nif: [null, {
                 validators: [Validators.required, alphanumericValidator()],

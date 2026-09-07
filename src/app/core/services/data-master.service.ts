@@ -94,21 +94,27 @@ export class DataMasterService {
     searchPostosByNome(nome: string): Observable<any> {
         let params = new HttpParams()
             .set('nome', nome)
-            .set('projection', 'withMunicipio');
+            .set('projection', 'withMunicipio')
+            .set('sort', 'nome,asc')
+            .set('size', '50');
         return this.http.get<any>(`${this.apiUrl}/postos/search/findByNomeContainingIgnoreCase`, { params }).pipe(take(1));
     }
 
     searchSucosByNome(nome: string): Observable<any> {
         let params = new HttpParams()
             .set('nome', nome)
-            .set('projection', 'withPostoAdministrativo');
+            .set('projection', 'withPostoAdministrativo')
+            .set('sort', 'nome,asc')
+            .set('size', '50');
         return this.http.get<any>(`${this.apiUrl}/sucos/search/findByNomeContainingIgnoreCase`, { params }).pipe(take(1));
     }
 
     searchAldeiasByNome(nome: string): Observable<any> {
         let params = new HttpParams()
             .set('nome', nome)
-            .set('projection', 'withSuco');
+            .set('projection', 'withSuco')
+            .set('sort', 'nome,asc')
+            .set('size', '50');
         return this.http.get<any>(`${this.apiUrl}/aldeias/search/findByNomeContainingIgnoreCase`, { params }).pipe(take(1));
     }
 
