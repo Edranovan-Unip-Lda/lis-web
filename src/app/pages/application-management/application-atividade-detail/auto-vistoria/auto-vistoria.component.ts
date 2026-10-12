@@ -494,12 +494,12 @@ export class AutoVistoriaComponent implements OnInit {
             id: formData.requerente.sede.aldeia
           }
         },
-        residencia: {
+        residencia: formData.requerente.residencia.aldeia ? {
           ...formData.requerente.residencia,
           aldeia: {
             id: formData.requerente.residencia.aldeia
           }
-        }
+        } : null
       },
     }
   }
@@ -749,6 +749,32 @@ export class AutoVistoriaComponent implements OnInit {
       dataHora: new Date(autoVistoria.updatedAt)
     });
 
+    // No empresa representante to copy in → these fields were typed by the user; bring them back.
+    if (!this.aplicante.empresa?.representante && _requerente) {
+      const residencia = _requerente.residencia;
+      this.listaAldeiaResidencia = this.withAldeiaOption(this.listaAldeiaResidencia, residencia?.aldeia);
+      this.autoVistoriaForm.patchValue({
+        requerente: {
+          nomeRepresentante: _requerente.nomeRepresentante,
+          pai: _requerente.pai,
+          mae: _requerente.mae,
+          dataNascimento: _requerente.dataNascimento ? new Date(_requerente.dataNascimento) : null,
+          estadoCivil: _requerente.estadoCivil,
+          nacionalidade: _requerente.nacionalidade,
+          naturalidade: _requerente.naturalidade,
+          tipoDocumento: _requerente.tipoDocumento,
+          numeroDocumento: _requerente.numeroDocumento,
+          residencia: {
+            local: residencia?.local,
+            aldeia: residencia?.aldeia?.id,
+            suco: residencia?.aldeia?.suco.nome,
+            postoAdministrativo: residencia?.aldeia?.suco.postoAdministrativo.nome,
+            municipio: residencia?.aldeia?.suco.postoAdministrativo.municipio.nome
+          }
+        }
+      });
+    }
+
     // Restore previously uploaded documents so they render/download on reload.
     if (autoVistoria.documentos?.length) {
       this.uploadedFiles = [...autoVistoria.documentos];
@@ -763,7 +789,6 @@ export class AutoVistoriaComponent implements OnInit {
 
   private mapRequerenteForm(empresa: Empresa): void {
     this.listaAldeiaRequerente = this.withAldeiaOption(this.listaAldeiaRequerente, empresa.sede.aldeia);
-    this.listaAldeiaResidencia = this.withAldeiaOption(this.listaAldeiaResidencia, empresa.representante.morada.aldeia);
     this.autoVistoriaForm.patchValue({
       requerente: {
         denominacaoSocial: empresa.nome,
@@ -779,24 +804,41 @@ export class AutoVistoriaComponent implements OnInit {
         gerente: empresa.gerente.nome,
         telefone: empresa.gerente.telefone,
         email: empresa.gerente.email,
-        nomeRepresentante: empresa.representante.nome,
-        pai: empresa.representante.pai,
-        mae: empresa.representante.mae,
-        dataNascimento: new Date(empresa.representante.dataNascimento),
-        estadoCivil: empresa.representante.estadoCivil,
-        nacionalidade: empresa.representante.nacionalidade,
-        naturalidade: empresa.representante.naturalidade,
-        tipoDocumento: empresa.representante.tipoDocumento,
-        numeroDocumento: empresa.representante.numeroDocumento,
-        residencia: {
-          local: empresa.representante.morada.local,
-          aldeia: empresa.representante.morada.aldeia.id,
-          suco: empresa.representante.morada.aldeia.suco.nome,
-          postoAdministrativo: empresa.representante.morada.aldeia.suco.postoAdministrativo.nome,
-          municipio: empresa.representante.morada.aldeia.suco.postoAdministrativo.municipio.nome
-        },
       },
       nomeAtuante: empresa.nome,
+    });
+
+    const rep = empresa.representante;
+    if (!rep) {
+      // Optional: nothing to copy in — let the user fill it (only while the report is still editable).
+      if (this.autoVistoriaForm.enabled) {
+        ['nomeRepresentante', 'pai', 'mae', 'dataNascimento', 'estadoCivil', 'nacionalidade', 'naturalidade',
+          'tipoDocumento', 'numeroDocumento', 'residencia.local', 'residencia.aldeia']
+          .forEach(c => this.autoVistoriaForm.get(`requerente.${c}`)?.enable({ emitEvent: false }));
+      }
+      return;
+    }
+
+    this.listaAldeiaResidencia = this.withAldeiaOption(this.listaAldeiaResidencia, rep.morada?.aldeia);
+    this.autoVistoriaForm.patchValue({
+      requerente: {
+        nomeRepresentante: rep.nome,
+        pai: rep.pai,
+        mae: rep.mae,
+        dataNascimento: rep.dataNascimento ? new Date(rep.dataNascimento) : null,
+        estadoCivil: rep.estadoCivil,
+        nacionalidade: rep.nacionalidade,
+        naturalidade: rep.naturalidade,
+        tipoDocumento: rep.tipoDocumento,
+        numeroDocumento: rep.numeroDocumento,
+        residencia: {
+          local: rep.morada?.local,
+          aldeia: rep.morada?.aldeia?.id,
+          suco: rep.morada?.aldeia?.suco.nome,
+          postoAdministrativo: rep.morada?.aldeia?.suco.postoAdministrativo.nome,
+          municipio: rep.morada?.aldeia?.suco.postoAdministrativo.municipio.nome
+        },
+      },
     });
   }
 

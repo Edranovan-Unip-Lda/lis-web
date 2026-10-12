@@ -9,7 +9,8 @@ import { greaterThanValidator } from '@/core/validators/greater-than';
 import { nifUniquenessValidator } from '@/core/validators/nif-uniqueness';
 import { sociedadeComercialNameValidator } from '@/core/validators/sociedade-comercial-name';
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NgxPrintModule } from 'ngx-print';
@@ -25,12 +26,13 @@ import { InputText } from 'primeng/inputtext';
 import { Select, SelectChangeEvent, SelectFilterEvent } from 'primeng/select';
 import { Step, StepList, StepPanel, StepPanels, Stepper } from 'primeng/stepper';
 import { Toast } from 'primeng/toast';
+import { ToggleSwitch } from 'primeng/toggleswitch';
 import { finalize, firstValueFrom } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-empresa-form',
-  imports: [ReactiveFormsModule, InputText, Select, Button, StepPanel, FileUpload, InputGroup, InputGroupAddon, InputNumber, Stepper, DatePicker, Divider, DatePipe, DecimalPipe, StepPanels, StepList, Step, Toast, NgxPrintModule],
+  imports: [ReactiveFormsModule, InputText, Select, Button, StepPanel, FileUpload, InputGroup, InputGroupAddon, InputNumber, Stepper, DatePicker, Divider, DatePipe, DecimalPipe, StepPanels, StepList, Step, Toast, NgxPrintModule, ToggleSwitch],
   templateUrl: './empresa-form.component.html',
   styleUrl: './empresa-form.component.scss',
   providers: [MessageService]
@@ -85,8 +87,13 @@ export class EmpresaFormComponent implements OnInit {
   ) {
   }
 
+  private readonly destroyRef = inject(DestroyRef);
+
   ngOnInit(): void {
     this.initForm();
+    this.empresaForm.get('temRepresentante')!.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(on => this.toggleRepresentante(on));
 
     this.listaSociedadeComercial = (this.route.snapshot.data['listaSociedadeComercial']?._embedded?.sociedadeComercial ?? []).map((s: any) => ({ nome: s.nome, value: s.id }));
     this.originalAldeias = [...this.aldeias];
@@ -179,7 +186,9 @@ export class EmpresaFormComponent implements OnInit {
       dataRegisto: this.formatDateForLocalDate(formValue.dataRegisto),
       acionistas: this.mapAcionistas(formValue.acionistas),
       gerente: this.mapPessoaWithMorada(formValue.gerente),
-      representante: this.mapPessoaWithMorada(formValue.representante),
+      // null = "leave unchanged" on PATCH (EmpresaService.update), so opting out never deletes an existing one.
+      representante: formValue.temRepresentante ? this.mapPessoaWithMorada(formValue.representante) : null,
+      temRepresentante: undefined,
       documentos: this.uploadedDocs
     };
   }
@@ -615,6 +624,24 @@ export class EmpresaFormComponent implements OnInit {
     }
   }
 
+  get temRepresentante(): boolean {
+    return !!this.empresaForm.get('temRepresentante')?.value;
+  }
+
+  /** Optional representante: a disabled group is excluded from validity; enabling restores its conditional validators. */
+  toggleRepresentante(on: boolean): void {
+    const group = this.empresaForm.get('representante') as FormGroup;
+    if (!on) {
+      group.disable({ emitEvent: false });
+      return;
+    }
+    group.enable({ emitEvent: false });
+    // enable() cascades — the address hierarchy fields are derived from the aldeia and stay read-only.
+    ['municipio', 'postoAdministrativo', 'suco'].forEach(c => group.get(`morada.${c}`)?.disable({ emitEvent: false }));
+    this.onRepresentanteTipoChange({ value: group.get('tipo')?.value } as SelectChangeEvent);
+    this.nacionalidadeOnChange({ value: group.get('nacionalidade')?.value } as SelectChangeEvent, 'representante');
+  }
+
   onRepresentanteTipoChange({ value }: SelectChangeEvent): void {
     switch (value) {
       case 'Empresa':
@@ -731,6 +758,7 @@ export class EmpresaFormComponent implements OnInit {
           aldeia: [null, [Validators.required]],
         }),
       }),
+      temRepresentante: [true],
       representante: this._fb.group({
         id: [null],
         tipo: [null, [Validators.required]],
@@ -791,9 +819,14 @@ export class EmpresaFormComponent implements OnInit {
 
   private async mapRepresentanteForm(empresa: Empresa): Promise<void> {
     const representante = empresa.representante;
-    if (!representante) return;
+    if (!representante) {
+      this.empresaForm.get('temRepresentante')?.setValue(false);
+      return;
+    }
+    // Removing an existing representante isn't supported by the PATCH contract — lock the toggle on.
+    this.empresaForm.get('temRepresentante')?.disable({ emitEvent: false });
 
-    this.representanteListaAldeias = await this.setAldeiaListBySucoId(representante.morada.aldeia?.suco.id);
+    this.representanteListaAldeias = await this.setAldeiaListBySucoId(representante.morada?.aldeia?.suco.id);
 
     this.empresaForm.get('representante')?.patchValue({
       id: representante.id,
@@ -813,12 +846,12 @@ export class EmpresaFormComponent implements OnInit {
       tipoDocumento: representante.tipoDocumento ? this.tipoDocumentoOpts.find(td => td.value === representante.tipoDocumento).value : null,
       numeroDocumento: representante.numeroDocumento,
       morada: {
-        id: representante.morada.id,
-        local: representante.morada.local,
-        municipio: representante.morada.aldeia?.suco.postoAdministrativo.municipio.nome,
-        postoAdministrativo: representante.morada.aldeia?.suco.postoAdministrativo.nome,
-        suco: representante.morada.aldeia?.suco.nome,
-        aldeia: representante.morada.aldeia ? { nome: representante.morada.aldeia.nome, value: representante.morada.aldeia.id } : null,
+        id: representante.morada?.id,
+        local: representante.morada?.local,
+        municipio: representante.morada?.aldeia?.suco.postoAdministrativo.municipio.nome,
+        postoAdministrativo: representante.morada?.aldeia?.suco.postoAdministrativo.nome,
+        suco: representante.morada?.aldeia?.suco.nome,
+        aldeia: representante.morada?.aldeia ? { nome: representante.morada.aldeia.nome, value: representante.morada.aldeia.id } : null,
       },
     });
   }

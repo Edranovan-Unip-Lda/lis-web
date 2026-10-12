@@ -42,7 +42,7 @@ export interface Empresa extends BaseModel {
     nif: string;
     utilizador: User;
     gerente: Gerente;
-    representante: Representante;
+    representante?: Representante | null;
     numeroRegistoComercial: string;
     telefone: string;
     telemovel: string;

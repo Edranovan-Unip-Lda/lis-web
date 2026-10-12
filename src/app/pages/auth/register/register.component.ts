@@ -16,6 +16,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NgxPrintModule } from 'ngx-print';
 import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
+import { ToggleSwitch } from 'primeng/toggleswitch';
 import { Divider } from 'primeng/divider';
 import { FileSelectEvent, FileUpload } from 'primeng/fileupload';
 import { Fluid } from 'primeng/fluid';
@@ -42,7 +43,7 @@ interface Notification {
     selector: 'app-register',
     standalone: true,
     // CHANGED: RecaptchaV3Module dropped — it only ever contributed providers, now hoisted to root in app.config.
-    imports: [Button, FileUpload, RouterLink, InputText, Fluid, Ripple, Password, ReactiveFormsModule, Select, Message, StepperModule, DatePicker, InputGroup, InputGroupAddonModule, InputNumber, Divider, Tooltip, DatePipe, NgxPrintModule, CurrencyPipe, DecimalPipe],
+    imports: [Button, FileUpload, RouterLink, InputText, Fluid, Ripple, Password, ReactiveFormsModule, Select, Message, StepperModule, DatePicker, InputGroup, InputGroupAddonModule, InputNumber, Divider, Tooltip, DatePipe, NgxPrintModule, CurrencyPipe, DecimalPipe, ToggleSwitch],
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss']
 })
@@ -152,6 +153,10 @@ export class Register {
         this.setupAldeiaSearch();
         this.setupGerenteAldeiaSearch();
         this.setupRepresentanteAldeiaSearch();
+
+        this.empresaForm.get('temRepresentante')!.valueChanges
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(on => this.toggleRepresentante(on));
 
         this.setupDraftAutosave();
         this.maybeOfferDraft();
@@ -313,7 +318,8 @@ export class Register {
                 },
                 tipoDocumento: formData.gerente.tipoDocumento.value
             }
-            formData.representante = {
+            // getRawValue() still carries the disabled representante group — drop it when opted out.
+            formData.representante = formData.temRepresentante ? {
                 ...formData.representante,
                 morada: {
                     ...formData.representante.morada,
@@ -322,7 +328,8 @@ export class Register {
                     }
                 },
                 tipoDocumento: formData.representante.tipoDocumento.value
-            }
+            } : null;
+            delete formData.temRepresentante;
             formData.tipoPropriedade = formData.tipoPropriedade.value;
             formData.dataRegisto = this.formatDateForLocalDate(form.value.dataRegisto);
             formData.acionistas = form.value.acionistas.map((a: any) => {
@@ -842,6 +849,7 @@ export class Register {
 
         // 2) Patch every field (acionistas controls now exist). emitEvent:false so we don't immediately re-save.
         this.empresaForm.patchValue(data, { emitEvent: false });
+        this.toggleRepresentante(data.temRepresentante ?? true); // patch ran with emitEvent:false
         this.empresaForm.markAsDirty();
 
         // 3) Restore the staged documents + session if still within the safe window.
@@ -951,6 +959,24 @@ export class Register {
         );
     }
 
+    get temRepresentante(): boolean {
+        return !!this.empresaForm.get('temRepresentante')?.value;
+    }
+
+    /** Optional representante: a disabled group is excluded from validity; enabling restores its conditional validators. */
+    toggleRepresentante(on: boolean): void {
+        const group = this.empresaForm.get('representante') as FormGroup;
+        if (!on) {
+            group.disable({ emitEvent: false });
+            return;
+        }
+        group.enable({ emitEvent: false });
+        // enable() cascades — the address hierarchy fields are derived from the aldeia and stay read-only.
+        ['municipio', 'postoAdministrativo', 'suco'].forEach(c => group.get(`morada.${c}`)?.disable({ emitEvent: false }));
+        this.onRepresentanteTipoChange({ value: group.get('tipo')?.value } as SelectChangeEvent);
+        this.nacionalidadeOnChange({ value: group.get('nacionalidade')?.value } as SelectChangeEvent, 'representante');
+    }
+
     onRepresentanteTipoChange({ value }: SelectChangeEvent): void {
         switch (value) {
             case 'Empresa':
@@ -1043,6 +1069,7 @@ export class Register {
                     aldeia: [null, [Validators.required]],
                 }),
             }),
+            temRepresentante: [true],
             representante: this._fb.group({
                 tipo: [null, [Validators.required]],
                 nomeEmpresa: [null],

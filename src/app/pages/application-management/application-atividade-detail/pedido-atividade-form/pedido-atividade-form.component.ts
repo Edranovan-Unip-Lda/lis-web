@@ -23,7 +23,7 @@ import { Select, SelectFilterEvent } from 'primeng/select';
 import { SelectButton, SelectButtonChangeEvent } from 'primeng/selectbutton';
 import { Tag } from 'primeng/tag';
 import { Toast } from 'primeng/toast';
-import { finalize, forkJoin } from 'rxjs';
+import { finalize, forkJoin, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -47,6 +47,8 @@ export class PedidoAtividadeFormComponent {
   listaAldeiaGerente: any[] = [];
   listaAldeiaArrendador: any[] = [];
   isNew = false;
+  // The empresa has no representante to copy in → the block is optional and filled by the user.
+  representanteEditavel = false;
   isLoading = false;
   draftLoading = false;
 
@@ -89,6 +91,7 @@ export class PedidoAtividadeFormComponent {
     this.empresaService.getAplicanteByEmpresaIdAndAplicanteId(this.aplicanteData.empresa.id, this.aplicanteData.id).subscribe({
       next: (aplicante: Aplicante) => {
         this.aplicanteData = aplicante;
+        this.representanteEditavel = !this.aplicanteData.empresa?.representante;
 
         if (this.aplicanteData.pedidoLicencaAtividade) {
           this.mapRequestFormData(this.aplicanteData.pedidoLicencaAtividade);
@@ -98,6 +101,9 @@ export class PedidoAtividadeFormComponent {
         } else {
           this.isNew = true;
           this.mapFormEmpresa(this.aplicanteData.empresa);
+        }
+        if (this.representanteEditavel && !this.disabledAllForm) {
+          this.enableRepresentante();
         }
       }
     });
@@ -636,16 +642,18 @@ export class PedidoAtividadeFormComponent {
         postoAdministrativo: request.empresaSede.aldeia.suco.postoAdministrativo.nome,
         municipio: request.empresaSede.aldeia.suco.postoAdministrativo.municipio.nome
       },
-      representante: {
-        ...request.representante,
-        morada: {
-          ...request.representante.morada,
-          aldeia: request.representante.morada.aldeia.id,
-          suco: request.representante.morada.aldeia.suco.nome,
-          postoAdministrativo: request.representante.morada.aldeia.suco.postoAdministrativo.nome,
-          municipio: request.representante.morada.aldeia.suco.postoAdministrativo.municipio.nome
+      ...(request.representante && {
+        representante: {
+          ...request.representante,
+          morada: {
+            ...request.representante.morada,
+            aldeia: request.representante.morada?.aldeia?.id,
+            suco: request.representante.morada?.aldeia?.suco.nome,
+            postoAdministrativo: request.representante.morada?.aldeia?.suco.postoAdministrativo.nome,
+            municipio: request.representante.morada?.aldeia?.suco.postoAdministrativo.municipio.nome
+          }
         }
-      },
+      }),
       gerente: {
         ...request.gerente,
         morada: {
@@ -689,7 +697,10 @@ export class PedidoAtividadeFormComponent {
     })
 
     const empresaSedeService = this.dataMasterService.getAldeiasBySuco(request.empresaSede.aldeia.suco.id);
-    const representanteService = this.dataMasterService.getAldeiasBySuco(request.representante.morada.aldeia.suco.id);
+    const representanteAldeia = request.representante?.morada?.aldeia;
+    const representanteService = representanteAldeia
+      ? this.dataMasterService.getAldeiasBySuco(representanteAldeia.suco.id)
+      : of(null);
     const gerenteService = this.dataMasterService.getAldeiasBySuco(request.gerente.morada.aldeia.suco.id);
 
     // Restore the rental path on load: documentoPropriedade === NAO reveals both the
@@ -702,7 +713,9 @@ export class PedidoAtividadeFormComponent {
     forkJoin([empresaSedeService, representanteService, gerenteService]).subscribe({
       next: ([empresaSedeResponse, representanteResponse, gerenteResponse]) => {
         this.listaAldeiaEmpresa = [...mapToIdAndNome((empresaSedeResponse?._embedded?.aldeias ?? [])), ...this.listaAldeia];
-        this.listaAldeiaRepresentante = [...mapToIdAndNome((representanteResponse?._embedded?.aldeias ?? []))];
+        this.listaAldeiaRepresentante = representanteResponse
+          ? [...mapToIdAndNome((representanteResponse?._embedded?.aldeias ?? []))]
+          : [...this.originalAldeias];
         this.listaAldeiaGerente = [...mapToIdAndNome((gerenteResponse?._embedded?.aldeias ?? []))];
       },
       error: (err) => console.error('Falha ao carregar as listas de aldeias', err)
@@ -739,17 +752,7 @@ export class PedidoAtividadeFormComponent {
         ? (formData.classeAtividade?.id ? { id: formData.classeAtividade.id } : null)
         : { id: formData.classeAtividade.id },
 
-      representante: {
-        ...formData.representante,
-        id: null,
-        morada: {
-          ...formData.representante.morada,
-          id: null,
-          aldeia: {
-            id: formData.representante.morada.aldeia
-          }
-        }
-      },
+      representante: this.mapRepresentantePayload(formData.representante),
       gerente: {
         ...formData.gerente,
         id: null,
@@ -780,8 +783,26 @@ export class PedidoAtividadeFormComponent {
       this.requestForm.get('empresaSede')?.get('municipio')?.setValue(empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome);
     });
 
-    this.mapRepresentante(empresa.representante);
+    if (empresa.representante) {
+      this.mapRepresentante(empresa.representante);
+    }
     this.mapGerente(empresa.gerente);
+  }
+
+  /** Representante is optional: an untouched block is sent as null, and an aldeia-less morada as null (Endereco needs an aldeia). */
+  private mapRepresentantePayload(rep: any): any {
+    if (!rep?.nome && !rep?.morada?.aldeia) return null;
+    return {
+      ...rep,
+      id: null,
+      morada: rep.morada?.aldeia ? { ...rep.morada, id: null, aldeia: { id: rep.morada.aldeia } } : null
+    };
+  }
+
+  /** Opens the copied-in (read-only) person fields for input; the suco/posto/município stay derived from the aldeia. */
+  private enableRepresentante(): void {
+    ['nome', 'nacionalidade', 'naturalidade', 'telefone', 'email', 'morada.local', 'morada.aldeia']
+      .forEach(c => this.requestForm.get(`representante.${c}`)?.enable({ emitEvent: false }));
   }
 
   private mapRepresentante(obj: Representante): void {

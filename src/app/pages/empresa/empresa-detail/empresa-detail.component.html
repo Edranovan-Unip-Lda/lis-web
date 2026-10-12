@@ -177,78 +177,82 @@
                     <i class="bi bi-person-badge text-emerald-600 dark:text-emerald-400 text-3xl mr-3"></i>
                     <h2 class="text-2xl font-semibold text-color">Representante</h2>
                 </div>
+                @if (empresa.representante; as rep) {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                     <div>
                         <p class="text-sm text-muted-color font-medium">Nome</p>
                         <p class="text-lg text-color">
-                            {{empresa.representante.nome}}
+                            {{rep.nome}}
                         </p>
                     </div>
                     <div>
                         <p class="text-sm text-muted-color font-medium">Pai</p>
                         <p class="text-lg text-color">
-                            {{empresa.representante.pai}}
+                            {{rep.pai}}
                         </p>
                     </div>
                     <div>
                         <p class="text-sm text-muted-color font-medium">Mãe</p>
                         <p class="text-lg text-color">
-                            {{empresa.representante.mae}}
+                            {{rep.mae}}
                         </p>
                     </div>
                     <div>
                         <p class="text-sm text-muted-color font-medium">Data de Nascimento</p>
                         <p class="text-lg text-color">
-                            {{empresa.representante.dataNascimento | date: 'dd MMM yyyy'}}
+                            {{rep.dataNascimento | date: 'dd MMM yyyy'}}
                         </p>
                     </div>
                     <div>
                         <p class="text-sm text-muted-color font-medium">Estado Civil</p>
                         <p class="text-lg text-color">
-                            {{empresa.representante.estadoCivil}}
+                            {{rep.estadoCivil}}
                         </p>
                     </div>
                     <div>
                         <p class="text-sm text-muted-color font-medium">Nacionalidade</p>
                         <p class="text-lg text-color">
-                            {{empresa.representante.nacionalidade}}
+                            {{rep.nacionalidade}}
                         </p>
                     </div>
                     <div>
                         <p class="text-sm text-muted-color font-medium">Naturalidade</p>
                         <p class="text-lg text-color">
-                            {{empresa.representante.naturalidade}}
+                            {{rep.naturalidade}}
                         </p>
                     </div>
                     <div>
                         <p class="text-sm text-muted-color font-medium">Telefone</p>
                         <p class="text-lg text-color">
-                            {{empresa.representante.telefone}}
+                            {{rep.telefone}}
                         </p>
                     </div>
                     <div>
                         <p class="text-sm text-muted-color font-medium">Email</p>
                         <p class="text-lg text-color">
-                            {{empresa.representante.email}}
+                            {{rep.email}}
                         </p>
                     </div>
                     <div>
                         <p class="text-sm text-muted-color font-medium">Documento de Identificaçåo</p>
                         <p class="text-lg text-color">
-                            {{empresa.representante.tipoDocumento.replace('_',' ')|titlecase}} –
-                            {{empresa.representante.numeroDocumento}}</p>
+                            {{rep.tipoDocumento.replace('_',' ')|titlecase}} –
+                            {{rep.numeroDocumento}}</p>
                     </div>
                     <div>
                         <p class="text-sm text-muted-color font-medium">Endereço</p>
                         <p class="text-lg text-color">
-                            {{empresa.representante.morada.local}} <br>
-                            {{empresa.representante.morada.aldeia.nome}},
-                            {{empresa.representante.morada.aldeia.suco.nome}},
-                            {{empresa.representante.morada.aldeia.suco.postoAdministrativo.nome}},
-                            {{empresa.representante.morada.aldeia.suco.postoAdministrativo.municipio.nome}}
+                            {{rep.morada.local}} <br>
+                            {{rep.morada.aldeia.nome}},
+                            {{rep.morada.aldeia.suco.nome}},
+                            {{rep.morada.aldeia.suco.postoAdministrativo.nome}},
+                            {{rep.morada.aldeia.suco.postoAdministrativo.municipio.nome}}
                         </p>
                     </div>
                 </div>
+                } @else {
+                <p class="text-lg text-gray-400">Sem representante legal registado.</p>
+                }
             </section>
             <section class="bg-surface-0 dark:bg-surface-800 p-8 rounded-2xl shadow-lg">
                 <div class="flex items-center mb-6">
