@@ -80,7 +80,7 @@ export const appRoutes: Routes = [
                 path: 'relatorios',
                 data: {
                     breadcrumb: 'Relatórios',
-                    role: [Role.admin, Role.manager, Role.chief]
+                    role: [Role.admin, Role.manager, Role.chief, Role.staff]
                 },
                 loadChildren: () => import('@/pages/reports/report.route'),
                 canActivate: [canActivateByRole],

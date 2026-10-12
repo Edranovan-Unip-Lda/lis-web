@@ -435,6 +435,32 @@ export const model_staff: MenuItem[] = [
             }
         ]
     },
+    {
+        label: 'Relatórios',
+        icon: 'pi pi-fw pi-chart-bar',
+        items: [
+            {
+                label: 'Empresas',
+                icon: 'bi bi-fw bi-building',
+                routerLink: ['relatorios/empresa']
+            },
+            {
+                label: 'Aplicantes',
+                icon: 'bi bi-fw bi-briefcase',
+                routerLink: ['relatorios/aplicante']
+            },
+            {
+                label: 'Licenças e Certificados',
+                icon: 'bi bi-fw bi-journal-check',
+                routerLink: ['relatorios/licencas-certificados']
+            },
+            {
+                label: 'Receitas',
+                icon: 'bi bi-fw bi-currency-dollar',
+                routerLink: ['relatorios/receitas']
+            }
+        ]
+    },
     // {
     //     label: 'Historicos',
     //     items: [
