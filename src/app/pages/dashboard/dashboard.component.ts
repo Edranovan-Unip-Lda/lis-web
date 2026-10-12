@@ -43,7 +43,7 @@ export class DashboardComponent {
 
     visitorYear: any = (() => {
         const currentYear = new Date().getFullYear();
-        const years = [];
+        const years = [{ name: 'Todos', code: 'ALL' }];
         for (let i = currentYear; i >= 2025; i--) {
             years.push({ name: i.toString(), code: (currentYear - i).toString() });
         }
@@ -72,11 +72,13 @@ export class DashboardComponent {
     }
 
     yearChange(value: any) {
-        if (!value || !value.code) {
+        if (!value) {
             return;
         }
-        this.service.getData(+value.name).subscribe({
+        const request$ = value.code === 'ALL' ? this.service.getData(undefined, true) : this.service.getData(+value.name);
+        request$.subscribe({
             next: (dashboardData) => {
+                this.kpisData = dashboardData.kpis;
                 this.licensesPerMonth = dashboardData.licensesPerMonth;
                 this.licensesByMunicipio = dashboardData.licensesByMunicipio;
                 this.licensesStatusPerMonth = dashboardData.licensesStatusPerMonth;

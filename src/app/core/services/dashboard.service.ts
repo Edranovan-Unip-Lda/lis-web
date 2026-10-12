@@ -24,10 +24,13 @@ export class DashboardService {
  * @param endDate - Optional end date for filtering dashboard data (ISO 8601 format recommended)
  * @returns An Observable that emits the dashboard data for the authenticated user
  */
-  getData(year?: number): Observable<DashboardResponse> {
+  getData(year?: number, all = false): Observable<DashboardResponse> {
     let params: any = {};
     if (year !== undefined) {
       params.year = year;
+    }
+    if (all) {
+      params.all = true; // aggregate year-scoped widgets across every year
     }
     return this.http.get<DashboardResponse>(`${this.apiUrl}`, { params }).pipe(take(1));
   }

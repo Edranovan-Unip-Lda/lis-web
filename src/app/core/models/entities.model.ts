@@ -395,8 +395,9 @@ export interface Participante extends BaseModel {
 }
 
 export interface Kpis {
-    aplicantesEmCurso: number;
-    licencasAtivas: number;
+    year: number | null;          // null = all years
+    aplicantesEmCurso: number;    // live snapshot, ignores the year filter
+    certificadosEmitidos: number;
     empresasRegistradas: number;
 }
 
