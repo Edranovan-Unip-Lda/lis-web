@@ -1,5 +1,4 @@
 import { Aplicante } from '@/core/models/entities.model';
-import { Role } from '@/core/models/enums';
 import { StatusIconPipe, StatusSeverityPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService } from '@/core/services';
 import { ExportService } from '@/core/services/export.service';
@@ -54,7 +53,7 @@ export class AplicanteComponent {
     // with the caller's Direcao, and pre-selecting it would make the "fill at least one field" guard never fire.
     // categoryTpesOptions is a shared constant — assign a filtered copy, never mutate it.
     const user = this.authService.currentUserValue;
-    if (user?.role?.name !== Role.admin && user?.direcao?.nome) {
+    if (!this.authService.seesAllCategorias && user?.direcao?.nome) {
       this.listaCategoriaAplicante = categoryTpesOptions.filter((o: any) => o.value === user.direcao.nome);
     }
   }

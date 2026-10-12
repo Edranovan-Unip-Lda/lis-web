@@ -1,5 +1,5 @@
 import { Empresa } from '@/core/models/entities.model';
-import { AplicanteType, Role } from '@/core/models/enums';
+import { AplicanteType } from '@/core/models/enums';
 import { AuthenticationService, DataMasterService } from '@/core/services';
 import { ExportService } from '@/core/services/export.service';
 import { ReportService } from '@/core/services/report.service';
@@ -91,7 +91,7 @@ export class LicencasCertificadosComponent {
     // unselected on purpose: the backend fills a null categoria in with the caller's Direcao, and pre-selecting
     // it would make isFormEmpty() never fire. categoryTpesOptions is shared — filter a copy, never mutate it.
     const user = this.authService.currentUserValue;
-    if (user?.role?.name !== Role.admin && user?.direcao?.nome) {
+    if (!this.authService.seesAllCategorias && user?.direcao?.nome) {
       this.listaCategoria = categoryTpesOptions.filter((o: any) => o.value === user.direcao.nome);
     }
 

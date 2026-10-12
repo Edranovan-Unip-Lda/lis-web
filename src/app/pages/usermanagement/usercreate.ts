@@ -89,7 +89,7 @@ export class UserCreate implements OnDestroy {
 
             if (this.userData.role.name === Role.manager || this.userData.role.name === Role.chief || this.userData.role.name === Role.staff) {
                 this.showCategoria = true;
-                this.userForm.get('direcao')?.setValidators(Validators.required);
+                this.setDirecaoRequired(true);
             }
 
             this.userForm.patchValue({
@@ -199,13 +199,27 @@ export class UserCreate implements OnDestroy {
     roleOnChange(event: any) {
         if (event.value !== Role.client && event.value !== Role.admin) {
             this.showCategoria = true;
-            this.userForm.get('direcao')?.setValidators(Validators.required);
+            this.setDirecaoRequired(true);
         } else {
-            this.userForm.get('direcao')?.clearAsyncValidators();
+            this.setDirecaoRequired(false);
             this.showCategoria = false;
         }
 
         event.value === Role.manager ? this.isDirector = true : this.isDirector = false;
+    }
+
+    // Back-office roles are scoped by Direcao (menu, guards, backend), so it is mandatory for them and
+    // meaningless for ADMIN/CLIENT. Validators only take effect after updateValueAndValidity().
+    private setDirecaoRequired(required: boolean) {
+        const ctrl = this.userForm.get('direcao');
+        if (!ctrl) return;
+        if (required) {
+            ctrl.setValidators(Validators.required);
+        } else {
+            ctrl.clearValidators();
+            ctrl.setValue(null);
+        }
+        ctrl.updateValueAndValidity();
     }
 
     // Routes through HttpClient (interceptor adds auth + CSRF) instead of PrimeNG's native XHR.

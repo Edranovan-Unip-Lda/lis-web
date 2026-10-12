@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { map, Observable, take } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { User } from '../models/entities.model';
+import { Role } from '../models/enums';
 
 @Injectable({
   providedIn: 'root'
@@ -90,5 +91,13 @@ export class AuthenticationService {
       return JSON.parse(user).role;
     }
     return null;
+  }
+
+  /**
+   * ADMIN, MANAGER and CHIEF see both categorias (Comércio + Indústria); only STAFF is narrowed to its own
+   * Direcao. UX mirror of the backend's AuthorizationService#seesAllCategorias, which is the real gate.
+   */
+  get seesAllCategorias(): boolean {
+    return [Role.admin, Role.manager, Role.chief].includes(this.currentRole?.name);
   }
 }
