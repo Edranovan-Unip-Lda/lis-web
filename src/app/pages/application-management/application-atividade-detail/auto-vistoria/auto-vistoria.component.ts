@@ -1,3 +1,5 @@
+import { LanguageService } from '@/core/i18n';
+import { StatusLabelPipe } from '@/core/pipes/custom.pipe';
 import { Aldeia } from '@/core/models/data-master.model';
 import { Aplicante, AutoVistoria, Documento, Empresa, PedidoVistoria } from '@/core/models/entities.model';
 import { AplicanteStatus, Categoria, PedidoStatus } from '@/core/models/enums';
@@ -11,6 +13,7 @@ import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
@@ -30,7 +33,7 @@ import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-auto-vistoria',
-  imports: [ReactiveFormsModule, SelectButton, Textarea, DatePicker, FileUpload, InputText, Select, Button, Toast, InputGroup, InputGroupAddon, InputNumber, ProgressBar, Tag],
+  imports: [StatusLabelPipe, TranslatePipe, ReactiveFormsModule, SelectButton, Textarea, DatePicker, FileUpload, InputText, Select, Button, Toast, InputGroup, InputGroupAddon, InputNumber, ProgressBar, Tag],
   templateUrl: './auto-vistoria.component.html',
   styleUrl: './auto-vistoria.component.scss',
   providers: [MessageService]
@@ -73,6 +76,7 @@ export class AutoVistoriaComponent implements OnInit {
   loadingUploadButtons = new Set<String>();
   protected readonly TRINTA_DIAS: number = 30;
   private destroyRef = inject(DestroyRef);
+  private i18n = inject(LanguageService);
 
   constructor(
     private _fb: FormBuilder,
@@ -160,7 +164,7 @@ export class AutoVistoriaComponent implements OnInit {
 
       request$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: () => {
-          this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Auto Vistoria submetida com sucesso', life: 3000, key: 'tr' });
+          this.messageService.add({ severity: 'info', summary: this.i18n.instant('toast.confirmed'), detail: this.i18n.instant('application.vistoria.toast.submitted'), life: 3000, key: 'tr' });
           this.autoVistoriaForm.disable();
           this.uploadedFiles = [];
           this.loading = false;
@@ -175,9 +179,9 @@ export class AutoVistoriaComponent implements OnInit {
           this.loading = false;
           // 403 = report already finalized (SUBMETIDO); cannot re-finalize.
           const detail = err?.status === 403
-            ? 'Esta Auto Vistoria já foi submetida e não pode ser alterada'
-            : 'Falha ao submeter a Auto Vistoria';
-          this.messageService.add({ severity: 'error', summary: 'Erro', detail, life: 3000, key: 'tr' });
+            ? this.i18n.instant('application.vistoria.toast.alreadySubmitted')
+            : this.i18n.instant('application.vistoria.toast.submitFailed');
+          this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail, life: 3000, key: 'tr' });
         }
       });
     } else {
@@ -207,11 +211,11 @@ export class AutoVistoriaComponent implements OnInit {
         // next save re-references them instead of re-creating documento rows.
         this.uploadedFiles = [...(autoVistoria.documentos ?? [])];
         this.savingDraft = false;
-        this.messageService.add({ severity: 'info', summary: 'Rascunho guardado', detail: 'Auto Vistoria guardada como rascunho', life: 3000, key: 'tr' });
+        this.messageService.add({ severity: 'info', summary: this.i18n.instant('application.vistoria.toast.draftSaved'), detail: this.i18n.instant('application.vistoria.toast.draftSavedDetail'), life: 3000, key: 'tr' });
       },
       error: () => {
         this.savingDraft = false;
-        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao guardar o rascunho', life: 3000, key: 'tr' });
+        this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: this.i18n.instant('application.vistoria.toast.draftFailed'), life: 3000, key: 'tr' });
       }
     });
   }
@@ -369,15 +373,15 @@ export class AutoVistoriaComponent implements OnInit {
           }
           this.messageService.add({
             severity: 'info',
-            summary: 'Sucesso',
-            detail: 'Arquivo carregado com sucesso!'
+            summary: this.i18n.instant('toast.success'),
+            detail: this.i18n.instant('application.vistoria.toast.uploadSuccess')
           });
         },
         error: () => {
           this.messageService.add({
             severity: 'error',
-            summary: 'Erro',
-            detail: 'Falha no carregamento do arquivo!'
+            summary: this.i18n.instant('toast.error'),
+            detail: this.i18n.instant('application.vistoria.toast.uploadFailed')
           });
         }
       });
@@ -399,16 +403,16 @@ export class AutoVistoriaComponent implements OnInit {
         window.URL.revokeObjectURL(url);
         this.messageService.add({
           severity: 'info',
-          summary: 'Sucesso',
-          detail: 'Arquivo descarregado com sucesso!'
+          summary: this.i18n.instant('toast.success'),
+          detail: this.i18n.instant('application.vistoria.toast.downloadSuccess')
         });
       },
       error: error => {
         this.loadingDownloadButtons.delete(file.nome);
         this.messageService.add({
           severity: 'error',
-          summary: 'Erro',
-          detail: 'Falha no download do arquivo!'
+          summary: this.i18n.instant('toast.error'),
+          detail: this.i18n.instant('application.vistoria.toast.downloadFailed')
         });
       },
       complete: () => {
@@ -425,8 +429,8 @@ export class AutoVistoriaComponent implements OnInit {
         this.uploadedFiles.splice(index, 1);
         this.messageService.add({
           severity: 'info',
-          summary: 'Sucesso',
-          detail: 'Arquivo foi removido com sucesso!'
+          summary: this.i18n.instant('toast.success'),
+          detail: this.i18n.instant('application.vistoria.toast.removeSuccess')
         });
         return;
       }
@@ -435,16 +439,16 @@ export class AutoVistoriaComponent implements OnInit {
           this.uploadedFiles.splice(index, 1);
           this.messageService.add({
             severity: 'info',
-            summary: 'Sucesso',
-            detail: 'Arquivo foi removido com sucesso!'
+            summary: this.i18n.instant('toast.success'),
+            detail: this.i18n.instant('application.vistoria.toast.removeSuccess')
           });
         },
         error: error => {
           this.loadingRemoveButtons.delete(file.nome);
           this.messageService.add({
             severity: 'error',
-            summary: 'Erro',
-            detail: 'Falha no removero arquivo!'
+            summary: this.i18n.instant('toast.error'),
+            detail: this.i18n.instant('application.vistoria.toast.removeFailed')
           });
         },
         complete: () => this.loadingRemoveButtons.delete(file.nome)
