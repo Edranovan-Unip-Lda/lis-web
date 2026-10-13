@@ -14,11 +14,13 @@ import { Ripple } from 'primeng/ripple';
 import { StyleClassModule } from 'primeng/styleclass';
 import { filter, Subscription } from 'rxjs';
 import { ToggleButton } from 'primeng/togglebutton';
+import { TranslatePipe } from '@ngx-translate/core';
+import { LanguageSwitcherComponent } from '@/shared/language-switcher/language-switcher.component';
 
 @Component({
     selector: '[app-topbar]',
     standalone: true,
-    imports: [RouterModule, CommonModule, StyleClassModule, FormsModule, Ripple, ButtonModule, AppBreadcrumb, AppSidebar, OverlayBadge],
+    imports: [RouterModule, CommonModule, StyleClassModule, FormsModule, Ripple, ButtonModule, AppBreadcrumb, AppSidebar, OverlayBadge, TranslatePipe, LanguageSwitcherComponent],
     templateUrl: './app.topbar.html',
     host: {
         class: 'layout-topbar'

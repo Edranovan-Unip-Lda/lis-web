@@ -1,4 +1,4 @@
-<p-drawer [(visible)]="rightMenuVisible" header="Notificações" position="right"
+<p-drawer [(visible)]="rightMenuVisible" [header]="'layout.notifications.title' | translate" position="right"
     styleClass="layout-profile-sidebar !w-full sm:!w-[28rem]"
     [ngClass]="{ 'layout-rightmenu-active': rightMenuVisible }">
     <div class="layout-rightmenu h-full overflow-y-auto overflow-x-hidden">
@@ -85,7 +85,7 @@
                         <i class="bi bi-bell-slash text-4xl"></i>
                     </div>
                     <p class="text-muted-color text-center text-sm">
-                        Você não tem notificações no momento.
+                        {{ 'layout.notifications.empty' | translate }}
                     </p>
                 </div>
             </div>

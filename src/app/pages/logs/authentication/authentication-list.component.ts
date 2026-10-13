@@ -1,8 +1,9 @@
+import { LanguageService, LocalizedDatePipe } from '@/core/i18n';
+import { TranslatePipe } from '@ngx-translate/core';
 import { LoginActivity } from '@/core/models/entities.model';
-import { StatusIconPipe, StatusSeverityPipe } from '@/core/pipes/custom.pipe';
+import { StatusIconPipe, StatusSeverityPipe, StatusLabelPipe } from '@/core/pipes/custom.pipe';
 import { AuditService } from '@/core/services/audit.service';
-import { DatePipe, TitleCasePipe } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -17,8 +18,8 @@ import { finalize, Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-authentication-list',
   standalone: true,
-  imports: [
-    TableModule, Tag, StatusSeverityPipe, StatusIconPipe, TitleCasePipe, DatePipe, Toast, Paginator, FloatLabel, DatePicker, ReactiveFormsModule
+  imports: [StatusLabelPipe, LocalizedDatePipe,
+    TableModule, Tag, StatusSeverityPipe, StatusIconPipe, Toast, Paginator, FloatLabel, DatePicker, ReactiveFormsModule, TranslatePipe
   ],
   templateUrl: './authentication-list.component.html',
   styleUrl: './authentication-list.component.scss',
@@ -31,10 +32,12 @@ export class AuthenticationListComponent implements OnInit, OnDestroy {
   page = 0;
   size = 50;
   totalData = 0;
-  columns: string[] = ['Email/Username', 'Timestamp', 'Outcome', 'IP Address', 'Device Type'];
+  // Translation keys, resolved in the template
+  columns: string[] = ['logs.auth.user', 'logs.auth.timestamp', 'logs.auth.outcome', 'logs.auth.ipAddress', 'logs.auth.deviceType'];
 
   filterForm: FormGroup;
   private destroy$ = new Subject<void>();
+  private i18n = inject(LanguageService);
 
   constructor(
     private route: ActivatedRoute,
@@ -102,7 +105,7 @@ export class AuthenticationListComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.error('Erro ao buscar dados da API:', err);
-          this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao buscar os dados do servidor.' });
+          this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: this.i18n.instant('logs.fetchError') });
         },
       });
   }

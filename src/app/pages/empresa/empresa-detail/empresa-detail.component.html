@@ -18,7 +18,7 @@
         <button routerLink="/empresa/{{empresa.utilizador.username}}"
             class="flex items-center justify-center bg-surface-200 dark:bg-surface-700 hover:bg-surface-300 dark:hover:bg-surface-600 text-color font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 hover:cursor-pointer">
             <i class="bi bi-pencil mr-2"></i>
-            Edit
+            {{ 'common.edit' | translate }}
         </button>
         }
         <!-- <button
@@ -34,11 +34,11 @@
             <section class="bg-surface-0 dark:bg-surface-800 p-8 rounded-2xl shadow-lg mb-8">
                 <div class="flex items-center mb-6">
                     <i class="bi bi-info-circle text-emerald-600 dark:text-emerald-400 text-3xl mr-3"></i>
-                    <h2 class="text-2xl font-semibold text-color">Informações da Empresa</h2>
+                    <h2 class="text-2xl font-semibold text-color">{{ 'empresa.detail.infoTitle' | translate }}</h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Nome da Empresa</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.nomeEmpresa' | translate }}</p>
                         <p class="text-lg text-color">
                             {{empresa.nome}} {{empresa.sociedadeComercial.nome}}
                         </p>
@@ -50,38 +50,38 @@
                         </p>
                     </div> -->
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Dimensão</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.dimensao' | translate }}</p>
                         <p class="text-lg text-color">
-                            {{empresa.tipoEmpresa.replace('_',' ')}}
+                            {{ empresa.tipoEmpresa ? (('enum.TipoEmpresa.' + empresa.tipoEmpresa) | translate) : '' }}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Nº TIN (NIF)</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.nifTin' | translate }}</p>
                         <p class="text-lg text-color">
                             {{empresa.nif}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Nº Registo Comercial</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.numeroRegistoComercial' | translate }}</p>
                         <p class="text-lg text-color">
                             {{empresa.numeroRegistoComercial}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Data Registo</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.dataRegisto' | translate }}</p>
                         <p class="text-lg text-color">
-                            {{empresa.dataRegisto | date: 'dd MMM yyyy'}}
+                            {{empresa.dataRegisto | ldate: 'dd MMM yyyy'}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Sociedade Comercial</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.sociedadeComercial' | translate }}</p>
                         <p class="text-lg text-color">
                             {{empresa.sociedadeComercial.nome}}
                         </p>
                     </div>
                     <div>
                         <p class="text-sm text-muted-color font-medium">
-                            Total Trabalhadores
+                            {{ 'empresa.fields.totalTrabalhadores' | translate }}
                         </p>
                         <p class="text-lg text-color">
                             {{empresa.totalTrabalhadores}}
@@ -89,22 +89,22 @@
                     </div>
                     <div>
                         <p class="text-sm text-muted-color font-medium">
-                            Volume de Negócios Anual
+                            {{ 'empresa.fields.volumeNegocioAnual' | translate }}
                         </p>
                         <p class="text-lg text-color">
-                            {{empresa.volumeNegocioAnual | currency}}
+                            {{empresa.volumeNegocioAnual | lcurrency}}
                         </p>
                     </div>
                     <div>
                         <p class="text-sm text-muted-color font-medium">
-                            Balanço total Anual
+                            {{ 'empresa.fields.balancoTotalAnual' | translate }}
                         </p>
                         <p class="text-lg text-color">
-                            {{empresa.balancoTotalAnual |currency}}
+                            {{empresa.balancoTotalAnual | lcurrency}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Endereço</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.endereco' | translate }}</p>
                         <p class="text-lg text-color">
                             {{empresa.sede.local}} <br>
                             {{empresa.sede.aldeia.nome}},
@@ -114,7 +114,7 @@
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Longitude - Latitude</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.longLat' | translate }}</p>
                         <p class="text-lg text-color">
                             <a [href]="'https://www.google.com/maps?q=' + empresa.latitude + ',' + empresa.longitude"
                                 target="_blank" rel="noopener noreferrer"
@@ -124,7 +124,7 @@
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Telefone/Telemóvel</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.telefoneTelemovel' | translate }}</p>
                         <p class="text-lg text-color">
                             {{empresa.telefone}} / {{empresa.telemovel}}
                         </p>
@@ -134,34 +134,34 @@
             <section class="bg-surface-0 dark:bg-surface-800 p-8 rounded-2xl shadow-lg mb-8">
                 <div class="flex items-center mb-6">
                     <i class="bi bi-person-gear text-emerald-600 dark:text-emerald-400 text-3xl mr-3"></i>
-                    <h2 class="text-2xl font-semibold text-color">Gerente</h2>
+                    <h2 class="text-2xl font-semibold text-color">{{ 'empresa.fields.gerente' | translate }}</h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Nome</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'common.name' | translate }}</p>
                         <p class="text-lg text-color">
                             {{empresa.gerente.nome}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Telefone</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.telefone' | translate }}</p>
                         <p class="text-lg text-color">
                             {{empresa.gerente.telefone}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Email</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'common.email' | translate }}</p>
                         <p class="text-lg text-color">
                             {{empresa.gerente.email}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Documento de Identificaçåo</p>
-                        <p class="text-lg text-color">{{empresa.gerente.tipoDocumento.replace('_',' ')|titlecase}} –
+                        <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.documentoIdentificacao' | translate }}</p>
+                        <p class="text-lg text-color">{{ empresa.gerente.tipoDocumento ? (('enum.TipoDocumento.' + empresa.gerente.tipoDocumento) | translate) : '' }} –
                             {{empresa.gerente.numeroDocumento}}</p>
                     </div>
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Endereço</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.endereco' | translate }}</p>
                         <p class="text-lg text-color">
                             {{empresa.gerente.morada.local}} <br>
                             {{empresa.gerente.morada.aldeia.nome}},
@@ -175,72 +175,72 @@
             <section class="bg-surface-0 dark:bg-surface-800 p-8 rounded-2xl shadow-lg mb-8">
                 <div class="flex items-center mb-6">
                     <i class="bi bi-person-badge text-emerald-600 dark:text-emerald-400 text-3xl mr-3"></i>
-                    <h2 class="text-2xl font-semibold text-color">Representante</h2>
+                    <h2 class="text-2xl font-semibold text-color">{{ 'empresa.fields.representante' | translate }}</h2>
                 </div>
                 @if (empresa.representante; as rep) {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Nome</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'common.name' | translate }}</p>
                         <p class="text-lg text-color">
                             {{rep.nome}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Pai</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.pai' | translate }}</p>
                         <p class="text-lg text-color">
                             {{rep.pai}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Mãe</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.mae' | translate }}</p>
                         <p class="text-lg text-color">
                             {{rep.mae}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Data de Nascimento</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.dataNascimento' | translate }}</p>
                         <p class="text-lg text-color">
-                            {{rep.dataNascimento | date: 'dd MMM yyyy'}}
+                            {{rep.dataNascimento | ldate: 'dd MMM yyyy'}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Estado Civil</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.estadoCivil' | translate }}</p>
                         <p class="text-lg text-color">
-                            {{rep.estadoCivil}}
+                            {{ optionLabel(estadoCivilOpts, rep.estadoCivil) }}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Nacionalidade</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.nacionalidade' | translate }}</p>
                         <p class="text-lg text-color">
-                            {{rep.nacionalidade}}
+                            {{ optionLabel(nacionalidadeOpts, rep.nacionalidade) }}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Naturalidade</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.naturalidade' | translate }}</p>
                         <p class="text-lg text-color">
                             {{rep.naturalidade}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Telefone</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.telefone' | translate }}</p>
                         <p class="text-lg text-color">
                             {{rep.telefone}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Email</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'common.email' | translate }}</p>
                         <p class="text-lg text-color">
                             {{rep.email}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Documento de Identificaçåo</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.documentoIdentificacao' | translate }}</p>
                         <p class="text-lg text-color">
-                            {{rep.tipoDocumento.replace('_',' ')|titlecase}} –
+                            {{ rep.tipoDocumento ? (('enum.TipoDocumento.' + rep.tipoDocumento) | translate) : '' }} –
                             {{rep.numeroDocumento}}</p>
                     </div>
                     <div>
-                        <p class="text-sm text-muted-color font-medium">Endereço</p>
+                        <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.endereco' | translate }}</p>
                         <p class="text-lg text-color">
                             {{rep.morada.local}} <br>
                             {{rep.morada.aldeia.nome}},
@@ -251,13 +251,13 @@
                     </div>
                 </div>
                 } @else {
-                <p class="text-lg text-gray-400">Sem representante legal registado.</p>
+                <p class="text-lg text-muted-color">{{ 'empresa.detail.noRepresentante' | translate }}</p>
                 }
             </section>
             <section class="bg-surface-0 dark:bg-surface-800 p-8 rounded-2xl shadow-lg">
                 <div class="flex items-center mb-6">
                     <i class="bi bi-people text-emerald-600 dark:text-emerald-400 text-3xl mr-3"></i>
-                    <h2 class="text-2xl font-semibold text-color">Acionista(s)</h2>
+                    <h2 class="text-2xl font-semibold text-color">{{ 'empresa.detail.acionistasTitle' | translate }}</h2>
                 </div>
                 <div>
                     @for (item of empresa.acionistas; track $index) {
@@ -267,31 +267,31 @@
                         </h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                             <div>
-                                <p class="text-sm text-muted-color font-medium">Nª TIN (NIF)</p>
+                                <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.nifTin' | translate }}</p>
                                 <p class="text-lg text-color">
                                     {{item.nif}}
                                 </p>
                             </div>
                             <div>
-                                <p class="text-sm text-muted-color font-medium">Documento de Identificaçåo</p>
-                                <p class="text-lg text-color">{{item.tipoDocumento.replace('_',' ')|titlecase}} –
+                                <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.documentoIdentificacao' | translate }}</p>
+                                <p class="text-lg text-color">{{ item.tipoDocumento ? (('enum.TipoDocumento.' + item.tipoDocumento) | translate) : '' }} –
                                     {{item.numeroDocumento}}</p>
                             </div>
                             <div>
-                                <p class="text-sm text-muted-color font-medium">Ações</p>
+                                <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.acoes' | translate }}</p>
                                 <p class="text-lg text-color">
                                     {{item.acoes}} %
                                 </p>
                             </div>
                             <div>
-                                <p class="text-sm text-muted-color font-medium">Email</p>
+                                <p class="text-sm text-muted-color font-medium">{{ 'common.email' | translate }}</p>
                                 <p class="text-lg text-color">
                                     {{item.email}}
                                 </p>
                             </div>
                             <div>
                                 <p class="text-sm text-muted-color font-medium">
-                                    Agregado Família
+                                    {{ 'empresa.fields.agregadoFamilia' | translate }}
                                 </p>
                                 <p class="text-lg text-color">
                                     {{item.agregadoFamilia}}
@@ -299,14 +299,14 @@
                             </div>
                             <div>
                                 <p class="text-sm text-muted-color font-medium">
-                                    Relação Família
+                                    {{ 'empresa.fields.relacaoFamilia' | translate }}
                                 </p>
                                 <p class="text-lg text-color">
-                                    {{item.relacaoFamilia}}
+                                    {{ optionLabel(relacaoFamiliaOpts, item.relacaoFamilia) }}
                                 </p>
                             </div>
                             <div>
-                                <p class="text-sm text-muted-color font-medium">Endereço</p>
+                                <p class="text-sm text-muted-color font-medium">{{ 'empresa.fields.endereco' | translate }}</p>
                                 <p class="text-lg text-color">
                                     {{item.endereco.local}} <br>
                                     {{item.endereco.aldeia.nome}},
@@ -326,13 +326,13 @@
                 <div class="flex items-center mb-6">
                     <i class="bi bi-bank text-emerald-600 dark:text-emerald-400 text-3xl mr-3"></i>
                     <h2 class="text-2xl font-semibold text-color">
-                        Capital Social
+                        {{ 'empresa.fields.capitalSocial' | translate }}
                     </h2>
                 </div>
                 <div class="space-y-4">
                     <div>
                         <p class="text-2xl font-bold text-color">
-                            {{empresa.capitalSocial | currency}}
+                            {{empresa.capitalSocial | lcurrency}}
                         </p>
                     </div>
                 </div>
@@ -340,7 +340,7 @@
             <section class="bg-surface-0 dark:bg-surface-800 p-8 rounded-2xl shadow-lg">
                 <div class="flex items-center mb-6">
                     <i class="bi bi-folder2-open text-emerald-600 dark:text-emerald-400 text-3xl mr-3"></i>
-                    <h2 class="text-2xl font-semibold text-color">Documentos</h2>
+                    <h2 class="text-2xl font-semibold text-color">{{ 'empresa.fields.documentos' | translate }}</h2>
                 </div>
                 <ul class="space-y-3">
                     @for (doc of empresa.documentos; track $index) {

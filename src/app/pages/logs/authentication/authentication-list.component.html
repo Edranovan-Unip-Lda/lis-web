@@ -8,7 +8,7 @@
                             <p-datepicker formControlName="rangeDateTime" selectionMode="range" dateFormat="dd/mm/yy"
                                 inputId="rangeDateTime" class="w-full" [showButtonBar]="true" />
                             <label for="rangeDateTime">
-                                Filtrar por data
+                                {{ 'logs.filter.date' | translate }}
                             </label>
                         </p-floatLabel>
                     </form>
@@ -18,7 +18,7 @@
                 <tr>
                     @for (item of columns; track $index) {
                     <th>
-                        {{ item }}
+                        {{ item | translate }}
                     </th>
                     }
                 </tr>
@@ -33,10 +33,10 @@
                         }
                     </td>
                     <td>
-                        {{ item.timestamp | date: 'dd/MM/yyyy, HH:mm:ss' }}
+                        {{ item.timestamp | ldate: 'dd/MM/yyyy, HH:mm:ss' }}
                     </td>
                     <td>
-                        <p-tag value="{{item.outcome | titlecase}}" [severity]="item.outcome | statusSeverity"
+                        <p-tag [value]="item.outcome | statusLabel" [severity]="item.outcome | statusSeverity"
                             icon="{{item.outcome | statusIcon}}" />
                     </td>
                     <td>
@@ -54,7 +54,7 @@
         </p-table>
         <p-paginator (onPageChange)="onPageChange($event)" [rows]="size" [totalRecords]="totalData"
             [rowsPerPageOptions]="[50, 250, 500]" [showCurrentPageReport]="true"
-            currentPageReportTemplate="A mostrar {first} a {last} de {totalRecords}" />
+            [currentPageReportTemplate]="'users.list.pageReport' | translate" />
     </div>
 </div>
 <p-toast />

@@ -5,11 +5,11 @@
          </div>
          <div class="mt-2 mb-8">
              <p class="text-2xl font-bold mb-4">
-                 Sistema de Gestão de <br> Licenças Comerciais e Indústriais
+                 {{ 'auth.common.systemTitleLine1' | translate }} <br> {{ 'auth.common.systemTitleLine2' | translate }}
              </p>
          </div>
          <span class="text-xl font-semibold">
-             Consultar Licença
+             {{ 'auth.search.title' | translate }}
          </span>
 
          @if (testing) {
@@ -17,21 +17,18 @@
          <div class="text-left rounded-2xl border border-l-4 border-l-amber-500 p-5 mt-4 shadow-sm bg-surface-0 dark:bg-surface-900 border-surface-200 dark:border-surface-700">
              <div class="flex items-center gap-3 mb-2">
                  <i class="pi pi-exclamation-triangle text-2xl text-amber-500"></i>
-                 <div class="font-semibold text-lg text-surface-900 dark:text-surface-0">Consulta indisponível neste ambiente</div>
+                 <div class="font-semibold text-lg text-surface-900 dark:text-surface-0">{{ 'auth.search.unavailableTitle' | translate }}</div>
              </div>
-             <p class="text-sm text-surface-600 dark:text-surface-300">
-                 Esta é uma instância de <strong>teste e demonstração</strong>. A consulta de licenças e a
-                 verificação por QR Code encontram-se desativadas e não produzem resultados oficiais.
-             </p>
+             <p class="text-sm text-surface-600 dark:text-surface-300" [innerHTML]="'auth.search.testingNotice' | translate"></p>
              <p class="text-sm text-surface-600 dark:text-surface-300 mt-2">
-                 Para verificar a autenticidade de uma licença, utilize o sistema oficial em
+                 {{ 'auth.search.officialSystem' | translate }}
                  <a href="https://lic.mci.gov.tl" rel="noopener noreferrer" class="font-semibold underline">lic.mci.gov.tl</a>.
              </p>
          </div>
          } @else {
          <div class="flex flex-col mt-4 min-w-auto">
              @for (message of messages(); track message; let first = $first) {
-             <p-message [severity]="message.severity" [text]="message.content" />
+             <p-message [severity]="message.severity" [text]="message.key ? (message.key | translate) : message.content" />
              }
          </div>
          <div class="text-center flex items-center justify-center mt-2">
@@ -39,19 +36,19 @@
              <div class="w-full space-y-4 mb-12">
                  <div class="relative group">
                      <p-inputgroup>
-                         <input [formControl]="searchInput" pInputText placeholder="Número de Identificação" />
+                         <input [formControl]="searchInput" pInputText [placeholder]="'auth.search.placeholder' | translate" />
                          <p-inputgroup-addon>
                              <i class="pi pi-search"></i>
                          </p-inputgroup-addon>
                      </p-inputgroup>
                  </div>
-                 <p-button (click)="submit(searchInput)" icon="pi pi-chevron-right" iconPos="right" label="Consultar"
+                 <p-button (click)="submit(searchInput)" icon="pi pi-chevron-right" iconPos="right" [label]="'auth.search.submit' | translate"
                      [loading]="loading" [disabled]="!searchInput.valid" pRipple fluid>
                  </p-button>
              </div>
          </div>
          <!-- Results Section -->
-         <section aria-label="Resultado da Pesquisa" class="animate-fade-in">
+         <section [attr.aria-label]="'auth.search.resultsAria' | translate" class="animate-fade-in">
 
              @if (loading) {
              <p-skeleton width="100%" height="150px" />
@@ -65,36 +62,36 @@
                          [ngClass]="isValid ? 'pi-verified text-green-500' : 'pi-times-circle text-red-500'"></i>
                      <div class="flex-1">
                          <div class="font-semibold text-lg leading-tight text-surface-900 dark:text-surface-0">
-                             {{ isValid ? 'Licença Válida' : 'Licença Expirada' }}
+                             {{ (isValid ? 'auth.search.validLicense' : 'auth.search.expiredLicense') | translate }}
                          </div>
-                         <div class="text-sm text-surface-500 dark:text-surface-400">{{ tipoDocumento }}</div>
+                         <div class="text-sm text-surface-500 dark:text-surface-400">{{ tipoDocumento | translate }}</div>
                      </div>
                      <p-tag [severity]="isValid ? 'success' : 'danger'"
-                         [value]="isValid ? 'VÁLIDA' : 'EXPIRADA'" />
+                         [value]="((isValid ? 'VALIDA' : 'EXPIRADA') | statusLabel) | uppercase" />
                  </div>
 
                  <dl class="text-sm space-y-2">
                      <div class="flex justify-between gap-4">
-                         <dt class="text-surface-500 dark:text-surface-400">Nº de Identificação</dt>
+                         <dt class="text-surface-500 dark:text-surface-400">{{ 'auth.search.idNumber' | translate }}</dt>
                          <dd class="font-semibold text-right break-all text-surface-900 dark:text-surface-0">{{ numero }}</dd>
                      </div>
                      <div class="flex justify-between gap-4">
-                         <dt class="text-surface-500 dark:text-surface-400">Sociedade Comercial</dt>
+                         <dt class="text-surface-500 dark:text-surface-400">{{ 'auth.search.company' | translate }}</dt>
                          <dd class="font-semibold text-right text-surface-900 dark:text-surface-0">{{ empresaNome }}</dd>
                      </div>
                      <div class="flex justify-between gap-4">
-                         <dt class="text-surface-500 dark:text-surface-400">Categoria</dt>
-                         <dd class="font-semibold text-right text-surface-900 dark:text-surface-0">{{ categoria | uppercase }}</dd>
+                         <dt class="text-surface-500 dark:text-surface-400">{{ 'auth.search.category' | translate }}</dt>
+                         <dd class="font-semibold text-right text-surface-900 dark:text-surface-0">{{ categoria ? ((('enum.Categoria.' + categoria) | translate) | uppercase) : '' }}</dd>
                      </div>
                      <div class="flex justify-between gap-4">
-                         <dt class="text-surface-500 dark:text-surface-400">Data de Emissão</dt>
-                         <dd class="font-semibold text-right text-surface-900 dark:text-surface-0">{{ emissao | date: 'dd/MM/yyyy' }}</dd>
+                         <dt class="text-surface-500 dark:text-surface-400">{{ 'auth.search.issueDate' | translate }}</dt>
+                         <dd class="font-semibold text-right text-surface-900 dark:text-surface-0">{{ emissao | ldate: 'dd/MM/yyyy' }}</dd>
                      </div>
                      <div class="flex justify-between gap-4">
-                         <dt class="text-surface-500 dark:text-surface-400">Válida até</dt>
+                         <dt class="text-surface-500 dark:text-surface-400">{{ 'auth.search.validUntil' | translate }}</dt>
                          <dd class="font-semibold text-right"
                              [ngClass]="isValid ? 'text-surface-900 dark:text-surface-0' : 'text-red-500'">
-                             {{ validUntil | date: 'dd/MM/yyyy' }}
+                             {{ validUntil | ldate: 'dd/MM/yyyy' }}
                          </dd>
                      </div>
                  </dl>
@@ -107,12 +104,12 @@
                  <div class="flex items-center gap-3">
                      <i class="pi pi-times-circle text-2xl text-red-500"></i>
                      <div class="flex-1">
-                         <div class="font-semibold text-lg leading-tight text-surface-900 dark:text-surface-0">Licença Inválida</div>
+                         <div class="font-semibold text-lg leading-tight text-surface-900 dark:text-surface-0">{{ 'auth.search.invalidLicense' | translate }}</div>
                          <div class="text-sm text-surface-500 dark:text-surface-400">
-                             Número não encontrado ou inexistente.
+                             {{ 'auth.search.notFound' | translate }}
                          </div>
                      </div>
-                     <p-tag severity="danger" value="INVÁLIDA" />
+                     <p-tag severity="danger" [value]="('INVALIDA' | statusLabel) | uppercase" />
                  </div>
              </div>
 
@@ -184,16 +181,16 @@
                  </p>
                  <div class="mb-4">
                      Validade até <span class="font-semibold">
-                         {{dataValido | date: 'dd/MM/yyyy'}}
+                         {{dataValido | ldate: 'dd/MM/yyyy'}}
                      </span>
                  </div>
                  <div class="mb-6">
                      Díli, <span class="font-semibold">
-                         {{certificadoData.createdAt | date: 'dd'}}
+                         {{certificadoData.createdAt | ldate: 'dd'}}
                      </span> de <span class="font-semibold">
-                         {{certificadoData.createdAt | date: 'MMMM':'':'pt'}}
+                         {{certificadoData.createdAt | ldate: 'MMMM':'':'pt'}}
                      </span> de <span class="font-semibold">
-                         {{certificadoData.createdAt | date: 'yyyy'}}
+                         {{certificadoData.createdAt | ldate: 'yyyy'}}
                      </span>
                  </div>
 
@@ -267,16 +264,16 @@
                  </p>
                  <div class="mb-4">
                      Validade até <span class="font-semibold">
-                         {{dataValido | date: 'dd/MM/yyyy'}}
+                         {{dataValido | ldate: 'dd/MM/yyyy'}}
                      </span>
                  </div>
                  <div class="mb-6">
                      Díli, <span class="font-semibold">
-                         {{certificadoData.createdAt | date: 'dd'}}
+                         {{certificadoData.createdAt | ldate: 'dd'}}
                      </span> de <span class="font-semibold">
-                         {{certificadoData.createdAt | date: 'MMMM':'':'pt'}}
+                         {{certificadoData.createdAt | ldate: 'MMMM':'':'pt'}}
                      </span> de <span class="font-semibold">
-                         {{certificadoData.createdAt | date: 'yyyy'}}
+                         {{certificadoData.createdAt | ldate: 'yyyy'}}
                      </span>
                  </div>
              </div>
@@ -365,10 +362,10 @@
                      class="font-bold">{{certificadoData.pedidoLicencaAtividade.classeAtividade.codigo}}</span>
              </div>
              <div class="col-span-6 text-xl my-2">
-                 Data de Emissão: <span class="font-bold">{{certificadoData.dataEmissao| date:'longDate'}}</span>
+                 Data de Emissão: <span class="font-bold">{{certificadoData.dataEmissao| ldate:'longDate'}}</span>
              </div>
              <div class="col-span-6 text-xl my-2">
-                 Validade até: <span class="font-bold">{{certificadoData.dataValidade| date:'longDate'}}</span>
+                 Validade até: <span class="font-bold">{{certificadoData.dataValidade| ldate:'longDate'}}</span>
              </div>
          </div>
 

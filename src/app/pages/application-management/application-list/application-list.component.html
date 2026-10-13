@@ -9,7 +9,7 @@
                 <div class="flex flex-wrap gap-2 items-center justify-between">
                     <p-icon-field class="w-1/2 sm:w-80 order-1 sm:order-none">
                         <p-inputicon class="pi pi-search" />
-                        <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Busca"
+                        <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" [placeholder]="'application.list.search' | translate"
                             class="w-full" />
                     </p-icon-field>
                 </div>
@@ -17,30 +17,30 @@
             <ng-template #header>
                 <tr>
                     <!-- Sort keys must match the server-side whitelist in AplicanteSortResolver -->
-                    <th pSortableColumn="numero" class="white-space-nowrap">Nº da Aplicante
+                    <th pSortableColumn="numero" class="white-space-nowrap">{{ 'application.list.numero' | translate }}
                         <p-sortIcon field="numero">
                         </p-sortIcon>
                     </th>
                     <!-- Empresa: shown to every back-office role; a client only ever sees its own company -->
                     @if (currentRole !== roleClient) {
-                    <th pSortableColumn="empresa" class="white-space-nowrap">Empresa
+                    <th pSortableColumn="empresa" class="white-space-nowrap">{{ 'application.list.empresa' | translate }}
                         <p-sortIcon field="empresa">
                         </p-sortIcon>
                     </th>
                     }
-                    <th pSortableColumn="categoria" class="white-space-nowrap">Categoria <p-sortIcon field="categoria">
+                    <th pSortableColumn="categoria" class="white-space-nowrap">{{ 'application.list.categoria' | translate }} <p-sortIcon field="categoria">
                         </p-sortIcon>
-                    <th pSortableColumn="tipo" class="white-space-nowrap">Tipo<p-sortIcon field="tipo">
-                        </p-sortIcon>
-                    </th>
-                    <th pSortableColumn="createdAt" class="white-space-nowrap">Criado em<p-sortIcon field="createdAt">
+                    <th pSortableColumn="tipo" class="white-space-nowrap">{{ 'application.list.tipo' | translate }} <p-sortIcon field="tipo">
                         </p-sortIcon>
                     </th>
-                    <th pSortableColumn="estado" class="white-space-nowrap">Estado <p-sortIcon field="estado">
+                    <th pSortableColumn="createdAt" class="white-space-nowrap">{{ 'application.list.createdAt' | translate }} <p-sortIcon field="createdAt">
+                        </p-sortIcon>
+                    </th>
+                    <th pSortableColumn="estado" class="white-space-nowrap">{{ 'common.status' | translate }} <p-sortIcon field="estado">
                         </p-sortIcon>
                     </th>
                     <th class="white-space-nowrap">
-                        Ações
+                        {{ 'common.actions' | translate }}
                     </th>
                 </tr>
             </ng-template>
@@ -55,35 +55,35 @@
                     </td>
                     }
                     <td>
-                        {{ candidatura.categoria }}
+                        {{ candidatura.categoria ? (('enum.Categoria.' + candidatura.categoria) | translate) : '' }}
                     </td>
                     <td>
-                        {{candidatura.tipo}}
+                        {{ candidatura.tipo ? (('enum.AplicanteType.' + candidatura.tipo) | translate) : '' }}
                     </td>
                     <td>
-                        {{ candidatura.createdAt | date: 'dd/MMM/yyyy, HH:mm:ss' }}
+                        {{ candidatura.createdAt | ldate: 'dd/MMM/yyyy, HH:mm:ss' }}
                     </td>
                     <td>
-                        <p-tag value="{{candidatura.estado.replace('_', ' ') | uppercase}}"
+                        <p-tag [value]="(candidatura.estado | statusLabel) | uppercase"
                             [severity]="candidatura.estado | statusSeverity"
                             icon="{{candidatura.estado | statusIcon}}" />
                     </td>
 
                     <td>
-                        <a (click)="toDetail(candidatura)" pTooltip="Detalho" tooltipPosition="top">
+                        <a (click)="toDetail(candidatura)" [pTooltip]="'common.details' | translate" tooltipPosition="top">
                             <p-button icon="pi pi-eye" class="mr-2" severity="info" [rounded]="true"
                                 [outlined]="true" />
                         </a>
                         @if (candidatura.estado === 'EM_CURSO' || candidatura.estado === 'REJEITADO') {
                         <a (click)="delete(candidatura)">
                             <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
-                                pTooltip="Eliminar" tooltipPosition="top" />
+                                [pTooltip]="'common.delete' | translate" tooltipPosition="top" />
                         </a>
                         }
                         @if (roleAdmin === currentRole) {
                         <a (click)="delete(candidatura)">
                             <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
-                                pTooltip="Eliminar" tooltipPosition="top" />
+                                [pTooltip]="'common.delete' | translate" tooltipPosition="top" />
                         </a>
                         }
                     </td>
@@ -93,7 +93,7 @@
         <!-- [first] must be bound, otherwise a search/sort reset leaves the paginator claiming the old page -->
         <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="size" [totalRecords]="totalData"
             [rowsPerPageOptions]="[25, 50, 100]" [showCurrentPageReport]="true"
-            currentPageReportTemplate="A mostrar {first} a {last} de {totalRecords}" />
+            [currentPageReportTemplate]="'application.list.pageReport' | translate" />
     </div>
 </div>
 

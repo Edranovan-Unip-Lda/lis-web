@@ -13,17 +13,20 @@
     }
     <div class="w-full min-w-0 overflow-x-hidden overflow-y-auto h-screen flex flex-col items-center justify-around"
         style="background: var(--surface-ground)">
+        <div class="w-full flex justify-end px-6 pt-4">
+            <app-language-switcher />
+        </div>
         <div class="w-full">
             <router-outlet></router-outlet>
         </div>
         <div class="flex items-end justify-end bottom-0 pb-8 text-sm">
             <div class="flex items-center pr-6 mr-6 border-r border-surface-200">
                 <a href="https://mci.gov.tl" target="_blank" rel="noopener noreferrer" class="flex items-center hover:text-emerald-500">
-                    Ministério de Comércio e Indústria
+                    {{ 'layout.ministry' | translate }}
                 </a>
             </div>
             <span>
-                &copy; {{ copyrightYears }}. Todos os direitos reservados.
+                &copy; {{ copyrightYears }}. {{ 'layout.rightsReserved' | translate }}
             </span>
         </div>
     </div>

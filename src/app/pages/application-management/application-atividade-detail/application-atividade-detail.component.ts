@@ -1,13 +1,14 @@
+import { LanguageService, LocalizedDatePipe } from '@/core/i18n';
 import { Aplicante, AutoVistoria, Documento, Fatura, PedidoVistoria } from '@/core/models/entities.model';
 import { AplicanteStatus, PedidoStatus, Role } from '@/core/models/enums';
-import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
+import { StatusSeverityPipe, StatusLabelPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService, EmpresaService } from '@/core/services';
 import { PedidoService } from '@/core/services/pedido.service';
-import { mapToAtividadeEconomica, mapToIdAndNome, mapToTaxa } from '@/core/utils/global-function';
-import { DatePipe, TitleCasePipe } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { mapToAtividadeEconomica, mapToIdAndNome, mapToTaxa, stateOptions } from '@/core/utils/global-function';
+import { Component, inject, ViewChild } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -21,7 +22,7 @@ import { PedidoVistoriaFormComponent } from './pedido-vistoria-form/pedido-visto
 
 @Component({
   selector: 'app-application-atividade-detail',
-  imports: [ReactiveFormsModule, ButtonModule, StepperModule, InputTextModule, FileUploadModule, Tag, RouterLink, StatusSeverityPipe, DatePipe, TitleCasePipe, PedidoAtividadeFormComponent, FaturaVistoriaFormComponent, PedidoVistoriaFormComponent, Toast],
+  imports: [StatusLabelPipe, LocalizedDatePipe, ReactiveFormsModule, ButtonModule, StepperModule, InputTextModule, FileUploadModule, Tag, RouterLink, StatusSeverityPipe, TranslatePipe, PedidoAtividadeFormComponent, FaturaVistoriaFormComponent, PedidoVistoriaFormComponent, Toast],
   templateUrl: './application-atividade-detail.component.html',
   styleUrl: './application-atividade-detail.component.scss',
   providers: [MessageService]
@@ -53,10 +54,8 @@ export class ApplicationAtividadeDetailComponent {
 
   @ViewChild(PedidoAtividadeFormComponent) child!: PedidoAtividadeFormComponent;
 
-  stateOptions: any[] = [
-    { label: 'SIM', value: true },
-    { label: 'NAO', value: false }
-  ];
+  stateOptions = stateOptions;
+  private i18n = inject(LanguageService);
 
 
   constructor(
@@ -140,8 +139,8 @@ export class ApplicationAtividadeDetailComponent {
         this.aplicanteEstado = response.estado;
         this.messageService.add({
           severity: 'success',
-          summary: 'Sucesso',
-          detail: 'O Aplicante foi submetida com sucesso!'
+          summary: this.i18n.instant('toast.success'),
+          detail: this.i18n.instant('application.shared.toast.applicantSubmitted')
         });
         this.disabledForms(AplicanteStatus.submetido);
         this.route.navigate([`/application/${this.aplicanteData.tipo.toLowerCase()}`, this.aplicanteData.id], {
@@ -263,8 +262,9 @@ export class ApplicationAtividadeDetailComponent {
   }
 
   private addMessages(isSuccess: boolean, isNew: boolean, error?: any) {
-    const summary = isSuccess ? (isNew ? 'Dados registados com sucesso!' : 'Dados atualizados com sucesso!') : 'Error';
-    const detail = isSuccess ? (isNew ? `Os dados foram registados` : `Os dados foram actualizados`) : 'Desculpe, algo deu errado. Tente novamente ou procure o administrador do sistema para mais informações.';
+    const t = (k: string) => this.i18n.instant(`application.shared.toast.${k}`);
+    const summary = isSuccess ? t(isNew ? 'created' : 'updated') : this.i18n.instant('toast.error');
+    const detail = isSuccess ? t(isNew ? 'createdDetail' : 'updatedDetail') : t('genericError');
 
     this.messageService.add({ severity: isSuccess ? 'success' : 'error', summary, detail });
   }

@@ -1,12 +1,15 @@
 import { LicensesPerMonthDto } from '@/core/models/entities.model';
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, SimpleChanges } from '@angular/core';
+import { LanguageService } from '@/core/i18n';
+import { TranslatePipe } from '@ngx-translate/core';
+import { chartLang, monthNames, onLangChange, seriesLabel } from '../chart-i18n';
 import type * as Highcharts from 'highcharts';
 import { HighchartsChartComponent, } from 'highcharts-angular';
 
 @Component({
   standalone: true,
   selector: 'app-certificado-licenca-categoria-charts',
-  imports: [HighchartsChartComponent],
+  imports: [HighchartsChartComponent, TranslatePipe],
   templateUrl: './certificado-licenca-categoria-charts.component.html',
   styleUrl: './certificado-licenca-categoria-charts.component.scss',
 })
@@ -18,6 +21,11 @@ export class CertificadoLicencaCategoriaChartsComponent {
   totalComercial = 0;
   totalIndustrial = 0;
   updateFlag: boolean = false;
+  private i18n = inject(LanguageService);
+
+  constructor() {
+    onLangChange(this.i18n, () => this.licensesPerMonth && this.updateChart());
+  }
 
   ngOnInit() {
     this.updateChart();
@@ -31,6 +39,7 @@ export class CertificadoLicencaCategoriaChartsComponent {
 
   initChart() {
     this.chartOptions = {
+      lang: chartLang(this.i18n),
       chart: {
         type: 'column',
         backgroundColor: 'transparent',
@@ -51,10 +60,10 @@ export class CertificadoLicencaCategoriaChartsComponent {
         }
       },
       xAxis: {
-        categories: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        categories: monthNames(this.i18n, 'MMMM'),
         crosshair: true,
         accessibility: {
-          description: 'Meses'
+          description: this.i18n.instant('dashboard.chart.months')
         },
         labels: {
           style: {
@@ -68,7 +77,7 @@ export class CertificadoLicencaCategoriaChartsComponent {
         gridLineColor: '#1e293b',
         min: 0,
         title: {
-          text: 'Total Credit'
+          text: this.i18n.instant('dashboard.chart.total')
         },
         labels: {
           style: {
@@ -119,7 +128,8 @@ export class CertificadoLicencaCategoriaChartsComponent {
           }
         }
       },
-      series: this.licensesPerMonth.series as Highcharts.SeriesOptionsType[]
+      // Display names translated on a copy; updateChart() matches the raw API names
+      series: this.licensesPerMonth.series.map((s) => ({ ...s, name: seriesLabel(this.i18n, s.name) })) as Highcharts.SeriesOptionsType[]
 
     };
   }

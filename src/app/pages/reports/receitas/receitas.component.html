@@ -1,12 +1,12 @@
 <div class="card">
     <h1 class="text-2xl font-bold text-white pt-2 pb-4">
-        Relatório de Receitas — {{ selectedYear }}
+        {{ 'reports.receitas.title' | translate: { year: selectedYear } }}
     </h1>
 
     <p-tabs [value]="activeTab" (valueChange)="onTabChange($event)">
         <p-tablist>
-            <p-tab [value]="0">Resumo mensal</p-tab>
-            <p-tab [value]="1">Por empresa</p-tab>
+            <p-tab [value]="0">{{ 'reports.receitas.tabMensal' | translate }}</p-tab>
+            <p-tab [value]="1">{{ 'reports.receitas.tabEmpresa' | translate }}</p-tab>
         </p-tablist>
         <p-tabpanels>
 
@@ -15,16 +15,16 @@
                 <div class="flex justify-between items-end flex-wrap gap-4 py-4">
                     <div>
                         <label for="yearFilter" class="font-medium mb-2 block">
-                            Ano de referência
+                            {{ 'reports.receitas.anoReferencia' | translate }}
                         </label>
                         <p-select inputId="yearFilter" [(ngModel)]="selectedYear" (ngModelChange)="onYearChange()"
-                            [options]="yearOptions" optionLabel="name" optionValue="value" placeholder="Selecione o ano"
+                            [options]="yearOptions" optionLabel="name" optionValue="value" [placeholder]="'reports.receitas.selectAno' | translate"
                             styleClass="w-40" [fluid]="true">
                         </p-select>
                     </div>
 
                     <div>
-                        <p-button (onClick)="exportToExcel()" [disabled]="rows.length === 0" label="Exportar para Excel"
+                        <p-button (onClick)="exportToExcel()" [disabled]="rows.length === 0" [label]="'reports.common.exportExcel' | translate"
                             icon="pi pi-file-excel" [raised]="true" severity="success" />
                     </div>
                 </div>
@@ -34,37 +34,37 @@
                     [loading]="dataIsFetching">
                     <ng-template #header>
                         <tr>
-                            <th rowspan="2" class="align-bottom">Mês</th>
-                            <th colspan="2" class="text-center">Comercial</th>
-                            <th colspan="2" class="text-center">Industrial</th>
-                            <th rowspan="2" class="text-right align-bottom">Total</th>
+                            <th rowspan="2" class="align-bottom">{{ 'reports.receitas.mes' | translate }}</th>
+                            <th colspan="2" class="text-center">{{ 'reports.receitas.categoria.COMERCIAL' | translate }}</th>
+                            <th colspan="2" class="text-center">{{ 'reports.receitas.categoria.INDUSTRIAL' | translate }}</th>
+                            <th rowspan="2" class="text-right align-bottom">{{ 'reports.receitas.total' | translate }}</th>
                         </tr>
                         <tr>
-                            <th class="text-right">Cadastro</th>
-                            <th class="text-right">Licença</th>
-                            <th class="text-right">Cadastro</th>
-                            <th class="text-right">Licença</th>
+                            <th class="text-right">{{ 'reports.receitas.cadastro' | translate }}</th>
+                            <th class="text-right">{{ 'reports.receitas.licenca' | translate }}</th>
+                            <th class="text-right">{{ 'reports.receitas.cadastro' | translate }}</th>
+                            <th class="text-right">{{ 'reports.receitas.licenca' | translate }}</th>
                         </tr>
                     </ng-template>
                     <ng-template #body let-row>
                         <tr>
-                            <td>{{ row.mes }}</td>
-                            <td class="text-right">{{ row.comercialCadastro | currency }}</td>
-                            <td class="text-right">{{ row.comercialAtividade | currency }}</td>
-                            <td class="text-right">{{ row.industrialCadastro | currency }}</td>
-                            <td class="text-right">{{ row.industrialAtividade | currency }}</td>
-                            <td class="text-right">{{ row.total | currency }}</td>
+                            <td>{{ monthLabel(row.mes) }}</td>
+                            <td class="text-right">{{ row.comercialCadastro | lcurrency }}</td>
+                            <td class="text-right">{{ row.comercialAtividade | lcurrency }}</td>
+                            <td class="text-right">{{ row.industrialCadastro | lcurrency }}</td>
+                            <td class="text-right">{{ row.industrialAtividade | lcurrency }}</td>
+                            <td class="text-right">{{ row.total | lcurrency }}</td>
                         </tr>
                     </ng-template>
                     @if (receita) {
                     <ng-template #footer>
                         <tr class="font-bold">
-                            <td>TOTAL</td>
-                            <td class="text-right">{{ receita.totalComercialCadastro | currency }}</td>
-                            <td class="text-right">{{ receita.totalComercialAtividade | currency }}</td>
-                            <td class="text-right">{{ receita.totalIndustrialCadastro | currency }}</td>
-                            <td class="text-right">{{ receita.totalIndustrialAtividade | currency }}</td>
-                            <td class="text-right">{{ receita.totalGeral | currency }}</td>
+                            <td>{{ 'reports.receitas.totalUpper' | translate }}</td>
+                            <td class="text-right">{{ receita.totalComercialCadastro | lcurrency }}</td>
+                            <td class="text-right">{{ receita.totalComercialAtividade | lcurrency }}</td>
+                            <td class="text-right">{{ receita.totalIndustrialCadastro | lcurrency }}</td>
+                            <td class="text-right">{{ receita.totalIndustrialAtividade | lcurrency }}</td>
+                            <td class="text-right">{{ receita.totalGeral | lcurrency }}</td>
                         </tr>
                     </ng-template>
                     }
@@ -73,7 +73,7 @@
                 @else {
                 @for (message of messages(); track message; let first = $first) {
                 <p-message [icon]="message.icon" [size]="message.size" [severity]="message.severity"
-                    [text]="message.content" />
+                    [text]="message.content | translate" />
                 }
                 }
             </p-tabpanel>
@@ -83,48 +83,48 @@
                 <div class="flex justify-between items-end flex-wrap gap-4 py-4">
                     <div class="flex items-end flex-wrap gap-4">
                         <div>
-                            <label for="yearFilterEmp" class="font-medium mb-2 block">Ano</label>
+                            <label for="yearFilterEmp" class="font-medium mb-2 block">{{ 'reports.receitas.ano' | translate }}</label>
                             <p-select inputId="yearFilterEmp" [(ngModel)]="selectedYear"
                                 (ngModelChange)="onYearChange()" [options]="yearOptions" optionLabel="name"
                                 optionValue="value" styleClass="w-32" [fluid]="true" />
                         </div>
                         <div>
-                            <label for="monthFilter" class="font-medium mb-2 block">Mês</label>
+                            <label for="monthFilter" class="font-medium mb-2 block">{{ 'reports.receitas.mes' | translate }}</label>
                             <p-select inputId="monthFilter" [(ngModel)]="selectedMonth"
                                 (ngModelChange)="onMonthChange()" [options]="monthOptions" optionLabel="name"
                                 optionValue="value" styleClass="w-40" [fluid]="true" />
                         </div>
                         <div>
-                            <label for="categoriaFilter" class="font-medium mb-2 block">Categoria</label>
+                            <label for="categoriaFilter" class="font-medium mb-2 block">{{ 'reports.common.categoria' | translate }}</label>
                             <p-select inputId="categoriaFilter" [(ngModel)]="selectedCategoria"
                                 (ngModelChange)="applyEmpresaFilters()" [options]="categoriaOptions" optionLabel="name"
                                 optionValue="value" styleClass="w-40" [fluid]="true" />
                         </div>
                         <div>
-                            <label for="tipoFilter" class="font-medium mb-2 block">Tipo</label>
+                            <label for="tipoFilter" class="font-medium mb-2 block">{{ 'reports.common.tipo' | translate }}</label>
                             <p-select inputId="tipoFilter" [(ngModel)]="selectedTipo"
                                 (ngModelChange)="applyEmpresaFilters()" [options]="tipoOptions" optionLabel="name"
                                 optionValue="value" styleClass="w-40" [fluid]="true" />
                         </div>
                         <div>
-                            <label for="sociedadeFilter" class="font-medium mb-2 block">Sociedade Comercial</label>
+                            <label for="sociedadeFilter" class="font-medium mb-2 block">{{ 'reports.common.sociedadeComercial' | translate }}</label>
                             <p-select inputId="sociedadeFilter" [(ngModel)]="selectedSociedade"
                                 (ngModelChange)="applyEmpresaFilters()" [options]="sociedadeOptions" optionLabel="name"
                                 optionValue="value" [filter]="true" filterBy="name" styleClass="w-56" [fluid]="true" />
                         </div>
                         <div>
-                            <label for="empresaSearch" class="font-medium mb-2 block">Empresa</label>
+                            <label for="empresaSearch" class="font-medium mb-2 block">{{ 'reports.common.empresa' | translate }}</label>
                             <p-iconfield>
                                 <p-inputicon styleClass="pi pi-search" />
                                 <input pInputText id="empresaSearch" type="text" [(ngModel)]="searchTerm"
-                                    (ngModelChange)="applyEmpresaFilters()" placeholder="Nome ou NIF" />
+                                    (ngModelChange)="applyEmpresaFilters()" [placeholder]="'reports.receitas.searchPlaceholder' | translate" />
                             </p-iconfield>
                         </div>
                     </div>
 
                     <div>
                         <p-button (onClick)="exportEmpresasToExcel()" [disabled]="empresaRows.length === 0"
-                            label="Exportar para Excel" icon="pi pi-file-excel" [raised]="true" severity="success" />
+                            [label]="'reports.common.exportExcel' | translate" icon="pi pi-file-excel" [raised]="true" severity="success" />
                     </div>
                 </div>
 
@@ -134,26 +134,26 @@
                     <ng-template #header>
                         <tr>
                             <th rowspan="2" style="width: 3rem"></th>
-                            <th rowspan="2" class="align-bottom">Empresa</th>
-                            <th rowspan="2" class="align-bottom">Sociedade Comercial</th>
+                            <th rowspan="2" class="align-bottom">{{ 'reports.common.empresa' | translate }}</th>
+                            <th rowspan="2" class="align-bottom">{{ 'reports.common.sociedadeComercial' | translate }}</th>
                             @if (showComercial) {
                             <th [attr.colspan]="(showCadastro ? 1 : 0) + (showLicenca ? 1 : 0)" class="text-center">
-                                Comercial</th>
+                                {{ 'reports.receitas.categoria.COMERCIAL' | translate }}</th>
                             }
                             @if (showIndustrial) {
                             <th [attr.colspan]="(showCadastro ? 1 : 0) + (showLicenca ? 1 : 0)" class="text-center">
-                                Industrial</th>
+                                {{ 'reports.receitas.categoria.INDUSTRIAL' | translate }}</th>
                             }
-                            <th rowspan="2" class="text-right align-bottom">Total</th>
+                            <th rowspan="2" class="text-right align-bottom">{{ 'reports.receitas.total' | translate }}</th>
                         </tr>
                         <tr>
                             @if (showComercial) {
-                            @if (showCadastro) {<th class="text-right">Cadastro</th>}
-                            @if (showLicenca) {<th class="text-right">Licença</th>}
+                            @if (showCadastro) {<th class="text-right">{{ 'reports.receitas.cadastro' | translate }}</th>}
+                            @if (showLicenca) {<th class="text-right">{{ 'reports.receitas.licenca' | translate }}</th>}
                             }
                             @if (showIndustrial) {
-                            @if (showCadastro) {<th class="text-right">Cadastro</th>}
-                            @if (showLicenca) {<th class="text-right">Licença</th>}
+                            @if (showCadastro) {<th class="text-right">{{ 'reports.receitas.cadastro' | translate }}</th>}
+                            @if (showLicenca) {<th class="text-right">{{ 'reports.receitas.licenca' | translate }}</th>}
                             }
                         </tr>
                     </ng-template>
@@ -169,14 +169,14 @@
                             </td>
                             <td>{{ row.sociedadeComercial || '—' }}</td>
                             @if (showComercial) {
-                            @if (showCadastro) {<td class="text-right">{{ row.comercialCadastro | currency }}</td>}
-                            @if (showLicenca) {<td class="text-right">{{ row.comercialAtividade | currency }}</td>}
+                            @if (showCadastro) {<td class="text-right">{{ row.comercialCadastro | lcurrency }}</td>}
+                            @if (showLicenca) {<td class="text-right">{{ row.comercialAtividade | lcurrency }}</td>}
                             }
                             @if (showIndustrial) {
-                            @if (showCadastro) {<td class="text-right">{{ row.industrialCadastro | currency }}</td>}
-                            @if (showLicenca) {<td class="text-right">{{ row.industrialAtividade | currency }}</td>}
+                            @if (showCadastro) {<td class="text-right">{{ row.industrialCadastro | lcurrency }}</td>}
+                            @if (showLicenca) {<td class="text-right">{{ row.industrialAtividade | lcurrency }}</td>}
                             }
-                            <td class="text-right font-medium">{{ row.total | currency }}</td>
+                            <td class="text-right font-medium">{{ row.total | lcurrency }}</td>
                         </tr>
                     </ng-template>
                     <ng-template #expandedrow let-row>
@@ -186,20 +186,20 @@
                                     <p-table [value]="row.pagamentos" responsiveLayout="scroll">
                                         <ng-template #header>
                                             <tr>
-                                                <th>Fatura</th>
-                                                <th>Data de pagamento</th>
-                                                <th>Categoria</th>
-                                                <th>Tipo</th>
-                                                <th class="text-right">Valor</th>
+                                                <th>{{ 'reports.receitas.fatura' | translate }}</th>
+                                                <th>{{ 'reports.receitas.dataPagamento' | translate }}</th>
+                                                <th>{{ 'reports.common.categoria' | translate }}</th>
+                                                <th>{{ 'reports.common.tipo' | translate }}</th>
+                                                <th class="text-right">{{ 'reports.receitas.valor' | translate }}</th>
                                             </tr>
                                         </ng-template>
                                         <ng-template #body let-pagamento>
                                             <tr>
                                                 <td>#{{ pagamento.faturaId }}</td>
-                                                <td>{{ pagamento.dataPagamento | date: 'dd/MM/yyyy' }}</td>
-                                                <td>{{ pagamento.categoria === 'INDUSTRIAL' ? 'Industrial' : 'Comercial' }}</td>
-                                                <td>{{ pagamento.tipo === 'CADASTRO' ? 'Cadastro' : 'Licença' }}</td>
-                                                <td class="text-right">{{ pagamento.valor | currency }}</td>
+                                                <td>{{ pagamento.dataPagamento | ldate: 'dd/MM/yyyy' }}</td>
+                                                <td>{{ (pagamento.categoria === 'INDUSTRIAL' ? 'reports.receitas.categoria.INDUSTRIAL' : 'reports.receitas.categoria.COMERCIAL') | translate }}</td>
+                                                <td>{{ (pagamento.tipo === 'CADASTRO' ? 'reports.receitas.cadastro' : 'reports.receitas.licenca') | translate }}</td>
+                                                <td class="text-right">{{ pagamento.valor | lcurrency }}</td>
                                             </tr>
                                         </ng-template>
                                     </p-table>
@@ -210,17 +210,17 @@
                     <ng-template #footer>
                         <tr class="font-bold">
                             <td></td>
-                            <td>TOTAL</td>
+                            <td>{{ 'reports.receitas.totalUpper' | translate }}</td>
                             <td></td>
                             @if (showComercial) {
-                            @if (showCadastro) {<td class="text-right">{{ empresaFooter.comercialCadastro | currency }}</td>}
-                            @if (showLicenca) {<td class="text-right">{{ empresaFooter.comercialAtividade | currency }}</td>}
+                            @if (showCadastro) {<td class="text-right">{{ empresaFooter.comercialCadastro | lcurrency }}</td>}
+                            @if (showLicenca) {<td class="text-right">{{ empresaFooter.comercialAtividade | lcurrency }}</td>}
                             }
                             @if (showIndustrial) {
-                            @if (showCadastro) {<td class="text-right">{{ empresaFooter.industrialCadastro | currency }}</td>}
-                            @if (showLicenca) {<td class="text-right">{{ empresaFooter.industrialAtividade | currency }}</td>}
+                            @if (showCadastro) {<td class="text-right">{{ empresaFooter.industrialCadastro | lcurrency }}</td>}
+                            @if (showLicenca) {<td class="text-right">{{ empresaFooter.industrialAtividade | lcurrency }}</td>}
                             }
-                            <td class="text-right">{{ empresaFooter.total | currency }}</td>
+                            <td class="text-right">{{ empresaFooter.total | lcurrency }}</td>
                         </tr>
                     </ng-template>
                 </p-table>
@@ -228,7 +228,7 @@
                 @else {
                 @for (message of empresaMessages(); track message; let first = $first) {
                 <p-message [icon]="message.icon" [size]="message.size" [severity]="message.severity"
-                    [text]="message.content" />
+                    [text]="message.content | translate" />
                 }
                 }
             </p-tabpanel>

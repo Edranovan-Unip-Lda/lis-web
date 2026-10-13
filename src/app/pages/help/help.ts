@@ -2,11 +2,12 @@ import {Component} from '@angular/core';
 import {IconFieldModule} from 'primeng/iconfield';
 import {InputIconModule} from 'primeng/inputicon';
 import {InputTextModule} from 'primeng/inputtext';
+import {TranslatePipe} from '@ngx-translate/core';
 
 @Component({
     selector: 'app-help',
     standalone: true,
-    imports: [IconFieldModule, InputIconModule, InputTextModule],
+    imports: [IconFieldModule, InputIconModule, InputTextModule, TranslatePipe],
     template: `
         <div>
             <div class="card">
@@ -18,10 +19,10 @@ import {InputTextModule} from 'primeng/inputtext';
                             d="M0,64L48,90.7C96,117,192,171,288,208C384,245,480,267,576,256C672,245,768,203,864,165.3C960,128,1056,96,1152,74.7C1248,53,1344,43,1392,37.3L1440,32L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"
                         ></path>
                     </svg>
-                    <div class="font-bold mb-8 text-4xl z-10">How can we help?</div>
+                    <div class="font-bold mb-8 text-4xl z-10">{{ 'help.title' | translate }}</div>
                     <p-icon-field class="w-9/12 md:w-6/12">
                         <p-inputicon class="pi pi-search" />
-                        <input pInputText id="name" type="text" placeholder="Search" [style]="{ borderRadius: '2rem' }" class="w-full" />
+                        <input pInputText id="name" type="text" [placeholder]="'common.search' | translate" [style]="{ borderRadius: '2rem' }" class="w-full" />
                     </p-icon-field>
                 </div>
 
@@ -31,7 +32,7 @@ import {InputTextModule} from 'primeng/inputtext';
                             <span class="inline-flex items-center justify-center rounded-full w-20 h-20 bg-primary-100 mb-8">
                                 <i class="pi pi-power-off text-4xl text-primary-700"></i>
                             </span>
-                            <div class="text-2xl mb-4 font-medium">Getting Started</div>
+                            <div class="text-2xl mb-4 font-medium">{{ 'help.gettingStarted' | translate }}</div>
                             <ul class="list-none m-0 p-0 text-center">
                                 <li class="leading-normal mb-1">
                                     <a class="text-surface-500 dark:text-surface-400 hover:text-primary cursor-pointer">Lorem ipsum dolor</a>
@@ -43,7 +44,7 @@ import {InputTextModule} from 'primeng/inputtext';
                                     <a class="text-surface-500 dark:text-surface-400 hover:text-primary cursor-pointer">Sed do eiusmod tempor</a>
                                 </li>
                                 <li>
-                                    <a class="text-primary hover:underline cursor-pointer font-medium">View all</a>
+                                    <a class="text-primary hover:underline cursor-pointer font-medium">{{ 'help.viewAll' | translate }}</a>
                                 </li>
                             </ul>
                         </div>
@@ -53,7 +54,7 @@ import {InputTextModule} from 'primeng/inputtext';
                             <span class="inline-flex items-center justify-center rounded-full w-20 h-20 bg-primary-100 mb-8">
                                 <i class="pi pi-arrows-h text-4xl text-primary-700"></i>
                             </span>
-                            <div class="text-2xl mb-4 font-medium">Transactions</div>
+                            <div class="text-2xl mb-4 font-medium">{{ 'help.transactions' | translate }}</div>
                             <ul class="list-none m-0 p-0 text-center">
                                 <li class="leading-normal mb-1">
                                     <a class="text-surface-500 dark:text-surface-400 hover:text-primary cursor-pointer">Lorem ipsum dolor</a>
@@ -65,7 +66,7 @@ import {InputTextModule} from 'primeng/inputtext';
                                     <a class="text-surface-500 dark:text-surface-400 hover:text-primary cursor-pointer">Sed do eiusmod tempor</a>
                                 </li>
                                 <li>
-                                    <a class="text-primary hover:underline cursor-pointer font-medium">View all</a>
+                                    <a class="text-primary hover:underline cursor-pointer font-medium">{{ 'help.viewAll' | translate }}</a>
                                 </li>
                             </ul>
                         </div>
@@ -75,7 +76,7 @@ import {InputTextModule} from 'primeng/inputtext';
                             <span class="inline-flex items-center justify-center rounded-full w-20 h-20 bg-primary-100 mb-8">
                                 <i class="pi pi-user text-4xl text-primary-700"></i>
                             </span>
-                            <div class="text-2xl mb-4 font-medium">Profile</div>
+                            <div class="text-2xl mb-4 font-medium">{{ 'help.profile' | translate }}</div>
                             <ul class="list-none m-0 p-0 text-center">
                                 <li class="leading-normal mb-1">
                                     <a class="text-surface-500 dark:text-surface-400 hover:text-primary cursor-pointer">Lorem ipsum dolor</a>
@@ -87,7 +88,7 @@ import {InputTextModule} from 'primeng/inputtext';
                                     <a class="text-surface-500 dark:text-surface-400 hover:text-primary cursor-pointer">Sed do eiusmod tempor</a>
                                 </li>
                                 <li>
-                                    <a class="text-primary hover:underline cursor-pointer font-medium">View all</a>
+                                    <a class="text-primary hover:underline cursor-pointer font-medium">{{ 'help.viewAll' | translate }}</a>
                                 </li>
                             </ul>
                         </div>
@@ -97,7 +98,7 @@ import {InputTextModule} from 'primeng/inputtext';
                             <span class="inline-flex items-center justify-center rounded-full w-20 h-20 bg-primary-100 mb-8">
                                 <i class="pi pi-money-bill text-4xl text-primary-700"></i>
                             </span>
-                            <div class="text-2xl mb-4 font-medium">Billing</div>
+                            <div class="text-2xl mb-4 font-medium">{{ 'help.billing' | translate }}</div>
                             <ul class="list-none m-0 p-0 text-center">
                                 <li class="leading-normal mb-1">
                                     <a class="text-surface-500 dark:text-surface-400 hover:text-primary cursor-pointer">Lorem ipsum dolor</a>
@@ -109,7 +110,7 @@ import {InputTextModule} from 'primeng/inputtext';
                                     <a class="text-surface-500 dark:text-surface-400 hover:text-primary cursor-pointer">Sed do eiusmod tempor</a>
                                 </li>
                                 <li>
-                                    <a class="text-primary hover:underline cursor-pointer font-medium">View all</a>
+                                    <a class="text-primary hover:underline cursor-pointer font-medium">{{ 'help.viewAll' | translate }}</a>
                                 </li>
                             </ul>
                         </div>
@@ -119,7 +120,7 @@ import {InputTextModule} from 'primeng/inputtext';
                             <span class="inline-flex items-center justify-center rounded-full w-20 h-20 bg-primary-100 mb-8">
                                 <i class="pi pi-database text-4xl text-primary-700"></i>
                             </span>
-                            <div class="text-2xl mb-4 font-medium">Integrations</div>
+                            <div class="text-2xl mb-4 font-medium">{{ 'help.integrations' | translate }}</div>
                             <ul class="list-none m-0 p-0 text-center">
                                 <li class="leading-normal mb-1">
                                     <a class="text-surface-500 dark:text-surface-400 hover:text-primary cursor-pointer">Lorem ipsum dolor</a>
@@ -131,7 +132,7 @@ import {InputTextModule} from 'primeng/inputtext';
                                     <a class="text-surface-500 dark:text-surface-400 hover:text-primary cursor-pointer">Sed do eiusmod tempor</a>
                                 </li>
                                 <li>
-                                    <a class="text-primary hover:underline cursor-pointer font-medium">View all</a>
+                                    <a class="text-primary hover:underline cursor-pointer font-medium">{{ 'help.viewAll' | translate }}</a>
                                 </li>
                             </ul>
                         </div>
@@ -141,7 +142,7 @@ import {InputTextModule} from 'primeng/inputtext';
                             <span class="inline-flex items-center justify-center rounded-full w-20 h-20 bg-primary-100 mb-8">
                                 <i class="pi pi-lock text-4xl text-primary-700"></i>
                             </span>
-                            <div class="text-2xl mb-4 font-medium">Security</div>
+                            <div class="text-2xl mb-4 font-medium">{{ 'help.security' | translate }}</div>
                             <ul class="list-none m-0 p-0 text-center">
                                 <li class="leading-normal mb-1">
                                     <a class="text-surface-500 dark:text-surface-400 hover:text-primary cursor-pointer">Lorem ipsum dolor</a>
@@ -153,7 +154,7 @@ import {InputTextModule} from 'primeng/inputtext';
                                     <a class="text-surface-500 dark:text-surface-400 hover:text-primary cursor-pointer">Sed do eiusmod tempor</a>
                                 </li>
                                 <li>
-                                    <a class="text-primary hover:underline cursor-pointer font-medium">View all</a>
+                                    <a class="text-primary hover:underline cursor-pointer font-medium">{{ 'help.viewAll' | translate }}</a>
                                 </li>
                             </ul>
                         </div>

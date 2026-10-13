@@ -1,10 +1,10 @@
 <div class="card">
     <p-stepper [value]="1" class="basis-[50rem]" [linear]="false">
         <p-step-list>
-            <p-step [value]="1">Empresa</p-step>
-            <p-step [value]="2">Proprietário(a) / Titular da empresa</p-step>
-            <p-step [value]="3">Gerente & Representante</p-step>
-            <p-step [value]="4">Confirmação</p-step>
+            <p-step [value]="1">{{ 'empresa.form.steps.empresa' | translate }}</p-step>
+            <p-step [value]="2">{{ 'empresa.form.steps.proprietario' | translate }}</p-step>
+            <p-step [value]="3">{{ 'empresa.form.steps.gerenteRepresentante' | translate }}</p-step>
+            <p-step [value]="4">{{ 'empresa.form.steps.confirmacao' | translate }}</p-step>
         </p-step-list>
         <p-step-panels>
             <p-step-panel [value]="1">
@@ -13,62 +13,62 @@
                         <div class="grid grid-cols-12 gap-4">
                             <div class="mb-6 col-span-12">
                                 <label for="nome" class="font-medium mb-2 block">
-                                    Nome da Empresa
+                                    {{ 'empresa.fields.nomeEmpresa' | translate }}
                                 </label>
                                 <input formControlName="nome" id="nome" type="text" pInputText fluid />
                                 @if (empresaForm.get('nome')?.errors?.['sociedadeComercialInName']) {
                                 <p class="text-amber-600 text-sm mt-1">
                                     <i class="pi pi-exclamation-triangle mr-1"></i>
-                                    Ups! O nome da empresa não deve conter o tipo de sociedade
+                                    {{ 'empresa.form.validation.sociedadeInName' | translate }}
                                     (<strong>{{ empresaForm.get('nome')?.errors?.['sociedadeComercialInName'].matched.join(', ') }}</strong>).
-                                    Esse tipo será definido no campo "Tipo de Sociedade Comercial" abaixo.
+                                    {{ 'empresa.form.validation.sociedadeInNameHint' | translate }}
                                 </p>
                                 }
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="sociedadeComercial" class="font-medium  mb-2 block">
-                                    Tipo de Sociedade Comercial
+                                    {{ 'empresa.fields.tipoSociedadeComercial' | translate }}
                                 </label>
                                 <p-select fluid formControlName="sociedadeComercial" [options]="listaSociedadeComercial"
-                                    optionLabel="nome" placeholder="Selecione o tipo de sociedade" [showClear]="true">
+                                    optionLabel="nome" [placeholder]="'empresa.form.placeholders.tipoSociedade' | translate" [showClear]="true">
                                 </p-select>
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="nif" class="font-medium  mb-2 block">
-                                    NIF da Empresa
+                                    {{ 'empresa.fields.nifEmpresa' | translate }}
                                 </label>
                                 <input formControlName="nif" id="nif" type="text" pInputText fluid />
                                 @if (empresaForm.get('nif')?.pending) {
                                 <p class="text-gray-500 text-sm mt-1">
-                                    <i class="pi pi-spin pi-spinner"></i> A verificar NIF...
+                                    <i class="pi pi-spin pi-spinner"></i> {{ 'empresa.form.nifChecking' | translate }}
                                 </p>
                                 } @else if (empresaForm.get('nif')?.touched &&
                                 empresaForm.get('nif')?.errors?.['nifTaken']) {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este NIF já está registado por outra empresa.
+                                    {{ 'empresa.form.validation.nifTaken' | translate }}
                                 </p>
                                 } @else if (empresaForm.get('nif')?.touched &&
                                 empresaForm.get('nif')?.invalid) {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 } @else if (empresaForm.get('nif')?.touched &&
                                 empresaForm.get('nif')?.valid && empresaForm.get('nif')?.value) {
                                 <p class="text-green-500 text-sm mt-1">
-                                    <i class="pi pi-check-circle"></i> NIF disponível.
+                                    <i class="pi pi-check-circle"></i> {{ 'empresa.form.nifAvailable' | translate }}
                                 </p>
                                 }
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="numeroRegistoComercial" class="font-medium  mb-2 block">
-                                    Nº Registo Comercial
+                                    {{ 'empresa.fields.numeroRegistoComercial' | translate }}
                                 </label>
                                 <input formControlName="numeroRegistoComercial" id="numeroRegistoComercial" type="text"
                                     pInputText fluid />
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="capitalSocial" class="font-medium  mb-2 block">
-                                    Capital Social
+                                    {{ 'empresa.fields.capitalSocial' | translate }}
                                 </label>
                                 <p-inputgroup>
                                     <p-inputgroup-addon>$</p-inputgroup-addon>
@@ -78,21 +78,21 @@
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="dataRegisto" class="font-medium  mb-2 block">
-                                    Data de Registo
+                                    {{ 'empresa.fields.dataRegisto' | translate }}
                                 </label>
                                 <p-date-picker formControlName="dataRegisto" id="dataRegisto" [showIcon]="true"
                                     [showButtonBar]="true" fluid dateFormat="dd/mm/yy" inputStyleClass="w-full" />
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="totalTrabalhadores" class="font-medium  mb-2 block">
-                                    Total Trabalhadores (Funcionários)
+                                    {{ 'empresa.fields.totalTrabalhadoresFuncionarios' | translate }}
                                 </label>
                                 <input formControlName="totalTrabalhadores" id="totalTrabalhadores" type="text"
                                     pInputText fluid />
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="volumeNegocioAnual" class="font-medium mb-2 block">
-                                    Volume de Negócios Anual
+                                    {{ 'empresa.fields.volumeNegocioAnual' | translate }}
                                 </label>
                                 <p-inputgroup>
                                     <p-inputgroup-addon>$</p-inputgroup-addon>
@@ -102,13 +102,13 @@
                                 @if (empresaForm.get('volumeNegocioAnual')?.touched &&
                                 empresaForm.get('volumeNegocioAnual')?.invalid) {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="balancoTotalAnual" class="font-medium  mb-2 block">
-                                    Balanço total Anual
+                                    {{ 'empresa.fields.balancoTotalAnual' | translate }}
                                 </label>
                                 <p-inputgroup>
                                     <p-inputgroup-addon>$</p-inputgroup-addon>
@@ -118,14 +118,14 @@
                                 @if (empresaForm.get('balancoTotalAnual')?.touched &&
                                 empresaForm.get('balancoTotalAnual')?.invalid) {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                                 @if (empresaForm.hasError('greaterThan') &&
                                 empresaForm.get('balancoTotalAnual')?.touched &&
                                 empresaForm.get('volumeNegocioAnual')?.touched) {
                                 <p class="text-red-500 text-sm mt-1">
-                                    O Volume de Negócios Anual deve ser superior ao Balanço Total Anual.
+                                    {{ 'empresa.form.validation.volumeGreaterThanBalanco' | translate }}
                                 </p>
                                 }
                             </div>
@@ -133,14 +133,14 @@
                                 <div formGroupName="sede" class="grid grid-cols-12">
                                     <div class="mb-6 col-span-12">
                                         <label for="local" class="font-medium  mb-2 block">
-                                            Sede
+                                            {{ 'empresa.fields.sede' | translate }}
                                         </label>
                                         <input formControlName="local" id="local" type="text" pInputText fluid
-                                            placeholder="ex. Av. Pres. Nicolau Lobato" />
+                                            [placeholder]="'empresa.form.placeholders.local' | translate" />
                                         @if (empresaForm.get('sede.local')?.touched &&
                                         empresaForm.get('sede.local')?.invalid) {
                                         <p class="text-red-500 text-sm mt-1">
-                                            Este campo é obrigatório e deve ser válido.
+                                            {{ 'empresa.form.validation.requiredValid' | translate }}
                                         </p>
                                         }
                                     </div>
@@ -148,10 +148,10 @@
                                         <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                                             <div class="flex-auto">
                                                 <label for="aldeia" class="font-medium  mb-2 block">
-                                                    Aldeia
+                                                    {{ 'empresa.fields.aldeia' | translate }}
                                                 </label>
                                                 <p-select fluid formControlName="aldeia" [options]="aldeias"
-                                                    optionLabel="nome" placeholder="Selecione a Aldeia" [filter]="true"
+                                                    optionLabel="nome" [placeholder]="'empresa.form.placeholders.aldeia' | translate" [filter]="true"
                                                     filterBy="nome" [showClear]="true" (onFilter)="aldeiaFilter($event)"
                                                     (onpanelHide)="onPanelHide()" (onChange)="aldeiaOnChange($event)"
                                                     (onClear)="onPanelHide()">
@@ -159,26 +159,26 @@
                                                 @if (empresaForm.get('sede.aldeia')?.touched &&
                                                 empresaForm.get('sede.aldeia')?.invalid) {
                                                 <p class="text-red-500 text-sm mt-1">
-                                                    Este campo é obrigatório e deve ser válido.
+                                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                                 </p>
                                                 }
                                             </div>
                                             <div class="flex-auto">
                                                 <label for="suco" class="font-medium  mb-2 block">
-                                                    Suco
+                                                    {{ 'empresa.fields.suco' | translate }}
                                                 </label>
                                                 <input formControlName="suco" id="suco" type="text" pInputText fluid />
                                             </div>
                                             <div class="flex-auto">
                                                 <label for="posto" class="font-medium  mb-2 block">
-                                                    Posto Administrativo
+                                                    {{ 'empresa.fields.postoAdministrativo' | translate }}
                                                 </label>
                                                 <input formControlName="postoAdministrativo" id="postoAdministrativo"
                                                     type="text" pInputText fluid />
                                             </div>
                                             <div class="flex-auto">
                                                 <label for="municipio" class="font-medium  mb-2 block">
-                                                    Municipio
+                                                    {{ 'empresa.fields.municipio' | translate }}
                                                 </label>
                                                 <input formControlName="municipio" id="municipio" type="text" pInputText
                                                     fluid />
@@ -188,7 +188,8 @@
                                 </div>
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-1 flex items-end justify-center">
-                                <p-button (click)="getCurrentPosition()" icon="pi pi-map-marker" />
+                                <p-button (click)="getCurrentPosition()" icon="pi pi-map-marker"
+                                    [pTooltip]="'empresa.form.useCurrentLocation' | translate" tooltipPosition="top" />
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-5">
                                 <label for="longitude" class="font-medium mb-2 block">
@@ -198,7 +199,7 @@
                                 @if (empresaForm.get('longitude')?.touched &&
                                 empresaForm.get('longitude')?.invalid) {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
@@ -210,7 +211,7 @@
                                 @if (empresaForm.get('latitude')?.touched &&
                                 empresaForm.get('latitude')?.invalid) {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
@@ -219,45 +220,44 @@
                         <div class="grid grid-cols-12 gap-4">
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="telefone" class="font-medium  mb-2 block">
-                                    Nº Telefone
+                                    {{ 'empresa.fields.numeroTelefone' | translate }}
                                 </label>
                                 <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="telemovel" class="font-medium  mb-2 block">
-                                    Nº Telemóvel
+                                    {{ 'empresa.fields.numeroTelemovel' | translate }}
                                 </label>
                                 <input formControlName="telemovel" id="telemovel" type="tel" pInputText fluid />
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="email" class="font-medium  mb-2 block">
-                                    Email
+                                    {{ 'common.email' | translate }}
                                 </label>
                                 <input formControlName="email" id="email" type="email" pInputText fluid />
                                 @if (empresaForm.get('email')?.touched &&
                                 empresaForm.get('email')?.invalid) {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
                             <div class="mb-6 col-span-12">
-                                <label for="outrosDocumentos" class="font-medium mb-2 block">
-                                    DOCUMENTOS
+                                <label for="outrosDocumentos" class="font-medium mb-2 block uppercase">
+                                    {{ 'empresa.fields.documentos' | translate }}
                                 </label>
                                 <p-fileupload #fuEmpresaDocs name="files" [customUpload]="true" (uploadHandler)="onUploadDocs($event, fuEmpresaDocs)"
                                     [maxFileSize]="maxFileSize" [multiple]="true" accept="application/pdf"
                                     mode="advanced">
                                     <ng-template #empty>
-                                        Arraste e largue os ficheiros aqui para carregar.
+                                        {{ 'empresa.form.dropFiles' | translate }}
                                     </ng-template>
                                 </p-fileupload>
 
                                 <!-- Display uploaded documents separately -->
                                 @if (uploadedDocs.length > 0) {
                                 <div class="mt-4 p-4 border border-gray-700 rounded-lg bg-gray-800">
-                                    <h4 class="font-medium mb-2 text-white">Arquivos Carregados
-                                        ({{uploadedDocs.length}})</h4>
+                                    <h4 class="font-medium mb-2 text-white">{{ 'empresa.form.uploadedFiles' | translate: { n: uploadedDocs.length } }}</h4>
                                     <ul class="space-y-2">
                                         @for (item of uploadedDocs; track item.id || $index) {
                                         <li class="flex items-center justify-between p-2 bg-gray-700 rounded">
@@ -284,7 +284,7 @@
                         </div>
                     </form>
                     <div class="flex pt-6 justify-end">
-                        <p-button [disabled]="disableStepEmpresa()" label="Continuar" icon="pi pi-arrow-right"
+                        <p-button [disabled]="disableStepEmpresa()" [label]="'empresa.form.continue' | translate" icon="pi pi-arrow-right"
                             iconPos="right" (onClick)="activateCallback(2)" />
                     </div>
                 </ng-template>
@@ -296,10 +296,10 @@
                         <div class="grid grid-cols-12 gap-4">
                             <div class="mb-6 col-span-12">
                                 <label for="tipoPropriedade" class="font-medium  mb-2 block">
-                                    Tipo propetário
+                                    {{ 'empresa.fields.tipoProprietario' | translate }}
                                 </label>
                                 <p-select fluid formControlName="tipoPropriedade" [options]="tipoProriedadeOpts"
-                                    optionLabel="name" placeholder="Selecione o tipo" [showClear]="true">
+                                    optionLabel="name" [placeholder]="'empresa.form.placeholders.tipo' | translate" [showClear]="true">
                                 </p-select>
                             </div>
                         </div>
@@ -308,8 +308,8 @@
                             @for (item of acionistasArray.controls; track $index; let i = $index) {
                             @if (acionistasArray.length > 1) {
                             <div class="text-2xl mt-6 mb-6">
-                                <span class="mr-6">{{ item.get('sectionTitle')?.value }}</span>
-                                <p-button size="small" severity="warn" pTooltip="Eliminar acionista"
+                                <span class="mr-6">{{ 'empresa.form.acionistaNumero' | translate: { n: i + 1 } }}</span>
+                                <p-button size="small" severity="warn" [pTooltip]="'empresa.form.removeAcionista' | translate"
                                     tooltipPosition="right" icon="pi pi-user-minus" iconPos="left" [rounded]="true"
                                     (onClick)="removeAcionistaForm($index)" />
                             </div>
@@ -317,15 +317,15 @@
                             <div class="grid grid-cols-12 gap-4" [formGroupName]="$index">
                                 <div class="mb-6 col-span-12">
                                     <label for="nome" class="font-medium  mb-2 block">
-                                        Nome
+                                        {{ 'common.name' | translate }}
                                     </label>
                                     <input formControlName="nome" id="nome" type="text" pInputText fluid />
                                 </div>
                                 <div class="mb-6 col-span-12 md:col-span-6">
                                     <label for="acoes" class="font-medium  mb-2 block">
-                                        Ações
+                                        {{ 'empresa.fields.acoes' | translate }}
                                         <span class="text-sm font-normal text-muted-color ml-2">
-                                            (Máximo disponível: {{ getMaxAcoesForAcionista(i) | number:'1.2-2' }}%)
+                                            {{ 'empresa.form.acoesMaxAvailable' | translate: { max: (getMaxAcoesForAcionista(i) | lnumber:'1.2-2') } }}
                                         </span>
                                     </label>
                                     <p-inputgroup>
@@ -337,48 +337,46 @@
                                     @if (item.get('acoes')?.touched && item.get('acoes')?.invalid) {
                                     <p class="text-red-500 text-sm mt-1">
                                         @if (item.get('acoes')?.errors?.['required']) {
-                                        Este campo é obrigatório.
+                                        {{ 'validation.required' | translate }}
                                         }
                                         @if (item.get('acoes')?.errors?.['min']) {
-                                        O valor mínimo é 0.01%.
+                                        {{ 'empresa.form.validation.acoesMin' | translate }}
                                         }
                                         @if (item.get('acoes')?.errors?.['max']) {
-                                        O valor máximo é 100%.
+                                        {{ 'empresa.form.validation.acoesMax' | translate }}
                                         }
                                         @if (item.get('acoes')?.errors?.['totalExceeds100']) {
-                                        O total de ações excede 100%. Total atual:
-                                        {{ item.get('acoes')?.errors?.['totalExceeds100'].total | number:'1.2-2' }}%
+                                        {{ 'empresa.form.validation.acoesTotalExceeds' | translate: { total: (item.get('acoes')?.errors?.['totalExceeds100'].total | lnumber:'1.2-2') } }}
                                         }
                                         @if (item.get('acoes')?.errors?.['maxExceeded']) {
-                                        Valor excede o máximo disponível de
-                                        {{ item.get('acoes')?.errors?.['maxExceeded'].max | number:'1.2-2' }}%
+                                        {{ 'empresa.form.validation.acoesMaxExceeded' | translate: { max: (item.get('acoes')?.errors?.['maxExceeded'].max | lnumber:'1.2-2') } }}
                                         }
                                     </p>
                                     }
                                     @if (getTotalAcoes() > 0 && !item.get('acoes')?.invalid) {
                                     <p class="text-muted-color text-sm mt-1">
-                                        Total de ações: {{ getTotalAcoes() | number:'1.2-2' }}% / 100%
+                                        {{ 'empresa.form.acoesTotal' | translate: { total: (getTotalAcoes() | lnumber:'1.2-2') } }}
                                     </p>
                                     }
                                 </div>
                                 <div class="mb-6 col-span-12 md:col-span-6">
                                     <label for="nif" class="font-medium  mb-2 block">
-                                        NIF
+                                        {{ 'empresa.fields.nif' | translate }}
                                     </label>
                                     <input formControlName="nif" id="nif" type="text" pInputText fluid />
                                 </div>
                                 <div class="mb-6 col-span-12 md:col-span-6">
                                     <label for="tipoDocumento" class="font-medium  mb-2 block">
-                                        Tipo Documento
+                                        {{ 'empresa.fields.tipoDocumento' | translate }}
                                     </label>
                                     <p-select fluid formControlName="tipoDocumento" [options]="tipoDocumentoOpts"
-                                        optionLabel="name" optionValue="value" placeholder="Selecione o tipo documento"
+                                        optionLabel="name" optionValue="value" [placeholder]="'empresa.form.placeholders.tipoDocumento' | translate"
                                         [showClear]="true">
                                     </p-select>
                                 </div>
                                 <div class="mb-6 col-span-12 md:col-span-6">
                                     <label for="numeroDocumento" class="font-medium  mb-2 block">
-                                        Nº Documento
+                                        {{ 'empresa.fields.numeroDocumento' | translate }}
                                     </label>
                                     <input formControlName="numeroDocumento" id="numeroDocumento" type="text" pInputText
                                         fluid />
@@ -387,20 +385,20 @@
                                     <div class="grid grid-cols-12 gap-4">
                                         <div class="mb-6 col-span-12">
                                             <label for="local" class="font-medium  mb-2 block">
-                                                Endereço
+                                                {{ 'empresa.fields.endereco' | translate }}
                                             </label>
                                             <input formControlName="local" id="local" type="text" pInputText fluid
-                                                placeholder="ex. Av. Pres. Nicolau Lobato" />
+                                                [placeholder]="'empresa.form.placeholders.local' | translate" />
                                         </div>
                                         <div class="mb-6 col-span-12">
                                             <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                                                 <div class="flex-auto">
                                                     <label for="aldeia" class="font-medium  mb-2 block">
-                                                        Aldeia
+                                                        {{ 'empresa.fields.aldeia' | translate }}
                                                     </label>
                                                     <p-select fluid formControlName="aldeia"
                                                         [options]="listaAldeiaAcionista[i]" optionLabel="nome"
-                                                        placeholder="Selecione a Aldeia" [filter]="true" filterBy="nome"
+                                                        [placeholder]="'empresa.form.placeholders.aldeia' | translate" [filter]="true" filterBy="nome"
                                                         [showClear]="true" (onFilter)="aldeiaAcionistaFilter($event,i)"
                                                         (onpanelHide)="onPanelHideAcionista(i)"
                                                         (onChange)="aldeiaAcionistaOnChange($event, i)"
@@ -409,21 +407,21 @@
                                                 </div>
                                                 <div class="flex-auto">
                                                     <label for="suco" class="font-medium  mb-2 block">
-                                                        Suco
+                                                        {{ 'empresa.fields.suco' | translate }}
                                                     </label>
                                                     <input formControlName="suco" id="suco" type="text" pInputText
                                                         fluid />
                                                 </div>
                                                 <div class="flex-auto">
                                                     <label for="posto" class="font-medium  mb-2 block">
-                                                        Posto Administrativo
+                                                        {{ 'empresa.fields.postoAdministrativo' | translate }}
                                                     </label>
                                                     <input formControlName="postoAdministrativo"
                                                         id="postoAdministrativo" type="text" pInputText fluid />
                                                 </div>
                                                 <div class="flex-auto">
                                                     <label for="municipio" class="font-medium  mb-2 block">
-                                                        Municipio
+                                                        {{ 'empresa.fields.municipio' | translate }}
                                                     </label>
                                                     <input formControlName="municipio" id="municipio" type="text"
                                                         pInputText fluid />
@@ -435,28 +433,28 @@
 
                                 <div class="mb-6 col-span-12 md:col-span-6">
                                     <label for="telefone" class="font-medium  mb-2 block">
-                                        Nº Telefone
+                                        {{ 'empresa.fields.numeroTelefone' | translate }}
                                     </label>
                                     <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
                                 </div>
                                 <div class="mb-6 col-span-12 md:col-span-6">
                                     <label for="email" class="font-medium  mb-2 block">
-                                        Email
+                                        {{ 'common.email' | translate }}
                                     </label>
                                     <input formControlName="email" id="email" type="email" pInputText fluid />
                                 </div>
                                 <div class="mb-6 col-span-12 md:col-span-6">
                                     <label for="agregadoFamilia" class="font-medium  mb-2 block">
-                                        Agregado Familia
+                                        {{ 'empresa.fields.agregadoFamilia' | translate }}
                                     </label>
                                     <input formControlName="agregadoFamilia" id="agregadoFamilia" pInputText fluid />
                                 </div>
                                 <div class="mb-6 col-span-12 md:col-span-6">
                                     <label for="relacaoFamilia" class="font-medium  mb-2 block">
-                                        Relação Família
+                                        {{ 'empresa.fields.relacaoFamilia' | translate }}
                                     </label>
                                     <p-select fluid formControlName="relacaoFamilia" [options]="tipoRelacaoFamiliaOpts"
-                                        optionLabel="name" optionValue="value" placeholder="Selecione o tipo"
+                                        optionLabel="name" optionValue="value" [placeholder]="'empresa.form.placeholders.tipo' | translate"
                                         [showClear]="true">
                                     </p-select>
                                 </div>
@@ -467,14 +465,14 @@
                             }
                         </div>
                         @if(showAddBtnAcionistas) {
-                        <p-button label="Adicionar acionista" icon="pi pi-user-plus" iconPos="left"
+                        <p-button [label]="'empresa.form.addAcionista' | translate" icon="pi pi-user-plus" iconPos="left"
                             (onClick)="addAcionistaForm()" />
                         }
                     </form>
                     <div class="flex pt-6 justify-between">
-                        <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
+                        <p-button [label]="'common.back' | translate" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
                             (onClick)="activateCallback(1)" />
-                        <p-button [disabled]="disableStepProprietario()" label="Continuar" icon="pi pi-arrow-right"
+                        <p-button [disabled]="disableStepProprietario()" [label]="'empresa.form.continue' | translate" icon="pi pi-arrow-right"
                             iconPos="right" (onClick)="activateCallback(3)" />
                     </div>
                 </ng-template>
@@ -484,43 +482,43 @@
                 <ng-template #content let-activateCallback="activateCallback">
                     <form [formGroup]="empresaForm" class="px-8">
                         <h1 class="text-2xl font-bold text-white">
-                            Gerente
+                            {{ 'empresa.fields.gerente' | translate }}
                         </h1>
                         <div formGroupName="gerente" class="grid grid-cols-12 gap-4 py-4">
 
                             <div class="mb-6 col-span-12">
                                 <label for="nome" class="font-medium  mb-2 block">
-                                    Nome
+                                    {{ 'common.name' | translate }}
                                 </label>
                                 <input formControlName="nome" id="nome" type="text" pInputText fluid
-                                    placeholder="Ex: Joao da Silva" />
+                                    [placeholder]="'empresa.form.placeholders.nomePessoa' | translate" />
                                 @if (empresaForm.get('gerente.nome')?.touched &&
                                 empresaForm.get('gerente.nome')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="tipoDocumento" class="font-medium  mb-2 block">
-                                    Tipo Documento
+                                    {{ 'empresa.fields.tipoDocumento' | translate }}
                                 </label>
                                 <p-select fluid formControlName="tipoDocumento" [options]="tipoDocumentoOpts"
-                                    optionLabel="name" optionValue="value" placeholder="Selecione o tipo documento"
+                                    optionLabel="name" optionValue="value" [placeholder]="'empresa.form.placeholders.tipoDocumento' | translate"
                                     [showClear]="true">
                                 </p-select>
                                 @if (empresaForm.get('gerente.tipoDocumento')?.touched &&
                                 empresaForm.get('gerente.tipoDocumento')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="numeroDocumento" class="font-medium  mb-2 block">
-                                    Nº Documento
+                                    {{ 'empresa.fields.numeroDocumento' | translate }}
                                 </label>
                                 <input formControlName="numeroDocumento" id="numeroDocumento" type="text" pInputText
                                     fluid />
@@ -528,85 +526,85 @@
                                 empresaForm.get('gerente.numeroDocumento')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="estadoCivil" class="font-medium  mb-2 block">
-                                    Estado Civil
+                                    {{ 'empresa.fields.estadoCivil' | translate }}
                                 </label>
                                 <p-select fluid formControlName="estadoCivil" [options]="tipoEstadoCivilOpts"
-                                    optionLabel="name" optionValue="value" placeholder="Selecione o tipo documento"
+                                    optionLabel="name" optionValue="value" [placeholder]="'empresa.form.placeholders.estadoCivil' | translate"
                                     [showClear]="true">
                                 </p-select>
                                 @if (empresaForm.get('gerente.estadoCivil')?.touched &&
                                 empresaForm.get('gerente.estadoCivil')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="email" class="font-medium  mb-2 block">
-                                    Email
+                                    {{ 'common.email' | translate }}
                                 </label>
                                 <input formControlName="email" id="email" type="email" pInputText fluid />
                                 @if (empresaForm.get('gerente.email')?.touched &&
                                 empresaForm.get('gerente.email')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="telefone" class="font-medium mb-2 block">
-                                    Nº Telefone
+                                    {{ 'empresa.fields.numeroTelefone' | translate }}
                                 </label>
                                 <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
                                 @if (empresaForm.get('gerente.telefone')?.touched &&
                                 empresaForm.get('gerente.telefone')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="nacionalidade" class="font-medium  mb-2 block">
-                                    Nacionalidade
+                                    {{ 'empresa.fields.nacionalidade' | translate }}
                                 </label>
                                 <p-select fluid formControlName="nacionalidade" [options]="tipoNacionalidadeOpts"
                                     (onChange)="nacionalidadeOnChange($event, 'gerente')" optionLabel="name"
-                                    optionValue="value" placeholder="Selecione a nacionalidade" [showClear]="true">
+                                    optionValue="value" [placeholder]="'empresa.form.placeholders.nacionalidade' | translate" [showClear]="true">
                                 </p-select>
                                 @if (empresaForm.get('gerente.nacionalidade')?.touched &&
                                 empresaForm.get('gerente.nacionalidade')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
                             @if (gerenteForeigner) {
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="numeroVisto" class="font-medium  mb-2 block">
-                                    Nº de Visto
+                                    {{ 'empresa.fields.numeroVisto' | translate }}
                                 </label>
                                 <input formControlName="numeroVisto" id="numeroVisto" type="text" pInputText fluid />
                                 @if (empresaForm.get('gerente.numeroVisto')?.touched &&
                                 empresaForm.get('gerente.numeroVisto')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="validadeVisto" class="font-medium  mb-2 block">
-                                    Data Validade de Visto
+                                    {{ 'empresa.fields.validadeVisto' | translate }}
                                 </label>
                                 <p-datepicker formControlName="validadeVisto" id="validadeVisto" appendTo="body"
                                     [showButtonBar]="true" fluid />
@@ -614,21 +612,21 @@
                                 empresaForm.get('gerente.validadeVisto')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
                             }
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="naturalidade" class="font-medium  mb-2 block">
-                                    Naturalidade
+                                    {{ 'empresa.fields.naturalidade' | translate }}
                                 </label>
                                 <input formControlName="naturalidade" id="naturalidade" type="text" pInputText fluid />
                                 @if (empresaForm.get('gerente.naturalidade')?.touched &&
                                 empresaForm.get('gerente.naturalidade')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
@@ -636,25 +634,25 @@
                                 <div formGroupName="morada" class="flex flex-col gap-6 w-full sm:w-auto mb-6">
                                     <div class="mb-6 col-span-12">
                                         <label for="local" class="font-medium  mb-2 block">
-                                            Morada
+                                            {{ 'empresa.fields.morada' | translate }}
                                         </label>
                                         <input formControlName="local" id="local" type="text" pInputText fluid
-                                            placeholder="ex. Av. Pres. Nicolau Lobato" />
+                                            [placeholder]="'empresa.form.placeholders.local' | translate" />
                                         @if (empresaForm.get('gerente.morada.local')?.touched &&
                                         empresaForm.get('gerente.morada.local')?.invalid)
                                         {
                                         <p class="text-red-500 text-sm mt-1">
-                                            Este campo é obrigatório e deve ser válido.
+                                            {{ 'empresa.form.validation.requiredValid' | translate }}
                                         </p>
                                         }
                                     </div>
                                     <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                                         <div class="flex-auto">
                                             <label for="aldeia" class="font-medium  mb-2 block">
-                                                Aldeia
+                                                {{ 'empresa.fields.aldeia' | translate }}
                                             </label>
                                             <p-select fluid formControlName="aldeia" [options]="gerenteListaAldeias"
-                                                optionLabel="nome" placeholder="Selecione a Aldeia" [filter]="true"
+                                                optionLabel="nome" [placeholder]="'empresa.form.placeholders.aldeia' | translate" [filter]="true"
                                                 filterBy="nome" [showClear]="true"
                                                 (onChange)="gerenteRepresentanteAldeiaOnChange($event, 'gerente')"
                                                 (onFilter)="gerenteRepresentanteAldeiaFilter($event, 'gerente')"
@@ -665,27 +663,27 @@
                                             empresaForm.get('gerente.morada.aldeia')?.invalid)
                                             {
                                             <p class="text-red-500 text-sm mt-1">
-                                                Este campo é obrigatório e deve ser válido.
+                                                {{ 'empresa.form.validation.requiredValid' | translate }}
                                             </p>
                                             }
                                         </div>
                                         <div class="flex-auto">
                                             <label for="suco" class="font-medium  mb-2 block">
-                                                Suco
+                                                {{ 'empresa.fields.suco' | translate }}
                                             </label>
                                             <input formControlName="suco" id="suco" type="text" pInputText fluid />
                                         </div>
 
                                         <div class="flex-auto">
                                             <label for="posto" class="font-medium  mb-2 block">
-                                                Posto Administrativo
+                                                {{ 'empresa.fields.postoAdministrativo' | translate }}
                                             </label>
                                             <input formControlName="postoAdministrativo" id="postoAdministrativo"
                                                 type="text" pInputText fluid />
                                         </div>
                                         <div class="flex-auto">
                                             <label for="municipio" class="font-medium  mb-2 block">
-                                                Municipio
+                                                {{ 'empresa.fields.municipio' | translate }}
                                             </label>
                                             <input formControlName="municipio" id="municipio" type="text" pInputText
                                                 fluid />
@@ -696,27 +694,27 @@
                             </div>
                         </div>
                         <h1 class="text-2xl font-bold text-white">
-                            Representante
+                            {{ 'empresa.fields.representante' | translate }}
                         </h1>
                         <div class="flex items-center gap-3 pt-4">
                             <p-toggleswitch formControlName="temRepresentante" inputId="temRepresentante" />
-                            <label for="temRepresentante" class="font-medium">Tem representante legal?</label>
+                            <label for="temRepresentante" class="font-medium">{{ 'empresa.form.temRepresentante' | translate }}</label>
                         </div>
                         @if (temRepresentante) {
                         <div formGroupName="representante" class="grid grid-cols-12 gap-4 pt-4">
                             <div class="mb-6 col-span-12">
                                 <label for="tipo" class="font-medium  mb-2 block">
-                                    Tipo
+                                    {{ 'empresa.fields.tipo' | translate }}
                                 </label>
                                 <p-select (onChange)="onRepresentanteTipoChange($event)" fluid formControlName="tipo"
                                     [options]="tipoRepresentanteOptions" optionLabel="name" [showClear]="true"
-                                    optionValue="value" placeholder="Selecione o tipo de Representante">
+                                    optionValue="value" [placeholder]="'empresa.form.placeholders.tipoRepresentante' | translate">
                                 </p-select>
                                 @if (empresaForm.get('representante.tipo')?.touched &&
                                 empresaForm.get('representante.tipo')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
@@ -726,15 +724,15 @@
                             @if (empresaForm.get('representante.tipo')?.value === 'Empresa') {
                             <div class="mb-6 col-span-12">
                                 <label for="nomeEmpresa" class="font-medium  mb-2 block">
-                                    Nome da Empresa
+                                    {{ 'empresa.fields.nomeEmpresa' | translate }}
                                 </label>
                                 <input formControlName="nomeEmpresa" id="nomeEmpresa" type="text" pInputText fluid
-                                    placeholder="Ex. Empresa Unip. lda" />
+                                    [placeholder]="'empresa.form.placeholders.nomeEmpresa' | translate" />
                                 @if (empresaForm.get('representante.nomeEmpresa')?.touched &&
                                 empresaForm.get('representante.nomeEmpresa')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
@@ -743,41 +741,41 @@
                             <div class="mb-6 col-span-12">
                                 <label for="nome" class="font-medium  mb-2 block">
                                     @if (empresaForm.get('representante.tipo')?.value === 'Empresa'){
-                                    Nome do funcionário
+                                    {{ 'empresa.form.nomeFuncionario' | translate }}
                                     }@else {
-                                    Nome do Individual
+                                    {{ 'empresa.form.nomeIndividual' | translate }}
                                     }
                                 </label>
                                 <input formControlName="nome" id="nome" type="text" pInputText fluid
-                                    placeholder="Ex: Joao da Silva" />
+                                    [placeholder]="'empresa.form.placeholders.nomePessoa' | translate" />
                                 @if (empresaForm.get('representante.nome')?.touched &&
                                 empresaForm.get('representante.nome')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
 
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="tipoDocumento" class="font-medium  mb-2 block">
-                                    Tipo Documento
+                                    {{ 'empresa.fields.tipoDocumento' | translate }}
                                 </label>
                                 <p-select fluid formControlName="tipoDocumento" [options]="tipoDocumentoOpts"
-                                    optionLabel="name" optionValue="value" placeholder="Selecione o tipo documento"
+                                    optionLabel="name" optionValue="value" [placeholder]="'empresa.form.placeholders.tipoDocumento' | translate"
                                     [showClear]="true">
                                 </p-select>
                                 @if (empresaForm.get('representante.tipoDocumento')?.touched &&
                                 empresaForm.get('representante.tipoDocumento')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="numeroDocumento" class="font-medium  mb-2 block">
-                                    Nº Documento
+                                    {{ 'empresa.fields.numeroDocumento' | translate }}
                                 </label>
                                 <input formControlName="numeroDocumento" id="numeroDocumento" type="text" pInputText
                                     fluid />
@@ -785,13 +783,13 @@
                                 empresaForm.get('representante.numeroDocumento')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="dataNascimento" class="font-medium  mb-2 block">
-                                    Data Nascimento
+                                    {{ 'empresa.fields.dataNascimento' | translate }}
                                 </label>
                                 <p-datepicker formControlName="dataNascimento" id="dataNascimento" appendTo="body"
                                     [showButtonBar]="true" fluid />
@@ -799,59 +797,59 @@
                                 empresaForm.get('representante.dataNascimento')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="estadoCivil" class="font-medium  mb-2 block">
-                                    Estado Civil
+                                    {{ 'empresa.fields.estadoCivil' | translate }}
                                 </label>
                                 <p-select fluid formControlName="estadoCivil" [options]="tipoEstadoCivilOpts"
-                                    optionLabel="name" optionValue="value" placeholder="Selecione o tipo documento"
+                                    optionLabel="name" optionValue="value" [placeholder]="'empresa.form.placeholders.estadoCivil' | translate"
                                     [showClear]="true">
                                 </p-select>
                                 @if (empresaForm.get('representante.estadoCivil')?.touched &&
                                 empresaForm.get('representante.estadoCivil')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="nacionalidade" class="font-medium  mb-2 block">
-                                    Nacionalidade
+                                    {{ 'empresa.fields.nacionalidade' | translate }}
                                 </label>
                                 <p-select fluid formControlName="nacionalidade" [options]="tipoNacionalidadeOpts"
                                     (onChange)="nacionalidadeOnChange($event, 'representante')" optionLabel="name"
-                                    optionValue="value" placeholder="Selecione a nacionalidade" [showClear]="true">
+                                    optionValue="value" [placeholder]="'empresa.form.placeholders.nacionalidade' | translate" [showClear]="true">
                                 </p-select>
                                 @if (empresaForm.get('representante.nacionalidade')?.touched &&
                                 empresaForm.get('representante.nacionalidade')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
                             @if (representanteForeigner) {
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="numeroVisto" class="font-medium  mb-2 block">
-                                    Nº de Visto
+                                    {{ 'empresa.fields.numeroVisto' | translate }}
                                 </label>
                                 <input formControlName="numeroVisto" id="numeroVisto" type="text" pInputText fluid />
                                 @if (empresaForm.get('representante.numeroVisto')?.touched &&
                                 empresaForm.get('representante.numeroVisto')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="validadeVisto" class="font-medium  mb-2 block">
-                                    Data Validade de Visto
+                                    {{ 'empresa.fields.validadeVisto' | translate }}
                                 </label>
                                 <p-datepicker formControlName="validadeVisto" id="validadeVisto" appendTo="body"
                                     [showButtonBar]="true" fluid />
@@ -859,47 +857,47 @@
                                 empresaForm.get('representante.validadeVisto')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
                             }
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="naturalidade" class="font-medium  mb-2 block">
-                                    Naturalidade
+                                    {{ 'empresa.fields.naturalidade' | translate }}
                                 </label>
                                 <input formControlName="naturalidade" id="naturalidade" type="text" pInputText fluid />
                                 @if (empresaForm.get('representante.naturalidade')?.touched &&
                                 empresaForm.get('representante.naturalidade')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="pai" class="font-medium  mb-2 block">
-                                    Pai
+                                    {{ 'empresa.fields.pai' | translate }}
                                 </label>
                                 <input formControlName="pai" id="pai" pInputText fluid />
                                 @if (empresaForm.get('representante.pai')?.touched &&
                                 empresaForm.get('representante.naturalidade')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="mae" class="font-medium  mb-2 block">
-                                    Mãe
+                                    {{ 'empresa.fields.mae' | translate }}
                                 </label>
                                 <input formControlName="mae" id="mae" pInputText fluid />
                                 @if (empresaForm.get('representante.mae')?.touched &&
                                 empresaForm.get('representante.mae')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
@@ -907,26 +905,26 @@
                                 <div formGroupName="morada" class="flex flex-col gap-6 w-full sm:w-auto mb-6">
                                     <div class="mb-6 col-span-12">
                                         <label for="local" class="font-medium  mb-2 block">
-                                            Morada
+                                            {{ 'empresa.fields.morada' | translate }}
                                         </label>
                                         <input formControlName="local" id="local" type="text" pInputText fluid
-                                            placeholder="ex. Av. Pres. Nicolau Lobato" />
+                                            [placeholder]="'empresa.form.placeholders.local' | translate" />
                                         @if (empresaForm.get('representante.morada.local')?.touched &&
                                         empresaForm.get('representante.morada.local')?.invalid)
                                         {
                                         <p class="text-red-500 text-sm mt-1">
-                                            Este campo é obrigatório e deve ser válido.
+                                            {{ 'empresa.form.validation.requiredValid' | translate }}
                                         </p>
                                         }
                                     </div>
                                     <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                                         <div class="flex-auto">
                                             <label for="aldeia" class="font-medium  mb-2 block">
-                                                Aldeia
+                                                {{ 'empresa.fields.aldeia' | translate }}
                                             </label>
                                             <p-select fluid formControlName="aldeia"
                                                 [options]="representanteListaAldeias" optionLabel="nome"
-                                                placeholder="Selecione a Aldeia" [filter]="true" filterBy="nome"
+                                                [placeholder]="'empresa.form.placeholders.aldeia' | translate" [filter]="true" filterBy="nome"
                                                 [showClear]="true"
                                                 (onChange)="gerenteRepresentanteAldeiaOnChange($event, 'representante')"
                                                 (onFilter)="gerenteRepresentanteAldeiaFilter($event, 'representante')"
@@ -937,27 +935,27 @@
                                             empresaForm.get('representante.morada.aldeia')?.invalid)
                                             {
                                             <p class="text-red-500 text-sm mt-1">
-                                                Este campo é obrigatório e deve ser válido.
+                                                {{ 'empresa.form.validation.requiredValid' | translate }}
                                             </p>
                                             }
                                         </div>
                                         <div class="flex-auto">
                                             <label for="suco" class="font-medium  mb-2 block">
-                                                Suco
+                                                {{ 'empresa.fields.suco' | translate }}
                                             </label>
                                             <input formControlName="suco" id="suco" type="text" pInputText fluid />
                                         </div>
 
                                         <div class="flex-auto">
                                             <label for="posto" class="font-medium  mb-2 block">
-                                                Posto Administrativo
+                                                {{ 'empresa.fields.postoAdministrativo' | translate }}
                                             </label>
                                             <input formControlName="postoAdministrativo" id="postoAdministrativo"
                                                 type="text" pInputText fluid />
                                         </div>
                                         <div class="flex-auto">
                                             <label for="municipio" class="font-medium  mb-2 block">
-                                                Municipio
+                                                {{ 'empresa.fields.municipio' | translate }}
                                             </label>
                                             <input formControlName="municipio" id="municipio" type="text" pInputText
                                                 fluid />
@@ -968,27 +966,27 @@
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="email" class="font-medium  mb-2 block">
-                                    Email
+                                    {{ 'common.email' | translate }}
                                 </label>
                                 <input formControlName="email" id="email" type="email" pInputText fluid />
                                 @if (empresaForm.get('representante.email')?.touched &&
                                 empresaForm.get('representante.email')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
                             <div class="mb-6 col-span-12 md:col-span-6">
                                 <label for="telefone" class="font-medium mb-2 block">
-                                    Nº Telefone
+                                    {{ 'empresa.fields.numeroTelefone' | translate }}
                                 </label>
                                 <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
                                 @if (empresaForm.get('representante.telefone')?.touched &&
                                 empresaForm.get('representante.telefone')?.invalid)
                                 {
                                 <p class="text-red-500 text-sm mt-1">
-                                    Este campo é obrigatório e deve ser válido.
+                                    {{ 'empresa.form.validation.requiredValid' | translate }}
                                 </p>
                                 }
                             </div>
@@ -996,9 +994,9 @@
                         </div>
                         }
                         <div class="mt-6 mb-6 text-left flex justify-between">
-                            <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
+                            <p-button [label]="'common.back' | translate" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
                                 (onClick)="activateCallback(2)" />
-                            <p-button [disabled]="disableStepGerente()" label="Continuar" icon="pi pi-arrow-right"
+                            <p-button [disabled]="disableStepGerente()" [label]="'empresa.form.continue' | translate" icon="pi pi-arrow-right"
                                 iconPos="right" (onClick)="activateCallback(4)" />
                         </div>
                     </form>
@@ -1014,70 +1012,70 @@
                                 <!-- <h1 class="text-3xl font-bold text-gray-100">Resumo da Inscrição</h1> -->
                                 <div class="flex flex-row gap-2">
                                     <h1 class="text-3xl font-bold text-gray-100">
-                                        Resumo
+                                        {{ 'empresa.form.summary.title' | translate }}
                                     </h1>
                                     <p-button icon="pi pi-file-pdf" size="large" severity="info" [raised]="true"
                                         printSectionId="myDiv" [useExistingCss]="true" ngxPrint />
                                 </div>
                                 <p-button icon="pi pi-save" (click)="submit(empresaForm)" [loading]="loading"
                                     [disabled]="!empresaForm.valid || getTotalAcoes() !== 100" pButton pRipple
-                                    label="Confirmar e Guardar" class="w-auto"></p-button>
+                                    [label]="'empresa.form.confirmSave' | translate" class="w-auto"></p-button>
                             </header>
                             <main id="myDiv">
                                 <section class="bg-gray-800 p-8 rounded-2xl shadow-lg mb-8">
                                     <div class="flex items-center mb-6">
                                         <i class="bi bi-buildings mr-4" style="font-size: 2rem"></i>
-                                        <h2 class="text-2xl font-semibold text-gray-200">Dados da Empresa</h2>
+                                        <h2 class="text-2xl font-semibold text-gray-200">{{ 'empresa.form.summary.dadosEmpresa' | translate }}</h2>
                                     </div>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                                         <div>
-                                            <p class="text-sm text-gray-400">Nome da Empresa:</p>
+                                            <p class="text-sm text-gray-400">{{ 'empresa.fields.nomeEmpresa' | translate }}:</p>
                                             <p class="text-lg text-gray-100">{{ empresaForm.get('nome')?.value }}
                                             </p>
                                         </div>
                                         <div>
-                                            <p class="text-sm text-gray-400">NIF:</p>
+                                            <p class="text-sm text-gray-400">{{ 'empresa.fields.nif' | translate }}:</p>
                                             <p class="text-lg text-gray-100">{{ empresaForm.get('nif')?.value }}
                                             </p>
                                         </div>
                                         <div>
-                                            <p class="text-sm text-gray-400">Telefone:</p>
+                                            <p class="text-sm text-gray-400">{{ 'empresa.fields.telefone' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
                                                 {{ empresaForm.get('telefone')?.value }}</p>
                                         </div>
                                         <div>
-                                            <p class="text-sm text-gray-400">Capital Social:</p>
+                                            <p class="text-sm text-gray-400">{{ 'empresa.fields.capitalSocial' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
                                                 {{ empresaForm.get('capitalSocial')?.value }}</p>
                                         </div>
                                         <div>
-                                            <p class="text-sm text-gray-400">Data de Registo:</p>
+                                            <p class="text-sm text-gray-400">{{ 'empresa.fields.dataRegisto' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
-                                                {{ empresaForm.get('dataRegisto')?.value | date: 'dd MMMM yyyy' :'':'pt'}}
+                                                {{ empresaForm.get('dataRegisto')?.value | ldate: 'dd MMMM yyyy' }}
                                             </p>
                                         </div>
                                         <div>
-                                            <p class="text-sm text-gray-400">Total Trabalhadores:</p>
+                                            <p class="text-sm text-gray-400">{{ 'empresa.fields.totalTrabalhadores' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
                                                 {{ empresaForm.get('totalTrabalhadores')?.value }}</p>
                                         </div>
                                         <div>
-                                            <p class="text-sm text-gray-400">Volume de Negócios Anual:</p>
+                                            <p class="text-sm text-gray-400">{{ 'empresa.fields.volumeNegocioAnual' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
                                                 {{ empresaForm.get('volumeNegocioAnual')?.value }}</p>
                                         </div>
                                         <div>
-                                            <p class="text-sm text-gray-400">Balanço total Anual:</p>
+                                            <p class="text-sm text-gray-400">{{ 'empresa.fields.balancoTotalAnual' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
                                                 {{ empresaForm.get('balancoTotalAnual')?.value }}</p>
                                         </div>
                                         <div>
-                                            <p class="text-sm text-gray-400">Tipo de Propriedade:</p>
+                                            <p class="text-sm text-gray-400">{{ 'empresa.fields.tipoPropriedade' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
                                                 {{ empresaForm.get('tipoPropriedade')?.value?.name }}</p>
                                         </div>
                                         <div class="md:col-span-2">
-                                            <p class="text-sm text-gray-400">Localização:</p>
+                                            <p class="text-sm text-gray-400">{{ 'empresa.fields.localizacao' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
                                                 {{ empresaForm.get('sede.local')?.value }} <br>
                                                 {{ empresaForm.get('sede.aldeia')?.value?.nome }},
@@ -1091,51 +1089,51 @@
                                 <section class="bg-gray-800 p-8 rounded-2xl shadow-lg">
                                     <div class="flex items-center mb-6">
                                         <i class="pi pi-users  mr-4" style="font-size: 2rem"></i>
-                                        <h2 class="text-2xl font-semibold text-gray-200">Acionistas</h2>
+                                        <h2 class="text-2xl font-semibold text-gray-200">{{ 'empresa.fields.acionistas' | translate }}</h2>
                                     </div>
                                     <div>
                                         @for (a of empresaForm.get('acionistas')?.getRawValue(); track $index) {
                                         <h3 class="text-xl font-medium text-gray-300 mb-4">
-                                            Acionista&nbsp;{{ $index + 1 }}
+                                            {{ 'empresa.form.acionistaN' | translate: { n: $index + 1 } }}
                                         </h3>
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-6 ml-4">
                                             <div>
-                                                <p class="text-sm text-gray-400">Nome:</p>
+                                                <p class="text-sm text-gray-400">{{ 'common.name' | translate }}:</p>
                                                 <p class="text-lg text-gray-100">{{ a.nome }}</p>
                                             </div>
                                             <div>
-                                                <p class="text-sm text-gray-400">NIF:</p>
+                                                <p class="text-sm text-gray-400">{{ 'empresa.fields.nif' | translate }}:</p>
                                                 <p class="text-lg text-gray-100">{{ a.nif }}</p>
                                             </div>
                                             <div>
-                                                <p class="text-sm text-gray-400">Documento:</p>
-                                                <p class="text-lg text-gray-100">{{ a.tipoDocumento }} –
+                                                <p class="text-sm text-gray-400">{{ 'empresa.fields.documento' | translate }}:</p>
+                                                <p class="text-lg text-gray-100">{{ optionLabel(tipoDocumentoOpts, a.tipoDocumento) }} –
                                                     {{ a.numeroDocumento }}
                                                 </p>
                                             </div>
                                             <div>
-                                                <p class="text-sm text-gray-400">Contacto:</p>
+                                                <p class="text-sm text-gray-400">{{ 'empresa.fields.contacto' | translate }}:</p>
                                                 <p class="text-lg text-gray-100">{{ a.telefone }} / {{ a.email }}
                                                 </p>
                                             </div>
                                             <div>
-                                                <p class="text-sm text-gray-400">Agregado Familia:</p>
+                                                <p class="text-sm text-gray-400">{{ 'empresa.fields.agregadoFamilia' | translate }}:</p>
                                                 <p class="text-lg text-gray-100">
                                                     {{ a.agregadoFamilia }}
                                                 </p>
                                             </div>
                                             <div>
-                                                <p class="text-sm text-gray-400">Relação Familia:</p>
+                                                <p class="text-sm text-gray-400">{{ 'empresa.fields.relacaoFamilia' | translate }}:</p>
                                                 <p class="text-lg text-gray-100">
-                                                    {{ a.relacaoFamilia }}
+                                                    {{ optionLabel(tipoRelacaoFamiliaOpts, a.relacaoFamilia) }}
                                                 </p>
                                             </div>
                                             <div>
-                                                <p class="text-sm text-gray-400">Ações:</p>
+                                                <p class="text-sm text-gray-400">{{ 'empresa.fields.acoes' | translate }}:</p>
                                                 <p class="text-lg text-gray-100">{{ a.acoes }}</p>
                                             </div>
                                             <div class="md:col-span-2">
-                                                <p class="text-sm text-gray-400">Endereco:</p>
+                                                <p class="text-sm text-gray-400">{{ 'empresa.fields.endereco' | translate }}:</p>
                                                 <p class="text-lg text-gray-100">
                                                     {{ a.endereco.local }},
                                                     {{ a.endereco.aldeia.nome }},
@@ -1151,37 +1149,36 @@
                                 <section class="bg-gray-800 p-8 rounded-2xl shadow-lg mt-4 mb-8">
                                     <div class="flex items-center mb-6">
                                         <i class="bi bi-person-gear text-4xl mr-3"></i>
-                                        <h2 class="text-2xl font-semibold text-gray-200">Gerente
-                                        </h2>
+                                        <h2 class="text-2xl font-semibold text-gray-200">{{ 'empresa.fields.gerente' | translate }}</h2>
                                     </div>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                                         <div>
-                                            <p class="text-sm text-gray-400">Nome:</p>
+                                            <p class="text-sm text-gray-400">{{ 'common.name' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
                                                 {{ empresaForm.get('gerente.nome')?.value }}
                                             </p>
                                         </div>
                                         <div>
-                                            <p class="text-sm text-gray-400">Email:</p>
+                                            <p class="text-sm text-gray-400">{{ 'common.email' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
                                                 {{ empresaForm.get('gerente.email')?.value }}
                                             </p>
                                         </div>
                                         <div>
-                                            <p class="text-sm text-gray-400">Documento:</p>
+                                            <p class="text-sm text-gray-400">{{ 'empresa.fields.documento' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
-                                                {{ empresaForm.get('gerente.tipoDocumento')?.value }} -
+                                                {{ optionLabel(tipoDocumentoOpts, empresaForm.get('gerente.tipoDocumento')?.value) }} -
                                                 {{ empresaForm.get('gerente.numeroDocumento')?.value }}
                                             </p>
                                         </div>
                                         <div>
-                                            <p class="text-sm text-gray-400">Telemovel:</p>
+                                            <p class="text-sm text-gray-400">{{ 'empresa.fields.telemovel' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
                                                 {{ empresaForm.get('gerente.email')?.value }}
                                             </p>
                                         </div>
                                         <div>
-                                            <p class="text-sm text-gray-400">Morada:</p>
+                                            <p class="text-sm text-gray-400">{{ 'empresa.fields.morada' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
                                                 {{ empresaForm.get('gerente.morada.local')?.value }} <br>
                                                 {{ empresaForm.get('gerente.morada.aldeia')?.value?.nome }},
@@ -1196,39 +1193,38 @@
                                     <div class="flex items-center mb-6">
                                         <!-- <i class="bi bi-person-vcard mr-4" style="font-size: 2rem"></i> -->
                                         <i class="bi bi-person-badge text-4xl mr-3"></i>
-                                        <h2 class="text-2xl font-semibold text-gray-200">Representante
-                                        </h2>
+                                        <h2 class="text-2xl font-semibold text-gray-200">{{ 'empresa.fields.representante' | translate }}</h2>
                                     </div>
                                     @if (temRepresentante) {
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                                         <div>
-                                            <p class="text-sm text-gray-400">Nome:</p>
+                                            <p class="text-sm text-gray-400">{{ 'common.name' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
                                                 {{ empresaForm.get('representante.nome')?.value }}
                                             </p>
                                         </div>
                                         <div>
-                                            <p class="text-sm text-gray-400">Tipo:</p>
+                                            <p class="text-sm text-gray-400">{{ 'empresa.fields.tipo' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
-                                                {{ empresaForm.get('representante.tipo')?.value }}
+                                                {{ optionLabel(tipoRepresentanteOptions, empresaForm.get('representante.tipo')?.value) }}
                                             </p>
                                         </div>
 
                                         <div>
-                                            <p class="text-sm text-gray-400">Documento:</p>
+                                            <p class="text-sm text-gray-400">{{ 'empresa.fields.documento' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
-                                                {{ empresaForm.get('representante.tipoDocumento')?.value }} -
+                                                {{ optionLabel(tipoDocumentoOpts, empresaForm.get('representante.tipoDocumento')?.value) }} -
                                                 {{ empresaForm.get('representante.numeroDocumento')?.value }}
                                             </p>
                                         </div>
                                         <div>
-                                            <p class="text-sm text-gray-400">Data Nascimento:</p>
+                                            <p class="text-sm text-gray-400">{{ 'empresa.fields.dataNascimento' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
-                                                {{ empresaForm.get('representante.dataNascimento')?.value | date: 'dd MMM yyyy' }}
+                                                {{ empresaForm.get('representante.dataNascimento')?.value | ldate: 'dd MMM yyyy' }}
                                             </p>
                                         </div>
                                         <div>
-                                            <p class="text-sm text-gray-400">Morada:</p>
+                                            <p class="text-sm text-gray-400">{{ 'empresa.fields.morada' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
                                                 {{ empresaForm.get('representante.morada.local')?.value }} <br>
                                                 {{ empresaForm.get('representante.morada.aldeia')?.value?.nome }},
@@ -1238,59 +1234,59 @@
                                             </p>
                                         </div>
                                         <div>
-                                            <p class="text-sm text-gray-400">Estado Civil:</p>
+                                            <p class="text-sm text-gray-400">{{ 'empresa.fields.estadoCivil' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
-                                                {{ empresaForm.get('representante.estadoCivil')?.value }}
+                                                {{ optionLabel(tipoEstadoCivilOpts, empresaForm.get('representante.estadoCivil')?.value) }}
                                             </p>
                                         </div>
                                         <div>
-                                            <p class="text-sm text-gray-400">Pai:</p>
+                                            <p class="text-sm text-gray-400">{{ 'empresa.fields.pai' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
                                                 {{ empresaForm.get('representante.pai')?.value }}
                                             </p>
                                         </div>
                                         <div>
-                                            <p class="text-sm text-gray-400">Mãe:</p>
+                                            <p class="text-sm text-gray-400">{{ 'empresa.fields.mae' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
                                                 {{ empresaForm.get('representante.mae')?.value }}
                                             </p>
                                         </div>
                                         <div>
-                                            <p class="text-sm text-gray-400">Nacionalidade:</p>
+                                            <p class="text-sm text-gray-400">{{ 'empresa.fields.nacionalidade' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
-                                                {{ empresaForm.get('representante.nacionalidade')?.value }}
+                                                {{ optionLabel(tipoNacionalidadeOpts, empresaForm.get('representante.nacionalidade')?.value) }}
                                             </p>
                                         </div>
                                         <div>
-                                            <p class="text-sm text-gray-400">Naturalidade:</p>
+                                            <p class="text-sm text-gray-400">{{ 'empresa.fields.naturalidade' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
                                                 {{ empresaForm.get('representante.naturalidade')?.value }}
                                             </p>
                                         </div>
                                         <div>
-                                            <p class="text-sm text-gray-400">Email:</p>
+                                            <p class="text-sm text-gray-400">{{ 'common.email' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
                                                 {{ empresaForm.get('representante.email')?.value }}
                                             </p>
                                         </div>
                                         <div>
-                                            <p class="text-sm text-gray-400">Telemovel:</p>
+                                            <p class="text-sm text-gray-400">{{ 'empresa.fields.telemovel' | translate }}:</p>
                                             <p class="text-lg text-gray-100">
                                                 {{ empresaForm.get('representante.telefone')?.value }}
                                             </p>
                                         </div>
                                     </div>
                                     } @else {
-                                    <p class="text-lg text-gray-400">Sem representante legal.</p>
+                                    <p class="text-lg text-gray-400">{{ 'empresa.form.summary.noRepresentante' | translate }}</p>
                                     }
                                 </section>
                             </main>
                             <div class="mt-6 mb-6 text-left flex justify-between items-center">
-                                <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
+                                <p-button [label]="'common.back' | translate" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
                                     (onClick)="activateCallback(2)" />
                                 <p-button icon="pi pi-save" (click)="submit(empresaForm)" [loading]="loading"
                                     [disabled]="!empresaForm.valid || getTotalAcoes() !== 100" pButton pRipple
-                                    label="Confirmar e Guardar" class="w-auto"></p-button>
+                                    [label]="'empresa.form.confirmSave' | translate" class="w-auto"></p-button>
                             </div>
                         </div>
 

@@ -6,6 +6,8 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { providePartialHighcharts } from 'highcharts-angular';
 import { Select } from 'primeng/select';
+import { TranslatePipe } from '@ngx-translate/core';
+import { i18nOptions } from '@/core/i18n';
 import { CertificadoLicencaCategoriaChartsComponent } from './certificado-licenca-categoria-charts/certificado-licenca-categoria-charts.component';
 import { CertificadoLicencaEstadoComponent } from './certificado-licenca-estado/certificado-licenca-estado.component';
 import { CertificadoLicencaMunicipioPieComponent } from './certificado-licenca-municipio-pie/certificado-licenca-municipio-pie.component';
@@ -15,7 +17,7 @@ import { ReceitaMensalChartsComponent } from './receita-mensal-charts/receita-me
 @Component({
     selector: 'app-dashboard',
     standalone: true,
-    imports: [FormsModule, Select, StatsWidget, EmpresaMapComponent, CertificadoLicencaCategoriaChartsComponent, CertificadoLicencaMunicipioPieComponent, CertificadoLicencaEstadoComponent, ReceitaMensalChartsComponent],
+    imports: [FormsModule, Select, StatsWidget, EmpresaMapComponent, CertificadoLicencaCategoriaChartsComponent, CertificadoLicencaMunicipioPieComponent, CertificadoLicencaEstadoComponent, ReceitaMensalChartsComponent, TranslatePipe],
     providers: [providePartialHighcharts({ modules: () => [import('highcharts/esm/modules/map')] })],
     templateUrl: './dashboard.component.html',
     styleUrl: './dashboard.component.scss',
@@ -43,7 +45,8 @@ export class DashboardComponent {
 
     visitorYear: any = (() => {
         const currentYear = new Date().getFullYear();
-        const years = [{ name: 'Todos', code: 'ALL' }];
+        // 'Todos' label is a getter, so it follows a runtime language switch
+        const years: { name: string; code: string }[] = i18nOptions('dashboard', [{ key: 'allYears', value: 'ALL', code: 'ALL' }]);
         for (let i = currentYear; i >= 2025; i--) {
             years.push({ name: i.toString(), code: (currentYear - i).toString() });
         }

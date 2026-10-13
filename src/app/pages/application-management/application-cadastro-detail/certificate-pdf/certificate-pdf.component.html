@@ -1,24 +1,24 @@
 <div class="card">
     <div class="grid grid-cols-12 mb-4">
         <div class="col-span-6">
-            <span class="text-2xl font-bold mb-4 mr-4">Certificado de Inscrição no Cadastro</span>
+            <span class="text-2xl font-bold mb-4 mr-4">{{ 'application.cadastro.certificate.title' | translate }}</span>
         </div>
         <div class="col-span-6 flex justify-end gap-2 mb-4">
             @if (isStaff) {
-            <p-button (click)="regenerate()" icon="pi pi-refresh" label="Regenerar" severity="secondary" size="large"
+            <p-button (click)="regenerate()" icon="pi pi-refresh" [label]="'application.cadastro.certificate.regenerate' | translate" severity="secondary" size="large"
                 [outlined]="true" [raised]="true" [disabled]="loading()" />
             }
-            <p-button (click)="goBack()" icon="pi pi-chevron-circle-left" label="Voltar" severity="help" size="large"
+            <p-button (click)="goBack()" icon="pi pi-chevron-circle-left" [label]="'common.back' | translate" severity="help" size="large"
                 [text]="true" [rounded]="true" [outlined]="true" [raised]="true" />
         </div>
     </div>
 
     @if (loading()) {
     <div class="flex justify-center py-16">
-        <p-progress-spinner ariaLabel="A carregar certificado" />
+        <p-progress-spinner [ariaLabel]="'application.cadastro.certificate.loading' | translate" />
     </div>
     } @else if (errorMsg()) {
-    <div class="flex justify-center py-16 text-lg text-red-600">{{ errorMsg() }}</div>
+    <div class="flex justify-center py-16 text-lg text-red-600">{{ errorMsg()! | translate }}</div>
     } @else {
     <app-pdf-viewer [src]="pdfSrc()" [filename]="filename()" />
     }

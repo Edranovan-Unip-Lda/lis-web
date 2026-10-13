@@ -1,12 +1,14 @@
+import { LanguageService, LocalizedDatePipe } from '@/core/i18n';
 import { Aplicante, AutoVistoria, Documento, PedidoVistoria, User } from '@/core/models/entities.model';
 import { AplicanteStatus, AplicanteType, Role } from '@/core/models/enums';
-import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
+import { StatusSeverityPipe, StatusLabelPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService, DocumentosService, UserService } from '@/core/services';
 import { PedidoService } from '@/core/services/pedido.service';
-import { DatePipe, TitleCasePipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { LowerCasePipe } from '@angular/common';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
@@ -24,12 +26,13 @@ import { environment } from 'src/environments/environment';
  */
 interface AdminDoc {
   doc: Documento;
+  /** Translation key of the form the document belongs to. */
   origem: string;
 }
 
 @Component({
   selector: 'app-summary',
-  imports: [Tag, StatusSeverityPipe, DatePipe, Button, RouterLink, Toast, ConfirmDialog, Textarea, Textarea, ReactiveFormsModule, TitleCasePipe, Select, Tooltip, FileUpload],
+  imports: [StatusLabelPipe, LocalizedDatePipe, Tag, StatusSeverityPipe, Button, RouterLink, Toast, ConfirmDialog, Textarea, Textarea, ReactiveFormsModule, LowerCasePipe, Select, Tooltip, FileUpload, TranslatePipe],
   templateUrl: './summary.component.html',
   styleUrl: './summary.component.scss',
   providers: [MessageService, ConfirmationService, Textarea]
@@ -56,6 +59,7 @@ export class SummaryComponent {
   acceptedDocTypes = '.pdf,.png,.jpg,.jpeg,.gif,.webp,.doc,.docx,.xls,.xlsx';
   downloadingDocs = new Set<number>();
   replacingDocs = new Set<number>();
+  private i18n = inject(LanguageService);
 
   constructor(
     private router: ActivatedRoute,
@@ -96,7 +100,7 @@ export class SummaryComponent {
     if (this.selectedFuncionario.value && this.notes.value) {
       this.userService.atribuirAplicante(username, this.aplicanteData.id, this.selectedFuncionario.value, this.notes.value).subscribe({
         next: response => {
-          this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Aplicante atribuido com sucesso', life: 3000, key: 'tr' });
+          this.messageService.add({ severity: 'info', summary: this.i18n.instant('toast.confirmed'), detail: this.i18n.instant('application.summary.toast.assigned'), life: 3000, key: 'tr' });
           // this.aplicanteData = response;
           this.route.navigate(['gestor/application', this.aplicanteData.id],
             {
@@ -108,7 +112,7 @@ export class SummaryComponent {
           );
         },
         error: () => {
-          this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao atribuir o aplicante', life: 3000, key: 'tr' });
+          this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: this.i18n.instant('application.summary.toast.assignFailed'), life: 3000, key: 'tr' });
         }
       });
     }
@@ -122,12 +126,12 @@ export class SummaryComponent {
       target: event.currentTarget as EventTarget,
       icon: 'pi pi-exclamation-triangle',
       rejectButtonProps: {
-        label: 'Cancelar',
+        label: this.i18n.instant('common.cancel'),
         severity: 'secondary',
         outlined: true,
       },
       acceptButtonProps: {
-        label: 'Confirmar',
+        label: this.i18n.instant('common.confirm'),
       },
       accept: () => {
         const formData = {
@@ -138,7 +142,7 @@ export class SummaryComponent {
         }
         this.userService.revistoAplicante(this.user.username, this.aplicanteData.id, formData).subscribe({
           next: response => {
-            this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Aplicante revisto com sucesso', life: 3000, key: 'tr' });
+            this.messageService.add({ severity: 'info', summary: this.i18n.instant('toast.confirmed'), detail: this.i18n.instant('application.summary.toast.reviewed'), life: 3000, key: 'tr' });
             this.aplicanteData = response;
             this.route.navigate(['gestor/application', this.aplicanteData.id],
               {
@@ -150,7 +154,7 @@ export class SummaryComponent {
             );
           },
           error: () => {
-            this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao revisto o aplicante', life: 3000, key: 'tr' });
+            this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: this.i18n.instant('application.summary.toast.reviewFailed'), life: 3000, key: 'tr' });
           }
         });
       },
@@ -163,12 +167,12 @@ export class SummaryComponent {
       target: event.currentTarget as EventTarget,
       icon: 'pi pi-exclamation-triangle',
       rejectButtonProps: {
-        label: 'Cancelar',
+        label: this.i18n.instant('common.cancel'),
         severity: 'secondary',
         outlined: true,
       },
       acceptButtonProps: {
-        label: 'Confirmar',
+        label: this.i18n.instant('common.confirm'),
       },
       accept: () => {
         const formData = {
@@ -179,7 +183,7 @@ export class SummaryComponent {
         }
         this.userService.revistoAplicante(this.user.username, this.aplicanteData.id, formData).subscribe({
           next: response => {
-            this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Aplicante rejeitado com sucesso', life: 3000, key: 'tr' });
+            this.messageService.add({ severity: 'info', summary: this.i18n.instant('toast.confirmed'), detail: this.i18n.instant('application.summary.toast.rejected'), life: 3000, key: 'tr' });
             this.aplicanteData = response;
             this.route.navigate(['gestor/application', this.aplicanteData.id],
               {
@@ -191,7 +195,7 @@ export class SummaryComponent {
             );
           },
           error: () => {
-            this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao revisto o aplicante', life: 3000, key: 'tr' });
+            this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: this.i18n.instant('application.summary.toast.reviewFailed'), life: 3000, key: 'tr' });
           }
         });
       },
@@ -204,12 +208,12 @@ export class SummaryComponent {
       target: event.currentTarget as EventTarget,
       icon: 'pi pi-exclamation-triangle',
       rejectButtonProps: {
-        label: 'Cancelar',
+        label: this.i18n.instant('common.cancel'),
         severity: 'secondary',
         outlined: true,
       },
       acceptButtonProps: {
-        label: 'Confirmar',
+        label: this.i18n.instant('common.confirm'),
       },
       accept: () => {
         const formData = {
@@ -220,7 +224,7 @@ export class SummaryComponent {
         }
         this.userService.updateAplicante(this.user.username, this.aplicanteData.id, formData).subscribe({
           next: response => {
-            this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Aplicante aprovado com sucesso. O certificado está sendo gerado', life: 3000, key: 'tr' });
+            this.messageService.add({ severity: 'info', summary: this.i18n.instant('toast.confirmed'), detail: this.i18n.instant('application.summary.toast.approved'), life: 3000, key: 'tr' });
             this.aplicanteData = response;
 
             // Navigate to certificate PDF page based on application type
@@ -255,7 +259,7 @@ export class SummaryComponent {
             }
           },
           error: () => {
-            this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao aprovar o aplicante', life: 3000, key: 'tr' });
+            this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: this.i18n.instant('application.summary.toast.approveFailed'), life: 3000, key: 'tr' });
           }
         });
       },
@@ -266,16 +270,16 @@ export class SummaryComponent {
     this.confirmationService.confirm({
       key: 'cancelar',
       target: event.currentTarget as EventTarget,
-      header: 'Confirmar a rejeição do Aplicante',
+      header: this.i18n.instant('application.summary.confirmRejectHeader'),
       icon: 'pi pi-exclamation-triangle',
       rejectButtonProps: {
-        label: 'Cancelar',
+        label: this.i18n.instant('common.cancel'),
         icon: 'pi pi-times',
         severity: 'secondary',
         outlined: true
       },
       acceptButtonProps: {
-        label: 'Confirmar',
+        label: this.i18n.instant('common.confirm'),
         icon: 'pi pi-save',
         // disabled: !this.descricao.valid
       },
@@ -289,10 +293,10 @@ export class SummaryComponent {
         this.userService.updateAplicante(this.user.username, this.aplicanteData.id, formData).subscribe({
           next: (response) => {
             this.aplicanteData.estado = response.estado;
-            this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Aplicante rejeitado com sucesso. A decisão foi registada no histórico.', life: 3000, key: 'tr' });
+            this.messageService.add({ severity: 'info', summary: this.i18n.instant('toast.confirmed'), detail: this.i18n.instant('application.summary.toast.rejectedRecorded'), life: 3000, key: 'tr' });
           },
           error: () => {
-            this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao rejeitar o aplicante', life: 3000, key: 'tr' });
+            this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: this.i18n.instant('application.summary.toast.rejectFailed'), life: 3000, key: 'tr' });
           }
         });
       },
@@ -326,13 +330,13 @@ export class SummaryComponent {
         }
         this.userService.devolverAplicante(this.user.username, this.aplicanteData.id, formData).subscribe({
           next: response => {
-            this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Aplicante devolvido para correção', life: 3000, key: 'tr' });
+            this.messageService.add({ severity: 'info', summary: this.i18n.instant('toast.confirmed'), detail: this.i18n.instant('application.summary.toast.returned'), life: 3000, key: 'tr' });
             this.aplicanteData = response;
             this.route.navigate(['gestor/application', this.aplicanteData.id],
               { queryParams: { categoria: this.aplicanteData.categoria, tipo: this.aplicanteData.tipo } });
           },
           error: () => {
-            this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao devolver o aplicante', life: 3000, key: 'tr' });
+            this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: this.i18n.instant('application.summary.toast.returnFailed'), life: 3000, key: 'tr' });
           }
         });
       },
@@ -357,12 +361,12 @@ export class SummaryComponent {
       accept: () => {
         this.pedidoService.reopenAutoVistoria(this.pedidoVistoria!.id, this.autoVistoria!.id, this.motivoReabrir.value).subscribe({
           next: () => {
-            this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Vistoria reaberta com sucesso', life: 3000, key: 'tr' });
+            this.messageService.add({ severity: 'info', summary: this.i18n.instant('toast.confirmed'), detail: this.i18n.instant('application.summary.toast.reopened'), life: 3000, key: 'tr' });
             this.route.navigate(['gestor/application', this.aplicanteData.id],
               { queryParams: { categoria: this.aplicanteData.categoria, tipo: this.aplicanteData.tipo } });
           },
           error: () => {
-            this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao reabrir a vistoria', life: 3000, key: 'tr' });
+            this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: this.i18n.instant('application.summary.toast.reopenFailed'), life: 3000, key: 'tr' });
           }
         });
       },
@@ -382,16 +386,16 @@ export class SummaryComponent {
         window.URL.revokeObjectURL(url);
         this.messageService.add({
           severity: 'info',
-          summary: 'Success',
-          detail: 'Arquivo descarregado com sucesso!'
+          summary: this.i18n.instant('toast.success'),
+          detail: this.i18n.instant('application.shared.toast.fileDownloaded')
         });
       },
       error: error => {
         this.downloadLoading = false;
         this.messageService.add({
           severity: 'error',
-          summary: 'Erro',
-          detail: 'Falha ao descarregar o arquivo!',
+          summary: this.i18n.instant('toast.error'),
+          detail: this.i18n.instant('application.shared.toast.downloadFailed'),
           key: 'br'
         });
       },
@@ -465,10 +469,10 @@ export class SummaryComponent {
         .filter(doc => doc.coluna !== 'FORM_SNAPSHOT')
         .forEach(doc => rows.push({ doc, origem }));
 
-    collect(aplicante.pedidoInscricaoCadastro?.documentos, 'Pedido de Inscrição');
-    collect(aplicante.pedidoLicencaAtividade?.documentos, 'Pedido de Licença');
+    collect(aplicante.pedidoInscricaoCadastro?.documentos, 'application.summary.origem.inscricao');
+    collect(aplicante.pedidoLicencaAtividade?.documentos, 'application.summary.origem.licenca');
     (aplicante.pedidoLicencaAtividade?.listaPedidoVistoria ?? [])
-      .forEach(pv => collect(pv.autoVistoria?.documentos, 'Auto de Vistoria'));
+      .forEach(pv => collect(pv.autoVistoria?.documentos, 'application.summary.origem.autoVistoria'));
 
     this.adminDocs = rows;
   }
@@ -491,7 +495,7 @@ export class SummaryComponent {
         a.click();
         window.URL.revokeObjectURL(url);
       },
-      error: () => this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha no download do arquivo!' }),
+      error: () => this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: this.i18n.instant('application.shared.toast.downloadFailed') }),
       complete: () => this.downloadingDocs.delete(row.doc.id)
     });
   }
@@ -509,9 +513,9 @@ export class SummaryComponent {
     this.documentoService.replaceById(row.doc.id, file).subscribe({
       next: updated => {
         Object.assign(row.doc, updated);
-        this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Documento substituído com sucesso' });
+        this.messageService.add({ severity: 'info', summary: this.i18n.instant('toast.confirmed'), detail: this.i18n.instant('application.summary.toast.docReplaced') });
       },
-      error: err => this.messageService.add({ severity: 'error', summary: 'Erro', detail: err || 'Ocorreu um erro ao substituir o documento' }),
+      error: err => this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: err || this.i18n.instant('application.summary.toast.docReplaceFailed') }),
       complete: () => this.replacingDocs.delete(row.doc.id)
     });
   }

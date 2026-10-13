@@ -1,3 +1,4 @@
+import { LanguageService } from '@/core/i18n';
 import { Aldeia } from '@/core/models/data-master.model';
 import { Aplicante, Empresa, PedidoVistoria } from '@/core/models/entities.model';
 import { AplicanteStatus, Categoria } from '@/core/models/enums';
@@ -5,9 +6,10 @@ import { EmpresaService } from '@/core/services';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { PedidoService } from '@/core/services/pedido.service';
 import { caraterizacaEstabelecimentoOptions, mapToAtividadeEconomica, mapToIdAndNome, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEmpresaOptions, tipoPedidoVistoriaComercialOptions, tipoPedidoVistoriaIndustrialOptions } from '@/core/utils/global-function';
-import { Component, Input, output } from '@angular/core';
+import { Component, inject, Input, output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
@@ -17,7 +19,7 @@ import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-pedido-vistoria-form',
-  imports: [Select, ReactiveFormsModule, InputText, Textarea, Button, Toast, Textarea],
+  imports: [Select, ReactiveFormsModule, InputText, Textarea, Button, Toast, TranslatePipe],
   templateUrl: './pedido-vistoria-form.component.html',
   styleUrl: './pedido-vistoria-form.component.scss',
   providers: [MessageService]
@@ -38,6 +40,7 @@ export class PedidoVistoriaFormComponent {
   loading = false;
   pedido: PedidoVistoria | undefined;
   categoria!: string;
+  private i18n = inject(LanguageService);
 
 
   constructor(
@@ -368,8 +371,8 @@ export class PedidoVistoriaFormComponent {
   }
 
   private addMessages(isSuccess: boolean, isNew: boolean, error?: any) {
-    const summary = isSuccess ? (isNew ? 'Dados registados com sucesso!' : 'Dados atualizados com sucesso!') : 'Error';
-    const detail = isSuccess ? (isNew ? `Os dados foram registados` : `Os dados foram actualizados`) : 'Desculpe, algo deu errado. Tente novamente ou procure o administrador do sistema para mais informações.';
+    const summary = this.i18n.instant(isSuccess ? (isNew ? 'application.vistoria.toast.created' : 'application.vistoria.toast.updated') : 'toast.error');
+    const detail = this.i18n.instant(isSuccess ? (isNew ? 'application.vistoria.toast.createdDetail' : 'application.vistoria.toast.updatedDetail') : 'application.vistoria.toast.genericError');
 
     this.messageService.add({ severity: isSuccess ? 'success' : 'error', summary, detail });
   }

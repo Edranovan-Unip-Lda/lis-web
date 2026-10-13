@@ -2,10 +2,12 @@ import { LayoutService } from '@/layout/service/layout.service';
 import { Component, inject } from '@angular/core';
 import { Event, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterModule } from '@angular/router';
 import { ProgressBar } from 'primeng/progressbar';
+import { TranslatePipe } from '@ngx-translate/core';
+import { LanguageSwitcherComponent } from '@/shared/language-switcher/language-switcher.component';
 
 @Component({
   selector: 'app-auth-layout',
-  imports: [RouterModule, ProgressBar],
+  imports: [RouterModule, ProgressBar, TranslatePipe, LanguageSwitcherComponent],
   templateUrl: './auth-layout.component.html',
   styleUrl: './auth-layout.component.scss'
 })

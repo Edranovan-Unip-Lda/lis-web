@@ -8,10 +8,11 @@ import { Fluid } from "primeng/fluid";
 import { IconField } from "primeng/iconfield";
 import { Message } from "primeng/message";
 import { Password } from "primeng/password";
+import { TranslatePipe } from "@ngx-translate/core";
 
 @Component({
     standalone: true,
-    imports: [ReactiveFormsModule, Fluid, Message, IconField, Password, Button, RouterLink],
+    imports: [ReactiveFormsModule, Fluid, Message, IconField, Password, Button, RouterLink, TranslatePipe],
     selector: 'app-reset-password',
     templateUrl: './reset-password.component.html',
 })
@@ -47,7 +48,7 @@ export class ResetPasswordComponent {
         if (!this.token || !this.uuidRegex.test(this.token)) {
             this.isTokenvalid = true;
             this.messages.set([
-                { severity: 'error', content: 'Token inválido ou expirado!' },
+                { severity: 'error', key: 'auth.resetPassword.invalidToken' },
             ]);
         }
 
@@ -63,7 +64,7 @@ export class ResetPasswordComponent {
             next: response => {
                 this.loading = false;
                 this.messages.set([
-                    { severity: 'success', content: 'Palavra-passe redefinida com sucesso' },
+                    { severity: 'success', key: 'auth.resetPassword.success' },
                 ]);
                 this.isSuccess = true;
             },

@@ -1,9 +1,9 @@
 <div class="text-center mb-8">
     <h2 class="text-2xl font-semibold">
-        Selecione o tipo de serviço de que necessita para continuar
+        {{ 'inicio.selectService' | translate }}
     </h2>
     <p class="text-gray-900 dark:text-gray-400 mt-2">
-        Escolha entre as nossas soluções Comercial ou Industrial, adaptadas às necessidades do seu negócio.
+        {{ 'inicio.chooseSolution' | translate }}
     </p>
 </div>
 <div class="grid grid-cols-12 gap-8 mb-10">
@@ -11,7 +11,7 @@
         <div class=" bg-gray-800 rounded-xl !p-4 cursor-pointer hover-scale" (click)="showDialog(comercial)">
             <div class="flex flex-col items-center justify-center h-full p-4">
                 <i class="bi bi-cart3 text-emerald-400 mb-2" style="font-size: 3.5rem"></i>
-                <span class="text-xl font-semibol text-surface-50">Comercial</span>
+                <span class="text-xl font-semibol text-surface-50">{{ 'enum.Categoria.COMERCIAL' | translate }}</span>
             </div>
         </div>
     </div>
@@ -19,7 +19,7 @@
         <div class="bg-gray-800 rounded-xl !p-4 cursor-pointer hover-scale" (click)="showDialog(industrial)">
             <div class="flex flex-col items-center justify-center h-full p-4">
                 <i class="bi bi-building-gear text-emerald-400 mb-2" style="font-size: 3.5rem"></i>
-                <span class="text-xl font-semibol text-surface-50">Industrial</span>
+                <span class="text-xl font-semibol text-surface-50">{{ 'enum.Categoria.INDUSTRIAL' | translate }}</span>
             </div>
         </div>
     </div>
@@ -41,7 +41,7 @@
         <button routerLink="/empresa/{{empresa.utilizador.username}}"
             class="flex items-center justify-center bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 hover:cursor-pointer">
             <i class="bi bi-pencil mr-2"></i>
-            Edit
+            {{ 'common.edit' | translate }}
         </button>
         <!-- <button
             class="flex items-center justify-center bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 hover:cursor-pointer">
@@ -56,48 +56,48 @@
             <section class="bg-gray-800 p-8 rounded-2xl shadow-lg mb-8">
                 <div class="flex items-center mb-6">
                     <i class="bi bi-info-circle text-emerald-400 text-3xl mr-3"></i>
-                    <h2 class="text-2xl font-semibold text-gray-200">Informações da Empresa</h2>
+                    <h2 class="text-2xl font-semibold text-gray-200">{{ 'inicio.companyInfo' | translate }}</h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Nome da Empresa</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'inicio.companyName' | translate }}</p>
                         <p class="text-lg text-gray-100">
                             {{empresa.nome}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Dimensão</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'inicio.dimensao' | translate }}</p>
                         <p class="text-lg text-gray-100">
-                            {{empresa.tipoEmpresa.replace('_',' ')}}
+                            {{ ('enum.TipoEmpresa.' + empresa.tipoEmpresa) | translate }}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Nº TIN (NIF)</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'inicio.nif' | translate }}</p>
                         <p class="text-lg text-gray-100">
                             {{empresa.nif}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Nº Registo Comercial</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'inicio.registoComercial' | translate }}</p>
                         <p class="text-lg text-gray-100">
                             {{empresa.numeroRegistoComercial}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Data Registo</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'inicio.dataRegisto' | translate }}</p>
                         <p class="text-lg text-gray-100">
-                            {{empresa.dataRegisto | date: 'dd MMM yyyy'}}
+                            {{empresa.dataRegisto | ldate: 'dd MMM yyyy'}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Sociedade Comercial</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'inicio.sociedadeComercial' | translate }}</p>
                         <p class="text-lg text-gray-100">
                             {{empresa.sociedadeComercial.nome}}
                         </p>
                     </div>
                     <div>
                         <p class="text-sm text-gray-400 font-medium">
-                            Total Trabalhadores
+                            {{ 'inicio.totalTrabalhadores' | translate }}
                         </p>
                         <p class="text-lg text-gray-100">
                             {{empresa.totalTrabalhadores}}
@@ -105,22 +105,22 @@
                     </div>
                     <div>
                         <p class="text-sm text-gray-400 font-medium">
-                            Volume de Negócios Anual
+                            {{ 'inicio.volumeNegocio' | translate }}
                         </p>
                         <p class="text-lg text-gray-100">
-                            {{empresa.volumeNegocioAnual | currency}}
+                            {{empresa.volumeNegocioAnual | lcurrency}}
                         </p>
                     </div>
                     <div>
                         <p class="text-sm text-gray-400 font-medium">
-                            Balanço total Anual
+                            {{ 'inicio.balancoTotal' | translate }}
                         </p>
                         <p class="text-lg text-gray-100">
-                            {{empresa.balancoTotalAnual |currency}}
+                            {{empresa.balancoTotalAnual | lcurrency}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Endereço</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'inicio.endereco' | translate }}</p>
                         <p class="text-lg text-gray-100">
                             {{empresa.sede.local}} <br>
                             {{empresa.sede.aldeia.nome}},
@@ -130,7 +130,7 @@
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Longitude - Latitude</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'inicio.longLat' | translate }}</p>
                         <p class="text-lg text-gray-100">
                             <a [href]="'https://www.google.com/maps?q=' + empresa.latitude + ',' + empresa.longitude" 
                                target="_blank" rel="noopener noreferrer"
@@ -140,7 +140,7 @@
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Telefone/Telemóvel</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'inicio.telefoneTelemovel' | translate }}</p>
                         <p class="text-lg text-gray-100">
                             {{empresa.telefone}} / {{empresa.telemovel}}
                         </p>
@@ -150,34 +150,34 @@
             <section class="bg-gray-800 p-8 rounded-2xl shadow-lg mb-8">
                 <div class="flex items-center mb-6">
                     <i class="bi bi-person-gear text-emerald-400 text-3xl mr-3"></i>
-                    <h2 class="text-2xl font-semibold text-gray-200">Gerente</h2>
+                    <h2 class="text-2xl font-semibold text-gray-200">{{ 'inicio.gerente' | translate }}</h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Nome</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'common.name' | translate }}</p>
                         <p class="text-lg text-gray-100">
                             {{empresa.gerente.nome}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Telefone</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'inicio.telefone' | translate }}</p>
                         <p class="text-lg text-gray-100">
                             {{empresa.gerente.telefone}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Email</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'common.email' | translate }}</p>
                         <p class="text-lg text-gray-100">
                             {{empresa.gerente.email}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Documento de Identificaçåo</p>
-                        <p class="text-lg text-gray-100">{{empresa.gerente.tipoDocumento.replace('_',' ')|titlecase}} –
+                        <p class="text-sm text-gray-400 font-medium">{{ 'inicio.documentoIdentificacao' | translate }}</p>
+                        <p class="text-lg text-gray-100">{{ ('enum.TipoDocumento.' + empresa.gerente.tipoDocumento) | translate }} –
                             {{empresa.gerente.numeroDocumento}}</p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Endereço</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'inicio.endereco' | translate }}</p>
                         <p class="text-lg text-gray-100">
                             {{empresa.gerente.morada.local}} <br>
                             {{empresa.gerente.morada.aldeia.nome}},
@@ -191,72 +191,72 @@
             <section class="bg-gray-800 p-8 rounded-2xl shadow-lg mb-8">
                 <div class="flex items-center mb-6">
                     <i class="bi bi-person-badge text-emerald-400 text-3xl mr-3"></i>
-                    <h2 class="text-2xl font-semibold text-gray-200">Representante</h2>
+                    <h2 class="text-2xl font-semibold text-gray-200">{{ 'inicio.representante' | translate }}</h2>
                 </div>
                 @if (empresa.representante; as rep) {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Nome</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'common.name' | translate }}</p>
                         <p class="text-lg text-gray-100">
                             {{rep.nome}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Pai</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'inicio.pai' | translate }}</p>
                         <p class="text-lg text-gray-100">
                             {{rep.pai}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Mãe</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'inicio.mae' | translate }}</p>
                         <p class="text-lg text-gray-100">
                             {{rep.mae}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Data de Nascimento</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'inicio.dataNascimento' | translate }}</p>
                         <p class="text-lg text-gray-100">
-                            {{rep.dataNascimento | date: 'dd MMM yyyy'}}
+                            {{rep.dataNascimento | ldate: 'dd MMM yyyy'}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Estado Civil</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'inicio.estadoCivil' | translate }}</p>
                         <p class="text-lg text-gray-100">
-                            {{rep.estadoCivil}}
+                            {{ estadoCivilLabel(rep.estadoCivil) }}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Nacionalidade</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'inicio.nacionalidade' | translate }}</p>
                         <p class="text-lg text-gray-100">
                             {{rep.nacionalidade}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Naturalidade</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'inicio.naturalidade' | translate }}</p>
                         <p class="text-lg text-gray-100">
                             {{rep.naturalidade}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Telefone</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'inicio.telefone' | translate }}</p>
                         <p class="text-lg text-gray-100">
                             {{rep.telefone}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Email</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'common.email' | translate }}</p>
                         <p class="text-lg text-gray-100">
                             {{rep.email}}
                         </p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Documento de Identificaçåo</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'inicio.documentoIdentificacao' | translate }}</p>
                         <p class="text-lg text-gray-100">
-                            {{rep.tipoDocumento.replace('_',' ')|titlecase}} –
+                            {{ ('enum.TipoDocumento.' + rep.tipoDocumento) | translate }} –
                             {{rep.numeroDocumento}}</p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400 font-medium">Endereço</p>
+                        <p class="text-sm text-gray-400 font-medium">{{ 'inicio.endereco' | translate }}</p>
                         <p class="text-lg text-gray-100">
                             {{rep.morada.local}} <br>
                             {{rep.morada.aldeia.nome}},
@@ -267,13 +267,13 @@
                     </div>
                 </div>
                 } @else {
-                <p class="text-lg text-gray-400">Sem representante legal registado.</p>
+                <p class="text-lg text-gray-400">{{ 'inicio.noRepresentante' | translate }}</p>
                 }
             </section>
             <section class="bg-gray-800 p-8 rounded-2xl shadow-lg">
                 <div class="flex items-center mb-6">
                     <i class="bi bi-people text-emerald-400 text-3xl mr-3"></i>
-                    <h2 class="text-2xl font-semibold text-gray-200">Acionista(s)</h2>
+                    <h2 class="text-2xl font-semibold text-gray-200">{{ 'inicio.acionistas' | translate }}</h2>
                 </div>
                 <div>
                     @for (item of empresa.acionistas; track $index) {
@@ -283,31 +283,31 @@
                         </h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                             <div>
-                                <p class="text-sm text-gray-400 font-medium">Nª TIN (NIF)</p>
+                                <p class="text-sm text-gray-400 font-medium">{{ 'inicio.nif' | translate }}</p>
                                 <p class="text-lg text-gray-100">
                                     {{item.nif}}
                                 </p>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-400 font-medium">Documento de Identificaçåo</p>
-                                <p class="text-lg text-gray-100">{{item.tipoDocumento.replace('_',' ')|titlecase}} –
+                                <p class="text-sm text-gray-400 font-medium">{{ 'inicio.documentoIdentificacao' | translate }}</p>
+                                <p class="text-lg text-gray-100">{{ ('enum.TipoDocumento.' + item.tipoDocumento) | translate }} –
                                     {{item.numeroDocumento}}</p>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-400 font-medium">Ações</p>
+                                <p class="text-sm text-gray-400 font-medium">{{ 'inicio.acoes' | translate }}</p>
                                 <p class="text-lg text-gray-100">
                                     {{item.acoes}} %
                                 </p>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-400 font-medium">Email</p>
+                                <p class="text-sm text-gray-400 font-medium">{{ 'common.email' | translate }}</p>
                                 <p class="text-lg text-gray-100">
                                     {{item.email}}
                                 </p>
                             </div>
                             <div>
                                 <p class="text-sm text-gray-400 font-medium">
-                                    Agregado Família
+                                    {{ 'inicio.agregadoFamilia' | translate }}
                                 </p>
                                 <p class="text-lg text-gray-100">
                                     {{item.agregadoFamilia}}
@@ -315,14 +315,14 @@
                             </div>
                             <div>
                                 <p class="text-sm text-gray-400 font-medium">
-                                    Relação Família
+                                    {{ 'inicio.relacaoFamilia' | translate }}
                                 </p>
                                 <p class="text-lg text-gray-100">
-                                    {{item.relacaoFamilia}}
+                                    {{ relacaoFamiliaLabel(item.relacaoFamilia) }}
                                 </p>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-400 font-medium">Endereço</p>
+                                <p class="text-sm text-gray-400 font-medium">{{ 'inicio.endereco' | translate }}</p>
                                 <p class="text-lg text-gray-100">
                                     {{item.endereco.local}} <br>
                                     {{item.endereco.aldeia.nome}},
@@ -342,13 +342,13 @@
                 <div class="flex items-center mb-6">
                     <i class="bi bi-bank text-emerald-400 text-3xl mr-3"></i>
                     <h2 class="text-2xl font-semibold text-gray-200">
-                        Capital Social
+                        {{ 'inicio.capitalSocial' | translate }}
                     </h2>
                 </div>
                 <div class="space-y-4">
                     <div>
                         <p class="text-2xl font-bold text-white">
-                            {{empresa.capitalSocial | currency}}
+                            {{empresa.capitalSocial | lcurrency}}
                         </p>
                     </div>
                 </div>
@@ -356,7 +356,7 @@
             <section class="bg-gray-800 p-8 rounded-2xl shadow-lg">
                 <div class="flex items-center mb-6">
                     <i class="bi bi-folder2-open text-emerald-400 text-3xl mr-3"></i>
-                    <h2 class="text-2xl font-semibold text-gray-200">Documentos</h2>
+                    <h2 class="text-2xl font-semibold text-gray-200">{{ 'inicio.documentos' | translate }}</h2>
                 </div>
                 <ul class="space-y-3">
                     @for (doc of empresa.documentos; track $index) {
@@ -378,12 +378,11 @@
     </div>
 </main>
 <p-toast position="bottom-center" />
-<p-dialog header="Criar Aplicante" [modal]="true" [position]="'top'" [(visible)]="visible" [style]="{ width: '45rem' }">
+<p-dialog [header]="'inicio.dialog.title' | translate" [modal]="true" [position]="'top'" [(visible)]="visible" [style]="{ width: '45rem' }">
     <div class="card">
         <div class="grid grid-cols-12 gap-8 md:gap-4">
             <div class="col-span-12">
-                <p class="m-0 p-0 leading-normal mr-4">Forneça as informações
-                    necessárias abaixo para configurar uma nova inscrição.</p>
+                <p class="m-0 p-0 leading-normal mr-4">{{ 'inicio.dialog.intro' | translate }}</p>
             </div>
 
             <div class="col-span-12">
@@ -391,17 +390,17 @@
                     <div class="grid grid-cols-12 gap-4">
                         <div class="mb-6 col-span-12">
                             <label for="tipo" class="font-medium mb-2 block">
-                                Tipo Aplicante
+                                {{ 'inicio.dialog.tipo' | translate }}
                             </label>
                             <p-select formControlName="tipo" inputId="tipo" [options]="applicationTypes"
-                                optionLabel="name" fluid [showClear]="true" placeholder="Selecione um tipo">
+                                optionLabel="name" fluid [showClear]="true" [placeholder]="'inicio.dialog.selectTipo' | translate">
                             </p-select>
                         </div>
                     </div>
                     <button (click)="create(applicationForm)" icon="pi pi-plus" [loading]="loading"
-                        [disabled]="!applicationForm.valid" pButton pRipple label="Criar Aplicante"
+                        [disabled]="!applicationForm.valid" pButton pRipple [label]="'inicio.dialog.title' | translate"
                         class="w-auto mt-3 mr-4"></button>
-                    <p-button label="Cancelar" severity="secondary" icon="pi pi-times" iconPos="left"
+                    <p-button [label]="'common.cancel' | translate" severity="secondary" icon="pi pi-times" iconPos="left"
                         (click)="visible = false" />
                 </form>
             </div>

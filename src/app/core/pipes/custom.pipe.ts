@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { t } from '../i18n/translate-ref';
 
 @Pipe({ name: 'statusIcon', standalone: true, })
 export class StatusIconPipe implements PipeTransform {
@@ -63,104 +64,68 @@ export class StatusSeverityPipe implements PipeTransform {
 @Pipe({
     name: 'booleanPipe',
     standalone: true,
+    pure: false,
 })
 export class BooleanPipe implements PipeTransform {
     transform(value: boolean) {
-        return value ? 'SIM' : 'NÃO'
+        return t(value ? 'common.yes' : 'common.no');
     }
 }
 
+// Impure so the text follows a language switch (and keeps ageing while the view stays open).
 @Pipe({
     name: 'timeAgo',
     standalone: true,
+    pure: false,
 })
 export class TimeAgoPipe implements PipeTransform {
+    // [upper bound in seconds, key, divisor for {{n}}] — first match wins.
+    private static readonly STEPS: [number, string, number][] = [
+        [10, 'justNow', 0],
+        [60, 'fewSeconds', 0],
+        [120, 'minute', 0],
+        [3600, 'minutes', 60],
+        [7200, 'hour', 0],
+        [86400, 'hours', 3600],
+        [172800, 'yesterday', 0],
+        [604800, 'days', 86400],
+        [1209600, 'week', 0],
+        [2592000, 'weeks', 604800],
+        [5184000, 'month', 0],
+        [31536000, 'months', 2592000],
+    ];
+
     transform(value: string | Date): string {
         if (!value) return '';
 
         const date = typeof value === 'string' ? new Date(value) : value;
-        const now = new Date();
-        const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+        const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
 
-        if (seconds < 0) return 'agora mesmo';
+        if (seconds < 0) return t('common.timeAgo.justNow');
 
-        const intervals: { [key: string]: number } = {
-            ano: 31536000,
-            mês: 2592000,
-            semana: 604800,
-            dia: 86400,
-            hora: 3600,
-            minuto: 60,
-            segundo: 1
-        };
-
-        // Less than 10 seconds
-        if (seconds < 10) {
-            return 'agora mesmo';
+        const step = TimeAgoPipe.STEPS.find(([max]) => seconds < max);
+        if (step) {
+            const [, key, div] = step;
+            return t(`common.timeAgo.${key}`, div ? { n: Math.floor(seconds / div) } : undefined);
         }
 
-        // Less than 1 minute
-        if (seconds < 60) {
-            return 'há alguns segundos';
-        }
-
-        // 1 minute
-        if (seconds < 120) {
-            return 'há 1 minuto';
-        }
-
-        // Less than 1 hour
-        if (seconds < 3600) {
-            const minutes = Math.floor(seconds / 60);
-            return `há ${minutes} minutos`;
-        }
-
-        // 1 hour
-        if (seconds < 7200) {
-            return 'há 1 hora';
-        }
-
-        // Less than 1 day
-        if (seconds < 86400) {
-            const hours = Math.floor(seconds / 3600);
-            return `há ${hours} horas`;
-        }
-
-        // 1 day
-        if (seconds < 172800) {
-            return 'ontem';
-        }
-
-        // Less than 1 week
-        if (seconds < 604800) {
-            const days = Math.floor(seconds / 86400);
-            return `há ${days} dias`;
-        }
-
-        // 1 week
-        if (seconds < 1209600) {
-            return 'há 1 semana';
-        }
-
-        // Less than 1 month
-        if (seconds < 2592000) {
-            const weeks = Math.floor(seconds / 604800);
-            return `há ${weeks} semanas`;
-        }
-
-        // 1 month
-        if (seconds < 5184000) {
-            return 'há 1 mês';
-        }
-
-        // Less than 1 year
-        if (seconds < 31536000) {
-            const months = Math.floor(seconds / 2592000);
-            return `há ${months} meses`;
-        }
-
-        // 1 year or more
         const years = Math.floor(seconds / 31536000);
-        return years === 1 ? 'há 1 ano' : `há ${years} anos`;
+        return years === 1 ? t('common.timeAgo.year') : t('common.timeAgo.years', { n: years });
+    }
+}
+
+
+/** Display label for any status code (aplicante/pedido/fatura/user/login); unknown codes render as-is. */
+@Pipe({
+    name: 'statusLabel',
+    standalone: true,
+    pure: false,
+})
+export class StatusLabelPipe implements PipeTransform {
+    transform(status: string | null | undefined): string {
+        if (!status) return '';
+        const key = `status.${status}`;
+        const label = t(key);
+        return label === key ? status : label;
     }
 }

@@ -4,7 +4,7 @@ export default [
     { path: '', redirectTo: 'seguranca', pathMatch: 'full' },
     {
         path: 'seguranca',
-        data: { breadcrumb: 'Segurança' },
+        data: { breadcrumb: 'breadcrumb.seguranca' },
         loadComponent: () => import('./seguranca/seguranca.component').then((c) => c.SegurancaComponent)
     },
     { path: '**', redirectTo: '/notfound' }

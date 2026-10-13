@@ -1,6 +1,8 @@
+import { StatusLabelPipe } from '@/core/pipes/custom.pipe';
+import { LocalizedDatePipe } from '@/core/i18n';
 import { Categoria, RecaptchaAction } from '@/core/models/enums';
 import { CertificadoService, DocumentosService } from '@/core/services';
-import { DatePipe, NgClass, NgStyle, NgTemplateOutlet, UpperCasePipe } from '@angular/common';
+import { NgClass, NgStyle, NgTemplateOutlet, UpperCasePipe } from '@angular/common';
 import { Component, DestroyRef, inject, OnDestroy, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -16,13 +18,14 @@ import { InputText } from 'primeng/inputtext';
 import { Message } from 'primeng/message';
 import { Skeleton } from 'primeng/skeleton';
 import { Tag } from 'primeng/tag';
+import { TranslatePipe } from '@ngx-translate/core';
 import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-search',
   // CHANGED: added Image (license preview) + Tag (status badge)
   // CHANGED: RecaptchaV3Module dropped — it only ever contributed providers, now hoisted to root in app.config.
-  imports: [Fluid, Message, Button, InputGroup, InputGroupAddon, InputText, Skeleton, Tag, DatePipe, NgClass, NgStyle, QRCodeComponent, NgTemplateOutlet, ReactiveFormsModule, UpperCasePipe],
+  imports: [StatusLabelPipe, LocalizedDatePipe, Fluid, Message, Button, InputGroup, InputGroupAddon, InputText, Skeleton, Tag, NgClass, NgStyle, QRCodeComponent, NgTemplateOutlet, ReactiveFormsModule, UpperCasePipe, TranslatePipe],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
   providers: [MessageService]
@@ -112,7 +115,7 @@ export class SearchComponent implements OnDestroy {
             this.isCadastro = 'pedidoInscricaoCadastro' in certificado;
             this.messages.set([{
               severity: 'success',
-              content: 'Certificado encontrado com sucesso.'
+              key: 'auth.search.found'
             }]);
             this.certificadoData = certificado;
             this.certificadoData.updatedAt = new Date(this.certificadoData.updatedAt)
@@ -140,7 +143,7 @@ export class SearchComponent implements OnDestroy {
     } else {
       this.messages.set([{
         severity: 'error',
-        content: 'Número de certificado inválido.'
+        key: 'auth.search.invalidNumber'
       }]);
       this.certificadoData = null;
       this.loading = false;
@@ -177,8 +180,9 @@ export class SearchComponent implements OnDestroy {
     return this.certificadoData?.pedidoLicencaAtividade?.nomeEmpresa;
   }
 
+  /** Translation key — translated in the template. */
   get tipoDocumento(): string {
-    return this.isCadastro ? 'Certificado de Inscrição no Cadastro' : 'Alvará de Licença para Exercício da Atividade';
+    return this.isCadastro ? 'auth.search.docCadastro' : 'auth.search.docLicenca';
   }
 
   get emissao(): Date {

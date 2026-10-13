@@ -4,7 +4,7 @@
              <img src="/images/logo.png" style="width: 100px" alt="logo" />
          </div>
          <p class="text-2xl font-bold mb-4">
-             Sistema de Gestão de <br> Licenças Comerciais e Indústriais
+             {{ 'auth.common.systemTitleLine1' | translate }} <br> {{ 'auth.common.systemTitleLine2' | translate }}
          </p>
          @if (notification) {
          <p-message [severity]="notification.state">
@@ -12,12 +12,12 @@
                  <i [class]="notification.icon" style="font-size: 2.5rem"></i> &nbsp;
              </ng-template>
              <span class="ml-2 text-lg text-left">
-                 {{ notification.message }}
+                 {{ notification.message || (notification.messageKey | translate) }}
              </span>
          </p-message>
          }
          <div class="mt-6 text-center flex items-center justify-center">
-             <button routerLink="/auth/login" icon="pi pi-sign-in" pButton label="Entrar"
+             <button routerLink="/auth/login" icon="pi pi-sign-in" pButton [label]="'auth.common.enter' | translate"
                  style="max-width: 200px"></button>
          </div>
 

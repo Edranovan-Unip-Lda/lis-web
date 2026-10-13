@@ -12,7 +12,7 @@ export default [
     {
         path: 'list',
         data: {
-            breadcrumb: 'Lista',
+            breadcrumb: 'breadcrumb.lista',
             role: [Role.admin, Role.manager, Role.chief, Role.staff]
         },
         component: EmpresaListComponent,
@@ -24,7 +24,7 @@ export default [
     {
         path: ':username',
         data: {
-            breadcrumb: 'Edit',
+            breadcrumb: 'breadcrumb.editar',
             role: [Role.client],
         },
         component: EmpresaFormComponent,
@@ -39,7 +39,7 @@ export default [
     {
         path: 'detail/:username',
         data: {
-            breadcrumb: 'Detail',
+            breadcrumb: 'breadcrumb.detalhe',
             role: [Role.admin, Role.manager, Role.chief, Role.staff]
         },
         component: EmpresaDetailComponent,

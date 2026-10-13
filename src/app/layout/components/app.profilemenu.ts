@@ -9,10 +9,11 @@ import { FormsModule } from "@angular/forms";
 import { Router } from '@angular/router';
 import { DatePickerModule } from "primeng/datepicker";
 import { DrawerModule } from "primeng/drawer";
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-profile-menu',
-    imports: [DrawerModule, DatePickerModule, FormsModule, CommonModule, TimeAgoPipe],
+    imports: [DrawerModule, DatePickerModule, FormsModule, CommonModule, TimeAgoPipe, TranslatePipe],
     standalone: true,
     templateUrl: './notification.html'
 })

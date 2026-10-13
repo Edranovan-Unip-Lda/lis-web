@@ -1,3 +1,4 @@
+import { t } from '@/core/i18n/translate-ref';
 import { RecaptchaAction } from '@/core/models/enums';
 import { inject, Injectable } from '@angular/core';
 import * as Sentry from '@sentry/angular';
@@ -11,10 +12,7 @@ import { catchError, retry, timeout } from 'rxjs/operators';
  */
 export class RecaptchaClientError extends Error {
     constructor(readonly reason?: unknown) {
-        super(
-            'Não foi possível concluir a verificação de segurança no seu navegador. Desative bloqueadores de ' +
-            'anúncios ou extensões de privacidade, verifique a sua ligação à Internet e tente novamente.'
-        );
+        super(t('recaptcha.clientError'));
         this.name = 'RecaptchaClientError';
     }
 }
@@ -54,12 +52,12 @@ export class RecaptchaGuardService {
     }
 
     /**
-     * Message for any failure of a captcha-gated call. Backend rejections already arrive as a Portuguese string
+     * Message for any failure of a captcha-gated call. Backend rejections already arrive as a localized string
      * (httpErrorInterceptor flattens the API's ErrorDetail.message), so those pass straight through.
      */
     messageFor(err: unknown): string {
         if (err instanceof RecaptchaClientError) return err.message;
         if (typeof err === 'string' && err.trim()) return err;
-        return 'Falha na verificação de segurança. Atualize a página e tente novamente.';
+        return t('recaptcha.failed');
     }
 }

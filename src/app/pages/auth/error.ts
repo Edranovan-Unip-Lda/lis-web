@@ -4,10 +4,11 @@ import {ButtonModule} from 'primeng/button';
 import {RippleModule} from 'primeng/ripple';
 import {LayoutService} from '@/layout/service/layout.service';
 import {AppConfigurator} from "@/layout/components/app.configurator";
+import {TranslatePipe} from "@ngx-translate/core";
 
 @Component({
     selector: 'app-error',
-    imports: [ButtonModule, RippleModule, RouterModule, AppConfigurator],
+    imports: [ButtonModule, RippleModule, RouterModule, AppConfigurator, TranslatePipe],
     standalone: true,
     template: ` <div [class]="'min-h-screen ' + (layoutService.isDarkTheme() ? 'layout-dark' : 'layout-light')" style="background: var(--surface-ground)">
         <div
@@ -20,9 +21,9 @@ import {AppConfigurator} from "@/layout/components/app.configurator";
             }"
         >
             <div class="text-center flex items-center justify-center flex-col" style="margin-top: -200px; box-sizing: border-box">
-                <h1 class="text-red-400 mb-0" style="font-size: 140px; font-weight: 900; text-shadow: 0px 0px 50px rgba(#fc6161, 0.2)">ERROR</h1>
-                <h3 class="text-red-300" style="font-size: 80px; font-weight: 900; margin-top: -90px; margin-bottom: 50px">something's went wrong</h3>
-                <button pButton pRipple [routerLink]="['/']" style="margin-top: 50px">Go back to home</button>
+                <h1 class="text-red-400 mb-0" style="font-size: 140px; font-weight: 900; text-shadow: 0px 0px 50px rgba(#fc6161, 0.2)">{{ 'auth.error.title' | translate }}</h1>
+                <h3 class="text-red-300" style="font-size: 80px; font-weight: 900; margin-top: -90px; margin-bottom: 50px">{{ 'auth.error.subtitle' | translate }}</h3>
+                <button pButton pRipple [routerLink]="['/']" style="margin-top: 50px">{{ 'auth.common.goHome' | translate }}</button>
             </div>
             <div class="absolute items-center flex" style="bottom: 60px">
                 <img src="/images/logo-{{ layoutService.isDarkTheme() ? 'light' : 'dark' }}.png" class="exception-logo" style="width: 34px" alt="logo" />

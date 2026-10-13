@@ -13,6 +13,8 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
+import { TranslatePipe } from '@ngx-translate/core';
+import { i18nOptions } from '@/core/i18n';
 
 const presets = {
     Aura,
@@ -42,16 +44,16 @@ declare type SurfacesType = {
 @Component({
     selector: 'app-configurator',
     standalone: true,
-    imports: [CommonModule, FormsModule, SelectButtonModule, DrawerModule, ToggleSwitchModule, RadioButtonModule, RippleModule, ButtonModule],
+    imports: [CommonModule, FormsModule, SelectButtonModule, DrawerModule, ToggleSwitchModule, RadioButtonModule, RippleModule, ButtonModule, TranslatePipe],
     template: `
         <button *ngIf="simple" class="layout-config-button config-link" type="button" (click)="toggleConfigSidebar()">
             <i class="pi pi-cog"></i>
         </button>
 
-        <p-drawer [(visible)]="visible" (onHide)="layoutService.hideConfigSidebar()" position="right" [transitionOptions]="'.3s cubic-bezier(0, 0, 0.2, 1)'" styleClass="layout-config-sidebar w-80" header="Settings">
+        <p-drawer [(visible)]="visible" (onHide)="layoutService.hideConfigSidebar()" position="right" [transitionOptions]="'.3s cubic-bezier(0, 0, 0.2, 1)'" styleClass="layout-config-sidebar w-80" [header]="'layout.config.settings' | translate">
             <div class="flex flex-col gap-4">
                 <div>
-                    <span class="text-lg font-semibold">Primary</span>
+                    <span class="text-lg font-semibold">{{ 'layout.config.primary' | translate }}</span>
                     <div class="pt-2 flex gap-2 flex-wrap">
                         @for (primaryColor of primaryColors(); track primaryColor.name) {
                             <button
@@ -71,7 +73,7 @@ declare type SurfacesType = {
                 </div>
 
                 <div>
-                    <span class="text-lg font-semibold">Surface</span>
+                    <span class="text-lg font-semibold">{{ 'layout.config.surface' | translate }}</span>
                     <div class="pt-2 flex gap-2 flex-wrap">
                         @for (surface of surfaces; track surface.name) {
                             <button
@@ -91,53 +93,53 @@ declare type SurfacesType = {
                 </div>
 
                 <div class="flex flex-col gap-2">
-                    <span class="text-lg font-semibold">Presets</span>
+                    <span class="text-lg font-semibold">{{ 'layout.config.presets' | translate }}</span>
                     <p-selectbutton [options]="presets" [ngModel]="selectedPreset()" (ngModelChange)="onPresetChange($event)" [allowEmpty]="false"></p-selectbutton>
                 </div>
 
                 <div class="flex flex-col gap-2">
-                    <span class="text-lg font-semibold">Color Scheme</span>
+                    <span class="text-lg font-semibold">{{ 'layout.config.colorScheme' | translate }}</span>
                     <p-selectbutton [ngModel]="darkTheme()" (ngModelChange)="toggleDarkMode()" [options]="themeOptions" optionLabel="name" optionValue="value" [allowEmpty]="false"></p-selectbutton>
                 </div>
 
                 <div *ngIf="!simple" class="flex flex-col gap-2">
-                    <span class="text-lg font-semibold">Menu Type</span>
+                    <span class="text-lg font-semibold">{{ 'layout.config.menuType' | translate }}</span>
                     <div class="flex flex-wrap flex-col gap-3">
                         <div class="flex">
                             <div class="flex items-center gap-2 w-1/2">
                                 <p-radio-button name="menuMode" value="static" [(ngModel)]="menuMode"></p-radio-button>
-                                <label for="static">Static</label>
+                                <label for="static">{{ 'layout.config.menuMode.static' | translate }}</label>
                             </div>
 
                             <div class="flex items-center gap-2 w-1/2">
                                 <p-radio-button name="menuMode" value="overlay" [(ngModel)]="menuMode"></p-radio-button>
-                                <label for="overlay">Overlay</label>
+                                <label for="overlay">{{ 'layout.config.menuMode.overlay' | translate }}</label>
                             </div>
                         </div>
                         <div class="flex">
                             <div class="flex items-center gap-2 w-1/2">
                                 <p-radio-button name="menuMode" value="slim" [(ngModel)]="menuMode"></p-radio-button>
-                                <label for="slim">Slim</label>
+                                <label for="slim">{{ 'layout.config.menuMode.slim' | translate }}</label>
                             </div>
                             <div class="flex items-center gap-2 w-1/2">
                                 <p-radio-button name="menuMode" value="slim-plus" [(ngModel)]="menuMode" inputId="slim-plus"></p-radio-button>
-                                <label for="slim-plus">Slim+</label>
+                                <label for="slim-plus">{{ 'layout.config.menuMode.slimPlus' | translate }}</label>
                             </div>
                         </div>
                         <div class="flex">
                             <div class="flex items-center gap-2 w-1/2">
                                 <p-radio-button name="menuMode" value="reveal" [(ngModel)]="menuMode"></p-radio-button>
-                                <label for="reveal">Reveal</label>
+                                <label for="reveal">{{ 'layout.config.menuMode.reveal' | translate }}</label>
                             </div>
                             <div class="flex items-center gap-2 w-1/2">
                                 <p-radio-button name="menuMode" value="drawer" [(ngModel)]="menuMode" inputId="drawer"></p-radio-button>
-                                <label for="drawer">Drawer</label>
+                                <label for="drawer">{{ 'layout.config.menuMode.drawer' | translate }}</label>
                             </div>
                         </div>
                         <div class="flex">
                             <div class="flex items-center gap-2 w-1/2">
                                 <p-radio-button name="menuMode" value="horizontal" [(ngModel)]="menuMode"></p-radio-button>
-                                <label for="horizontal">Horizontal</label>
+                                <label for="horizontal">{{ 'layout.config.menuMode.horizontal' | translate }}</label>
                             </div>
                         </div>
                     </div>
@@ -161,11 +163,10 @@ export class AppConfigurator {
 
     presets = Object.keys(presets);
 
-    themeOptions = [
-        { name: 'Light', value: false },
-        { name: 'Dark', value: true }
-    ];
-
+    themeOptions = i18nOptions('layout.config', [
+        { key: 'light', value: false },
+        { key: 'dark', value: true }
+    ]);
     ngOnInit() {
         if (isPlatformBrowser(this.platformId)) {
             this.onPresetChange(this.layoutService.layoutConfig().preset);

@@ -22,63 +22,63 @@ interface MenuItem {
 
 export const model_admin: MenuItem[] = [
     {
-        label: 'Varanda',
+        label: 'menu.varanda',
         icon: 'pi pi-home',
         items: [
             {
-                label: 'Painél',
+                label: 'menu.painel',
                 icon: 'pi pi-fw pi-gauge',
                 routerLink: ['/dashboard']
             }
         ]
     },
     {
-        label: 'Empresa',
+        label: 'menu.empresa',
         icon: 'bi bi-fw bi-building-fill',
         items: [
             {
-                label: 'Lista',
+                label: 'menu.lista',
                 icon: 'pi pi-fw pi-list',
                 routerLink: ['empresa/list']
 
             },
             // {
-            //     label: 'Criar',
+            //     label: 'menu.criar',
             //     icon: 'pi pi-fw pi-plus',
             //     routerLink: ['empresa/create']
             // }
         ]
     },
     {
-        label: 'Aplicante',
+        label: 'menu.aplicante',
         icon: 'pi pi-fw pi-briefcase',
         items: [
             {
-                label: 'Lista',
+                label: 'menu.lista',
                 icon: 'pi pi-fw pi-list',
                 routerLink: ['application/list']
             },
             // {
-            //     label: 'Criar',
+            //     label: 'menu.criar',
             //     icon: 'pi pi-fw pi-plus',
             //     routerLink: ['application/create']
             // }
         ]
     },
     {
-        label: 'Licenças e Certificados',
+        label: 'menu.licencasCertificados',
         items: [
             {
-                label: 'Certificados de Inscricao no Cadastro',
+                label: 'menu.certificadosCadastro',
                 icon: 'bi bi-fw bi-journal-text',
                 items: [
                     {
-                        label: 'Comercio',
+                        label: 'menu.comercio',
                         icon: 'bi bi-fw bi-bag',
                         routerLink: ['gestor/certificados/comercio']
                     },
                     {
-                        label: 'Industria',
+                        label: 'menu.industria',
                         icon: 'bi bi-fw bi-buildings',
                         routerLink: ['gestor/certificados/industria']
 
@@ -86,16 +86,16 @@ export const model_admin: MenuItem[] = [
                 ]
             },
             {
-                label: 'Alvara de Licenca para Exercicio da Atividade',
+                label: 'menu.alvaraAtividade',
                 icon: 'bi bi-fw bi-journal-medical',
                 items: [
                     {
-                        label: 'Comercio',
+                        label: 'menu.comercio',
                         icon: 'bi bi-fw bi-bag',
                         routerLink: ['gestor/licencas/comercio']
                     },
                     {
-                        label: 'Industria',
+                        label: 'menu.industria',
                         icon: 'bi bi-fw bi-buildings',
                         routerLink: ['gestor/licencas/industria']
                     }
@@ -104,109 +104,109 @@ export const model_admin: MenuItem[] = [
         ]
     },
     {
-        label: 'Utilizador',
+        label: 'menu.utilizador',
         icon: 'pi pi-fw pi-user',
         items: [
             {
-                label: 'Lista',
+                label: 'menu.lista',
                 icon: 'pi pi-fw pi-list',
                 routerLink: ['utilizador/internal/list'],
             },
             {
-                label: 'Empresa',
+                label: 'menu.empresa',
                 icon: 'pi pi-fw pi-list',
                 routerLink: ['utilizador/empresa/list'],
             },
             {
-                label: 'Criar',
+                label: 'menu.criar',
                 icon: 'pi pi-fw pi-plus',
                 routerLink: ['utilizador/create']
             }
         ]
     },
     {
-        label: 'Relatórios',
+        label: 'menu.relatorios',
         icon: 'pi pi-fw pi-chart-bar',
         items: [
             {
-                label: 'Empresas',
+                label: 'menu.empresas',
                 icon: 'bi bi-fw bi-building',
                 routerLink: ['relatorios/empresa']
             },
             {
-                label: 'Aplicantes',
+                label: 'menu.aplicantes',
                 icon: 'bi bi-fw bi-briefcase',
                 routerLink: ['relatorios/aplicante']
             },
             {
-                label: 'Licenças e Certificados',
+                label: 'menu.licencasCertificados',
                 icon: 'bi bi-fw bi-journal-check',
                 routerLink: ['relatorios/licencas-certificados']
             },
             {
-                label: 'Receitas',
+                label: 'menu.receitas',
                 icon: 'bi bi-fw bi-currency-dollar',
                 routerLink: ['relatorios/receitas']
             }
         ]
     },
     {
-        label: 'Dados Mestre',
+        label: 'menu.dadosMestre',
         items: [
             {
-                label: 'Funções (Roles)',
+                label: 'menu.funcoes',
                 icon: 'bi bi-fw bi-person-lock',
                 routerLink: ['dados-mestre/roles']
             },
             {
-                label: 'Taxas',
+                label: 'menu.taxas',
                 icon: 'bi bi-fw bi-currency-dollar',
                 routerLink: ['dados-mestre/taxa']
             },
             {
-                label: 'Sociedade Comercial',
+                label: 'menu.sociedadeComercial',
                 icon: 'bi bi-fw bi-building',
                 routerLink: ['dados-mestre/sociedade-comercial']
             },
             {
-                label: 'Direção',
+                label: 'menu.direcao',
                 icon: 'bi bi-fw bi-diagram-2',
                 routerLink: ['dados-mestre/direcao']
             },
             {
-                label: 'Atividade Economica',
+                label: 'menu.atividadeEconomica',
                 icon: 'bi bi-fw bi-activity',
                 items: [
                     {
-                        label: 'Grupo',
+                        label: 'menu.grupo',
                         icon: 'bi bi-fw bi-bookmark',
                         routerLink: ['dados-mestre/atividade-economica/grupo']
                     },
                     {
-                        label: 'Classe',
+                        label: 'menu.classe',
                         icon: 'bi bi-fw bi-bookmarks',
                         routerLink: ['dados-mestre/atividade-economica/classe']
                     },
                 ]
             },
             {
-                label: 'Localização',
+                label: 'menu.localizacao',
                 icon: 'bi bi-fw bi-pin-map',
                 items: [
                     {
-                        label: 'Municipio',
+                        label: 'menu.municipio',
                         routerLink: ['dados-mestre/endereco/municipio']
                     },
                     {
-                        label: 'Posto Administrativo',
+                        label: 'menu.postoAdministrativo',
                         routerLink: ['dados-mestre/endereco/posto-administrativo']
                     },
                     {
-                        label: 'Suco',
+                        label: 'menu.suco',
                         routerLink: ['dados-mestre/endereco/suco']
                     },
                     {
-                        label: 'Aldeia',
+                        label: 'menu.aldeia',
                         routerLink: ['dados-mestre/endereco/aldeia']
                     },
                 ]
@@ -214,25 +214,25 @@ export const model_admin: MenuItem[] = [
         ]
     },
     {
-        label: 'Historicos',
+        label: 'menu.historicos',
         items: [
             {
-                label: 'Autenticações',
+                label: 'menu.autenticacoes',
                 icon: 'bi bi-fw bi-unlock',
                 routerLink: ['historicos/autenticacoes']
             },
             {
-                label: 'Ações',
+                label: 'menu.acoes',
                 icon: 'bi bi-fw bi-activity',
                 routerLink: ['historicos/acoes']
             },
         ]
     },
     {
-        label: 'Definições',
+        label: 'menu.definicoes',
         items: [
             {
-                label: 'Segurança',
+                label: 'menu.seguranca',
                 icon: 'bi bi-fw bi-shield-lock',
                 routerLink: ['definicoes/seguranca']
             },
@@ -242,22 +242,22 @@ export const model_admin: MenuItem[] = [
 
 export const model_manager: MenuItem[] = [
     {
-        label: 'Varanda',
+        label: 'menu.varanda',
         icon: 'pi pi-home',
         items: [
             {
-                label: 'Painél',
+                label: 'menu.painel',
                 icon: 'pi pi-fw pi-gauge',
                 routerLink: ['/dashboard']
             }
         ]
     },
     {
-        label: 'Empresa',
+        label: 'menu.empresa',
         icon: 'bi bi-fw bi-building-fill',
         items: [
             {
-                label: 'Lista',
+                label: 'menu.lista',
                 icon: 'pi pi-fw pi-list',
                 routerLink: ['empresa/list']
 
@@ -265,38 +265,38 @@ export const model_manager: MenuItem[] = [
         ]
     },
     {
-        label: 'Aplicantes',
+        label: 'menu.aplicantes',
         icon: 'pi pi-fw pi-briefcase',
         items: [
             {
-                label: 'Atribuido',
+                label: 'menu.atribuido',
                 icon: 'bi bi-fw bi-briefcase',
                 routerLink: ['gestor/application/task']
             },
             {
-                label: 'Lista',
+                label: 'menu.lista',
                 icon: 'pi pi-fw pi-list',
                 routerLink: ['gestor/application/list']
             },
         ]
     },
     {
-        label: 'Licenças e Certificados',
+        label: 'menu.licencasCertificados',
         items: [
             {
-                label: 'Certificados de Inscricao no Cadastro',
+                label: 'menu.certificadosCadastro',
                 icon: 'bi bi-fw bi-journal-text',
                 items: [
                     {
                         // id = the Direcao this entry belongs to; AppMenu drops the other one for non-admins.
                         id: Categoria.comercial,
-                        label: 'Comercio',
+                        label: 'menu.comercio',
                         icon: 'bi bi-fw bi-bag',
                         routerLink: ['gestor/certificados/comercio']
                     },
                     {
                         id: Categoria.industrial,
-                        label: 'Industria',
+                        label: 'menu.industria',
                         icon: 'bi bi-fw bi-buildings',
                         routerLink: ['gestor/certificados/industria']
 
@@ -304,18 +304,18 @@ export const model_manager: MenuItem[] = [
                 ]
             },
             {
-                label: 'Alvara de Licenca para Exercicio da Atividade',
+                label: 'menu.alvaraAtividade',
                 icon: 'bi bi-fw bi-journal-medical',
                 items: [
                     {
                         id: Categoria.comercial,
-                        label: 'Comercio',
+                        label: 'menu.comercio',
                         icon: 'bi bi-fw bi-bag',
                         routerLink: ['gestor/licencas/comercio']
                     },
                     {
                         id: Categoria.industrial,
-                        label: 'Industria',
+                        label: 'menu.industria',
                         icon: 'bi bi-fw bi-buildings',
                         routerLink: ['gestor/licencas/industria']
                     }
@@ -324,33 +324,33 @@ export const model_manager: MenuItem[] = [
         ]
     },
     {
-        label: 'Relatórios',
+        label: 'menu.relatorios',
         icon: 'pi pi-fw pi-chart-bar',
         items: [
             {
-                label: 'Empresas',
+                label: 'menu.empresas',
                 icon: 'bi bi-fw bi-building',
                 routerLink: ['relatorios/empresa']
             },
             {
-                label: 'Aplicantes',
+                label: 'menu.aplicantes',
                 icon: 'bi bi-fw bi-briefcase',
                 routerLink: ['relatorios/aplicante']
             },
             {
-                label: 'Licenças e Certificados',
+                label: 'menu.licencasCertificados',
                 icon: 'bi bi-fw bi-journal-check',
                 routerLink: ['relatorios/licencas-certificados']
             },
             {
-                label: 'Receitas',
+                label: 'menu.receitas',
                 icon: 'bi bi-fw bi-currency-dollar',
                 routerLink: ['relatorios/receitas']
             }
         ]
     },
     // {
-    //     label: 'Historicos',
+    //     label: 'menu.historicos',
     //     items: [
     //         {
     //             label: 'Atividades',
@@ -366,49 +366,49 @@ export const model_manager: MenuItem[] = [
 
 export const model_staff: MenuItem[] = [
     {
-        label: 'Varanda',
+        label: 'menu.varanda',
         icon: 'pi pi-home',
         items: [
             {
-                label: 'Painél',
+                label: 'menu.painel',
                 icon: 'pi pi-fw pi-gauge',
                 routerLink: ['/dashboard']
             }
         ]
     },
     {
-        label: 'Aplicantes',
+        label: 'menu.aplicantes',
         icon: 'pi pi-fw pi-briefcase',
         items: [
             {
-                label: 'Atribuido',
+                label: 'menu.atribuido',
                 icon: 'bi bi-fw bi-briefcase',
                 routerLink: ['gestor/application/task']
             },
             {
-                label: 'Lista',
+                label: 'menu.lista',
                 icon: 'pi pi-fw pi-list',
                 routerLink: ['gestor/application/list']
             },
         ]
     },
     {
-        label: 'Licenças e Certificados',
+        label: 'menu.licencasCertificados',
         items: [
             {
-                label: 'Certificados de Inscricao no Cadastro',
+                label: 'menu.certificadosCadastro',
                 icon: 'bi bi-fw bi-journal-text',
                 items: [
                     {
                         // id = the Direcao this entry belongs to; AppMenu drops the other one for non-admins.
                         id: Categoria.comercial,
-                        label: 'Comercio',
+                        label: 'menu.comercio',
                         icon: 'bi bi-fw bi-bag',
                         routerLink: ['gestor/certificados/comercio']
                     },
                     {
                         id: Categoria.industrial,
-                        label: 'Industria',
+                        label: 'menu.industria',
                         icon: 'bi bi-fw bi-buildings',
                         routerLink: ['gestor/certificados/industria']
 
@@ -416,18 +416,18 @@ export const model_staff: MenuItem[] = [
                 ]
             },
             {
-                label: 'Alvara de Licenca para Exercicio da Atividade',
+                label: 'menu.alvaraAtividade',
                 icon: 'bi bi-fw bi-journal-medical',
                 items: [
                     {
                         id: Categoria.comercial,
-                        label: 'Comercio',
+                        label: 'menu.comercio',
                         icon: 'bi bi-fw bi-bag',
                         routerLink: ['gestor/licencas/comercio']
                     },
                     {
                         id: Categoria.industrial,
-                        label: 'Industria',
+                        label: 'menu.industria',
                         icon: 'bi bi-fw bi-buildings',
                         routerLink: ['gestor/licencas/industria']
                     }
@@ -436,33 +436,33 @@ export const model_staff: MenuItem[] = [
         ]
     },
     {
-        label: 'Relatórios',
+        label: 'menu.relatorios',
         icon: 'pi pi-fw pi-chart-bar',
         items: [
             {
-                label: 'Empresas',
+                label: 'menu.empresas',
                 icon: 'bi bi-fw bi-building',
                 routerLink: ['relatorios/empresa']
             },
             {
-                label: 'Aplicantes',
+                label: 'menu.aplicantes',
                 icon: 'bi bi-fw bi-briefcase',
                 routerLink: ['relatorios/aplicante']
             },
             {
-                label: 'Licenças e Certificados',
+                label: 'menu.licencasCertificados',
                 icon: 'bi bi-fw bi-journal-check',
                 routerLink: ['relatorios/licencas-certificados']
             },
             {
-                label: 'Receitas',
+                label: 'menu.receitas',
                 icon: 'bi bi-fw bi-currency-dollar',
                 routerLink: ['relatorios/receitas']
             }
         ]
     },
     // {
-    //     label: 'Historicos',
+    //     label: 'menu.historicos',
     //     items: [
     //         {
     //             label: 'Atividades',
@@ -478,41 +478,41 @@ export const model_staff: MenuItem[] = [
 
 export const model_client: MenuItem[] = [
     {
-        label: 'Varanda',
+        label: 'menu.varanda',
         icon: 'pi pi-home',
         items: [
             {
-                label: 'Início',
+                label: 'menu.inicio',
                 icon: 'pi pi-fw pi-home',
                 routerLink: ['/home']
             }
         ]
     },
     {
-        label: 'Aplicante',
+        label: 'menu.aplicante',
         icon: 'pi pi-fw pi-briefcase',
         items: [
             {
-                label: 'Lista',
+                label: 'menu.lista',
                 icon: 'pi pi-fw pi-list',
                 routerLink: ['application/list']
             },
         ]
     },
     {
-        label: 'Licenças e Certificados',
+        label: 'menu.licencasCertificados',
         items: [
             {
-                label: 'Certificados de Inscricao no Cadastro',
+                label: 'menu.certificadosCadastro',
                 icon: 'bi bi-fw bi-journal-text',
                 items: [
                     {
-                        label: 'Comercio',
+                        label: 'menu.comercio',
                         icon: 'bi bi-fw bi-bag',
                         routerLink: ['licencas-certificados/certificados/comercio']
                     },
                     {
-                        label: 'Industria',
+                        label: 'menu.industria',
                         icon: 'bi bi-fw bi-buildings',
                         routerLink: ['licencas-certificados/certificados/industria']
 
@@ -520,16 +520,16 @@ export const model_client: MenuItem[] = [
                 ]
             },
             {
-                label: 'Alvara de Licenca para Exercicio da Atividade',
+                label: 'menu.alvaraAtividade',
                 icon: 'bi bi-fw bi-journal-medical',
                 items: [
                     {
-                        label: 'Comercio',
+                        label: 'menu.comercio',
                         icon: 'bi bi-fw bi-bag',
                         routerLink: ['licencas-certificados/licencas/comercio']
                     },
                     {
-                        label: 'Industria',
+                        label: 'menu.industria',
                         icon: 'bi bi-fw bi-buildings',
                         routerLink: ['licencas-certificados/licencas/industria']
                     }
@@ -538,7 +538,7 @@ export const model_client: MenuItem[] = [
         ]
     },
     // {
-    //     label: 'Historicos',
+    //     label: 'menu.historicos',
     //     items: [
     //         {
     //             label: 'Autenticacao',

@@ -1,3 +1,4 @@
+import { LanguageService, LocalizedDatePipe } from '@/core/i18n';
 import { Empresa } from '@/core/models/entities.model';
 import { AplicanteType } from '@/core/models/enums';
 import { AuthenticationService, DataMasterService } from '@/core/services';
@@ -5,7 +6,7 @@ import { ExportService } from '@/core/services/export.service';
 import { ReportService } from '@/core/services/report.service';
 import { applicationTypesOptions, caraterizacaEstabelecimentoOptions, categoryTpesOptions, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEstabelecimentoOptions, tipoPedidoVitoriaAll } from '@/core/utils/global-function';
 import { DatePipe, formatDate } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -15,12 +16,13 @@ import { Message } from 'primeng/message';
 import { Paginator } from 'primeng/paginator';
 import { Select, SelectFilterEvent } from 'primeng/select';
 import { TableModule } from 'primeng/table';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Subject, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-licencas-certificados',
-  imports: [ReactiveFormsModule, Select, Button, DatePipe, TableModule, Message, Paginator, DatePicker],
+  imports: [LocalizedDatePipe, ReactiveFormsModule, Select, Button, TableModule, Message, Paginator, DatePicker, TranslatePipe],
   templateUrl: './licencas-certificados.component.html',
   styleUrl: './licencas-certificados.component.scss',
   providers: [MessageService]
@@ -59,6 +61,7 @@ export class LicencasCertificadosComponent {
   messages = signal<any[]>([]);
   private sucoSearchSubject = new Subject<string>();
   sucoIsLoading = false;
+  private i18n = inject(LanguageService);
 
   constructor(
     private _fb: FormBuilder,
@@ -105,7 +108,7 @@ export class LicencasCertificadosComponent {
 
     if (this.isFormEmpty(this.reportForm)) {
       this.dataIsFetching = false;
-      this.messages.set([{ icon: 'pi pi-info-circle', size: 'large', severity: 'info', content: 'Por favor, preencha pelo menos um campo para gerar o relatório.' }]);
+      this.messages.set([{ icon: 'pi pi-info-circle', size: 'large', severity: 'info', content: 'reports.licencasCertificados.fillOne' }]);
       return;
     }
 
@@ -202,21 +205,22 @@ export class LicencasCertificadosComponent {
   }
 
   exportToExcel(): void {
+    const h = (key: string) => this.i18n.instant(key);
     const mappedData = this.data.map((item: any) => ({
-      'Empresa': item.sociedadeComercial,
-      'Nº': item.pedidoInscricaoCadastro ? item.pedidoInscricaoCadastro.aplicante.numero : item.pedidoLicencaAtividade.aplicante.numero,
-      'Sede': `${item.sede.local} - ${item.sede.aldeia.nome}, ${item.sede.aldeia.suco.nome}, ${item.sede.aldeia.suco.postoAdministrativo.nome}, ${item.sede.aldeia.suco.postoAdministrativo.municipio.nome}`,
-      'Data de Validade': new DatePipe('pt-PT').transform(item.dataValidade, 'dd/MM/yyyy') || 'N/A',
-      'Data de Emissão': new DatePipe('pt-PT').transform(item.dataEmissao, 'dd/MM/yyyy') || 'N/A',
+      [h('reports.common.empresa')]: item.sociedadeComercial,
+      [h('reports.licencasCertificados.numero')]: item.pedidoInscricaoCadastro ? item.pedidoInscricaoCadastro.aplicante.numero : item.pedidoLicencaAtividade.aplicante.numero,
+      [h('reports.common.sede')]: `${item.sede.local} - ${item.sede.aldeia.nome}, ${item.sede.aldeia.suco.nome}, ${item.sede.aldeia.suco.postoAdministrativo.nome}, ${item.sede.aldeia.suco.postoAdministrativo.municipio.nome}`,
+      [h('reports.licencasCertificados.dataValidade')]: new DatePipe('pt-PT').transform(item.dataValidade, 'dd/MM/yyyy') || 'N/A',
+      [h('reports.licencasCertificados.dataEmissao')]: new DatePipe('pt-PT').transform(item.dataEmissao, 'dd/MM/yyyy') || 'N/A',
     }));
-    const fileName = `Relatório de LicencasECertificados_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
+    const fileName = `${h('reports.licencasCertificados.fileName')}_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
     this.exportService.toExcel(mappedData, fileName);
 
   }
 
   generatePDF(divId: string) {
     this.isPdfGenerating = true;
-    const fileName = `Relatório de LicencasECertificados_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
+    const fileName = `${this.i18n.instant('reports.licencasCertificados.fileName')}_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
     this.exportService.toPdf(divId, fileName)
       .then(() => {
         this.isPdfGenerating = false;
@@ -277,7 +281,7 @@ export class LicencasCertificadosComponent {
   }
 
   private addEmptyMessage(): void {
-    this.messages.set([{ icon: 'pi pi-info-circle', size: 'large', severity: 'info', content: 'Não existem dados disponíveis para o relatório selecionado.' }]);
+    this.messages.set([{ icon: 'pi pi-info-circle', size: 'large', severity: 'info', content: 'reports.common.noData' }]);
   }
 
   private initForm(tipo: AplicanteType) {

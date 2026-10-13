@@ -1,78 +1,78 @@
  <form [formGroup]="vistoriaRequestForm">
      <span class="text-xl font-bold mt-6 mb-3 block">
-         PEDIDO
+         {{ 'application.vistoria.pedido.title' | translate }}
      </span>
      <div class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="tipoVistoria" class="font-medium  mb-2 block">
-                 Tipo
+                 {{ 'application.vistoria.pedido.tipo' | translate }}
              </label>
              <p-select formControlName="tipoVistoria" inputId="tipoVistoria" [options]="tipoPedidoVistoriaOpts"
                  optionLabel="name" optionValue="value" fluid filterBy="name" [showClear]="true"
-                 placeholder="Select a Pedido">
+                 [placeholder]="'application.vistoria.pedido.selectTipo' | translate">
              </p-select>
          </div>
      </div>
      <span class="text-xl font-bold mt-6 mb-3 block">
-         IDENTIFICACAO DA EMPRESA
+         {{ 'application.vistoria.pedido.identificacaoEmpresa' | translate }}
      </span>
      <div formGroupName="empresa" class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="nome" class="font-medium  mb-2 block">
-                 Nome da Empresa
+                 {{ 'application.vistoria.pedido.nomeEmpresa' | translate }}
              </label>
              <input formControlName="nome" id="nome" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12">
              <label for="sede" class="font-medium  mb-2 block">
-                 Sede
+                 {{ 'application.vistoria.form.sede' | translate }}
              </label>
              <input formControlName="sede" id="sede" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="nif" class="font-medium  mb-2 block">
-                 NIF
+                 {{ 'application.vistoria.form.nif' | translate }}
              </label>
              <input formControlName="nif" id="nif" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="numeroRegistoComercial" class="font-medium  mb-2 block">
-                 Nº de Registo Comercial
+                 {{ 'application.vistoria.form.numeroRegistoComercial' | translate }}
              </label>
              <input formControlName="numeroRegistoComercial" id="numeroRegistoComercial" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="telemovel" class="font-medium  mb-2 block">
-                 Telemóvel
+                 {{ 'application.vistoria.form.telemovel' | translate }}
              </label>
              <input formControlName="telemovel" id="telemovel" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="telefone" class="font-medium  mb-2 block">
-                 Telefone
+                 {{ 'application.vistoria.form.telefone' | translate }}
              </label>
              <input formControlName="telefone" id="telefone" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="email" class="font-medium  mb-2 block">
-                 Email
+                 {{ 'common.email' | translate }}
              </label>
              <input formControlName="email" id="email" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12">
              <label for="gerente" class="font-medium  mb-2 block">
-                 Identificação do administrador/gerente
+                 {{ 'application.vistoria.pedido.gerente' | translate }}
              </label>
              <input formControlName="gerente" id="gerente" type="text" pInputText fluid />
          </div>
      </div>
      <span class="text-xl font-bold mt-6 mb-3 block">
-         IDENTIFICACAO DO ESTABELECIMENTO
+         {{ 'application.vistoria.pedido.identificacaoEstabelecimento' | translate }}
      </span>
      <div class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="nomeEstabelecimento" class="font-medium  mb-2 block">
-                 Nome do estabelecimento
+                 {{ 'application.vistoria.pedido.nomeEstabelecimento' | translate }}
              </label>
              <input formControlName="nomeEstabelecimento" id="nomeEstabelecimento" type="text" pInputText fluid />
          </div>
@@ -80,39 +80,39 @@
              <div formGroupName="localEstabelecimento" class="grid grid-cols-12">
                  <div class="mb-6 col-span-12">
                      <label for="local" class="font-medium  mb-2 block">
-                         Local do Estabelecimento
+                         {{ 'application.vistoria.form.localEstabelecimento' | translate }}
                      </label>
                      <input formControlName="local" id="local" type="text" pInputText fluid
-                         placeholder="ex. Av. Pres. Nicolau Lobato" />
+                         [placeholder]="'application.vistoria.form.addressPlaceholder' | translate" />
                  </div>
                  <div class="mb-6 col-span-12">
                      <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                          <div class="flex-auto">
                              <label for="aldeia" class="font-medium  mb-2 block">
-                                 Aldeia
+                                 {{ 'application.vistoria.form.aldeia' | translate }}
                              </label>
                              <p-select fluid formControlName="aldeia" [options]="listaAldeia" optionLabel="nome"
-                                 optionValue="id" placeholder="Selecione a Aldeia" [filter]="true" filterBy="nome"
+                                 optionValue="id" [placeholder]="'application.vistoria.form.selectAldeia' | translate" [filter]="true" filterBy="nome"
                                  [showClear]="true" (onFilter)="aldeiaFilter($event)" (onpanelHide)="onPanelHide()"
                                  (onChange)="aldeiaOnChange($event)" (onClear)="onPanelHide()">
                              </p-select>
                          </div>
                          <div class="flex-auto">
                              <label for="suco" class="font-medium  mb-2 block">
-                                 Suco
+                                 {{ 'application.vistoria.form.suco' | translate }}
                              </label>
                              <input formControlName="suco" id="suco" type="text" pInputText fluid />
                          </div>
                          <div class="flex-auto">
                              <label for="posto" class="font-medium  mb-2 block">
-                                 Posto Administrativo
+                                 {{ 'application.vistoria.form.postoAdministrativo' | translate }}
                              </label>
                              <input formControlName="postoAdministrativo" id="postoAdministrativo" type="text"
                                  pInputText fluid />
                          </div>
                          <div class="flex-auto">
                              <label for="municipio" class="font-medium  mb-2 block">
-                                 Municipio
+                                 {{ 'application.vistoria.form.municipio' | translate }}
                              </label>
                              <input formControlName="municipio" id="municipio" type="text" pInputText fluid />
                          </div>
@@ -123,68 +123,68 @@
      </div>
 
      <span class="text-xl font-bold mt-6 mb-3 block">
-         CARATERIZACAO DO ESTABELECIMENTO
+         {{ 'application.vistoria.pedido.caraterizacaoEstabelecimento' | translate }}
      </span>
      <div class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="tipoEmpresa" class="font-medium  mb-2 block">
-                 Tipo de Empresa
+                 {{ 'application.vistoria.pedido.tipoEmpresa' | translate }}
              </label>
              <p-select formControlName="tipoEmpresa" inputId="tipoEmpresa" [options]="tipoEmpresaOpts"
                  optionLabel="name" optionValue="value" fluid filterBy="name" [showClear]="true"
-                 placeholder="Select a Pedido">
+                 [placeholder]="'application.vistoria.pedido.selectTipoEmpresa' | translate">
              </p-select>
          </div>
          @if (categoria === 'COMERCIAL') {
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="tipoEstabelecimento" class="font-medium  mb-2 block">
-                 Tipo de estabelecimento
+                 {{ 'application.vistoria.pedido.tipoEstabelecimento' | translate }}
              </label>
              <p-select formControlName="tipoEstabelecimento" inputId="tipoEstabelecimento"
                  [options]="tipoEstabelecimentoOpts" optionLabel="name" optionValue="value" fluid filterBy="name"
-                 [showClear]="true" placeholder="Select a Pedido">
+                 [showClear]="true" [placeholder]="'application.vistoria.pedido.selectTipoEstabelecimento' | translate">
              </p-select>
          </div>
          }
      </div>
      <span class="text-xl font-bold mt-6 mb-3 block">
-         CARATERIZACAO DA ATIVIDADE
+         {{ 'application.vistoria.pedido.caraterizacaoAtividade' | translate }}
      </span>
      <div class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="risco" class="font-medium  mb-2 block">
-                 Nivel de Risco
+                 {{ 'application.vistoria.pedido.nivelRisco' | translate }}
              </label>
              <input formControlName="risco" id="risco" type="text" pInputText fluid />
          </div>
          @if (categoria === 'COMERCIAL') {
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="atividade" class="font-medium  mb-2 block">
-                 Atividade
+                 {{ 'application.vistoria.pedido.atividade' | translate }}
              </label>
              <p-select formControlName="atividade" inputId="atividade" [options]="atividadesOpts" optionLabel="name"
                  fluid filterBy="name" optionValue="value" [showClear]="true"
-                 placeholder="Selecione o tipo de atividade">
+                 [placeholder]="'application.vistoria.pedido.selectTipoAtividade' | translate">
              </p-select>
          </div>
          }@else {
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="tipoAtividade" class="font-medium  mb-2 block">
-                 Tipo de atividade
+                 {{ 'application.vistoria.pedido.tipoAtividade' | translate }}
              </label>
              <p-select formControlName="tipoAtividade" inputId="tipoAtividade" [options]="atividadesOpts"
                  optionLabel="name" fluid filterBy="name" optionValue="value" [showClear]="true"
-                 placeholder="Selecione o tipo de atividade">
+                 [placeholder]="'application.vistoria.pedido.selectTipoAtividade' | translate">
              </p-select>
          </div>
          }
          <div class="mb-6 col-span-12 md:col-span-7">
              <label for="classeAtividade" class="font-medium  mb-2 block">
-                 Atividade Principal exercida no Estabelecimento
+                 {{ 'application.vistoria.pedido.atividadePrincipal' | translate }}
              </label>
              <p-select formControlName="classeAtividade" (onChange)="atividadePrincipalChange($event)"
                  inputId="classeAtividade" [options]="listaClasseAtividade" optionLabel="codigo" fluid [filter]="true"
-                 filterBy="codigo,descricao" [showClear]="true" placeholder="Selecione a atividade principal">
+                 filterBy="codigo,descricao" [showClear]="true" [placeholder]="'application.vistoria.pedido.selectAtividadePrincipal' | translate">
                  <ng-template let-tipo #item>
                      <div class="flex items-center gap-2">
                          <span>{{tipo.codigo}} </span> - <span>{{tipo.descricao}} </span>
@@ -194,37 +194,37 @@
          </div>
          <div class="mb-6 col-span-12 md:col-span-5">
              <label for="classeAtividadeCodigo" class="font-medium  mb-2 block">
-                 Descricao
+                 {{ 'application.vistoria.form.descricao' | translate }}
              </label>
              <input formControlName="classeAtividadeCodigo" id="classeAtividadeCodigo" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-7">
              <label for="grupoAtividade" class="font-medium  mb-2 block">
-                 Tipo de Atividade no Estabelecimento
+                 {{ 'application.vistoria.pedido.tipoAtividadeEstabelecimento' | translate }}
              </label>
              <input formControlName="grupoAtividade" id="grupoAtividade" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-5">
              <label for="grupoAtividadeCodigo" class="font-medium  mb-2 block">
-                 Descricao
+                 {{ 'application.vistoria.form.descricao' | translate }}
              </label>
              <input formControlName="grupoAtividadeCodigo" id="grupoAtividadeCodigo" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12">
              <label for="alteracoes" class="font-medium  mb-2 block">
-                 Alteracoes a averbar
+                 {{ 'application.vistoria.pedido.alteracoes' | translate }}
              </label>
              <textarea rows="8" cols="30" variant="outlined" pTextarea formControlName="alteracoes" id="alteracoes"
                  fluid></textarea>
          </div>
          <div class="mb-6 col-span-12">
              <label for="observacao" class="font-medium  mb-2 block">
-                 Observacao
+                 {{ 'application.vistoria.pedido.observacao' | translate }}
              </label>
              <textarea rows="8" cols="30" variant="outlined" pTextarea formControlName="observacao" fluid></textarea>
          </div>
      </div>
      <p-button (click)="submit(vistoriaRequestForm)" [disabled]="!vistoriaRequestForm.valid || disabledAllForm"
-         [label]="pedido? 'Actualizar' : 'Guardar'" severity="success" [icon]="pedido? 'pi pi-sync' : 'pi pi-save'" />
+         [label]="(pedido ? 'application.vistoria.pedido.update' : 'common.save') | translate" severity="success" [icon]="pedido? 'pi pi-sync' : 'pi pi-save'" />
  </form>
  <p-toast position="bottom-center" />

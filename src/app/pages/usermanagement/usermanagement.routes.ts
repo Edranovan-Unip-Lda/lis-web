@@ -15,7 +15,7 @@ export default [
     {
         path: 'internal/list',
         data: {
-            breadcrumb: 'Lista',
+            breadcrumb: 'breadcrumb.lista',
             type: 'internal',
             role: BACK_OFFICE
         },
@@ -28,7 +28,7 @@ export default [
     {
         path: 'empresa/list',
         data: {
-            breadcrumb: 'Lista',
+            breadcrumb: 'breadcrumb.lista',
             role: BACK_OFFICE
         },
         component: UserList,
@@ -40,7 +40,7 @@ export default [
     {
         path: 'create',
         data: {
-            breadcrumb: 'Criar',
+            breadcrumb: 'breadcrumb.criar',
             role: [Role.admin]
         },
         component: UserCreate,
@@ -53,7 +53,7 @@ export default [
     {
         path: ':username',
         data: {
-            breadcrumb: 'Editar',
+            breadcrumb: 'breadcrumb.editar',
             role: [Role.admin]
         },
         component: UserCreate,

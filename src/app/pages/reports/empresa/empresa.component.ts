@@ -1,12 +1,14 @@
+import { LanguageService, LocalizedDatePipe } from '@/core/i18n';
 import { Empresa } from '@/core/models/entities.model';
 import { DataMasterService } from '@/core/services';
 import { ExportService } from '@/core/services/export.service';
 import { ReportService } from '@/core/services/report.service';
 import { tipoEmpresaOptions, tipoPropriedadeOptions } from '@/core/utils/global-function';
 import { DatePipe } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { NgxPrintModule } from 'ngx-print';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
@@ -19,7 +21,7 @@ import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/
 
 @Component({
   selector: 'app-empresa',
-  imports: [ReactiveFormsModule, Select, Button, DatePipe, TableModule, Message, Paginator, NgxPrintModule],
+  imports: [LocalizedDatePipe, ReactiveFormsModule, Select, Button, TableModule, Message, Paginator, NgxPrintModule, TranslatePipe],
   templateUrl: './empresa.component.html',
   styleUrl: './empresa.component.scss',
   providers: [MessageService]
@@ -42,6 +44,7 @@ export class EmpresaComponent {
   messages = signal<any[]>([]);
   private sucoSearchSubject = new Subject<string>();
   sucoIsLoading = false;
+  private i18n = inject(LanguageService);
 
 
   constructor(
@@ -128,19 +131,28 @@ export class EmpresaComponent {
   }
 
   exportToExcel(): void {
+    const h = (key: string) => this.i18n.instant(key);
     const mappedData = this.data.map((item: Empresa) => ({
-      'Empresa': item.nome,
-      'Email': item.email,
-      'Local': `${item.sede.local} - ${item.sede.aldeia.nome}, ${item.sede.aldeia.suco.nome}, ${item.sede.aldeia.suco.postoAdministrativo.nome}, ${item.sede.aldeia.suco.postoAdministrativo.municipio.nome}`,
-      'Tipo de Propriedade': item.tipoPropriedade,
-      'Tipo de Empresa': item.tipoEmpresa,
-      'Sociedade Comercial': item.sociedadeComercial?.nome || 'N/A',
-      'Gerente': item.gerente?.nome || 'N/A',
-      'Telefone do Gerente': item.gerente?.telefone || 'N/A',
-      'Data de Criação': new DatePipe('pt-PT').transform(item.createdAt, 'dd/MM/yyyy') || 'N/A',
+      [h('reports.common.empresa')]: item.nome,
+      [h('common.email')]: item.email,
+      [h('reports.empresa.local')]: `${item.sede.local} - ${item.sede.aldeia.nome}, ${item.sede.aldeia.suco.nome}, ${item.sede.aldeia.suco.postoAdministrativo.nome}, ${item.sede.aldeia.suco.postoAdministrativo.municipio.nome}`,
+      [h('reports.empresa.tipoPropriedade')]: this.enumLabel('TipoPropriedade', item.tipoPropriedade),
+      [h('reports.empresa.tipoEmpresa')]: this.enumLabel('TipoEmpresa', item.tipoEmpresa),
+      [h('reports.common.sociedadeComercial')]: item.sociedadeComercial?.nome || 'N/A',
+      [h('reports.empresa.gerente')]: item.gerente?.nome || 'N/A',
+      [h('reports.empresa.telefoneGerente')]: item.gerente?.telefone || 'N/A',
+      [h('reports.empresa.dataCriacao')]: new DatePipe('pt-PT').transform(item.createdAt, 'dd/MM/yyyy') || 'N/A',
     }));
-    const fileName = `Relatório de Empresas_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
+    const fileName = `${h('reports.empresa.fileName')}_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
     this.exportService.toExcel(mappedData, fileName);
+  }
+
+  /** Label for an enum code; unknown codes render as-is. */
+  enumLabel(enumName: string, value: string | null | undefined): string {
+    if (!value) return '';
+    const key = `enum.${enumName}.${value}`;
+    const label = this.i18n.instant(key);
+    return label === key ? value : label;
   }
 
   sucoFilter(event: SelectFilterEvent): void {
@@ -163,7 +175,7 @@ export class EmpresaComponent {
   }
 
   private addEmptyMessage(): void {
-    this.messages.set([{ icon: 'pi pi-info-circle', size: 'large', severity: 'info', content: 'Não existem dados disponíveis para o relatório selecionado.' }]);
+    this.messages.set([{ icon: 'pi pi-info-circle', size: 'large', severity: 'info', content: 'reports.common.noData' }]);
   }
 
   initForm() {
@@ -179,7 +191,7 @@ export class EmpresaComponent {
 
   generatePDF(divId: string) {
     this.isPdfGenerating = true;
-    const fileName = `Relatório de Empresas_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
+    const fileName = `${this.i18n.instant('reports.empresa.fileName')}_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
     this.exportService.toPdf(divId, fileName)
       .then(() => {
         this.isPdfGenerating = false;

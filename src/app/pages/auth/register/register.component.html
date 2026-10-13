@@ -7,7 +7,7 @@
              </div>
              <div class="mt-2 mb-8">
                  <p class="text-2xl font-bold">
-                     Sistema de Gestão de <br> Licenças Comerciais e Indústriais
+                     {{ 'auth.common.systemTitleLine1' | translate }} <br> {{ 'auth.common.systemTitleLine2' | translate }}
                  </p>
              </div>
          </div>
@@ -18,10 +18,10 @@
          @if (draftAvailable) {
          <p-message severity="info" [closable]="false" styleClass="mb-4 w-full">
              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 w-full text-left">
-                 <span>Encontrámos um registo não concluído. Deseja continuar de onde parou?</span>
+                 <span>{{ 'auth.register.draftFound' | translate }}</span>
                  <div class="flex gap-2 shrink-0">
-                     <p-button label="Continuar" size="small" icon="pi pi-history" (onClick)="restoreDraft()" />
-                     <p-button label="Começar de novo" size="small" severity="secondary" [text]="true"
+                     <p-button [label]="'auth.register.continue' | translate" size="small" icon="pi pi-history" (onClick)="restoreDraft()" />
+                     <p-button [label]="'auth.register.startOver' | translate" size="small" severity="secondary" [text]="true"
                          (onClick)="discardDraft()" />
                  </div>
              </div>
@@ -29,11 +29,11 @@
          }
          <p-stepper [value]="1" class="basis-[50rem]" [linear]="true">
              <p-step-list>
-                 <p-step [value]="1"><span class="hidden md:inline">Empresa</span></p-step>
-                 <p-step [value]="2"><span class="hidden md:inline">Proprietário(a) / Titular da empresa</span></p-step>
-                 <p-step [value]="3"><span class="hidden md:inline">Gerente & Representante</span></p-step>
-                 <p-step [value]="4"><span class="hidden md:inline">Conta de Acesso</span></p-step>
-                 <p-step [value]="5"><span class="hidden md:inline">Confirmação</span></p-step>
+                 <p-step [value]="1"><span class="hidden md:inline">{{ 'auth.register.steps.empresa' | translate }}</span></p-step>
+                 <p-step [value]="2"><span class="hidden md:inline">{{ 'auth.register.steps.owner' | translate }}</span></p-step>
+                 <p-step [value]="3"><span class="hidden md:inline">{{ 'auth.register.steps.manager' | translate }}</span></p-step>
+                 <p-step [value]="4"><span class="hidden md:inline">{{ 'auth.register.steps.account' | translate }}</span></p-step>
+                 <p-step [value]="5"><span class="hidden md:inline">{{ 'auth.register.steps.confirm' | translate }}</span></p-step>
              </p-step-list>
              <p-step-panels>
                  <p-step-panel [value]="1">
@@ -42,80 +42,80 @@
                              <div class="grid grid-cols-12 gap-4">
                                  <div class="mb-6 col-span-12">
                                      <label for="nome" class="font-medium  mb-2 block">
-                                         Nome da Empresa
+                                         {{ 'auth.register.fields.companyName' | translate }}
                                      </label>
                                      <input formControlName="nome" id="nome" type="text" pInputText fluid />
                                      @if (empresaForm.get('nome')?.errors?.['sociedadeComercialInName']) {
                                      <p class="text-amber-600 text-sm mt-1">
                                          <i class="pi pi-exclamation-triangle mr-1"></i>
-                                         Ups! O nome da empresa não deve conter o tipo de sociedade
+                                         {{ 'auth.register.sociedadeWarnPrefix' | translate }}
                                          (<strong>{{ empresaForm.get('nome')?.errors?.['sociedadeComercialInName'].matched.join(', ') }}</strong>).
-                                         Esse tipo será definido no campo "Tipo de Sociedade Comercial" abaixo.
+                                         {{ 'auth.register.sociedadeWarnSuffix' | translate }}
                                      </p>
                                      } @else if (empresaForm.get('nome')?.touched && empresaForm.get('nome')?.invalid) {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="sociedadeComercial" class="font-medium  mb-2 block">
-                                         Tipo de Sociedade Comercial
+                                         {{ 'auth.register.fields.sociedadeType' | translate }}
                                      </label>
                                      <p-select fluid formControlName="sociedadeComercial"
                                          [options]="listaSociedadeComercial" optionLabel="nome"
                                          (onChange)="sociedadeComercialOnChange($event)"
-                                         placeholder="Selecione o tipo de sociedade" [showClear]="true">
+                                         [placeholder]="'auth.register.fields.selectSociedade' | translate" [showClear]="true">
                                      </p-select>
                                      @if (empresaForm.get('sociedadeComercial')?.touched &&
                                      empresaForm.get('sociedadeComercial')?.invalid) {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="nif" class="font-medium  mb-2 block">
-                                         NIF da Empresa
+                                         {{ 'auth.register.fields.companyNif' | translate }}
                                      </label>
                                      <input formControlName="nif" id="nif" type="text" pInputText fluid />
                                      @if (empresaForm.get('nif')?.pending) {
                                      <p class="text-gray-500 text-sm mt-1">
-                                         <i class="pi pi-spin pi-spinner"></i> A verificar NIF...
+                                         <i class="pi pi-spin pi-spinner"></i> {{ 'auth.register.checkingNif' | translate }}
                                      </p>
                                      } @else if (empresaForm.get('nif')?.touched &&
                                      empresaForm.get('nif')?.errors?.['nifTaken']) {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este NIF já está registado por outra empresa.
+                                         {{ 'auth.register.nifTaken' | translate }}
                                      </p>
                                      } @else if (empresaForm.get('nif')?.touched &&
                                      empresaForm.get('nif')?.invalid) {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      } @else if (empresaForm.get('nif')?.touched &&
                                      empresaForm.get('nif')?.valid && empresaForm.get('nif')?.value) {
                                      <p class="text-green-500 text-sm mt-1">
-                                         <i class="pi pi-check-circle"></i> NIF disponível.
+                                         <i class="pi pi-check-circle"></i> {{ 'auth.register.nifAvailable' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="numeroRegistoComercial" class="font-medium  mb-2 block">
-                                         Nº Registo Comercial
+                                         {{ 'auth.register.fields.registoComercial' | translate }}
                                      </label>
                                      <input formControlName="numeroRegistoComercial" id="numeroRegistoComercial"
                                          type="text" pInputText fluid />
                                      @if (empresaForm.get('numeroRegistoComercial')?.touched &&
                                      empresaForm.get('numeroRegistoComercial')?.invalid) {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="capitalSocial" class="font-medium  mb-2 block">
-                                         Capital Social
+                                         {{ 'auth.register.fields.capitalSocial' | translate }}
                                      </label>
                                      <p-inputgroup>
                                          <p-inputgroup-addon>$</p-inputgroup-addon>
@@ -125,39 +125,39 @@
                                      @if (empresaForm.get('capitalSocial')?.touched &&
                                      empresaForm.get('capitalSocial')?.invalid) {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="dataRegisto" class="font-medium  mb-2 block">
-                                         Data de Registo
+                                         {{ 'auth.register.fields.dataRegisto' | translate }}
                                      </label>
                                      <p-date-picker formControlName="dataRegisto" id="dataRegisto" [showIcon]="true"
                                          [showButtonBar]="true" fluid dateFormat="dd/mm/yy" inputStyleClass="w-full" />
                                      @if (empresaForm.get('dataRegisto')?.touched &&
                                      empresaForm.get('dataRegisto')?.invalid) {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="totalTrabalhadores" class="font-medium mb-2 block">
-                                         Total Trabalhadores (Funcionários)
+                                         {{ 'auth.register.fields.totalTrabalhadores' | translate }}
                                      </label>
                                      <input formControlName="totalTrabalhadores" id="totalTrabalhadores" type="number"
                                          pInputText fluid />
                                      @if (empresaForm.get('totalTrabalhadores')?.touched &&
                                      empresaForm.get('totalTrabalhadores')?.invalid) {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="volumeNegocioAnual" class="font-medium mb-2 block">
-                                         Volume de Negócios Anual
+                                         {{ 'auth.register.fields.volumeNegocio' | translate }}
                                      </label>
                                      <p-inputgroup>
                                          <p-inputgroup-addon>$</p-inputgroup-addon>
@@ -167,13 +167,13 @@
                                      @if (empresaForm.get('volumeNegocioAnual')?.touched &&
                                      empresaForm.get('volumeNegocioAnual')?.invalid) {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="balancoTotalAnual" class="font-medium  mb-2 block">
-                                         Balanço total Anual
+                                         {{ 'auth.register.fields.balanco' | translate }}
                                      </label>
                                      <p-inputgroup>
                                          <p-inputgroup-addon>$</p-inputgroup-addon>
@@ -183,14 +183,14 @@
                                      @if (empresaForm.get('balancoTotalAnual')?.touched &&
                                      empresaForm.get('balancoTotalAnual')?.invalid) {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                      @if (empresaForm.hasError('greaterThan') &&
                                      empresaForm.get('balancoTotalAnual')?.touched &&
                                      empresaForm.get('volumeNegocioAnual')?.touched) {
                                      <p class="text-red-500 text-sm mt-1">
-                                         O Volume de Negócios Anual deve ser superior ao Balanço Total Anual.
+                                         {{ 'auth.register.volumeGreater' | translate }}
                                      </p>
                                      }
                                  </div>
@@ -198,14 +198,14 @@
                                      <div formGroupName="sede" class="grid grid-cols-12">
                                          <div class="mb-6 col-span-12">
                                              <label for="local" class="font-medium  mb-2 block">
-                                                 Sede
+                                                 {{ 'auth.register.fields.sede' | translate }}
                                              </label>
                                              <input formControlName="local" id="local" type="text" pInputText fluid
-                                                 placeholder="ex. Av. Pres. Nicolau Lobato" />
+                                                 [placeholder]="'auth.register.fields.addressPlaceholder' | translate" />
                                              @if (empresaForm.get('sede.local')?.touched &&
                                              empresaForm.get('sede.local')?.invalid) {
                                              <p class="text-red-500 text-sm mt-1">
-                                                 Este campo é obrigatório e deve ser válido.
+                                                 {{ 'auth.common.fieldInvalid' | translate }}
                                              </p>
                                              }
                                          </div>
@@ -213,10 +213,10 @@
                                              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                                                  <div class="flex-auto">
                                                      <label for="aldeia" class="font-medium  mb-2 block">
-                                                         Aldeia
+                                                         {{ 'auth.register.fields.aldeia' | translate }}
                                                      </label>
                                                      <p-select fluid formControlName="aldeia" [options]="aldeias"
-                                                         optionLabel="nome" placeholder="Selecione a Aldeia"
+                                                         optionLabel="nome" [placeholder]="'auth.register.fields.selectAldeia' | translate"
                                                          [filter]="true" filterBy="nome" [showClear]="true"
                                                          (onFilter)="aldeiaFilter($event)" (onpanelHide)="onPanelHide()"
                                                          (onChange)="aldeiaOnChange($event)" (onClear)="onPanelHide()">
@@ -224,27 +224,27 @@
                                                      @if (empresaForm.get('sede.aldeia')?.touched &&
                                                      empresaForm.get('sede.aldeia')?.invalid) {
                                                      <p class="text-red-500 text-sm mt-1">
-                                                         Este campo é obrigatório e deve ser válido.
+                                                         {{ 'auth.common.fieldInvalid' | translate }}
                                                      </p>
                                                      }
                                                  </div>
                                                  <div class="flex-auto">
                                                      <label for="suco" class="font-medium  mb-2 block">
-                                                         Suco
+                                                         {{ 'auth.register.fields.suco' | translate }}
                                                      </label>
                                                      <input formControlName="suco" id="suco" type="text" pInputText
                                                          fluid />
                                                  </div>
                                                  <div class="flex-auto">
                                                      <label for="posto" class="font-medium  mb-2 block">
-                                                         Posto Administrativo
+                                                         {{ 'auth.register.fields.posto' | translate }}
                                                      </label>
                                                      <input formControlName="postoAdministrativo"
                                                          id="postoAdministrativo" type="text" pInputText fluid />
                                                  </div>
                                                  <div class="flex-auto">
                                                      <label for="municipio" class="font-medium  mb-2 block">
-                                                         Municipio
+                                                         {{ 'auth.register.fields.municipio' | translate }}
                                                      </label>
                                                      <input formControlName="municipio" id="municipio" type="text"
                                                          pInputText fluid />
@@ -258,93 +258,93 @@
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-5">
                                      <label for="longitude" class="font-medium mb-2 block">
-                                         Longitude
+                                         {{ 'auth.register.fields.longitude' | translate }}
                                      </label>
                                      <input formControlName="longitude" id="longitude" type="number" pInputText fluid />
                                      @if (empresaForm.get('longitude')?.touched &&
                                      empresaForm.get('longitude')?.invalid) {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-5">
                                      <label for="latitude" class="font-medium mb-2 block">
-                                         Latitude
+                                         {{ 'auth.register.fields.latitude' | translate }}
                                      </label>
                                      <input formControlName="latitude" id="latitude" type="number" pInputText fluid />
                                      @if (empresaForm.get('latitude')?.touched &&
                                      empresaForm.get('latitude')?.invalid) {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="telemovel" class="font-medium mb-2 block">
-                                         Nº Telemóvel
+                                         {{ 'auth.register.fields.telemovel' | translate }}
                                      </label>
                                      <input formControlName="telemovel" id="telemovel" type="tel" pInputText fluid />
                                      @if (empresaForm.get('telemovel')?.touched &&
                                      empresaForm.get('telemovel')?.invalid) {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="telefone" class="font-medium mb-2 block">
-                                         Nº Telefone
+                                         {{ 'auth.register.fields.telefone' | translate }}
                                      </label>
                                      <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
                                      @if (empresaForm.get('telefone')?.touched &&
                                      empresaForm.get('telefone')?.invalid) {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="email" class="font-medium  mb-2 block">
-                                         Email
+                                         {{ 'common.email' | translate }}
                                      </label>
                                      <input formControlName="email" id="email" type="email" pInputText fluid />
                                      @if (empresaForm.get('email')?.touched &&
                                      empresaForm.get('email')?.invalid) {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12">
                                      <label for="outrosDocumentos" class="font-medium  mb-2 block">
-                                         DOCUMENTOS
+                                         {{ 'auth.register.docs.title' | translate }}
                                      </label>
                                      <ul class="list-decimal     list-inside mb-2">
                                          <li>
-                                             Certidão de Registo Comercial
+                                             {{ 'auth.register.docs.certidao' | translate }}
                                          </li>
                                          <li>
-                                             Estatuto da Empresa
+                                             {{ 'auth.register.docs.estatuto' | translate }}
                                          </li>
                                          <li>
-                                             NIF da Empresa
+                                             {{ 'auth.register.fields.companyNif' | translate }}
                                          </li>
                                          <li>
-                                             Relatório do imposto sobre o rendimento anual
+                                             {{ 'auth.register.docs.impostoAnual' | translate }}
                                          </li>
                                          <li>
-                                             Documento de Identificação do(s) Proprietário(s) / Acionista(s)
+                                             {{ 'auth.register.docs.identificacao' | translate }}
                                          </li>
                                          <li>
-                                             Declaracão de Prévia
+                                             {{ 'auth.register.docs.declaracaoPrevia' | translate }}
                                          </li>
                                      </ul>
                                      <div class="flex justify-start">
                                          <p-fileupload name="files" method="post" (onSelect)="onSelect($event)"
                                              [fileLimit]="6" [maxFileSize]="maxFileSize" [multiple]="true"
                                              [accept]="acceptedFileTypes" [showUploadButton]="false"
-                                             [showCancelButton]="false" mode="basic" [chooseLabel]="'Selecionar'"
+                                             [showCancelButton]="false" mode="basic" [chooseLabel]="'auth.register.docs.select' | translate"
                                              [customUpload]="true" chooseIcon="pi pi-upload">
                                          </p-fileupload>
                                      </div>
@@ -357,7 +357,7 @@
                                          @if (item.status === 'uploading') {
                                          <i class="pi pi-spin pi-spinner text-surface-500"></i>
                                          } @else if (item.status === 'error') {
-                                         <span class="text-red-500 text-sm">Falha no upload</span>
+                                         <span class="text-red-500 text-sm">{{ 'auth.register.docs.uploadFailed' | translate }}</span>
                                          } @else {
                                          <i class="pi pi-check text-green-500"></i>
                                          }
@@ -370,10 +370,10 @@
                              </div>
                          </form>
                          <div class="flex pt-6 justify-between">
-                             <span class="font-medium text-surface-600 dark:text-surface-200">Já tem conta? <a
+                             <span class="font-medium text-surface-600 dark:text-surface-200">{{ 'auth.register.haveAccount' | translate }} <a
                                      [routerLink]="['/auth/login']"
-                                     class="font-semibold cursor-pointer  hover:text-primary transition-colors duration-300">Entrar</a></span>
-                             <p-button [disabled]="disableStepEmpresa()" label="Continuar" icon="pi pi-arrow-right"
+                                     class="font-semibold cursor-pointer  hover:text-primary transition-colors duration-300">{{ 'auth.common.enter' | translate }}</a></span>
+                             <p-button [disabled]="disableStepEmpresa()" [label]="'auth.register.continue' | translate" icon="pi pi-arrow-right"
                                  iconPos="right" (onClick)="activateCallback(2)" />
                          </div>
                      </ng-template>
@@ -385,15 +385,15 @@
                              <div class="grid grid-cols-12 gap-4">
                                  <div class="mb-6 col-span-12">
                                      <label for="tipoPropriedade" class="font-medium  mb-2 block">
-                                         Tipo propetário
+                                         {{ 'auth.register.fields.ownerType' | translate }}
                                      </label>
                                      <p-select fluid formControlName="tipoPropriedade" [options]="tipoProriedadeOpts"
-                                         optionLabel="name" placeholder="Selecione o tipo" [showClear]="true">
+                                         optionLabel="name" [placeholder]="'auth.register.fields.selectType' | translate" [showClear]="true">
                                      </p-select>
                                      @if (empresaForm.get('tipoPropriedade')?.touched &&
                                      empresaForm.get('tipoPropriedade')?.invalid) {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
@@ -403,8 +403,8 @@
                                  @for (item of acionistasArray.controls; track $index; let i = $index) {
                                  @if (acionistasArray.length > 1) {
                                  <div class="text-2xl mt-6 mb-6">
-                                     <span class="mr-6">{{ item.get('sectionTitle')?.value }}</span>
-                                     <p-button size="small" severity="warn" pTooltip="Eliminar acionista"
+                                     <span class="mr-6">{{ 'auth.register.shareholderN' | translate: { n: sectionNo(item) } }}</span>
+                                     <p-button size="small" severity="warn" [pTooltip]="'auth.register.removeShareholder' | translate"
                                          tooltipPosition="right" icon="pi pi-user-minus" iconPos="left" [rounded]="true"
                                          (onClick)="removeAcionistaForm($index)" />
                                  </div>
@@ -412,20 +412,20 @@
                                  <div class="grid grid-cols-12 gap-4" [formGroupName]="$index">
                                      <div class="mb-6 col-span-12">
                                          <label for="nome" class="font-medium  mb-2 block">
-                                             Nome do titular da empresa
+                                             {{ 'auth.register.fields.ownerName' | translate }}
                                          </label>
                                          <input formControlName="nome" id="nome" type="text" pInputText fluid />
                                          @if (item.get('nome')?.touched && item.get('nome')?.invalid) {
                                          <p class="text-red-500 text-sm mt-1">
-                                             Este campo é obrigatório e deve ser válido.
+                                             {{ 'auth.common.fieldInvalid' | translate }}
                                          </p>
                                          }
                                      </div>
                                      <div class="mb-6 col-span-12 md:col-span-6">
                                          <label for="acoes" class="font-medium  mb-2 block">
-                                             Ações
+                                             {{ 'auth.register.fields.shares' | translate }}
                                              <span class="text-sm font-normal text-muted-color ml-2">
-                                                 (Máximo disponível: {{ getMaxAcoesForAcionista(i) | number:'1.2-2' }}%)
+                                                 {{ 'auth.register.maxAvailable' | translate: { max: (getMaxAcoesForAcionista(i) | lnumber:'1.2-2') } }}
                                              </span>
                                          </label>
                                          <p-inputgroup>
@@ -437,59 +437,57 @@
                                          @if (item.get('acoes')?.touched && item.get('acoes')?.invalid) {
                                          <p class="text-red-500 text-sm mt-1">
                                              @if (item.get('acoes')?.errors?.['required']) {
-                                             Este campo é obrigatório.
+                                             {{ 'validation.required' | translate }}
                                              }
                                              @if (item.get('acoes')?.errors?.['min']) {
-                                             O valor mínimo é 0.01%.
+                                             {{ 'auth.register.minShares' | translate }}
                                              }
                                              @if (item.get('acoes')?.errors?.['max']) {
-                                             O valor máximo é 100%.
+                                             {{ 'auth.register.maxShares' | translate }}
                                              }
                                              @if (item.get('acoes')?.errors?.['totalExceeds100']) {
-                                             O total de ações excede 100%. Total atual:
-                                             {{ item.get('acoes')?.errors?.['totalExceeds100'].total | number:'1.2-2' }}%
+                                             {{ 'auth.register.totalExceeds' | translate: { total: (item.get('acoes')?.errors?.['totalExceeds100'].total | lnumber:'1.2-2') } }}
                                              }
                                              @if (item.get('acoes')?.errors?.['maxExceeded']) {
-                                             Valor excede o máximo disponível de
-                                             {{ item.get('acoes')?.errors?.['maxExceeded'].max | number:'1.2-2' }}%
+                                             {{ 'auth.register.maxExceeded' | translate: { max: (item.get('acoes')?.errors?.['maxExceeded'].max | lnumber:'1.2-2') } }}
                                              }
                                          </p>
                                          }
                                          @if (getTotalAcoes() > 0 && !item.get('acoes')?.invalid) {
                                          <p class="text-muted-color text-sm mt-1">
-                                             Total de ações: {{ getTotalAcoes() | number:'1.2-2' }}% / 100%
+                                             {{ 'auth.register.totalShares' | translate: { total: (getTotalAcoes() | lnumber:'1.2-2') } }}
                                          </p>
                                          }
                                      </div>
                                      <div class="mb-6 col-span-12 md:col-span-6">
                                          <label for="nif" class="font-medium  mb-2 block">
-                                             NIF
+                                             {{ 'auth.register.fields.nif' | translate }}
                                          </label>
                                          <input formControlName="nif" id="nif" type="text" pInputText fluid />
                                          @if (item.get('nif')?.touched && item.get('nif')?.invalid) {
                                          <p class="text-red-500 text-sm mt-1">
-                                             Este campo é obrigatório e deve ser válido.
+                                             {{ 'auth.common.fieldInvalid' | translate }}
                                          </p>
                                          }
                                      </div>
                                      <div class="mb-6 col-span-12 md:col-span-6">
                                          <label for="tipoDocumento" class="font-medium  mb-2 block">
-                                             Tipo Documento
+                                             {{ 'auth.register.fields.docType' | translate }}
                                          </label>
                                          <p-select fluid formControlName="tipoDocumento" [options]="tipoDocumentoOpts"
-                                             optionLabel="name" placeholder="Selecione o tipo documento"
+                                             optionLabel="name" [placeholder]="'auth.register.fields.selectDocType' | translate"
                                              [showClear]="true">
                                          </p-select>
                                          @if (item.get('tipoDocumento')?.touched && item.get('tipoDocumento')?.invalid)
                                          {
                                          <p class="text-red-500 text-sm mt-1">
-                                             Este campo é obrigatório e deve ser válido.
+                                             {{ 'auth.common.fieldInvalid' | translate }}
                                          </p>
                                          }
                                      </div>
                                      <div class="mb-6 col-span-12 md:col-span-6">
                                          <label for="numeroDocumento" class="font-medium  mb-2 block">
-                                             Nº Documento
+                                             {{ 'auth.register.fields.docNumber' | translate }}
                                          </label>
                                          <input formControlName="numeroDocumento" id="numeroDocumento" type="text"
                                              pInputText fluid />
@@ -497,21 +495,21 @@
                                          item.get('numeroDocumento')?.invalid)
                                          {
                                          <p class="text-red-500 text-sm mt-1">
-                                             Este campo é obrigatório e deve ser válido.
+                                             {{ 'auth.common.fieldInvalid' | translate }}
                                          </p>
                                          }
                                      </div>
                                      <div class="mb-6 col-span-12">
                                          <label for="local" class="font-medium  mb-2 block">
-                                             Endereço
+                                             {{ 'auth.register.fields.address' | translate }}
                                          </label>
                                          <input formControlName="local" id="local" type="text" pInputText fluid
-                                             placeholder="ex. Av. Pres. Nicolau Lobato" />
+                                             [placeholder]="'auth.register.fields.addressPlaceholder' | translate" />
                                          @if (item.get('local')?.touched &&
                                          item.get('local')?.invalid)
                                          {
                                          <p class="text-red-500 text-sm mt-1">
-                                             Este campo é obrigatório e deve ser válido.
+                                             {{ 'auth.common.fieldInvalid' | translate }}
                                          </p>
                                          }
                                      </div>
@@ -519,11 +517,11 @@
                                          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                                              <div class="flex-auto">
                                                  <label for="aldeia" class="font-medium  mb-2 block">
-                                                     Aldeia
+                                                     {{ 'auth.register.fields.aldeia' | translate }}
                                                  </label>
                                                  <p-select fluid formControlName="aldeia"
                                                      [options]="listaAldeiaAcionista[i]" optionLabel="nome"
-                                                     placeholder="Selecione a Aldeia" [filter]="true" filterBy="nome"
+                                                     [placeholder]="'auth.register.fields.selectAldeia' | translate" [filter]="true" filterBy="nome"
                                                      [showClear]="true" (onFilter)="aldeiaAcionistaFilter($event,i)"
                                                      (onpanelHide)="onPanelHideAcionista(i)"
                                                      (onChange)="aldeiaAcionistaOnChange($event, i)"
@@ -533,26 +531,26 @@
                                                  item.get('aldeia')?.invalid)
                                                  {
                                                  <p class="text-red-500 text-sm mt-1">
-                                                     Este campo é obrigatório e deve ser válido.
+                                                     {{ 'auth.common.fieldInvalid' | translate }}
                                                  </p>
                                                  }
                                              </div>
                                              <div class="flex-auto">
                                                  <label for="suco" class="font-medium  mb-2 block">
-                                                     Suco
+                                                     {{ 'auth.register.fields.suco' | translate }}
                                                  </label>
                                                  <input formControlName="suco" id="suco" type="text" pInputText fluid />
                                              </div>
                                              <div class="flex-auto">
                                                  <label for="posto" class="font-medium  mb-2 block">
-                                                     Posto Administrativo
+                                                     {{ 'auth.register.fields.posto' | translate }}
                                                  </label>
                                                  <input formControlName="postoAdministrativo" id="postoAdministrativo"
                                                      type="text" pInputText fluid />
                                              </div>
                                              <div class="flex-auto">
                                                  <label for="municipio" class="font-medium  mb-2 block">
-                                                     Municipio
+                                                     {{ 'auth.register.fields.municipio' | translate }}
                                                  </label>
                                                  <input formControlName="municipio" id="municipio" type="text"
                                                      pInputText fluid />
@@ -561,33 +559,33 @@
                                      </div>
                                      <div class="mb-6 col-span-12 md:col-span-6">
                                          <label for="telefone" class="font-medium  mb-2 block">
-                                             Nº Telefone
+                                             {{ 'auth.register.fields.telefone' | translate }}
                                          </label>
                                          <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
                                          @if (item.get('telefone')?.touched &&
                                          item.get('telefone')?.invalid)
                                          {
                                          <p class="text-red-500 text-sm mt-1">
-                                             Este campo é obrigatório e deve ser válido.
+                                             {{ 'auth.common.fieldInvalid' | translate }}
                                          </p>
                                          }
                                      </div>
                                      <div class="mb-6 col-span-12 md:col-span-6">
                                          <label for="email" class="font-medium  mb-2 block">
-                                             Email
+                                             {{ 'common.email' | translate }}
                                          </label>
                                          <input formControlName="email" id="email" type="email" pInputText fluid />
                                          @if (item.get('email')?.touched &&
                                          item.get('email')?.invalid)
                                          {
                                          <p class="text-red-500 text-sm mt-1">
-                                             Este campo é obrigatório e deve ser válido.
+                                             {{ 'auth.common.fieldInvalid' | translate }}
                                          </p>
                                          }
                                      </div>
                                      <div class="mb-6 col-span-12 md:col-span-6">
                                          <label for="agregadoFamilia" class="font-medium  mb-2 block">
-                                             Agregado Familia
+                                             {{ 'auth.register.fields.agregado' | translate }}
                                          </label>
                                          <input formControlName="agregadoFamilia" id="agregadoFamilia" pInputText
                                              fluid />
@@ -595,23 +593,23 @@
                                          item.get('agregadoFamilia')?.invalid)
                                          {
                                          <p class="text-red-500 text-sm mt-1">
-                                             Este campo é obrigatório e deve ser válido.
+                                             {{ 'auth.common.fieldInvalid' | translate }}
                                          </p>
                                          }
                                      </div>
                                      <div class="mb-6 col-span-12 md:col-span-6">
                                          <label for="relacaoFamilia" class="font-medium  mb-2 block">
-                                             Relação Família
+                                             {{ 'auth.register.fields.relacao' | translate }}
                                          </label>
                                          <p-select fluid formControlName="relacaoFamilia"
                                              [options]="tipoRelacaoFamiliaOpts" optionLabel="name" optionValue="value"
-                                             placeholder="Selecione o tipo" [showClear]="true">
+                                             [placeholder]="'auth.register.fields.selectType' | translate" [showClear]="true">
                                          </p-select>
                                          @if (item.get('relacaoFamilia')?.touched &&
                                          item.get('relacaoFamilia')?.invalid)
                                          {
                                          <p class="text-red-500 text-sm mt-1">
-                                             Este campo é obrigatório e deve ser válido.
+                                             {{ 'auth.common.fieldInvalid' | translate }}
                                          </p>
                                          }
                                      </div>
@@ -622,14 +620,14 @@
                                  }
                              </div>
                              @if(showAddBtnAcionistas) {
-                             <p-button label="Adicionar acionista" icon="pi pi-user-plus" iconPos="left"
+                             <p-button [label]="'auth.register.addShareholder' | translate" icon="pi pi-user-plus" iconPos="left"
                                  (onClick)="addAcionistaForm()" />
                              }
                          </form>
                          <div class="flex pt-6 justify-between">
-                             <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
+                             <p-button [label]="'common.back' | translate" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
                                  (onClick)="activateCallback(1)" />
-                             <p-button [disabled]="disableStepProprietario()" label="Continuar" icon="pi pi-arrow-right"
+                             <p-button [disabled]="disableStepProprietario()" [label]="'auth.register.continue' | translate" icon="pi pi-arrow-right"
                                  iconPos="right" (onClick)="activateCallback(3)" />
                          </div>
                      </ng-template>
@@ -639,42 +637,42 @@
                      <ng-template #content let-activateCallback="activateCallback">
                          <form [formGroup]="empresaForm" class="px-0 md:px-8">
                              <h1 class="text-2xl font-bold text-white">
-                                 Gerente
+                                 {{ 'auth.register.manager' | translate }}
                              </h1>
                              <div formGroupName="gerente" class="grid grid-cols-12 gap-4 py-4">
 
                                  <div class="mb-6 col-span-12">
                                      <label for="nome" class="font-medium  mb-2 block">
-                                         Nome
+                                         {{ 'common.name' | translate }}
                                      </label>
                                      <input formControlName="nome" id="nome" type="text" pInputText fluid
-                                         placeholder="Ex: Joao da Silva" />
+                                         [placeholder]="'auth.register.fields.namePlaceholder' | translate" />
                                      @if (empresaForm.get('gerente.nome')?.touched &&
                                      empresaForm.get('gerente.nome')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="tipoDocumento" class="font-medium  mb-2 block">
-                                         Tipo Documento
+                                         {{ 'auth.register.fields.docType' | translate }}
                                      </label>
                                      <p-select fluid formControlName="tipoDocumento" [options]="tipoDocumentoOpts"
-                                         optionLabel="name" placeholder="Selecione o tipo documento" [showClear]="true">
+                                         optionLabel="name" [placeholder]="'auth.register.fields.selectDocType' | translate" [showClear]="true">
                                      </p-select>
                                      @if (empresaForm.get('gerente.tipoDocumento')?.touched &&
                                      empresaForm.get('gerente.tipoDocumento')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="numeroDocumento" class="font-medium  mb-2 block">
-                                         Nº Documento
+                                         {{ 'auth.register.fields.docNumber' | translate }}
                                      </label>
                                      <input formControlName="numeroDocumento" id="numeroDocumento" type="text"
                                          pInputText fluid />
@@ -682,75 +680,75 @@
                                      empresaForm.get('gerente.numeroDocumento')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="estadoCivil" class="font-medium  mb-2 block">
-                                         Estado Civil
+                                         {{ 'auth.register.fields.estadoCivil' | translate }}
                                      </label>
                                      <p-select fluid formControlName="estadoCivil" [options]="tipoEstadoCivilOpts"
-                                         optionLabel="name" optionValue="value" placeholder="Selecione o tipo documento"
+                                         optionLabel="name" optionValue="value" [placeholder]="'auth.register.fields.selectEstadoCivil' | translate"
                                          [showClear]="true">
                                      </p-select>
                                      @if (empresaForm.get('gerente.estadoCivil')?.touched &&
                                      empresaForm.get('gerente.estadoCivil')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="email" class="font-medium  mb-2 block">
-                                         Email
+                                         {{ 'common.email' | translate }}
                                      </label>
                                      <input formControlName="email" id="email" type="email" pInputText fluid />
                                      @if (empresaForm.get('gerente.email')?.touched &&
                                      empresaForm.get('gerente.email')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                      <p-message severity="info" icon="pi pi-info-circle" styleClass="mt-2 text-sm">
-                                         Este email será usado como conta de acesso ao sistema.
+                                         {{ 'auth.register.managerEmailInfo' | translate }}
                                      </p-message>
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="telefone" class="font-medium mb-2 block">
-                                         Nº Telefone
+                                         {{ 'auth.register.fields.telefone' | translate }}
                                      </label>
                                      <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
                                      @if (empresaForm.get('gerente.telefone')?.touched &&
                                      empresaForm.get('gerente.telefone')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="nacionalidade" class="font-medium  mb-2 block">
-                                         Nacionalidade
+                                         {{ 'auth.register.fields.nacionalidade' | translate }}
                                      </label>
                                      <p-select fluid formControlName="nacionalidade" [options]="tipoNacionalidadeOpts"
                                          (onChange)="nacionalidadeOnChange($event, 'gerente')" optionLabel="name"
-                                         optionValue="value" placeholder="Selecione a nacionalidade" [showClear]="true">
+                                         optionValue="value" [placeholder]="'auth.register.fields.selectNacionalidade' | translate" [showClear]="true">
                                      </p-select>
                                      @if (empresaForm.get('gerente.nacionalidade')?.touched &&
                                      empresaForm.get('gerente.nacionalidade')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  @if (gerenteForeigner) {
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="numeroVisto" class="font-medium  mb-2 block">
-                                         Nº de Visto
+                                         {{ 'auth.register.fields.visaNumber' | translate }}
                                      </label>
                                      <input formControlName="numeroVisto" id="numeroVisto" type="text" pInputText
                                          fluid />
@@ -758,13 +756,13 @@
                                      empresaForm.get('gerente.numeroVisto')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="validadeVisto" class="font-medium  mb-2 block">
-                                         Data Validade de Visto
+                                         {{ 'auth.register.fields.visaExpiry' | translate }}
                                      </label>
                                      <p-datepicker formControlName="validadeVisto" id="validadeVisto" appendTo="body"
                                          [showButtonBar]="true" fluid />
@@ -772,14 +770,14 @@
                                      empresaForm.get('gerente.validadeVisto')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  }
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="naturalidade" class="font-medium  mb-2 block">
-                                         Naturalidade
+                                         {{ 'auth.register.fields.naturalidade' | translate }}
                                      </label>
                                      <input formControlName="naturalidade" id="naturalidade" type="text" pInputText
                                          fluid />
@@ -787,7 +785,7 @@
                                      empresaForm.get('gerente.naturalidade')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
@@ -795,26 +793,26 @@
                                      <div formGroupName="morada" class="flex flex-col gap-6 w-full sm:w-auto mb-6">
                                          <div class="mb-6 col-span-12">
                                              <label for="local" class="font-medium  mb-2 block">
-                                                 Morada
+                                                 {{ 'auth.register.fields.morada' | translate }}
                                              </label>
                                              <input formControlName="local" id="local" type="text" pInputText fluid
-                                                 placeholder="ex. Av. Pres. Nicolau Lobato" />
+                                                 [placeholder]="'auth.register.fields.addressPlaceholder' | translate" />
                                              @if (empresaForm.get('gerente.morada.local')?.touched &&
                                              empresaForm.get('gerente.morada.local')?.invalid)
                                              {
                                              <p class="text-red-500 text-sm mt-1">
-                                                 Este campo é obrigatório e deve ser válido.
+                                                 {{ 'auth.common.fieldInvalid' | translate }}
                                              </p>
                                              }
                                          </div>
                                          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                                              <div class="flex-auto">
                                                  <label for="aldeia" class="font-medium  mb-2 block">
-                                                     Aldeia
+                                                     {{ 'auth.register.fields.aldeia' | translate }}
                                                  </label>
                                                  <p-select fluid formControlName="aldeia"
                                                      [options]="gerenteListaAldeias" optionLabel="nome"
-                                                     placeholder="Selecione a Aldeia" [filter]="true" filterBy="nome"
+                                                     [placeholder]="'auth.register.fields.selectAldeia' | translate" [filter]="true" filterBy="nome"
                                                      [showClear]="true" [loading]="gerenteAldeiaIsLoading"
                                                      (onChange)="gerenteRepresentanteAldeiaOnChange($event, 'gerente')"
                                                      (onFilter)="gerenteRepresentanteAldeiaFilter($event, 'gerente')"
@@ -825,27 +823,27 @@
                                                  empresaForm.get('gerente.morada.aldeia')?.invalid)
                                                  {
                                                  <p class="text-red-500 text-sm mt-1">
-                                                     Este campo é obrigatório e deve ser válido.
+                                                     {{ 'auth.common.fieldInvalid' | translate }}
                                                  </p>
                                                  }
                                              </div>
                                              <div class="flex-auto">
                                                  <label for="suco" class="font-medium  mb-2 block">
-                                                     Suco
+                                                     {{ 'auth.register.fields.suco' | translate }}
                                                  </label>
                                                  <input formControlName="suco" id="suco" type="text" pInputText fluid />
                                              </div>
 
                                              <div class="flex-auto">
                                                  <label for="posto" class="font-medium  mb-2 block">
-                                                     Posto Administrativo
+                                                     {{ 'auth.register.fields.posto' | translate }}
                                                  </label>
                                                  <input formControlName="postoAdministrativo" id="postoAdministrativo"
                                                      type="text" pInputText fluid />
                                              </div>
                                              <div class="flex-auto">
                                                  <label for="municipio" class="font-medium  mb-2 block">
-                                                     Municipio
+                                                     {{ 'auth.register.fields.municipio' | translate }}
                                                  </label>
                                                  <input formControlName="municipio" id="municipio" type="text"
                                                      pInputText fluid />
@@ -856,28 +854,28 @@
                                  </div>
                              </div>
                              <h1 class="text-2xl font-bold text-white">
-                                 Representante
+                                 {{ 'auth.register.representative' | translate }}
                              </h1>
                              <div class="flex items-center gap-3 pt-4">
                                  <p-toggleswitch formControlName="temRepresentante" inputId="temRepresentante" />
-                                 <label for="temRepresentante" class="font-medium">Tem representante legal?</label>
+                                 <label for="temRepresentante" class="font-medium">{{ 'auth.register.hasRepresentative' | translate }}</label>
                              </div>
                              @if (temRepresentante) {
                              <div formGroupName="representante" class="grid grid-cols-12 gap-4 pt-4">
                                  <div class="mb-6 col-span-12">
                                      <label for="tipo" class="font-medium  mb-2 block">
-                                         Tipo
+                                         {{ 'auth.register.fields.type' | translate }}
                                      </label>
                                      <p-select (onChange)="onRepresentanteTipoChange($event)" fluid
                                          formControlName="tipo" [options]="tipoRepresentanteOptions" optionLabel="name"
                                          [showClear]="true" optionValue="value"
-                                         placeholder="Selecione o tipo de Representante">
+                                         [placeholder]="'auth.register.fields.selectRepType' | translate">
                                      </p-select>
                                      @if (empresaForm.get('representante.tipo')?.touched &&
                                      empresaForm.get('representante.tipo')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
@@ -887,15 +885,15 @@
                                  @if (empresaForm.get('representante.tipo')?.value === 'Empresa') {
                                  <div class="mb-6 col-span-12">
                                      <label for="nomeEmpresa" class="font-medium  mb-2 block">
-                                         Nome da Empresa
+                                         {{ 'auth.register.fields.companyName' | translate }}
                                      </label>
                                      <input formControlName="nomeEmpresa" id="nomeEmpresa" type="text" pInputText fluid
-                                         placeholder="Ex. Empresa Unip. lda" />
+                                         [placeholder]="'auth.register.fields.repCompanyPlaceholder' | translate" />
                                      @if (empresaForm.get('representante.nomeEmpresa')?.touched &&
                                      empresaForm.get('representante.nomeEmpresa')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
@@ -904,40 +902,40 @@
                                  <div class="mb-6 col-span-12">
                                      <label for="nome" class="font-medium  mb-2 block">
                                          @if (empresaForm.get('representante.tipo')?.value === 'Empresa'){
-                                         Nome do funcionário
+                                         {{ 'auth.register.fields.employeeName' | translate }}
                                          }@else {
-                                         Nome do Individual
+                                         {{ 'auth.register.fields.individualName' | translate }}
                                          }
                                      </label>
                                      <input formControlName="nome" id="nome" type="text" pInputText fluid
-                                         placeholder="Ex: Joao da Silva" />
+                                         [placeholder]="'auth.register.fields.namePlaceholder' | translate" />
                                      @if (empresaForm.get('representante.nome')?.touched &&
                                      empresaForm.get('representante.nome')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
 
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="tipoDocumento" class="font-medium  mb-2 block">
-                                         Tipo Documento
+                                         {{ 'auth.register.fields.docType' | translate }}
                                      </label>
                                      <p-select fluid formControlName="tipoDocumento" [options]="tipoDocumentoOpts"
-                                         optionLabel="name" placeholder="Selecione o tipo documento" [showClear]="true">
+                                         optionLabel="name" [placeholder]="'auth.register.fields.selectDocType' | translate" [showClear]="true">
                                      </p-select>
                                      @if (empresaForm.get('representante.tipoDocumento')?.touched &&
                                      empresaForm.get('representante.tipoDocumento')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="numeroDocumento" class="font-medium  mb-2 block">
-                                         Nº Documento
+                                         {{ 'auth.register.fields.docNumber' | translate }}
                                      </label>
                                      <input formControlName="numeroDocumento" id="numeroDocumento" type="text"
                                          pInputText fluid />
@@ -945,13 +943,13 @@
                                      empresaForm.get('representante.numeroDocumento')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="dataNascimento" class="font-medium  mb-2 block">
-                                         Data Nascimento
+                                         {{ 'auth.register.fields.birthDate' | translate }}
                                      </label>
                                      <p-datepicker formControlName="dataNascimento" id="dataNascimento" appendTo="body"
                                          [showButtonBar]="true" fluid />
@@ -959,46 +957,46 @@
                                      empresaForm.get('representante.dataNascimento')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="estadoCivil" class="font-medium  mb-2 block">
-                                         Estado Civil
+                                         {{ 'auth.register.fields.estadoCivil' | translate }}
                                      </label>
                                      <p-select fluid formControlName="estadoCivil" [options]="tipoEstadoCivilOpts"
-                                         optionLabel="name" optionValue="value" placeholder="Selecione o tipo documento"
+                                         optionLabel="name" optionValue="value" [placeholder]="'auth.register.fields.selectEstadoCivil' | translate"
                                          [showClear]="true">
                                      </p-select>
                                      @if (empresaForm.get('representante.estadoCivil')?.touched &&
                                      empresaForm.get('representante.estadoCivil')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="nacionalidade" class="font-medium  mb-2 block">
-                                         Nacionalidade
+                                         {{ 'auth.register.fields.nacionalidade' | translate }}
                                      </label>
                                      <p-select fluid formControlName="nacionalidade" [options]="tipoNacionalidadeOpts"
                                          (onChange)="nacionalidadeOnChange($event, 'representante')" optionLabel="name"
-                                         optionValue="value" placeholder="Selecione a nacionalidade" [showClear]="true">
+                                         optionValue="value" [placeholder]="'auth.register.fields.selectNacionalidade' | translate" [showClear]="true">
                                      </p-select>
                                      @if (empresaForm.get('representante.nacionalidade')?.touched &&
                                      empresaForm.get('representante.nacionalidade')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  @if (representanteForeigner) {
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="numeroVisto" class="font-medium  mb-2 block">
-                                         Nº de Visto
+                                         {{ 'auth.register.fields.visaNumber' | translate }}
                                      </label>
                                      <input formControlName="numeroVisto" id="numeroVisto" type="text" pInputText
                                          fluid />
@@ -1006,13 +1004,13 @@
                                      empresaForm.get('representante.numeroVisto')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="validadeVisto" class="font-medium  mb-2 block">
-                                         Data Validade de Visto
+                                         {{ 'auth.register.fields.visaExpiry' | translate }}
                                      </label>
                                      <p-datepicker formControlName="validadeVisto" id="validadeVisto" appendTo="body"
                                          [showButtonBar]="true" fluid />
@@ -1020,14 +1018,14 @@
                                      empresaForm.get('representante.validadeVisto')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  }
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="naturalidade" class="font-medium  mb-2 block">
-                                         Naturalidade
+                                         {{ 'auth.register.fields.naturalidade' | translate }}
                                      </label>
                                      <input formControlName="naturalidade" id="naturalidade" type="text" pInputText
                                          fluid />
@@ -1035,33 +1033,33 @@
                                      empresaForm.get('representante.naturalidade')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="pai" class="font-medium  mb-2 block">
-                                         Pai
+                                         {{ 'auth.register.fields.father' | translate }}
                                      </label>
                                      <input formControlName="pai" id="pai" pInputText fluid />
                                      @if (empresaForm.get('representante.pai')?.touched &&
                                      empresaForm.get('representante.naturalidade')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="mae" class="font-medium  mb-2 block">
-                                         Mãe
+                                         {{ 'auth.register.fields.mother' | translate }}
                                      </label>
                                      <input formControlName="mae" id="mae" pInputText fluid />
                                      @if (empresaForm.get('representante.mae')?.touched &&
                                      empresaForm.get('representante.mae')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
@@ -1069,26 +1067,26 @@
                                      <div formGroupName="morada" class="flex flex-col gap-6 w-full sm:w-auto mb-6">
                                          <div class="mb-6 col-span-12">
                                              <label for="local" class="font-medium  mb-2 block">
-                                                 Morada
+                                                 {{ 'auth.register.fields.morada' | translate }}
                                              </label>
                                              <input formControlName="local" id="local" type="text" pInputText fluid
-                                                 placeholder="ex. Av. Pres. Nicolau Lobato" />
+                                                 [placeholder]="'auth.register.fields.addressPlaceholder' | translate" />
                                              @if (empresaForm.get('representante.morada.local')?.touched &&
                                              empresaForm.get('representante.morada.local')?.invalid)
                                              {
                                              <p class="text-red-500 text-sm mt-1">
-                                                 Este campo é obrigatório e deve ser válido.
+                                                 {{ 'auth.common.fieldInvalid' | translate }}
                                              </p>
                                              }
                                          </div>
                                          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                                              <div class="flex-auto">
                                                  <label for="aldeia" class="font-medium  mb-2 block">
-                                                     Aldeia
+                                                     {{ 'auth.register.fields.aldeia' | translate }}
                                                  </label>
                                                  <p-select fluid formControlName="aldeia"
                                                      [options]="representanteListaAldeias" optionLabel="nome"
-                                                     placeholder="Selecione a Aldeia" [filter]="true" filterBy="nome"
+                                                     [placeholder]="'auth.register.fields.selectAldeia' | translate" [filter]="true" filterBy="nome"
                                                      [showClear]="true" [loading]="representanteAldeiaIsLoading"
                                                      (onChange)="gerenteRepresentanteAldeiaOnChange($event, 'representante')"
                                                      (onFilter)="gerenteRepresentanteAldeiaFilter($event, 'representante')"
@@ -1099,27 +1097,27 @@
                                                  empresaForm.get('representante.morada.aldeia')?.invalid)
                                                  {
                                                  <p class="text-red-500 text-sm mt-1">
-                                                     Este campo é obrigatório e deve ser válido.
+                                                     {{ 'auth.common.fieldInvalid' | translate }}
                                                  </p>
                                                  }
                                              </div>
                                              <div class="flex-auto">
                                                  <label for="suco" class="font-medium  mb-2 block">
-                                                     Suco
+                                                     {{ 'auth.register.fields.suco' | translate }}
                                                  </label>
                                                  <input formControlName="suco" id="suco" type="text" pInputText fluid />
                                              </div>
 
                                              <div class="flex-auto">
                                                  <label for="posto" class="font-medium  mb-2 block">
-                                                     Posto Administrativo
+                                                     {{ 'auth.register.fields.posto' | translate }}
                                                  </label>
                                                  <input formControlName="postoAdministrativo" id="postoAdministrativo"
                                                      type="text" pInputText fluid />
                                              </div>
                                              <div class="flex-auto">
                                                  <label for="municipio" class="font-medium  mb-2 block">
-                                                     Municipio
+                                                     {{ 'auth.register.fields.municipio' | translate }}
                                                  </label>
                                                  <input formControlName="municipio" id="municipio" type="text"
                                                      pInputText fluid />
@@ -1130,27 +1128,27 @@
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="email" class="font-medium  mb-2 block">
-                                         Email
+                                         {{ 'common.email' | translate }}
                                      </label>
                                      <input formControlName="email" id="email" type="email" pInputText fluid />
                                      @if (empresaForm.get('representante.email')?.touched &&
                                      empresaForm.get('representante.email')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="telefone" class="font-medium mb-2 block">
-                                         Nº Telefone
+                                         {{ 'auth.register.fields.telefone' | translate }}
                                      </label>
                                      <input formControlName="telefone" id="telefone" type="tel" pInputText fluid />
                                      @if (empresaForm.get('representante.telefone')?.touched &&
                                      empresaForm.get('representante.telefone')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
@@ -1158,9 +1156,9 @@
                              </div>
                              }
                              <div class="mt-6 mb-6 text-left flex justify-between">
-                                 <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
+                                 <p-button [label]="'common.back' | translate" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
                                      (onClick)="activateCallback(2)" />
-                                 <p-button [disabled]="disableStepGerente()" label="Continuar" icon="pi pi-arrow-right"
+                                 <p-button [disabled]="disableStepGerente()" [label]="'auth.register.continue' | translate" icon="pi pi-arrow-right"
                                      iconPos="right" (onClick)="activateCallback(4)" />
                              </div>
                          </form>
@@ -1173,13 +1171,13 @@
                              <div formGroupName="utilizador" class="grid grid-cols-12 gap-4">
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="email" class="font-medium  mb-2 block">
-                                         Email
+                                         {{ 'common.email' | translate }}
                                      </label>
                                      <input formControlName="email" id="email" type="email" pInputText fluid />
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="password" class="font-medium  mb-2 block">
-                                         Palavra-passe
+                                         {{ 'auth.common.password' | translate }}
                                      </label>
                                      <p-password formControlName="password" fluid [feedback]="true"
                                          [toggleMask]="true" />
@@ -1187,15 +1185,15 @@
                                      empresaForm.get('utilizador.password')?.invalid)
                                      {
                                      <p class="text-red-500 text-sm mt-1">
-                                         Este campo é obrigatório e deve ser válido.
+                                         {{ 'auth.common.fieldInvalid' | translate }}
                                      </p>
                                      }
                                  </div>
                              </div>
                              <div class="mt-6 mb-6 text-left flex justify-between">
-                                 <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
+                                 <p-button [label]="'common.back' | translate" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
                                      (onClick)="activateCallback(3)" />
-                                 <p-button [disabled]="disableStepConta()" label="Continuar" icon="pi pi-arrow-right"
+                                 <p-button [disabled]="disableStepConta()" [label]="'auth.register.continue' | translate" icon="pi pi-arrow-right"
                                      iconPos="right" (onClick)="activateCallback(5)" />
                              </div>
                          </form>
@@ -1208,66 +1206,66 @@
                          <div class="text-white">
                              <div class="max-w-4xl mx-auto p-3 md:p-8">
                                  <header class="flex flex-wrap items-center justify-between gap-4 mb-10">
-                                     <!-- <h1 class="text-3xl font-bold text-gray-100">Resumo da Inscrição</h1> -->
+                                     <!-- <h1 class="text-3xl font-bold text-gray-100">{{ 'auth.register.review.title' | translate }}</h1> -->
                                      <div class="flex flex-row gap-2">
-                                         <h1 class="text-3xl font-bold text-gray-100">Resumo da Inscrição</h1>
+                                         <h1 class="text-3xl font-bold text-gray-100">{{ 'auth.register.review.title' | translate }}</h1>
                                          <p-button icon="pi pi-file-pdf" size="large" severity="info" [raised]="true"
                                              printSectionId="resumoPrint" [useExistingCss]="true" ngxPrint />
                                      </div>
                                      <p-button icon="pi pi-save" (click)="submit(empresaForm)" [loading]="loading"
-                                         [disabled]="!empresaForm.valid" pButton pRipple label="Confirmar e Guardar"
+                                         [disabled]="!empresaForm.valid" pButton pRipple [label]="'auth.register.review.confirmSave' | translate"
                                          class="w-auto"></p-button>
                                  </header>
                                  <main id="myDiv">
                                      <section class="bg-gray-800 p-4 md:p-6 rounded-2xl shadow-lg mb-8">
                                          <div class="flex items-center mb-6">
                                              <i class="bi bi-buildings mr-4" style="font-size: 2rem"></i>
-                                             <h2 class="text-2xl font-semibold text-gray-200">Dados da Empresa</h2>
+                                             <h2 class="text-2xl font-semibold text-gray-200">{{ 'auth.register.review.companyData' | translate }}</h2>
                                          </div>
                                          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                                              <div>
-                                                 <p class="text-sm text-gray-400">Nome da Empresa:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'auth.register.fields.companyName' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">{{ empresaForm.get('nome')?.value }}
                                                  </p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">NIF:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'auth.register.fields.nif' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">{{ empresaForm.get('nif')?.value }}
                                                  </p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Telefone:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'auth.register.review.phone' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
                                                      {{ empresaForm.get('telefone')?.value }}</p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Capital Social:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'auth.register.fields.capitalSocial' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
-                                                     {{ empresaForm.get('capitalSocial')?.value | currency}}</p>
+                                                     {{ empresaForm.get('capitalSocial')?.value | lcurrency}}</p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Data de Registo:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'auth.register.fields.dataRegisto' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
-                                                     {{ empresaForm.get('dataRegisto')?.value | date: 'dd MMMM yyyy' :'':'pt'}}
+                                                     {{ empresaForm.get('dataRegisto')?.value | ldate: 'dd MMMM yyyy' }}
                                                  </p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Total Trabalhadores:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'auth.register.fields.totalTrabalhadoresShort' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
                                                      {{ empresaForm.get('totalTrabalhadores')?.value }}</p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Volume de Negócios Anual:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'auth.register.fields.volumeNegocio' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
-                                                     {{ empresaForm.get('volumeNegocioAnual')?.value | currency }}</p>
+                                                     {{ empresaForm.get('volumeNegocioAnual')?.value | lcurrency }}</p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Balanço total Anual:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'auth.register.fields.balanco' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
-                                                     {{ empresaForm.get('balancoTotalAnual')?.value | currency }}</p>
+                                                     {{ empresaForm.get('balancoTotalAnual')?.value | lcurrency }}</p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Localização:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'auth.register.review.location' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
                                                      {{ empresaForm.get('sede.local')?.value }} <br>
                                                      {{ empresaForm.get('sede.aldeia')?.value?.nome }},
@@ -1277,7 +1275,7 @@
                                                  </p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400 font-medium">Longitude - Latitude</p>
+                                                 <p class="text-sm text-gray-400 font-medium">{{ 'auth.register.fields.longitude' | translate }} - {{ 'auth.register.fields.latitude' | translate }}</p>
                                                  <p class="text-lg text-gray-100">
                                                      <a [href]="'https://www.google.com/maps?q=' + empresaForm.get('latitude')?.value + ',' + empresaForm.get('longitude')?.value"
                                                          target="_blank" rel="noopener noreferrer"
@@ -1292,51 +1290,51 @@
                                      <section class="bg-gray-800 p-4 md:p-6 rounded-2xl shadow-lg">
                                          <div class="flex items-center mb-6">
                                              <i class="pi pi-users  mr-4" style="font-size: 2rem"></i>
-                                             <h2 class="text-2xl font-semibold text-gray-200">Acionistas</h2>
+                                             <h2 class="text-2xl font-semibold text-gray-200">{{ 'auth.register.review.shareholders' | translate }}</h2>
                                          </div>
                                          <div>
                                              @for (a of empresaForm.get('acionistas')?.getRawValue(); track $index) {
                                              <h3 class="text-xl font-medium text-gray-300 mb-4">
-                                                 Acionista&nbsp;{{ $index + 1 }}
+                                                 {{ 'auth.register.review.shareholderIdx' | translate: { n: $index + 1 } }}
                                              </h3>
                                              <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-6 ml-4">
                                                  <div>
-                                                     <p class="text-sm text-gray-400">Nome:</p>
+                                                     <p class="text-sm text-gray-400">{{ 'common.name' | translate }}:</p>
                                                      <p class="text-lg text-gray-100">{{ a.nome }}</p>
                                                  </div>
                                                  <div>
-                                                     <p class="text-sm text-gray-400">NIF:</p>
+                                                     <p class="text-sm text-gray-400">{{ 'auth.register.fields.nif' | translate }}:</p>
                                                      <p class="text-lg text-gray-100">{{ a.nif }}</p>
                                                  </div>
                                                  <div>
-                                                     <p class="text-sm text-gray-400">Documento:</p>
+                                                     <p class="text-sm text-gray-400">{{ 'auth.register.review.document' | translate }}:</p>
                                                      <p class="text-lg text-gray-100">{{ a.tipoDocumento.name }} –
                                                          {{ a.numeroDocumento }}
                                                      </p>
                                                  </div>
                                                  <div>
-                                                     <p class="text-sm text-gray-400">Contacto:</p>
+                                                     <p class="text-sm text-gray-400">{{ 'auth.register.review.contact' | translate }}:</p>
                                                      <p class="text-lg text-gray-100">{{ a.telefone }} / {{ a.email }}
                                                      </p>
                                                  </div>
                                                  <div>
-                                                     <p class="text-sm text-gray-400">Agregado Familia:</p>
+                                                     <p class="text-sm text-gray-400">{{ 'auth.register.fields.agregado' | translate }}:</p>
                                                      <p class="text-lg text-gray-100">
                                                          {{ a.agregadoFamilia }}
                                                      </p>
                                                  </div>
                                                  <div>
-                                                     <p class="text-sm text-gray-400">Relação Familia:</p>
+                                                     <p class="text-sm text-gray-400">{{ 'auth.register.fields.relacao' | translate }}:</p>
                                                      <p class="text-lg text-gray-100">
-                                                         {{ a.relacaoFamilia }}
+                                                         {{ optionName(tipoRelacaoFamiliaOpts, a.relacaoFamilia) }}
                                                      </p>
                                                  </div>
                                                  <div>
-                                                     <p class="text-sm text-gray-400">Ações:</p>
+                                                     <p class="text-sm text-gray-400">{{ 'auth.register.fields.shares' | translate }}:</p>
                                                      <p class="text-lg text-gray-100">{{ a.acoes }}</p>
                                                  </div>
                                                  <div class="md:col-span-2">
-                                                     <p class="text-sm text-gray-400">Endereco:</p>
+                                                     <p class="text-sm text-gray-400">{{ 'auth.register.fields.address' | translate }}:</p>
                                                      <p class="text-lg text-gray-100">
                                                          {{ a.local }},
                                                          {{ a.aldeia.nome }},
@@ -1352,37 +1350,37 @@
                                      <section class="bg-gray-800 p-4 md:p-6 rounded-2xl shadow-lg mt-4 mb-8">
                                          <div class="flex items-center mb-6">
                                              <i class="bi bi-person-gear text-4xl mr-3"></i>
-                                             <h2 class="text-2xl font-semibold text-gray-200">Gerente
+                                             <h2 class="text-2xl font-semibold text-gray-200">{{ 'auth.register.manager' | translate }}
                                              </h2>
                                          </div>
                                          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                                              <div>
-                                                 <p class="text-sm text-gray-400">Nome:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'common.name' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
                                                      {{ empresaForm.get('gerente.nome')?.value }}
                                                  </p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Email:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'common.email' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
                                                      {{ empresaForm.get('gerente.email')?.value }}
                                                  </p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Documento:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'auth.register.review.document' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
                                                      {{ empresaForm.get('gerente.tipoDocumento')?.value?.name }} -
                                                      {{ empresaForm.get('gerente.numeroDocumento')?.value }}
                                                  </p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Telefone:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'auth.register.review.phone' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
                                                      {{ empresaForm.get('gerente.telefone')?.value }}
                                                  </p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Morada:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'auth.register.fields.morada' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
                                                      {{ empresaForm.get('gerente.morada.local')?.value }} <br>
                                                      {{ empresaForm.get('gerente.morada.aldeia')?.value?.nome }},
@@ -1397,39 +1395,39 @@
                                          <div class="flex items-center mb-6">
                                              <!-- <i class="bi bi-person-vcard mr-4" style="font-size: 2rem"></i> -->
                                              <i class="bi bi-person-badge text-4xl mr-3"></i>
-                                             <h2 class="text-2xl font-semibold text-gray-200">Representante
+                                             <h2 class="text-2xl font-semibold text-gray-200">{{ 'auth.register.representative' | translate }}
                                              </h2>
                                          </div>
                                          @if (temRepresentante) {
                                          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                                              <div>
-                                                 <p class="text-sm text-gray-400">Nome:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'common.name' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
                                                      {{ empresaForm.get('representante.nome')?.value }}
                                                  </p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Tipo:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'auth.register.fields.type' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
-                                                     {{ empresaForm.get('representante.tipo')?.value }}
+                                                     {{ optionName(tipoRepresentanteOptions, empresaForm.get('representante.tipo')?.value) }}
                                                  </p>
                                              </div>
 
                                              <div>
-                                                 <p class="text-sm text-gray-400">Documento:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'auth.register.review.document' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
                                                      {{ empresaForm.get('representante.tipoDocumento')?.value?.name }} -
                                                      {{ empresaForm.get('representante.numeroDocumento')?.value }}
                                                  </p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Data Nascimento:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'auth.register.fields.birthDate' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
-                                                     {{ empresaForm.get('representante.dataNascimento')?.value | date: 'dd MMM yyyy' }}
+                                                     {{ empresaForm.get('representante.dataNascimento')?.value | ldate: 'dd MMM yyyy' }}
                                                  </p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Morada:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'auth.register.fields.morada' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
                                                      {{ empresaForm.get('representante.morada.local')?.value }} <br>
                                                      {{ empresaForm.get('representante.morada.aldeia')?.value?.nome }},
@@ -1439,67 +1437,67 @@
                                                  </p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Estado Civil:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'auth.register.fields.estadoCivil' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
-                                                     {{ empresaForm.get('representante.estadoCivil')?.value }}
+                                                     {{ optionName(tipoEstadoCivilOpts, empresaForm.get('representante.estadoCivil')?.value) }}
                                                  </p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Pai:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'auth.register.fields.father' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
                                                      {{ empresaForm.get('representante.pai')?.value }}
                                                  </p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Mãe:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'auth.register.fields.mother' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
                                                      {{ empresaForm.get('representante.mae')?.value }}
                                                  </p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Nacionalidade:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'auth.register.fields.nacionalidade' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
-                                                     {{ empresaForm.get('representante.nacionalidade')?.value }}
+                                                     {{ optionName(tipoNacionalidadeOpts, empresaForm.get('representante.nacionalidade')?.value) }}
                                                  </p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Naturalidade:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'auth.register.fields.naturalidade' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
                                                      {{ empresaForm.get('representante.naturalidade')?.value }}
                                                  </p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Email:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'common.email' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
                                                      {{ empresaForm.get('representante.email')?.value }}
                                                  </p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Telemovel:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'auth.register.review.mobile' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
                                                      {{ empresaForm.get('representante.telefone')?.value }}
                                                  </p>
                                              </div>
                                          </div>
                                          } @else {
-                                         <p class="text-lg text-gray-400">Sem representante legal.</p>
+                                         <p class="text-lg text-gray-400">{{ 'auth.register.review.noRepresentative' | translate }}</p>
                                          }
                                      </section>
                                      <section class="bg-gray-800 p-4 md:p-6 rounded-2xl shadow-lg mt-4 mb-8">
                                          <div class="flex items-center mb-6">
                                              <i class="bi bi-person-vcard mr-4" style="font-size: 2rem"></i>
-                                             <h2 class="text-2xl font-semibold text-gray-200">Conta de acesso
+                                             <h2 class="text-2xl font-semibold text-gray-200">{{ 'auth.register.steps.account' | translate }}
                                              </h2>
                                          </div>
                                          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                                              <div>
-                                                 <p class="text-sm text-gray-400">Email:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'common.email' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
                                                      {{ empresaForm.get('utilizador.email')?.value }}
                                                  </p>
                                              </div>
                                              <div>
-                                                 <p class="text-sm text-gray-400">Senha:</p>
+                                                 <p class="text-sm text-gray-400">{{ 'auth.common.password' | translate }}:</p>
                                                  <p class="text-lg text-gray-100">
                                                      ********
                                                  </p>
@@ -1933,10 +1931,10 @@
                                  </div>
 
                                  <div class="mt-6 mb-6 text-left flex justify-between items-center">
-                                     <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
+                                     <p-button [label]="'common.back' | translate" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
                                          (onClick)="activateCallback(2)" />
                                      <p-button icon="pi pi-save" (click)="submit(empresaForm)" [loading]="loading"
-                                         [disabled]="!empresaForm.valid" pButton pRipple label="Confirmar e Guardar"
+                                         [disabled]="!empresaForm.valid" pButton pRipple [label]="'auth.register.review.confirmSave' | translate"
                                          class="w-auto"></p-button>
                                  </div>
                              </div>
@@ -1962,7 +1960,7 @@
              <!-- <div class="flex items-center my-6">
                  <div class="flex items-center pr-6 mr-6 border-r border-surface-200 dark:border-surface-700">
                      <h4>
-                         Ministério de Comércio e Indústria
+                         {{ 'layout.ministry' | translate }}
                      </h4>
                  </div>
                  <span class="text-sm text-surface-500 dark:text-surface-400 mr-4">Copyright 2025</span>
@@ -1981,7 +1979,7 @@
              </div>
              <div class="mt-2 mb-8">
                  <p class="text-2xl font-bold">
-                     Sistema de Gestão de <br> Licenças Comerciais e Indústriais
+                     {{ 'auth.common.systemTitleLine1' | translate }} <br> {{ 'auth.common.systemTitleLine2' | translate }}
                  </p>
              </div>
              @if (notification) {
@@ -1990,15 +1988,15 @@
                      <i [class]="notification.icon" style="font-size: 1.5rem"></i> &nbsp;
                  </ng-template>
                  <span class="ml-2 text-lg">
-                     {{ notification.message }}
+                     {{ notification.messageKey | translate: notification.params }}
                  </span>
              </p-message>
              }
              <div class="mt-6 text-center flex items-center justify-center flex-col gap-4">
                  <p-button icon="pi pi-send" (click)="submit(empresaForm)" [loading]="loading"
-                     [disabled]="empresaForm.valid" pButton label="Reenviar email">
+                     [disabled]="empresaForm.valid" pButton [label]="'auth.register.success.resend' | translate">
                  </p-button>
-                 <p-button icon="pi pi-sign-in" pButton label="Logar" styleClass="max-width:200px"
+                 <p-button icon="pi pi-sign-in" pButton [label]="'auth.common.signIn' | translate" styleClass="max-width:200px"
                      routerLink="/auth/login" [rounded]="true" [outlined]="true">
                  </p-button>
              </div>
@@ -2008,7 +2006,7 @@
          <div class="flex items-center absolute" style="bottom: 75px">
              <div class="flex items-center pr-6 mr-6 border-r border-surface-200 dark:border-surface-700">
                  <h4>
-                     Ministério de Comércio e Indústria
+                     {{ 'layout.ministry' | translate }}
                  </h4>
              </div>
              <span class="text-sm text-surface-500 dark:text-surface-400 mr-4">Copyright 2025</span>

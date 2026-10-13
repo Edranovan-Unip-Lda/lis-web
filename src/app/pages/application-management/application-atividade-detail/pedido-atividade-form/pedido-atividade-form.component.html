@@ -1,39 +1,39 @@
  @if (aplicanteData) {
  <form [formGroup]="requestForm">
      <span class="text-xl font-bold mt-6 mb-3 block">
-         PEDIDO
+         {{ 'application.shared.form.pedido' | translate }}
      </span>
      <div class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="application" class="font-medium  mb-2 block">
-                 Tipo
+                 {{ 'application.shared.form.tipo' | translate }}
              </label>
              <p-select formControlName="tipo" inputId="application" [options]="tipoPedidoOpts(aplicanteData.categoria)"
                  optionLabel="name" optionValue="value" fluid filterBy="name" [showClear]="true"
-                 placeholder="Select a Pedido">
+                 [placeholder]="'application.atividade.pedido.tipoPlaceholder' | translate">
              </p-select>
          </div>
      </div>
 
      <span class="text-xl font-bold mt-6 mb-3 block">
-         REQUERENTE
+         {{ 'application.atividade.pedido.requerente' | translate }}
      </span>
      <section id="requerente" class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12">
              <label for="nomeEmpresa" class="font-medium  mb-2 block">
-                 Firma ou denominacao social
+                 {{ 'application.atividade.pedido.firma' | translate }}
              </label>
              <input formControlName="nomeEmpresa" id="nomeEmpresa" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="empresaNif" class="font-medium  mb-2 block">
-                 NIF
+                 {{ 'application.shared.form.nif' | translate }}
              </label>
              <input formControlName="empresaNif" id="empresaNif" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="empresaNumeroRegistoComercial" class="font-medium  mb-2 block">
-                 Nº de Registo Comercial
+                 {{ 'application.shared.form.numeroRegistoComercial' | translate }}
              </label>
              <input formControlName="empresaNumeroRegistoComercial" id="empresaNumeroRegistoComercial" type="text"
                  pInputText fluid />
@@ -42,39 +42,39 @@
              <div formGroupName="empresaSede" class="grid grid-cols-12">
                  <div class="mb-6 col-span-12">
                      <label for="local" class="font-medium  mb-2 block">
-                         Local do Estabelecimento
+                         {{ 'application.shared.form.localEstabelecimento' | translate }}
                      </label>
                      <input formControlName="local" id="local" type="text" pInputText fluid
-                         placeholder="ex. Av. Pres. Nicolau Lobato" />
+                         [placeholder]="'application.shared.form.localPlaceholder' | translate" />
                  </div>
                  <div class="mb-6 col-span-12">
                      <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                          <div class="flex-auto">
                              <label for="aldeia" class="font-medium  mb-2 block">
-                                 Aldeia
+                                 {{ 'application.shared.form.aldeia' | translate }}
                              </label>
                              <p-select fluid formControlName="aldeia" [options]="listaAldeiaEmpresa" optionLabel="nome"
-                                 optionValue="id" placeholder="Selecione a Aldeia" [filter]="true" filterBy="nome"
+                                 optionValue="id" [placeholder]="'application.shared.form.selectAldeia' | translate" [filter]="true" filterBy="nome"
                                  [showClear]="true" (onFilter)="aldeiaFilter($event)" (onpanelHide)="onPanelHide()"
                                  (onChange)="aldeiaOnChange($event, 'empresaSede')" (onClear)="onPanelHide()">
                              </p-select>
                          </div>
                          <div class="flex-auto">
                              <label for="suco" class="font-medium  mb-2 block">
-                                 Suco
+                                 {{ 'application.shared.form.suco' | translate }}
                              </label>
                              <input formControlName="suco" id="suco" type="text" pInputText fluid />
                          </div>
                          <div class="flex-auto">
                              <label for="posto" class="font-medium  mb-2 block">
-                                 Posto Administrativo
+                                 {{ 'application.shared.form.postoAdministrativo' | translate }}
                              </label>
                              <input formControlName="postoAdministrativo" id="postoAdministrativo" type="text"
                                  pInputText fluid />
                          </div>
                          <div class="flex-auto">
                              <label for="municipio" class="font-medium  mb-2 block">
-                                 Municipio
+                                 {{ 'application.shared.form.municipio' | translate }}
                              </label>
                              <input formControlName="municipio" id="municipio" type="text" pInputText fluid />
                          </div>
@@ -84,12 +84,12 @@
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="classeAtividade" class="font-medium  mb-2 block">
-                 Atividade Principal exercida no Estabelecimento
+                 {{ 'application.shared.form.atividadePrincipal' | translate }}
              </label>
              <p-select formControlName="classeAtividade" (onChange)="atividadePrincipalChange($event)"
                  (onFilter)="classeAtividadeFilter($event)" inputId="classeAtividade" [options]="listaClasseAtividade"
                  optionLabel="codigo" fluid [filter]="true" filterBy="codigo,descricao" [showClear]="true"
-                 placeholder="Selecione a atividade principal">
+                 [placeholder]="'application.shared.form.selectAtividadePrincipal' | translate">
                  <ng-template let-tipo #item>
                      <div class="flex items-center gap-2">
                          <span>{{tipo.codigo}} </span> - <span>{{tipo.descricao}} </span>
@@ -99,31 +99,31 @@
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="classeAtividadeCodigo" class="font-medium mb-2 block">
-                 Descricao
+                 {{ 'application.shared.form.descricao' | translate }}
              </label>
              <input pInputText formControlName="classeAtividadeCodigo" id="classeAtividadeCodigo" fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="tipoAtividade" class="font-medium  mb-2 block">
-                 Tipo Atividade
+                 {{ 'application.atividade.pedido.tipoAtividade' | translate }}
              </label>
              <input formControlName="tipoAtividade" id="tipoAtividade" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="tipoAtividadeCodigo" class="font-medium  mb-2 block">
-                 Descricao
+                 {{ 'application.shared.form.descricao' | translate }}
              </label>
              <input formControlName="tipoAtividadeCodigo" id="tipoAtividadeCodigo" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="risco" class="font-medium  mb-2 block">
-                 Nivel de Risco
+                 {{ 'application.atividade.pedido.nivelRisco' | translate }}
              </label>
              <input formControlName="risco" id="risco" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="estatutoSociedadeComercial" class="font-medium  mb-2 block">
-                 Estatuto da sociedade comercial
+                 {{ 'application.atividade.pedido.estatuto' | translate }}
              </label>
              <p-selectbutton [options]="stateOpts" formControlName="estatutoSociedadeComercial" optionLabel="label"
                  optionValue="value" />
@@ -132,27 +132,27 @@
      </section>
 
      <span class="text-xl font-bold mt-6 mb-3 block">
-         REPRESENTANTE
+         {{ 'application.atividade.pedido.representante' | translate }}
          @if (representanteEditavel) {
-         <span class="text-sm font-normal text-muted-color">(opcional)</span>
+         <span class="text-sm font-normal text-muted-color">{{ 'application.atividade.pedido.optional' | translate }}</span>
          }
      </span>
      <section formGroupName="representante" id="representante" class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12">
              <label for="nome" class="font-medium  mb-2 block">
-                 Nome
+                 {{ 'application.atividade.pedido.nome' | translate }}
              </label>
              <input formControlName="nome" id="nome" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="nacionalidade" class="font-medium  mb-2 block">
-                 Nacionalidade
+                 {{ 'application.atividade.pedido.nacionalidade' | translate }}
              </label>
              <input formControlName="nacionalidade" id="nacionalidade" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="naturalidade" class="font-medium  mb-2 block">
-                 Naturalidade
+                 {{ 'application.atividade.pedido.naturalidade' | translate }}
              </label>
              <input formControlName="naturalidade" id="naturalidade" type="text" pInputText fluid />
          </div>
@@ -160,19 +160,19 @@
              <div formGroupName="morada" class="grid grid-cols-12">
                  <div class="mb-6 col-span-12">
                      <label for="local" class="font-medium  mb-2 block">
-                         Morada
+                         {{ 'application.atividade.pedido.morada' | translate }}
                      </label>
                      <input formControlName="local" id="local" type="text" pInputText fluid
-                         placeholder="ex. Av. Pres. Nicolau Lobato" />
+                         [placeholder]="'application.shared.form.localPlaceholder' | translate" />
                  </div>
                  <div class="mb-6 col-span-12">
                      <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                          <div class="flex-auto">
                              <label for="aldeia" class="font-medium  mb-2 block">
-                                 Aldeia
+                                 {{ 'application.shared.form.aldeia' | translate }}
                              </label>
                              <p-select fluid formControlName="aldeia" [options]="listaAldeiaRepresentante"
-                                 optionLabel="nome" optionValue="id" placeholder="Selecione a Aldeia" [filter]="true"
+                                 optionLabel="nome" optionValue="id" [placeholder]="'application.shared.form.selectAldeia' | translate" [filter]="true"
                                  filterBy="nome" [showClear]="true" (onFilter)="representanteAldeiaFilter($event)"
                                  (onpanelHide)="onPanelHide()"
                                  (onChange)="aldeiaNestedOnChange($event, 'representante', 'morada')"
@@ -181,20 +181,20 @@
                          </div>
                          <div class="flex-auto">
                              <label for="suco" class="font-medium  mb-2 block">
-                                 Suco
+                                 {{ 'application.shared.form.suco' | translate }}
                              </label>
                              <input formControlName="suco" id="suco" type="text" pInputText fluid />
                          </div>
                          <div class="flex-auto">
                              <label for="posto" class="font-medium  mb-2 block">
-                                 Posto Administrativo
+                                 {{ 'application.shared.form.postoAdministrativo' | translate }}
                              </label>
                              <input formControlName="postoAdministrativo" id="postoAdministrativo" type="text"
                                  pInputText fluid />
                          </div>
                          <div class="flex-auto">
                              <label for="municipio" class="font-medium  mb-2 block">
-                                 Municipio
+                                 {{ 'application.shared.form.municipio' | translate }}
                              </label>
                              <input formControlName="municipio" id="municipio" type="text" pInputText fluid />
                          </div>
@@ -204,13 +204,13 @@
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="representanteTelefone" class="font-medium  mb-2 block">
-                 Telefone
+                 {{ 'application.shared.form.telefone' | translate }}
              </label>
              <input formControlName="telefone" id="representanteTelefone" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="representanteEmail" class="font-medium  mb-2 block">
-                 Email
+                 {{ 'application.shared.form.email' | translate }}
              </label>
              <input formControlName="email" id="representanteEmail" type="email" pInputText fluid />
          </div>
@@ -218,30 +218,30 @@
 
 
      <span class="text-xl font-bold mt-6 mb-3 block">
-         IDENTIFICAÇÃO DO ADMINSTRADOR OU GERENTE
+         {{ 'application.atividade.pedido.gerente' | translate }}
      </span>
      <section formGroupName="gerente" id="representante" class="grid grid-cols-12 gap-4 mb-8">
          <div class="mb-6 col-span-12">
              <label for="nome" class="font-medium  mb-2 block">
-                 Nome
+                 {{ 'application.atividade.pedido.nome' | translate }}
              </label>
              <input formControlName="nome" id="nome" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="estadoCivil" class="font-medium  mb-2 block">
-                 Estado Civil
+                 {{ 'application.atividade.pedido.estadoCivil' | translate }}
              </label>
              <input formControlName="estadoCivil" id="estadoCivil" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="nacionalidade" class="font-medium  mb-2 block">
-                 Nacionalidade
+                 {{ 'application.atividade.pedido.nacionalidade' | translate }}
              </label>
              <input formControlName="nacionalidade" id="nacionalidade" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="naturalidade" class="font-medium  mb-2 block">
-                 Naturalidade
+                 {{ 'application.atividade.pedido.naturalidade' | translate }}
              </label>
              <input formControlName="naturalidade" id="naturalidade" type="text" pInputText fluid />
          </div>
@@ -249,19 +249,19 @@
              <div formGroupName="morada" class="grid grid-cols-12">
                  <div class="mb-6 col-span-12">
                      <label for="local" class="font-medium  mb-2 block">
-                         Morada
+                         {{ 'application.atividade.pedido.morada' | translate }}
                      </label>
                      <input formControlName="local" id="local" type="text" pInputText fluid
-                         placeholder="ex. Av. Pres. Nicolau Lobato" />
+                         [placeholder]="'application.shared.form.localPlaceholder' | translate" />
                  </div>
                  <div class="mb-6 col-span-12">
                      <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                          <div class="flex-auto">
                              <label for="aldeia" class="font-medium  mb-2 block">
-                                 Aldeia
+                                 {{ 'application.shared.form.aldeia' | translate }}
                              </label>
                              <p-select fluid formControlName="aldeia" [options]="listaAldeiaGerente" optionLabel="nome"
-                                 optionValue="id" placeholder="Selecione a Aldeia" [filter]="true" filterBy="nome"
+                                 optionValue="id" [placeholder]="'application.shared.form.selectAldeia' | translate" [filter]="true" filterBy="nome"
                                  [showClear]="true" (onFilter)="gerenteAldeiaFilter($event)"
                                  (onpanelHide)="onPanelHide()"
                                  (onChange)="aldeiaNestedOnChange($event, 'gerente', 'morada')"
@@ -270,20 +270,20 @@
                          </div>
                          <div class="flex-auto">
                              <label for="suco" class="font-medium  mb-2 block">
-                                 Suco
+                                 {{ 'application.shared.form.suco' | translate }}
                              </label>
                              <input formControlName="suco" id="suco" type="text" pInputText fluid />
                          </div>
                          <div class="flex-auto">
                              <label for="posto" class="font-medium  mb-2 block">
-                                 Posto Administrativo
+                                 {{ 'application.shared.form.postoAdministrativo' | translate }}
                              </label>
                              <input formControlName="postoAdministrativo" id="postoAdministrativo" type="text"
                                  pInputText fluid />
                          </div>
                          <div class="flex-auto">
                              <label for="municipio" class="font-medium  mb-2 block">
-                                 Municipio
+                                 {{ 'application.shared.form.municipio' | translate }}
                              </label>
                              <input formControlName="municipio" id="municipio" type="text" pInputText fluid />
                          </div>
@@ -293,13 +293,13 @@
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="gerenteTelefone" class="font-medium  mb-2 block">
-                 Telefone
+                 {{ 'application.shared.form.telefone' | translate }}
              </label>
              <input formControlName="telefone" id="gerenteTelefone" type="text" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="gerenteEmail" class="font-medium  mb-2 block">
-                 Email
+                 {{ 'application.shared.form.email' | translate }}
              </label>
              <input formControlName="email" id="gerenteEmail" type="email" pInputText fluid />
          </div>
@@ -309,7 +309,7 @@
      <div class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="planta" class="font-medium  mb-2 block text-xl uppercase">
-                 Planta de Localizacao do Estabelecimento Comercial (Documento)
+                 {{ 'application.atividade.pedido.planta' | translate }}
              </label>
              @if (loadingUploadButtons.has('planta')) {
              <div class="w-1/2">
@@ -317,7 +317,7 @@
              </div>
              }
              <div class="flex justify-start pt-2">
-                 <p-fileupload #fuPlanta [chooseLabel]="'Carregar'" name="files" [customUpload]="true"
+                 <p-fileupload #fuPlanta [chooseLabel]="'common.upload' | translate" name="files" [customUpload]="true"
                      [chooseIcon]="'pi pi-file-arrow-up'" (uploadHandler)="onUploadDocs($event, 'planta', fuPlanta)"
                      [maxFileSize]="maxFileSize"
                      accept="application/pdf" mode="basic"
@@ -342,12 +342,12 @@
          </div>
      </div>
      <span class="text-xl font-bold mt-6 mb-3 block">
-         DOCUMENTO COMPROVATIVO DE PROPRIEDADE, POSSE DE IMOVEL OU OUTRO CONTRATO DE ARRENDAMENTO
+         {{ 'application.atividade.pedido.propriedadeSection' | translate }}
      </span>
      <div class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="documentoPropriedade" class="font-medium  mb-2 block">
-                 Documento comprovativo do direito de propriedade
+                 {{ 'application.atividade.pedido.documentoPropriedade' | translate }}
              </label>
              <p-selectbutton (onChange)="documentoPropriedadeOnChange($event)" [options]="stateOpts"
                  formControlName="documentoPropriedade" optionLabel="label" optionValue="value" />
@@ -358,7 +358,7 @@
              </div>
              }
              <div class="flex justify-start pt-2">
-                 <p-fileupload #fuDocProp [chooseLabel]="'Carregar'" name="files" [customUpload]="true"
+                 <p-fileupload #fuDocProp [chooseLabel]="'common.upload' | translate" name="files" [customUpload]="true"
                      [chooseIcon]="'pi pi-file-arrow-up'" (uploadHandler)="onUploadDocs($event, 'documentoPropriedade', fuDocProp)"
                      [maxFileSize]="maxFileSize"
                      accept="application/pdf" mode="basic"
@@ -385,7 +385,7 @@
          @if (showcontratoArrendamentoForm) {
          <div class="mb-6 col-span-12">
              <label for="contratoArrendamento" class="font-medium  mb-2 block">
-                 Contrato de arrendamento
+                 {{ 'application.atividade.pedido.contratoArrendamento' | translate }}
              </label>
              @if (loadingUploadButtons.has('contratoArrendamento')) {
              <div class="w-1/2">
@@ -393,7 +393,7 @@
              </div>
              }
              <div class="flex justify-start pt-2">
-                 <p-fileupload #fuContrato [chooseLabel]="'Carregar'" name="files" [customUpload]="true"
+                 <p-fileupload #fuContrato [chooseLabel]="'common.upload' | translate" name="files" [customUpload]="true"
                      (uploadHandler)="onUploadDocs($event, 'contratoArrendamento', fuContrato)" [chooseIcon]="'pi pi-file-arrow-up'"
                      [maxFileSize]="maxFileSize"
                      accept="application/pdf" mode="basic"
@@ -419,40 +419,40 @@
          @if (showArrendadorForm) {
          <div class="col-span-12 mb-6 bg-gray-800 p-6 rounded-lg">
              <span class="text-xl font-bold mb-3 block">
-                 Arrendador
+                 {{ 'application.atividade.pedido.arrendador' | translate }}
              </span>
              <div formGroupName="arrendador" class="grid grid-cols-12 gap-4">
                  <div class="mb-6 col-span-12">
                      <label for="application" class="font-medium  mb-2 block">
-                         Tipo Arrendador
+                         {{ 'application.atividade.pedido.tipoArrendador' | translate }}
                      </label>
                      <p-select formControlName="tipo" inputId="application" [options]="tipoArrendadorOpts"
                          optionLabel="name" optionValue="value" fluid filterBy="name" [showClear]="true"
-                         placeholder="Selecione o tipo arrendador">
+                         [placeholder]="'application.atividade.pedido.tipoArrendadorPlaceholder' | translate">
                      </p-select>
                  </div>
                  @if (requestForm.get('arrendador.tipo')?.value === 'Empresa' ||
                  requestForm.get('arrendador.tipo')?.value === 'Individual') {
                  <div class="mb-6 col-span-12">
                      <label for="nome" class="font-medium  mb-2 block">
-                         Nome do Arrendador
+                         {{ 'application.atividade.pedido.nomeArrendador' | translate }}
                      </label>
                      <input formControlName="nome" id="nome" type="text" pInputText fluid />
                  </div>
 
                  <div class="mb-6 col-span-12 md:col-span-6">
                      <label for="tipoDocumento" class="font-medium  mb-2 block">
-                         Tipo de Documento de Identificação
+                         {{ 'application.atividade.pedido.tipoDocumento' | translate }}
                      </label>
                      <p-select fluid formControlName="tipoDocumento" id="tipoDocumento" [options]="tipoDocumentoOpts"
-                         optionLabel="name" optionValue="value" placeholder="Selecione o Tipo de Documento"
+                         optionLabel="name" optionValue="value" [placeholder]="'application.atividade.pedido.tipoDocumentoPlaceholder' | translate"
                          [filter]=" true" filterBy="nome" [showClear]="true">
                      </p-select>
                  </div>
 
                  <div class="mb-6 col-span-12 md:col-span-6">
                      <label for="numeroDocumento" class="font-medium  mb-2 block">
-                         Nº Documento de Identificacao
+                         {{ 'application.atividade.pedido.numeroDocumento' | translate }}
                      </label>
                      <input formControlName="numeroDocumento" id="numeroDocumento" type="text" pInputText fluid />
                  </div>
@@ -463,19 +463,19 @@
                      <div formGroupName="endereco" class="grid grid-cols-12">
                          <div class="mb-6 col-span-12">
                              <label for="local" class="font-medium  mb-2 block">
-                                 Endereço
+                                 {{ 'application.atividade.pedido.endereco' | translate }}
                              </label>
                              <input formControlName="local" id="local" type="text" pInputText fluid
-                                 placeholder="ex. Av. Pres. Nicolau Lobato" />
+                                 [placeholder]="'application.shared.form.localPlaceholder' | translate" />
                          </div>
                          <div class="mb-6 col-span-12">
                              <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                                  <div class="flex-auto">
                                      <label for="aldeia" class="font-medium  mb-2 block">
-                                         Aldeia
+                                         {{ 'application.shared.form.aldeia' | translate }}
                                      </label>
                                      <p-select fluid formControlName="aldeia" [options]="listaAldeiaArrendador"
-                                         optionLabel="nome" optionValue="id" placeholder="Selecione a Aldeia"
+                                         optionLabel="nome" optionValue="id" [placeholder]="'application.shared.form.selectAldeia' | translate"
                                          [filter]="true" filterBy="nome" [showClear]="true"
                                          (onFilter)="arrendadorAldeiaFilter($event)" (onpanelHide)="onPanelHide()"
                                          (onChange)="aldeiaNestedOnChange($event, 'arrendador', 'endereco')"
@@ -484,20 +484,20 @@
                                  </div>
                                  <div class="flex-auto">
                                      <label for="suco" class="font-medium  mb-2 block">
-                                         Suco
+                                         {{ 'application.shared.form.suco' | translate }}
                                      </label>
                                      <input formControlName="suco" id="suco" type="text" pInputText fluid />
                                  </div>
                                  <div class="flex-auto">
                                      <label for="posto" class="font-medium  mb-2 block">
-                                         Posto Administrativo
+                                         {{ 'application.shared.form.postoAdministrativo' | translate }}
                                      </label>
                                      <input formControlName="postoAdministrativo" id="postoAdministrativo" type="text"
                                          pInputText fluid />
                                  </div>
                                  <div class="flex-auto">
                                      <label for="municipio" class="font-medium  mb-2 block">
-                                         Municipio
+                                         {{ 'application.shared.form.municipio' | translate }}
                                      </label>
                                      <input formControlName="municipio" id="municipio" type="text" pInputText fluid />
                                  </div>
@@ -508,7 +508,7 @@
 
                  <div class="mb-6 col-span-12 md:col-span-6">
                      <label for="areaTotalTerreno" class="font-medium  mb-2 block">
-                         Area Total do Terreno
+                         {{ 'application.atividade.pedido.areaTerreno' | translate }}
                      </label>
                      <input formControlName="areaTotalTerreno" id="areaTotalTerreno" type="number" pInputText fluid />
                  </div>
@@ -516,28 +516,28 @@
 
                  <div class="mb-6 col-span-12 md:col-span-6">
                      <label for="areaTotalConstrucao" class="font-medium  mb-2 block">
-                         Area Total da Construção
+                         {{ 'application.atividade.pedido.areaConstrucao' | translate }}
                      </label>
                      <input formControlName="areaTotalConstrucao" id="areaTotalConstrucao" type="number" pInputText
                          fluid />
                  </div>
                  <div class="mb-6 col-span-12 md:col-span-6">
                      <label for="dataInicio" class="font-medium mb-2 block">
-                         Data de Inicio
+                         {{ 'application.atividade.pedido.dataInicio' | translate }}
                      </label>
                      <p-datepicker formControlName="dataInicio" appendTo="body" dateFormat="dd/mm/yy"
                          [showButtonBar]="true" fluid />
                  </div>
                  <div class="mb-6 col-span-12 md:col-span-6">
                      <label for="dataFim" class="font-medium mb-2 block">
-                         Data de Termino
+                         {{ 'application.atividade.pedido.dataFim' | translate }}
                      </label>
                      <p-datepicker formControlName="dataFim" appendTo="body" dateFormat="dd/mm/yy"
                          [showButtonBar]="true" fluid />
                  </div>
                  <div class="mb-6 col-span-12">
                      <label for="valorRendaMensal" class="font-medium  mb-2 block">
-                         Valor Renda Mensal
+                         {{ 'application.atividade.pedido.valorRenda' | translate }}
                      </label>
                      <p-inputgroup>
                          <p-inputgroup-addon>$</p-inputgroup-addon>
@@ -556,7 +556,7 @@
          @for (item of pedidoLicencaDocumentsFields; track $index) {
          <div class="mb-6 col-span-12">
              <label [for]="item.name" class="font-medium  mb-2 block">
-                 {{item.label}}
+                 {{ item.label | translate }}
              </label>
              @if (loadingUploadButtons.has(item.name)) {
              <div class="w-1/2">
@@ -564,7 +564,7 @@
              </div>
              }
              <div class="flex justify-start pt-2">
-                 <p-fileupload #fuItem [chooseLabel]="'Carregar'" name="files" [customUpload]="true"
+                 <p-fileupload #fuItem [chooseLabel]="'common.upload' | translate" name="files" [customUpload]="true"
                      [chooseIcon]="'pi pi-file-arrow-up'" (uploadHandler)="onUploadDocs($event, item.name, fuItem)"
                      [maxFileSize]="maxFileSize" accept="application/pdf" mode="basic"
                      [disabled]="disabledAllForm || getFileByField(item.name)" [auto]="true">
@@ -590,7 +590,7 @@
          @if (aplicanteData.categoria === 'INDUSTRIAL') {
          <div class="mb-6 col-span-12">
              <label for="provasMOPFile" class="font-medium  mb-2 block">
-                 Provas ou justificação do Ministério das Obras Públicas
+                 {{ 'application.atividade.pedido.provasMOP' | translate }}
              </label>
              @if (loadingUploadButtons.has('provasMOPFile')) {
              <div class="w-1/2">
@@ -598,7 +598,7 @@
              </div>
              }
              <div class="flex justify-start pt-2">
-                 <p-fileupload #fuMOP [chooseLabel]="'Carregar'" name="files" [customUpload]="true"
+                 <p-fileupload #fuMOP [chooseLabel]="'common.upload' | translate" name="files" [customUpload]="true"
                      [chooseIcon]="'pi pi-file-arrow-up'" (uploadHandler)="onUploadDocs($event, 'provasMOPFile', fuMOP)"
                      [maxFileSize]="maxFileSize"
                      accept="application/pdf" mode="basic"
@@ -623,7 +623,7 @@
          </div>
          <div class="mb-6 col-span-12">
              <label for="provasANLAFile" class="font-medium  mb-2 block">
-                 Provas ou justificação da Autoridade Nacional de Licenciamento Ambiental
+                 {{ 'application.atividade.pedido.provasANLA' | translate }}
              </label>
              @if (loadingUploadButtons.has('provasANLAFile')) {
              <div class="w-1/2">
@@ -631,7 +631,7 @@
              </div>
              }
              <div class="flex justify-start pt-2">
-                 <p-fileupload #fuANLA [chooseLabel]="'Carregar'" name="files" [customUpload]="true"
+                 <p-fileupload #fuANLA [chooseLabel]="'common.upload' | translate" name="files" [customUpload]="true"
                      [chooseIcon]="'pi pi-file-arrow-up'" (uploadHandler)="onUploadDocs($event, 'provasANLAFile', fuANLA)"
                      [maxFileSize]="maxFileSize"
                      accept="application/pdf" mode="basic"
@@ -657,30 +657,30 @@
          }
      </div>
      <span class="text-xl font-bold mt-6 mb-3 block">
-         Nº DE POSTOS DE EMPREGO CRIADOS OU A CRIAR
+         {{ 'application.atividade.pedido.empregosSection' | translate }}
      </span>
      <div class="grid grid-cols-12 gap-4">
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="numEmpregosCriados" class="font-medium  mb-2 block">
-                 Nº de empregos ja criados
+                 {{ 'application.atividade.pedido.empregosCriados' | translate }}
              </label>
              <input formControlName="numEmpregosCriados" id="numEmpregosCriados" type="number" pInputText fluid />
          </div>
          <div class="mb-6 col-span-12 md:col-span-6">
              <label for="numEmpregadosCriar" class="font-medium  mb-2 block">
-                 Nº de empregos a criar
+                 {{ 'application.atividade.pedido.empregosCriar' | translate }}
              </label>
              <input formControlName="numEmpregadosCriar" id="numEmpregadosCriar" type="number" pInputText fluid />
          </div>
      </div>
      <div class="flex items-center gap-3">
          @if (pedidoIsDraft) {
-         <p-tag value="Rascunho" [severity]="'warn'" icon="pi pi-pencil" />
+         <p-tag [value]="'RASCUNHO' | statusLabel" [severity]="'warn'" icon="pi pi-pencil" />
          }
-         <p-button label="Guardar rascunho" [outlined]="true" severity="secondary" icon="pi pi-save" iconPos="left"
+         <p-button [label]="'application.shared.saveDraft' | translate" [outlined]="true" severity="secondary" icon="pi pi-save" iconPos="left"
              [loading]="draftLoading" [disabled]="isLoading || disabledAllForm" (click)="saveDraft(requestForm)" />
          <p-button [disabled]="!requestForm.valid || draftLoading" (click)="isNew? save(requestForm): update(requestForm)"
-             [loading]="isLoading" label="Submeter" severity="success" icon="pi pi-send" />
+             [loading]="isLoading" [label]="'common.submit' | translate" severity="success" icon="pi pi-send" />
      </div>
  </form>
  }

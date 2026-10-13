@@ -1,7 +1,7 @@
+import { LanguageService } from '@/core/i18n';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { mapToIdAndNome } from '@/core/utils/global-function';
-import { TitleCasePipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -15,10 +15,11 @@ import { Paginator } from 'primeng/paginator';
 import { Select } from 'primeng/select';
 import { Table, TableModule } from 'primeng/table';
 import { Toast } from 'primeng/toast';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-posto-list',
-  imports: [TableModule, Button, InputIcon, IconField, InputText, Toast, ConfirmDialog, ReactiveFormsModule, Select, TitleCasePipe, Dialog, Paginator],
+  imports: [TableModule, Button, InputIcon, IconField, InputText, Toast, ConfirmDialog, ReactiveFormsModule, Select, TranslatePipe, Dialog, Paginator],
   templateUrl: './posto-list.component.html',
   styleUrl: './posto-list.component.scss',
   providers: [ConfirmationService, MessageService]
@@ -35,6 +36,7 @@ export class PostoListComponent {
   isNew = false;
   selectedData: any;
   loading = false;
+  private i18n = inject(LanguageService);
   municipioList: any[] = [];
 
   constructor(
@@ -130,17 +132,17 @@ export class PostoListComponent {
   deleteData(id: number) {
     this.confirmationService.confirm({
       // target: event.target as EventTarget,
-      message: 'Quer apagar este registo?',
-      header: 'Zona de risco',
+      message: this.i18n.instant('dadosMestre.common.deleteConfirm'),
+      header: this.i18n.instant('dadosMestre.common.deleteHeader'),
       icon: 'pi pi-info-circle',
-      rejectLabel: 'Cancel',
+      rejectLabel: this.i18n.instant('common.cancel'),
       rejectButtonProps: {
-        label: 'Cancelar',
+        label: this.i18n.instant('common.cancel'),
         severity: 'secondary',
         outlined: true,
       },
       acceptButtonProps: {
-        label: 'Eliminar',
+        label: this.i18n.instant('common.delete'),
         severity: 'danger',
       },
 
@@ -148,7 +150,7 @@ export class PostoListComponent {
         this.service.delete(this.type, id).subscribe({
           next: () => {
             this.dataList = this.dataList.filter((val) => val.id !== id);
-            this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Registo excluído' });
+            this.messageService.add({ severity: 'info', summary: this.i18n.instant('toast.confirmed'), detail: this.i18n.instant('dadosMestre.common.deleted') });
           },
           error: error => {
             console.error(error);
@@ -186,8 +188,8 @@ export class PostoListComponent {
   }
 
   private addMessages(isSuccess: boolean, isNew: boolean, error?: any) {
-    const summary = isSuccess ? (isNew ? 'Dados registados com sucesso!' : 'Dados atualizados com sucesso!') : 'Error';
-    const detail = isSuccess ? (isNew ? `Os dados foram registados` : `Os dados foram actualizados`) : 'Desculpe, algo deu errado. Tente novamente ou procure o administrador do sistema para mais informações.';
+    const summary = this.i18n.instant(isSuccess ? (isNew ? 'dadosMestre.common.createdSummary' : 'dadosMestre.common.updatedSummary') : 'toast.error');
+    const detail = this.i18n.instant(isSuccess ? (isNew ? 'dadosMestre.common.createdDetail' : 'dadosMestre.common.updatedDetail') : 'dadosMestre.common.errorDetail');
 
     this.messageService.add({ severity: isSuccess ? 'success' : 'error', summary, detail });
   }

@@ -1,3 +1,5 @@
+import { LanguageService } from '@/core/i18n';
+import { StatusLabelPipe } from '@/core/pipes/custom.pipe';
 import { Aldeia } from '@/core/models/data-master.model';
 import { Aplicante, Documento, Empresa, Gerente, PedidoAtividadeLicenca, Representante } from '@/core/models/entities.model';
 import { Categoria, PedidoStatus } from '@/core/models/enums';
@@ -10,6 +12,7 @@ import { pedidoAtividadeWithFilesValidator } from '@/core/validators/must-match'
 import { Component, DestroyRef, inject, Input, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
@@ -28,7 +31,7 @@ import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-pedido-atividade-form',
-  imports: [ReactiveFormsModule, Select, SelectButton, InputText, Button, Toast, FileUpload, DatePicker, InputGroup, InputGroupAddon, InputNumber, ProgressBar, Tag],
+  imports: [StatusLabelPipe, TranslatePipe, ReactiveFormsModule, Select, SelectButton, InputText, Button, Toast, FileUpload, DatePicker, InputGroup, InputGroupAddon, InputNumber, ProgressBar, Tag],
   templateUrl: './pedido-atividade-form.component.html',
   styleUrl: './pedido-atividade-form.component.scss',
   providers: [MessageService]
@@ -55,6 +58,7 @@ export class PedidoAtividadeFormComponent {
   // Exposed for the template Rascunho tag.
   PedidoStatus = PedidoStatus;
   private destroyRef = inject(DestroyRef);
+  private i18n = inject(LanguageService);
   uploadedDocs: any[] = [];
   uploadURLDocs = signal(`${environment.apiUrl}/documentos`);
   maxFileSize = maxFileSizeUpload;
@@ -280,7 +284,7 @@ export class PedidoAtividadeFormComponent {
   private handleSubmitError(error: any, isNew: boolean): void {
     const serverMessage = error?.error?.message;
     if (error?.status === 400 && serverMessage) {
-      this.messageService.add({ severity: 'error', summary: 'Erro de validação', detail: serverMessage });
+      this.messageService.add({ severity: 'error', summary: this.i18n.instant('application.shared.toast.validationError'), detail: serverMessage });
     } else {
       this.addMessages(false, isNew, error);
     }
@@ -465,15 +469,15 @@ export class PedidoAtividadeFormComponent {
           }
           this.messageService.add({
             severity: 'info',
-            summary: 'Sucesso',
-            detail: 'Arquivos carregado com sucesso!'
+            summary: this.i18n.instant('toast.success'),
+            detail: this.i18n.instant('application.shared.toast.filesUploaded')
           });
         },
         error: () => {
           this.messageService.add({
             severity: 'error',
-            summary: 'Erro',
-            detail: 'Falha no carregamento do arquivo!'
+            summary: this.i18n.instant('toast.error'),
+            detail: this.i18n.instant('application.shared.toast.uploadFailed')
           });
         }
       });
@@ -496,15 +500,15 @@ export class PedidoAtividadeFormComponent {
         window.URL.revokeObjectURL(url);
         this.messageService.add({
           severity: 'info',
-          summary: 'Sucesso',
-          detail: 'Arquivo descarregado com sucesso!'
+          summary: this.i18n.instant('toast.success'),
+          detail: this.i18n.instant('application.shared.toast.fileDownloaded')
         });
       },
       error: error => {
         this.messageService.add({
           severity: 'error',
-          summary: 'Erro',
-          detail: 'Falha no download do arquivo!'
+          summary: this.i18n.instant('toast.error'),
+          detail: this.i18n.instant('application.shared.toast.downloadFailed')
         });
         this.loadingDownloadButtons.delete(file.id);
       },
@@ -532,8 +536,8 @@ export class PedidoAtividadeFormComponent {
         this.uploadedDocs.splice(index, 1);
         this.messageService.add({
           severity: 'info',
-          summary: 'Sucesso',
-          detail: 'Arquivo foi removido com sucesso!'
+          summary: this.i18n.instant('toast.success'),
+          detail: this.i18n.instant('application.shared.toast.fileRemoved')
         });
         this.loadingRemoveButtons.delete(file.id);
       },
@@ -541,8 +545,8 @@ export class PedidoAtividadeFormComponent {
         this.loadingRemoveButtons.delete(file.id);
         this.messageService.add({
           severity: 'error',
-          summary: 'Erro',
-          detail: 'Falha no removero arquivo!'
+          summary: this.i18n.instant('toast.error'),
+          detail: this.i18n.instant('application.shared.toast.removeFailed')
         });
       },
     });
@@ -880,8 +884,9 @@ export class PedidoAtividadeFormComponent {
   }
 
   private addMessages(isSuccess: boolean, isNew: boolean, error?: any) {
-    const summary = isSuccess ? (isNew ? 'Dados registados com sucesso!' : 'Dados atualizados com sucesso!') : 'Error';
-    const detail = isSuccess ? (isNew ? `Os dados foram registados` : `Os dados foram actualizados`) : 'Desculpe, algo deu errado. Tente novamente ou procure o administrador do sistema para mais informações.';
+    const t = (k: string) => this.i18n.instant(`application.shared.toast.${k}`);
+    const summary = isSuccess ? t(isNew ? 'created' : 'updated') : this.i18n.instant('toast.error');
+    const detail = isSuccess ? t(isNew ? 'createdDetail' : 'updatedDetail') : t('genericError');
 
     this.messageService.add({ severity: isSuccess ? 'success' : 'error', summary, detail });
   }

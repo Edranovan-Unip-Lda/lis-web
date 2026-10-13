@@ -1,4 +1,5 @@
-import { Component, input } from '@angular/core';
+import { LanguageService } from '@/core/i18n';
+import { Component, inject, input } from '@angular/core';
 import { NgxExtendedPdfViewerModule, PdfSrcType } from 'ngx-extended-pdf-viewer';
 
 /**
@@ -15,7 +16,7 @@ import { NgxExtendedPdfViewerModule, PdfSrcType } from 'ngx-extended-pdf-viewer'
         [src]="src()!"
         [height]="height()"
         [filenameForDownload]="filename()"
-        [language]="'pt-PT'"
+        [language]="i18n.pdfLocale()"
         [textLayer]="true"
         [showToolbar]="true"
         [showPrintButton]="true"
@@ -43,4 +44,5 @@ export class PdfViewerComponent {
   src = input<PdfSrcType | null>(null);
   filename = input<string>('documento.pdf');
   height = input<string>('85vh');
+  protected readonly i18n = inject(LanguageService);
 }

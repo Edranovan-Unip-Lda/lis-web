@@ -1,12 +1,14 @@
+import { LanguageService, LocalizedDatePipe } from '@/core/i18n';
 import { Aplicante } from '@/core/models/entities.model';
 import { Role } from '@/core/models/enums';
-import { StatusIconPipe, StatusSeverityPipe } from '@/core/pipes/custom.pipe';
+import { StatusIconPipe, StatusSeverityPipe, StatusLabelPipe } from '@/core/pipes/custom.pipe';
 import { AplicanteService, AuthenticationService, UserService } from '@/core/services';
 import { EmpresaService } from '@/core/services/empresa.service';
-import { DatePipe, UpperCasePipe } from '@angular/common';
-import { Component, DestroyRef, OnInit } from '@angular/core';
+import { UpperCasePipe } from '@angular/common';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
@@ -25,7 +27,7 @@ type ListMode = 'client' | 'gestor' | 'task';
 
 @Component({
   selector: 'app-application-list',
-  imports: [TableModule, Paginator, InputText, Button, IconField, InputIcon, RouterModule, Tag, StatusSeverityPipe, StatusIconPipe, Tooltip, UpperCasePipe, DatePipe, Toast, ConfirmDialog],
+  imports: [StatusLabelPipe, LocalizedDatePipe, TableModule, Paginator, InputText, Button, IconField, InputIcon, RouterModule, Tag, StatusSeverityPipe, StatusIconPipe, Tooltip, UpperCasePipe, Toast, ConfirmDialog, TranslatePipe],
   templateUrl: './application-list.component.html',
   styleUrl: './application-list.component.scss',
   providers: [ConfirmationService, MessageService]
@@ -49,6 +51,7 @@ export class ApplicationListComponent implements OnInit {
   private initialized = false;
   private searchSubject = new Subject<string>();
   private fetchTrigger = new Subject<void>();
+  private i18n = inject(LanguageService);
 
   constructor(
     private router: Router,
@@ -89,8 +92,8 @@ export class ApplicationListComponent implements OnInit {
           catchError(() => {
             this.messageService.add({
               severity: 'error',
-              summary: 'Erro',
-              detail: 'Ocorreu um erro ao obter a lista de aplicantes'
+              summary: this.i18n.instant('toast.error'),
+              detail: this.i18n.instant('application.list.loadError')
             });
             return of(null);
           })
@@ -179,18 +182,18 @@ export class ApplicationListComponent implements OnInit {
 
   delete(aplicante: Aplicante) {
     this.confirmationService.confirm({
-      message: 'Quer apagar este aplicante?',
-      header: 'Zona de risco',
+      message: this.i18n.instant('application.list.deleteConfirm'),
+      header: this.i18n.instant('application.list.dangerZone'),
       icon: 'pi pi-info-circle',
-      rejectLabel: 'Cancel',
+      rejectLabel: this.i18n.instant('common.cancel'),
       rejectButtonProps: {
-        label: 'Cancelar',
+        label: this.i18n.instant('common.cancel'),
         severity: 'secondary',
         outlined: true,
         icon: 'pi pi-times'
       },
       acceptButtonProps: {
-        label: 'Eliminar',
+        label: this.i18n.instant('common.delete'),
         severity: 'danger',
         icon: 'pi pi-check'
       },
@@ -205,16 +208,16 @@ export class ApplicationListComponent implements OnInit {
               this.getData();
               this.messageService.add({
                 severity: 'success',
-                summary: 'Sucesso',
-                detail: 'Aplicante removido com sucesso'
+                summary: this.i18n.instant('toast.success'),
+                detail: this.i18n.instant('application.list.deleted')
               });
             },
             error: error => {
               console.error(error);
               this.messageService.add({
                 severity: 'error',
-                summary: 'Erro',
-                detail: 'Ocorreu um erro ao remover o aplicante'
+                summary: this.i18n.instant('toast.error'),
+                detail: this.i18n.instant('application.list.deleteError')
               });
             },
           });
@@ -227,16 +230,16 @@ export class ApplicationListComponent implements OnInit {
               this.getData();
               this.messageService.add({
                 severity: 'success',
-                summary: 'Sucesso',
-                detail: 'Aplicante removido com sucesso'
+                summary: this.i18n.instant('toast.success'),
+                detail: this.i18n.instant('application.list.deleted')
               });
             },
             error: error => {
               console.error(error);
               this.messageService.add({
                 severity: 'error',
-                summary: 'Erro',
-                detail: 'Ocorreu um erro ao remover o aplicante'
+                summary: this.i18n.instant('toast.error'),
+                detail: this.i18n.instant('application.list.deleteError')
               });
             },
           });

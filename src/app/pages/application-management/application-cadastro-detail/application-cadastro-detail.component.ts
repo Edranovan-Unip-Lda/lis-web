@@ -1,7 +1,8 @@
+import { LanguageService, LocalizedDatePipe } from '@/core/i18n';
 import { Aldeia } from '@/core/models/data-master.model';
 import { Aplicante, Documento, Empresa, Fatura, HistoricoEstadoAplicante, PedidoInscricaoCadastro } from '@/core/models/entities.model';
 import { AplicanteStatus, Categoria, PedidoStatus, TipoEstabelecimento, TipoPedidoCadastro } from '@/core/models/enums';
-import { StatusSeverityPipe } from '@/core/pipes/custom.pipe';
+import { StatusSeverityPipe, StatusLabelPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService, FileUploadService } from '@/core/services';
 import { AplicanteService } from '@/core/services/aplicante.service';
 import { DataMasterService } from '@/core/services/data-master.service';
@@ -9,11 +10,11 @@ import { DocumentosService } from '@/core/services/documentos.service';
 import { EmpresaService } from '@/core/services/empresa.service';
 import { PedidoService } from '@/core/services/pedido.service';
 import { calculateCommercialLicenseTax, caraterizacaEstabelecimentoOptions, mapToAtividadeEconomica, mapToIdAndNome, mapToTaxa, maxFileSizeUpload, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEmpresaOptions, tipoEstabelecimentoOptions, tipoPedidoCadastroOptions } from '@/core/utils/global-function';
-import { DatePipe, TitleCasePipe } from '@angular/common';
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
@@ -33,7 +34,7 @@ import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-application-cadastro-detail',
-  imports: [ReactiveFormsModule, Button, StepperModule, Select, InputText, FileUpload, Tag, StatusSeverityPipe, DatePipe, Toast, TitleCasePipe, RouterLink, InputNumber, InputGroup, InputGroupAddon, MultiSelect, DatePicker, Textarea],
+  imports: [StatusLabelPipe, LocalizedDatePipe, ReactiveFormsModule, Button, StepperModule, Select, InputText, FileUpload, Tag, StatusSeverityPipe, Toast, TranslatePipe, RouterLink, InputNumber, InputGroup, InputGroupAddon, MultiSelect, DatePicker, Textarea],
   templateUrl: './application-cadastro-detail.component.html',
   styleUrl: './application-cadastro-detail.component.scss',
   providers: [MessageService]
@@ -86,6 +87,7 @@ export class ApplicationCadastroDetailComponent {
   // Exposed for the template (Rascunho tag / Fatura-step gating).
   PedidoStatus = PedidoStatus;
   private destroyRef = inject(DestroyRef);
+  private i18n = inject(LanguageService);
 
   constructor(
     private _fb: FormBuilder,
@@ -307,8 +309,8 @@ export class ApplicationCadastroDetailComponent {
         this.aplicanteEstado = response.estado;
         this.messageService.add({
           severity: 'success',
-          summary: 'Sucesso',
-          detail: 'A Aplicante foi submetido com sucesso!'
+          summary: this.i18n.instant('toast.success'),
+          detail: this.i18n.instant('application.shared.toast.applicantSubmitted')
         });
         this.disabledForms(AplicanteStatus.submetido);
         callback(1);
@@ -467,7 +469,7 @@ export class ApplicationCadastroDetailComponent {
   private handleSubmitError(error: any): void {
     const serverMessage = error?.error?.message;
     if (error?.status === 400 && serverMessage) {
-      this.messageService.add({ severity: 'error', summary: 'Erro de validação', detail: serverMessage });
+      this.messageService.add({ severity: 'error', summary: this.i18n.instant('application.shared.toast.validationError'), detail: serverMessage });
     } else {
       this.addMessages(false, true, error);
     }
@@ -569,15 +571,15 @@ export class ApplicationCadastroDetailComponent {
           }
           this.messageService.add({
             severity: 'info',
-            summary: 'Sucesso',
-            detail: 'Arquivos carregado com sucesso!'
+            summary: this.i18n.instant('toast.success'),
+            detail: this.i18n.instant('application.shared.toast.filesUploaded')
           });
         },
         error: () => {
           this.messageService.add({
             severity: 'error',
-            summary: 'Erro',
-            detail: 'Falha no carregamento do arquivo!'
+            summary: this.i18n.instant('toast.error'),
+            detail: this.i18n.instant('application.shared.toast.uploadFailed')
           });
         }
       });
@@ -599,19 +601,19 @@ export class ApplicationCadastroDetailComponent {
           }
           this.messageService.add({
             severity: 'info',
-            summary: 'Sucesso',
-            detail: 'Arquivo carregado com sucesso!'
+            summary: this.i18n.instant('toast.success'),
+            detail: this.i18n.instant('application.shared.toast.fileUploaded')
           });
         },
         error: (err) => {
           this.messageService.add({
             severity: 'error',
-            summary: 'Erro',
+            summary: this.i18n.instant('toast.error'),
             // CHANGED: 409 = the fatura already has a recibo. Show the server's message instead of the
             // generic failure, so the user knows to remove the existing one first.
             detail: err?.status === 409
-              ? (err.error?.message ?? 'Fatura já possui recibo vinculado.')
-              : 'Falha no carregamento do arquivo!'
+              ? (err.error?.message ?? this.i18n.instant('application.shared.toast.receiptAlreadyLinked'))
+              : this.i18n.instant('application.shared.toast.uploadFailed')
           });
         }
       });
@@ -635,16 +637,16 @@ export class ApplicationCadastroDetailComponent {
         window.URL.revokeObjectURL(url);
         this.messageService.add({
           severity: 'info',
-          summary: 'Sucesso',
-          detail: 'Arquivo descarregado com sucesso!'
+          summary: this.i18n.instant('toast.success'),
+          detail: this.i18n.instant('application.shared.toast.fileDownloaded')
         });
       },
       error: error => {
         this.downloadLoading = false;
         this.messageService.add({
           severity: 'error',
-          summary: 'Erro',
-          detail: 'Falha no download do arquivo!'
+          summary: this.i18n.instant('toast.error'),
+          detail: this.i18n.instant('application.shared.toast.downloadFailed')
         });
       },
       complete: () => {
@@ -665,16 +667,16 @@ export class ApplicationCadastroDetailComponent {
         window.URL.revokeObjectURL(url);
         this.messageService.add({
           severity: 'info',
-          summary: 'Sucesso',
-          detail: 'Arquivo descarregado com sucesso!'
+          summary: this.i18n.instant('toast.success'),
+          detail: this.i18n.instant('application.shared.toast.fileDownloaded')
         });
       },
       error: error => {
         this.downloadLoading = false;
         this.messageService.add({
           severity: 'error',
-          summary: 'Erro',
-          detail: 'Falha no download do arquivo!'
+          summary: this.i18n.instant('toast.error'),
+          detail: this.i18n.instant('application.shared.toast.downloadFailed')
         });
       },
       complete: () => {
@@ -695,16 +697,16 @@ export class ApplicationCadastroDetailComponent {
           this.uploadedDocs.splice(index, 1);
           this.messageService.add({
             severity: 'info',
-            summary: 'Sucesso',
-            detail: 'Arquivo foi removido com sucesso!'
+            summary: this.i18n.instant('toast.success'),
+            detail: this.i18n.instant('application.shared.toast.fileRemoved')
           });
         },
         error: error => {
           this.downloadLoading = false;
           this.messageService.add({
             severity: 'error',
-            summary: 'Erro',
-            detail: 'Falha no removero arquivo!'
+            summary: this.i18n.instant('toast.error'),
+            detail: this.i18n.instant('application.shared.toast.removeFailed')
           });
         },
       });
@@ -720,16 +722,16 @@ export class ApplicationCadastroDetailComponent {
 
         this.messageService.add({
           severity: 'info',
-          summary: 'Success',
-          detail: 'Arquivo excluído com sucesso!'
+          summary: this.i18n.instant('toast.success'),
+          detail: this.i18n.instant('application.shared.toast.fileDeleted')
         });
       },
       error: error => {
         this.deleteLoading = false;
         this.messageService.add({
           severity: 'error',
-          summary: 'Erro',
-          detail: 'Falha no exclusão do arquivo!'
+          summary: this.i18n.instant('toast.error'),
+          detail: this.i18n.instant('application.shared.toast.deleteFailed')
         });
       },
       complete: () => {
@@ -964,8 +966,8 @@ export class ApplicationCadastroDetailComponent {
   }
 
   private addMessages(isSuccess: boolean, isNew: boolean, error?: any) {
-    const summary = isSuccess ? (isNew ? 'Dados registados com sucesso!' : 'Dados atualizados com sucesso!') : 'Error';
-    const detail = isSuccess ? (isNew ? `Os dados foram registados` : `Os dados foram actualizados`) : 'Desculpe, algo deu errado. Tente novamente ou procure o administrador do sistema para mais informações.';
+    const summary = this.i18n.instant(isSuccess ? (isNew ? 'application.shared.toast.created' : 'application.shared.toast.updated') : 'toast.error');
+    const detail = this.i18n.instant(isSuccess ? (isNew ? 'application.shared.toast.createdDetail' : 'application.shared.toast.updatedDetail') : 'application.shared.toast.genericError');
 
     this.messageService.add({ severity: isSuccess ? 'success' : 'error', summary, detail });
   }

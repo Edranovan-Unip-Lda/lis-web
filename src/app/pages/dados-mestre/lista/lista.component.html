@@ -5,21 +5,21 @@
             <div class="flex flex-wrap gap-2 items-center justify-between">
                 <p-icon-field class="order-1 sm:order-none">
                     <p-inputicon class="pi pi-search" />
-                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Busca global"
+                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" [placeholder]="'dadosMestre.common.globalSearch' | translate"
                         class="w-full" />
                 </p-icon-field>
                 <p-button pButton outlined (click)="openDialogNewData(type)" class="flex-order-0 sm:flex-order-1"
-                    icon="bi bi-plus-lg" label="Adicionar novo">
+                    icon="bi bi-plus-lg" [label]="'dadosMestre.common.addNew' | translate">
                 </p-button>
             </div>
         </ng-template>
         <ng-template pTemplate="header" let-columns>
             <tr>
                 @for (col of columns; track $index) {
-                <th>{{ col.header }}</th>
+                <th>{{ col.header | translate }}</th>
                 }
                 <th>
-                    Açoẽs
+                    {{ 'common.actions' | translate }}
                 </th>
             </tr>
         </ng-template>
@@ -29,10 +29,13 @@
                 <td>
 
                     @if (col.field === 'montanteMinimo' || col.field === 'montanteMaximo') {
-                    {{item[col.field] |currency}}
+                    {{item[col.field] | lcurrency}}
                     }
                     @else if (col.field === 'grupoAtividade') {
                     {{item[col.field].codigo}}
+                    }
+                    @else if (col.enum) {
+                    {{ enumLabel(col.enum, item[col.field]) }}
                     }@else{
                     {{item[col.field]}}
                     }
@@ -49,14 +52,14 @@
     </p-table>
     <p-paginator (onPageChange)="onPageChange($event)" [rows]="size" [totalRecords]="totalData"
         [rowsPerPageOptions]="[50, 150, 250]" [showCurrentPageReport]="true"
-        currentPageReportTemplate="A mostrar {first} a {last} de {totalRecords}" />
+        [currentPageReportTemplate]="'dadosMestre.common.pageReport' | translate" />
 </div>
 
 <p-toast position="bottom-right" />
 <p-confirmdialog />
 
 @if (showDialog) {
-<p-dialog #dg header="{{isNew?'New':'Edit'}} {{type.replace('-',' ')|titlecase}}" [modal]="true" [position]="'top'"
+<p-dialog #dg [header]="('dadosMestre.dialog.' + (isNew ? 'new.' : 'edit.') + type) | translate" [modal]="true" [position]="'top'"
     [(visible)]="showDialog" [style]="{ 'min-width': '30rem' }" [closeOnEscape]="false" [closable]="false">
     <form [formGroup]="dataForm">
         <div class="grid grid-cols-12 gap-4">
@@ -64,33 +67,33 @@
             @case ('direcoes') {
             <div class="mb-2 col-span-12">
                 <label for="nome" class="font-medium  mb-2 block">
-                    Categoria (Comercial/Industrial)
+                    {{ 'dadosMestre.fields.categoriaComInd' | translate }}
                 </label>
                 <p-select [appendTo]="'body'" formControlName="nome" inputId="nome" [options]="categoryOpts"
-                    optionLabel="name" optionValue="value" fluid [showClear]="true" placeholder="Selecione a direção">
+                    optionLabel="name" optionValue="value" fluid [showClear]="true" [placeholder]="'dadosMestre.placeholders.direcao' | translate">
                 </p-select>
             </div>
             }
             @case ('roles') {
             <div class="mb-2 col-span-12">
                 <label for="name" class="font-medium  mb-2 block">
-                    Nome
+                    {{ 'common.name' | translate }}
                 </label>
                 <p-select [appendTo]="'body'" formControlName="name" inputId="name" [options]="rolesOpts"
-                    optionLabel="name" optionValue="value" fluid [showClear]="true" placeholder="Selecione a função">
+                    optionLabel="name" optionValue="value" fluid [showClear]="true" [placeholder]="'dadosMestre.placeholders.funcao' | translate">
                 </p-select>
             </div>
             }
             @case ('grupo-atividades') {
             <div class="mb-6 col-span-12">
                 <label for="codigo" class="font-medium  mb-2 block">
-                    Código
+                    {{ 'dadosMestre.fields.codigo' | translate }}
                 </label>
                 <input formControlName="codigo" id="codigo" type="text" pInputText fluid />
             </div>
             <div class="mb-6 col-span-12">
                 <label for="descricao" class="font-medium  mb-2 block">
-                    Descrição
+                    {{ 'dadosMestre.fields.descricao' | translate }}
                 </label>
                 <input formControlName="descricao" id="descricao" type="text" pInputText fluid />
             </div>
@@ -98,10 +101,10 @@
             @case ('classe-atividades') {
             <div class="mb-2 col-span-12">
                 <label for="grupoAtividade" class="font-medium  mb-2 block">
-                    Grupo Atividade
+                    {{ 'dadosMestre.fields.grupoAtividade' | translate }}
                 </label>
                 <p-select [appendTo]="'body'" formControlName="grupoAtividade" inputId="grupoAtividade"
-                    [options]="grupoAtivadadeOpts" fluid [showClear]="true" placeholder="Selecione o grupo atividade">
+                    [options]="grupoAtivadadeOpts" fluid [showClear]="true" [placeholder]="'dadosMestre.placeholders.grupoAtividade' | translate">
                     <ng-template #selectedItem let-selectedOption>
                         <span>{{selectedOption.codigo}} - {{selectedOption.descricao}}</span>
                     </ng-template>
@@ -112,58 +115,58 @@
             </div>
             <div class="mb-6 col-span-12">
                 <label for="codigo" class="font-medium  mb-2 block">
-                    Código
+                    {{ 'dadosMestre.fields.codigo' | translate }}
                 </label>
                 <input formControlName="codigo" id="codigo" type="text" pInputText fluid />
             </div>
             <div class="mb-6 col-span-12">
                 <label for="descricao" class="font-medium  mb-2 block">
-                    Descrição
+                    {{ 'dadosMestre.fields.descricao' | translate }}
                 </label>
                 <input formControlName="descricao" id="descricao" type="text" pInputText fluid />
             </div>
             <div class="col-span-12">
                 <label for="tipoRisco" class="font-medium  mb-2 block">
-                    Risco
+                    {{ 'dadosMestre.fields.risco' | translate }}
                 </label>
                 <p-select [appendTo]="'body'" formControlName="tipoRisco" inputId="tipoRisco" [options]="nivelRiscoOpts"
                     optionLabel="name" optionValue="value" fluid [showClear]="true"
-                    placeholder="Selecione o Nivel Risco">
+                    [placeholder]="'dadosMestre.placeholders.risco' | translate">
                 </p-select>
             </div>
             }
             @case ('taxas') {
             <div class="mb-2 col-span-12">
                 <label for="categoria" class="font-medium  mb-2 block">
-                    Categoria (Comercial/Industrial)
+                    {{ 'dadosMestre.fields.categoriaComInd' | translate }}
                 </label>
                 <p-select [appendTo]="'body'" formControlName="categoria" inputId="categoria" [options]="categoryOpts"
-                    optionLabel="name" optionValue="value" fluid [showClear]="true" placeholder="Selecione a Categoria">
+                    optionLabel="name" optionValue="value" fluid [showClear]="true" [placeholder]="'dadosMestre.placeholders.categoria' | translate">
                 </p-select>
             </div>
             <div class="mb-2 col-span-12">
                 <label for="tipo" class="font-medium  mb-2 block">
-                    Tipo (Cadastro/Atividade)
+                    {{ 'dadosMestre.fields.tipoCadAtv' | translate }}
                 </label>
                 <p-select [appendTo]="'body'" formControlName="tipo" inputId="tipo" [options]="aplicanteOpts"
-                    optionLabel="name" optionValue="value" fluid [showClear]="true" placeholder="Selecione o Tipo">
+                    optionLabel="name" optionValue="value" fluid [showClear]="true" [placeholder]="'dadosMestre.placeholders.tipo' | translate">
                 </p-select>
             </div>
             <div class="mb-6 col-span-12">
                 <label for="ato" class="font-medium  mb-2 block">
-                    Ato
+                    {{ 'dadosMestre.fields.ato' | translate }}
                 </label>
                 <input formControlName="ato" id="ato" type="text" pInputText fluid />
             </div>
             <div class="mb-6 col-span-12 md:col-span-6">
                 <label for="montanteMinimo" class="font-medium  mb-2 block">
-                    Montante Mínimo
+                    {{ 'dadosMestre.fields.montanteMinimo' | translate }}
                 </label>
                 <input formControlName="montanteMinimo" id="montanteMinimo" type="number" pInputText fluid />
             </div>
             <div class="mb-6 col-span-12 md:col-span-6">
                 <label for="montanteMaximo" class="font-medium  mb-2 block">
-                    Montante Máximo
+                    {{ 'dadosMestre.fields.montanteMaximo' | translate }}
                 </label>
                 <input formControlName="montanteMaximo" id="montanteMaximo" type="number" pInputText fluid />
             </div>
@@ -171,13 +174,13 @@
             @case ('sociedade-comercial'){
             <div class="mb-6 col-span-12">
                 <label for="nome" class="font-medium  mb-2 block">
-                    Nome
+                    {{ 'common.name' | translate }}
                 </label>
                 <input formControlName="nome" id="nome" type="text" pInputText fluid />
             </div>
             <div class="mb-6 col-span-12">
                 <label for="acronimo" class="font-medium  mb-2 block">
-                    Acrónimo
+                    {{ 'dadosMestre.fields.acronimo' | translate }}
                 </label>
                 <input formControlName="acronimo" id="acronimo" type="text" pInputText fluid />
             </div>
@@ -185,14 +188,14 @@
             }
 
             <div class="mb-6 col-span-12">
-                <p-button class="mr-4" icon="pi pi-times" label="Cancelar" variant="outlined" severity="danger"
+                <p-button class="mr-4" icon="pi pi-times" [label]="'common.cancel' | translate" variant="outlined" severity="danger"
                     (click)="closeDialog()" />
                 @if (isNew) {
                 <p-button icon="pi pi-save" [loading]="loading" [disabled]="!dataForm.valid" pButton pRipple
-                    (click)="saveData(dataForm)" label="Guardar" class="w-auto mt-3"></p-button>
+                    (click)="saveData(dataForm)" [label]="'common.save' | translate" class="w-auto mt-3"></p-button>
                 }@else {
                 <p-button icon="pi pi-sync" [loading]="loading" [disabled]="!dataForm.valid" pButton pRipple
-                    (click)="updateData(dataForm)" label="Atualizar" class="w-auto mt-3"></p-button>
+                    (click)="updateData(dataForm)" [label]="'dadosMestre.common.update' | translate" class="w-auto mt-3"></p-button>
                 }
             </div>
 

@@ -5,7 +5,7 @@ export default [
     {
         path: 'autenticacoes',
         loadComponent: () => import('./authentication/authentication-list.component').then(c => c.AuthenticationListComponent),
-        data: { breadcrumb: 'Autenticações' },
+        data: { breadcrumb: 'breadcrumb.autenticacoes' },
         resolve: {
             loginActivities: getLoginActivities
         }
@@ -13,7 +13,7 @@ export default [
     {
         path: 'acoes',
         loadComponent: () => import('./actions/actions.component').then(c => c.ActionsComponent),
-        data: { breadcrumb: 'Ações' },
+        data: { breadcrumb: 'breadcrumb.acoes' },
         resolve: {
             allActivities: getAllActivities
         }

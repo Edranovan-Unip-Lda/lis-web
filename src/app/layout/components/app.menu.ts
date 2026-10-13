@@ -50,10 +50,10 @@ export class AppMenu {
                 break;
         }
         const docMenu = {
-            label: 'Documentação',
+            label: 'menu.documentacao',
             items: [
                 {
-                    label: 'Manual do Utilizador',
+                    label: 'menu.manualUtilizador',
                     icon: 'bi bi-fw bi-file-earmark-text',
                     url: ['https://drive.google.com/file/d/1A8g_iC9E8js0gQZbXcxXmua1pAwYiQTw/view?usp=drive_link'],
                     target: '_blank'

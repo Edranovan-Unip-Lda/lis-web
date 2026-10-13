@@ -25,11 +25,13 @@ import { TextareaModule } from 'primeng/textarea';
 import { Toast } from 'primeng/toast';
 import { finalize } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { TranslatePipe } from '@ngx-translate/core';
+import { LanguageService } from '@/core/i18n';
 
 @Component({
     selector: 'user-create',
     standalone: true,
-    imports: [Select, InputText, TextareaModule, CommonModule, FileUploadModule, ButtonModule, InputGroupModule, RippleModule, ReactiveFormsModule, PasswordModule, MessageModule, SelectButtonModule, InputTextModule, Toast, Image, Skeleton],
+    imports: [Select, InputText, TextareaModule, CommonModule, FileUploadModule, ButtonModule, InputGroupModule, RippleModule, ReactiveFormsModule, PasswordModule, MessageModule, SelectButtonModule, InputTextModule, Toast, Image, Skeleton, TranslatePipe],
     templateUrl: './user-form.html',
     providers: [MessageService]
 })
@@ -55,6 +57,7 @@ export class UserCreate implements OnDestroy {
     // True while the signature blob is being fetched, so the UI can show a skeleton.
     signatureImageLoading = signal(false);
     private destroyRef = inject(DestroyRef);
+    private i18n = inject(LanguageService);
 
     constructor(
         private _fb: FormBuilder,
@@ -137,7 +140,7 @@ export class UserCreate implements OnDestroy {
             this.userService.save(formData).subscribe({
                 next: (response) => {
                     this.loading = false;
-                    this.addMessage(true, `User created successfully and verification link sent to ${response.email}`);
+                    this.addMessage(true, this.i18n.instant('users.form.created', { email: response.email }));
                     this.userForm.reset();
                     // Clear the staged signature too — it belongs to the user just created.
                     this.signatureDoc = undefined!;
@@ -169,7 +172,7 @@ export class UserCreate implements OnDestroy {
             this.userService.update(this.username, formData).subscribe({
                 next: (response) => {
                     this.loading = false;
-                    this.addMessage(true, 'User updated successfully');
+                    this.addMessage(true, this.i18n.instant('users.form.updated'));
                     // Swap the transient signature (id: null) for the persisted one so a second
                     // save re-references it by id instead of creating another documento row.
                     if (response?.signature) {
@@ -191,7 +194,7 @@ export class UserCreate implements OnDestroy {
             ]);
         } else {
             this.messages.set([
-                { severity: 'error', content: 'Desculpe, algo deu errado. Tente novamente ou procure o administrador do sistema para mais informações.', icon: 'pi pi-times-circle' },
+                { severity: 'error', content: this.i18n.instant('users.form.genericError'), icon: 'pi pi-times-circle' },
             ]);
         }
     }
@@ -237,15 +240,15 @@ export class UserCreate implements OnDestroy {
                     }
                     this.messageService.add({
                         severity: 'info',
-                        summary: 'Sucesso',
-                        detail: 'Arquivos carregado com sucesso!'
+                        summary: this.i18n.instant('toast.success'),
+                        detail: this.i18n.instant('users.form.uploadSuccess')
                     });
                 },
                 error: () => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Erro',
-                        detail: 'Falha no carregamento do arquivo!'
+                        summary: this.i18n.instant('toast.error'),
+                        detail: this.i18n.instant('users.form.uploadError')
                     });
                 }
             });
@@ -257,8 +260,8 @@ export class UserCreate implements OnDestroy {
             next: () => {
                 this.messageService.add({
                     severity: 'info',
-                    summary: 'Sucesso',
-                    detail: 'Arquivo foi removido com sucesso!'
+                    summary: this.i18n.instant('toast.success'),
+                    detail: this.i18n.instant('users.form.removeSuccess')
                 });
                 this.signatureDoc = undefined!;
                 this.revokeSignatureImage();
@@ -266,8 +269,8 @@ export class UserCreate implements OnDestroy {
             error: error => {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Erro',
-                    detail: 'Falha no removero arquivo!'
+                    summary: this.i18n.instant('toast.error'),
+                    detail: this.i18n.instant('users.form.removeError')
                 });
             },
             complete: () => this.loadingRemoveBtn = false

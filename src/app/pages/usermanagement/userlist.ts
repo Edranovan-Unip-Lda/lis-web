@@ -1,12 +1,13 @@
+import { LanguageService, LocalizedDatePipe } from '@/core/i18n';
+import { TranslatePipe } from '@ngx-translate/core';
 import { User } from '@/core/models/entities.model';
 import { Role } from '@/core/models/enums';
-import { StatusIconPipe, StatusSeverityPipe } from '@/core/pipes/custom.pipe';
+import { StatusIconPipe, StatusSeverityPipe, StatusLabelPipe } from '@/core/pipes/custom.pipe';
 import { UserService } from '@/core/services';
-import { DatePipe, TitleCasePipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { Button } from 'primeng/button';
+import { Button, ButtonDirective } from 'primeng/button';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
@@ -19,7 +20,7 @@ import { catchError, debounceTime, distinctUntilChanged, of, Subject, switchMap 
 @Component({
     selector: 'user-list',
     standalone: true,
-    imports: [TableModule, InputText, Button, IconField, InputIcon, RouterModule, Tag, StatusSeverityPipe, StatusIconPipe, TitleCasePipe, DatePipe, Toast, Paginator],
+    imports: [StatusLabelPipe, LocalizedDatePipe, TableModule, InputText, Button, ButtonDirective, IconField, InputIcon, RouterModule, Tag, StatusSeverityPipe, StatusIconPipe, Toast, Paginator, TranslatePipe],
     templateUrl: './userlist.html',
     providers: [MessageService]
 })
@@ -34,6 +35,7 @@ export class UserList {
     size = 50;
     totalData = 0;
     isInternal = false;
+    private i18n = inject(LanguageService);
 
     constructor(
         private router: Router,
@@ -86,7 +88,7 @@ export class UserList {
                 error: (error) => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Erro',
+                        summary: this.i18n.instant('toast.error'),
                         detail: error
                     });
                     this.dataIsFetching = false;
@@ -103,7 +105,7 @@ export class UserList {
                 error: (error) => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Erro',
+                        summary: this.i18n.instant('toast.error'),
                         detail: error
                     });
                     this.dataIsFetching = false;
@@ -126,7 +128,7 @@ export class UserList {
                             catchError(error => {
                                 this.messageService.add({
                                     severity: 'error',
-                                    summary: 'Erro',
+                                    summary: this.i18n.instant('toast.error'),
                                     detail: error
                                 });
                                 return of(this.usersCached);
@@ -137,7 +139,7 @@ export class UserList {
                             catchError(error => {
                                 this.messageService.add({
                                     severity: 'error',
-                                    summary: 'Erro',
+                                    summary: this.i18n.instant('toast.error'),
                                     detail: error
                                 });
                                 return of(this.usersCached);

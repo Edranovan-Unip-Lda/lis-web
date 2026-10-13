@@ -1,6 +1,8 @@
+import { LanguageService, LocalizedDatePipe } from '@/core/i18n';
+import { TranslatePipe } from '@ngx-translate/core';
 import { SecuritySettings } from '@/core/models/entities.model';
 import { DefinicoesService } from '@/core/services';
-import { DatePipe } from '@angular/common';
+
 import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -21,7 +23,7 @@ import { Toast } from 'primeng/toast';
 @Component({
     selector: 'app-seguranca',
     standalone: true,
-    imports: [FormsModule, DatePipe, ToggleSwitchModule, InputTextModule, ButtonModule, Message, ConfirmDialog, Toast],
+    imports: [LocalizedDatePipe, FormsModule, ToggleSwitchModule, InputTextModule, ButtonModule, Message, ConfirmDialog, Toast, TranslatePipe],
     templateUrl: './seguranca.component.html',
     providers: [ConfirmationService, MessageService]
 })
@@ -30,6 +32,7 @@ export class SegurancaComponent implements OnInit {
     private confirmationService = inject(ConfirmationService);
     private messageService = inject(MessageService);
     private destroyRef = inject(DestroyRef);
+    private i18n = inject(LanguageService);
 
     /** Server truth. Drives the warning banner, the metadata line and every revert. */
     settings = signal<SecuritySettings | null>(null);
@@ -62,7 +65,7 @@ export class SegurancaComponent implements OnInit {
                     this.loading.set(false);
                     // Loaded explicitly rather than through a resolver: resolvers here swallow failures and
                     // return an empty shape, which on a security screen would render a silent lie.
-                    this.loadError.set(typeof err === 'string' ? err : 'Não foi possível carregar as definições.');
+                    this.loadError.set(typeof err === 'string' ? err : this.i18n.instant('definicoes.seguranca.loadError'));
                 }
             });
     }
@@ -77,12 +80,11 @@ export class SegurancaComponent implements OnInit {
         }
         if (next) {
             this.confirmationService.confirm({
-                header: 'Confirmar',
+                header: this.i18n.instant('common.confirm'),
                 icon: 'pi pi-shield-check',
-                message:
-                    'Vai reativar a verificação em duas etapas para todos os utilizadores. Os próximos inícios de sessão passarão a exigir um código enviado por email. Deseja continuar?',
-                acceptLabel: 'Sim, ativar',
-                rejectLabel: 'Cancelar',
+                message: this.i18n.instant('definicoes.seguranca.confirmEnable'),
+                acceptLabel: this.i18n.instant('definicoes.seguranca.acceptEnable'),
+                rejectLabel: this.i18n.instant('common.cancel'),
                 accept: () => this.commit(true),
                 reject: () => this.revert()
             });
@@ -93,8 +95,8 @@ export class SegurancaComponent implements OnInit {
             this.motivoError.set(true);
             this.messageService.add({
                 severity: 'warn',
-                summary: 'Motivo obrigatório',
-                detail: 'Indique o motivo antes de desativar a verificação em duas etapas. Nada foi alterado.'
+                summary: this.i18n.instant('definicoes.seguranca.reasonRequired'),
+                detail: this.i18n.instant('definicoes.seguranca.reasonRequiredDetail')
             });
             this.revert();
             return;
@@ -102,12 +104,11 @@ export class SegurancaComponent implements OnInit {
         this.motivoError.set(false);
 
         this.confirmationService.confirm({
-            header: 'Zona de risco',
+            header: this.i18n.instant('definicoes.seguranca.dangerZone'),
             icon: 'pi pi-exclamation-triangle',
-            message:
-                'Vai desativar a verificação em duas etapas para TODOS os utilizadores. O início de sessão passará a exigir apenas email e palavra-passe. Esta ação fica registada no histórico. Deseja continuar?',
-            acceptLabel: 'Sim, desativar',
-            rejectLabel: 'Cancelar',
+            message: this.i18n.instant('definicoes.seguranca.confirmDisable'),
+            acceptLabel: this.i18n.instant('definicoes.seguranca.acceptDisable'),
+            rejectLabel: this.i18n.instant('common.cancel'),
             acceptButtonStyleClass: 'p-button-danger',
             accept: () => this.commit(false),
             reject: () => this.revert()
@@ -128,13 +129,13 @@ export class SegurancaComponent implements OnInit {
                         next
                             ? {
                                   severity: 'success',
-                                  summary: 'Verificação em duas etapas ativada',
-                                  detail: 'Os próximos inícios de sessão exigem um código enviado por email.'
+                                  summary: this.i18n.instant('definicoes.seguranca.enabledToast'),
+                                  detail: this.i18n.instant('definicoes.seguranca.enabledToastDetail')
                               }
                             : {
                                   severity: 'warn',
-                                  summary: 'Verificação em duas etapas desativada',
-                                  detail: 'O início de sessão passa a exigir apenas a palavra-passe.'
+                                  summary: this.i18n.instant('definicoes.seguranca.disabledToast'),
+                                  detail: this.i18n.instant('definicoes.seguranca.disabledToastDetail')
                               }
                     );
                 },
@@ -142,7 +143,7 @@ export class SegurancaComponent implements OnInit {
                     this.saving.set(false);
                     this.revert();
                     // The interceptor rethrows a plain string, not an HttpErrorResponse.
-                    this.messageService.add({ severity: 'error', summary: 'Não foi possível guardar', detail: err });
+                    this.messageService.add({ severity: 'error', summary: this.i18n.instant('definicoes.seguranca.saveError'), detail: err });
                 }
             });
     }

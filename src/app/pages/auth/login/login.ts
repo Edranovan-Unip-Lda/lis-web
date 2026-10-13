@@ -14,11 +14,12 @@ import { InputText } from 'primeng/inputtext';
 import { Message } from 'primeng/message';
 import { Password } from 'primeng/password';
 import { Ripple } from 'primeng/ripple';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [Button, InputText, RouterLink, Ripple, InputIcon, IconField, Fluid, ReactiveFormsModule, Message, Password],
+    imports: [Button, InputText, RouterLink, Ripple, InputIcon, IconField, Fluid, ReactiveFormsModule, Message, Password, TranslatePipe],
     templateUrl: './login.html',
     providers: [MessageService]
 })

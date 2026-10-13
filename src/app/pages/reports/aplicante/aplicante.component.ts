@@ -1,11 +1,12 @@
+import { LanguageService, LocalizedDatePipe } from '@/core/i18n';
 import { Aplicante } from '@/core/models/entities.model';
-import { StatusIconPipe, StatusSeverityPipe } from '@/core/pipes/custom.pipe';
+import { StatusIconPipe, StatusSeverityPipe, StatusLabelPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService } from '@/core/services';
 import { ExportService } from '@/core/services/export.service';
 import { ReportService } from '@/core/services/report.service';
 import { aplicanteStatusOptions, applicationTypesOptions, categoryTpesOptions } from '@/core/utils/global-function';
 import { DatePipe, UpperCasePipe } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Button } from 'primeng/button';
@@ -15,10 +16,11 @@ import { Paginator } from 'primeng/paginator';
 import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { Tag } from 'primeng/tag';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-aplicante',
-  imports: [ReactiveFormsModule, Select, Button, DatePipe, TableModule, Message, Paginator, DatePicker, Tag, UpperCasePipe, StatusIconPipe, StatusSeverityPipe],
+  imports: [StatusLabelPipe, LocalizedDatePipe, ReactiveFormsModule, Select, Button, TableModule, Message, Paginator, DatePicker, Tag, UpperCasePipe, StatusIconPipe, StatusSeverityPipe, TranslatePipe],
   templateUrl: './aplicante.component.html',
   styleUrl: './aplicante.component.scss'
 })
@@ -36,6 +38,7 @@ export class AplicanteComponent {
   dataIsFetching = false;
   messages = signal<any[]>([]);
   isPdfGenerating = false;
+  private i18n = inject(LanguageService);
 
   constructor(
     private _fb: FormBuilder,
@@ -99,17 +102,30 @@ export class AplicanteComponent {
   }
 
   exportToExcel(): void {
+    const h = (key: string) => this.i18n.instant(key);
     const mappedData = this.data.map((item: Aplicante) => ({
-      'Empresa': item.empresa.nome,
-      'Nº da Aplicante': item.numero,
-      'Categoria': item.categoria,
-      'Tipo de Aplicante': item.tipo,
-      'Estado': item.estado,
-      'Data de Aprovação': new DatePipe('pt-PT').transform(item.updatedAt, 'dd/MM/yyyy_HH:mm:ss') || 'N/A',
+      [h('reports.common.empresa')]: item.empresa.nome,
+      [h('reports.aplicante.numero')]: item.numero,
+      [h('reports.common.categoria')]: this.enumLabel('Categoria', item.categoria),
+      [h('reports.aplicante.tipoAplicante')]: this.enumLabel('AplicanteType', item.tipo),
+      [h('common.status')]: this.label('status', item.estado),
+      [h('reports.aplicante.dataAprovacao')]: new DatePipe('pt-PT').transform(item.updatedAt, 'dd/MM/yyyy_HH:mm:ss') || 'N/A',
     }));
-    const fileName = `Relatório do Aplicante_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
+    const fileName = `${h('reports.aplicante.fileName')}_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
     this.exportService.toExcel(mappedData, fileName);
 
+  }
+
+  /** Label for an enum code; unknown codes render as-is. */
+  enumLabel(enumName: string, value: string | null | undefined): string {
+    return this.label(`enum.${enumName}`, value);
+  }
+
+  private label(prefix: string, value: string | null | undefined): string {
+    if (!value) return '';
+    const key = `${prefix}.${value}`;
+    const label = this.i18n.instant(key);
+    return label === key ? value : label;
   }
 
   initForm() {
@@ -124,7 +140,7 @@ export class AplicanteComponent {
 
   generatePDF(divId: string) {
     this.isPdfGenerating = true;
-    const fileName = `Relatório de Aplicante_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
+    const fileName = `${this.i18n.instant('reports.aplicante.fileName')}_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
     this.exportService.toPdf(divId, fileName)
       .then(() => {
         this.isPdfGenerating = false;
@@ -170,6 +186,6 @@ export class AplicanteComponent {
   }
 
   private addEmptyMessage(): void {
-    this.messages.set([{ icon: 'pi pi-info-circle', size: 'large', severity: 'info', content: 'Não existem dados disponíveis para o relatório selecionado.' }]);
+    this.messages.set([{ icon: 'pi pi-info-circle', size: 'large', severity: 'info', content: 'reports.common.noData' }]);
   }
 }

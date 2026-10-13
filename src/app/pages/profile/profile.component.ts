@@ -1,7 +1,7 @@
 import { User } from '@/core/models/entities.model';
 import { UserService } from '@/core/services';
 import { mustMatch } from '@/core/validators/must-match';
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -10,10 +10,12 @@ import { InputText, InputTextModule } from 'primeng/inputtext';
 import { Message } from 'primeng/message';
 import { PasswordModule } from 'primeng/password';
 import { Toast } from 'primeng/toast';
+import { TranslatePipe } from '@ngx-translate/core';
+import { LanguageService } from '@/core/i18n';
 
 @Component({
   selector: 'app-profile',
-  imports: [InputText, Button, Message, ReactiveFormsModule, PasswordModule, InputTextModule, Toast],
+  imports: [InputText, Button, Message, ReactiveFormsModule, PasswordModule, InputTextModule, Toast, TranslatePipe],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
   providers: [MessageService]
@@ -26,6 +28,7 @@ export class ProfileComponent {
   username!: string;
   showCategoria = false;
   isDirector = false;
+  private i18n = inject(LanguageService);
 
   constructor(
     private _fb: FormBuilder,
@@ -54,14 +57,14 @@ export class ProfileComponent {
     if (form.valid) {
       this.userService.updateProfile(this.username, form.value).subscribe({
         next: (res) => {
-          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Perfil atualizado com sucesso!' });
+          this.messageService.add({ severity: 'success', summary: this.i18n.instant('toast.success'), detail: this.i18n.instant('profile.updated') });
         },
         error: (err) => {
           this.loading = false;
           this.userForm.get('currentPassword')?.reset();
           this.userForm.get('newPassword')?.reset();
           this.userForm.get('confirmPassword')?.reset();
-          this.messageService.add({ severity: 'error', summary: 'Erro', detail: err });
+          this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: err });
         },
         complete: () => {
           this.loading = false;

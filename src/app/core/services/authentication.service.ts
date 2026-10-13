@@ -1,10 +1,12 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { map, Observable, take } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { User } from '../models/entities.model';
 import { Role } from '../models/enums';
+import { LANG_STORAGE_KEY } from '../i18n/language.service';
+import { RAW_HTTP_ERROR } from '../security/http-context';
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +38,8 @@ export class AuthenticationService {
   // loginToken: the single-use transaction token issued by /authenticate — the backend rejects OTP
   // validation/resend without it, so a third party can't burn a victim's OTP attempts.
   validateOTP(username: string, otp: string, loginToken: string): Observable<any> {
-    return this.http.post<User>(`${this.apiUrl}/otp/${otp}`, { username, loginToken })
+    // Errors come back raw: the OTP screen branches on errorCode (see verification.ts).
+    return this.http.post<User>(`${this.apiUrl}/otp/${otp}`, { username, loginToken }, { context: new HttpContext().set(RAW_HTTP_ERROR, true) })
       .pipe(
         map(response => {
           this.setSession(response);
@@ -73,7 +76,9 @@ export class AuthenticationService {
   }
 
   private setSession(authResult: any): void {
+    const lang = localStorage.getItem(LANG_STORAGE_KEY);
     localStorage.clear();
+    if (lang) localStorage.setItem(LANG_STORAGE_KEY, lang);
     localStorage.setItem(this.userKey, JSON.stringify(authResult));
   }
 

@@ -14,30 +14,30 @@
                         <p-floatLabel>
                             <p-datepicker formControlName="rangeDateTime" selectionMode="range" dateFormat="dd/mm/yy"
                                 inputId="rangeDateTime" [showButtonBar]="true" />
-                            <label for="rangeDateTime">Intervalo personalizado</label>
+                            <label for="rangeDateTime">{{ 'logs.filter.customRange' | translate }}</label>
                         </p-floatLabel>
                     }
-                    <input type="text" pInputText formControlName="author" placeholder="Filtrar por Autor" />
+                    <input type="text" pInputText formControlName="author" [placeholder]="'logs.filter.author' | translate" />
                     <p-select [options]="entityOpts" formControlName="entity" optionLabel="name" optionValue="value"
-                        placeholder="Filtrar por Entidade" [showClear]="true" />
+                        [placeholder]="'logs.filter.entity' | translate" [showClear]="true" />
                     <p-select [options]="typeOpts" formControlName="type" optionLabel="name" optionValue="value"
-                        placeholder="Filtrar por Tipo" [showClear]="true" />
+                        [placeholder]="'logs.filter.type' | translate" [showClear]="true" />
                 </form>
             </ng-template>
             <ng-template #header>
                 <tr>
                     @for (item of columns; track $index) {
-                    <th>{{ item }}</th>
+                    <th>{{ item | translate }}</th>
                     }
                 </tr>
             </ng-template>
             <ng-template #body let-item>
                 <tr>
                     <td>{{ item.commitMetadata?.author }}</td>
-                    <td>{{ item.commitMetadata?.commitDate | date: 'dd/MM/yyyy, HH:mm:ss' }}</td>
+                    <td>{{ item.commitMetadata?.commitDate | ldate: 'dd/MM/yyyy, HH:mm:ss' }}</td>
                     <td>
                         <span [title]="item.globalId?.entity">
-                            {{ extractEntityName(item.globalId?.entity) }}
+                            {{ entityLabel(item.globalId?.entity) }}
                         </span>
                     </td>
                     <td>{{ item.globalId?.cdoId }}</td>
@@ -57,14 +57,14 @@
             <ng-template #emptymessage>
                 <tr>
                     <td [attr.colspan]="columns.length" class="text-center">
-                        Nenhum registo encontrado.
+                        {{ 'common.noRecords' | translate }}
                     </td>
                 </tr>
             </ng-template>
         </p-table>
         <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="size" [totalRecords]="totalData"
             [rowsPerPageOptions]="[50, 250, 500]" [showCurrentPageReport]="true"
-            currentPageReportTemplate="A mostrar {first} a {last} de {totalRecords}" />
+            [currentPageReportTemplate]="'users.list.pageReport' | translate" />
     </div>
 </div>
 <p-toast />

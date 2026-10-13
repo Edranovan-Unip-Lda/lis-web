@@ -12,12 +12,12 @@ import { getCertificadoById } from "@/core/resolvers/certificados.resolver";
 export default [
     {
         path: 'licencas',
-        data: { breadcrumb: 'Licenças' },
+        data: { breadcrumb: 'breadcrumb.licencas' },
         children: [
             {
                 path: 'comercio',
                 data: {
-                    breadcrumb: 'Comércio',
+                    breadcrumb: 'breadcrumb.comercio',
                     type: AplicanteType.licenca,
                     categoria: Categoria.comercial,
                     // listMode tells the shared list component which paged endpoint to call.
@@ -31,7 +31,7 @@ export default [
             {
                 path: 'comercio/:id',
                 data: {
-                    breadcrumb: 'Certificado PDF',
+                    breadcrumb: 'breadcrumb.certificadoPdf',
                     type: AplicanteType.licenca,
                     categoria: Categoria.comercial,
                 },
@@ -43,7 +43,7 @@ export default [
             {
                 path: 'industria',
                 data: {
-                    breadcrumb: 'Indústria',
+                    breadcrumb: 'breadcrumb.industria',
                     type: AplicanteType.licenca,
                     categoria: Categoria.industrial,
                     listMode: 'client',
@@ -56,7 +56,7 @@ export default [
             {
                 path: 'industria/:id',
                 data: {
-                    breadcrumb: 'Certificado PDF',
+                    breadcrumb: 'breadcrumb.certificadoPdf',
                     type: AplicanteType.licenca,
                     categoria: Categoria.industrial,
                 },
@@ -69,12 +69,12 @@ export default [
     },
     {
         path: 'certificados',
-        data: { breadcrumb: 'Certificados' },
+        data: { breadcrumb: 'breadcrumb.certificados' },
         children: [
             {
                 path: 'comercio',
                 data: {
-                    breadcrumb: 'Comércio',
+                    breadcrumb: 'breadcrumb.comercio',
                     type: AplicanteType.cadastro,
                     categoria: Categoria.comercial,
                     listMode: 'client',
@@ -87,7 +87,7 @@ export default [
             {
                 path: 'comercio/:id',
                 data: {
-                    breadcrumb: 'Certificado PDF',
+                    breadcrumb: 'breadcrumb.certificadoPdf',
                     type: AplicanteType.cadastro,
                     categoria: Categoria.comercial,
                 },
@@ -99,7 +99,7 @@ export default [
             {
                 path: 'industria',
                 data: {
-                    breadcrumb: 'Indústria',
+                    breadcrumb: 'breadcrumb.industria',
                     type: AplicanteType.cadastro,
                     categoria: Categoria.industrial,
                     listMode: 'client',
@@ -112,7 +112,7 @@ export default [
             {
                 path: 'industria/:id',
                 data: {
-                    breadcrumb: 'Certificado PDF',
+                    breadcrumb: 'breadcrumb.certificadoPdf',
                     type: AplicanteType.cadastro,
                     categoria: Categoria.industrial,
                 },

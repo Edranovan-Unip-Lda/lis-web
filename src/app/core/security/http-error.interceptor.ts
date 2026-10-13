@@ -5,6 +5,8 @@ import { catchError } from 'rxjs/operators';
 
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../services';
+import { LanguageService } from '../i18n';
+import { RAW_HTTP_ERROR } from './http-context';
 import * as Sentry from "@sentry/angular";
 
 // Finding #7: read a same-origin cookie. Angular's built-in XSRF interceptor skips absolute-URL requests
@@ -22,9 +24,10 @@ export const httpErrorInterceptor: HttpInterceptorFn = (
 ): Observable<HttpEvent<unknown>> => {
     const authService = inject(AuthenticationService);
     const router = inject(Router);
+    const i18n = inject(LanguageService);
 
-    // Always clone with credentials
-    let authReq = req.clone({ withCredentials: true });
+    // Always clone with credentials; Accept-Language makes backend error/validation messages follow the UI language.
+    let authReq = req.clone({ withCredentials: true, setHeaders: { 'Accept-Language': i18n.lang() } });
 
     // Finding #7: echo the XSRF-TOKEN cookie as X-XSRF-TOKEN on state-changing requests. Only present when
     // the backend has CSRF enabled (prod, same-origin); a no-op on cross-origin envs where the cookie is absent.
@@ -45,16 +48,16 @@ export const httpErrorInterceptor: HttpInterceptorFn = (
 
             if (!(error.error instanceof ProgressEvent)) {
                 // API error message
-                errorMessage = error.error?.message || 'Unknown error';
+                errorMessage = error.error?.message || i18n.instant('errors.unknown');
             } else {
                 // Connection/network error
-                errorMessage = 'Algo correu mal! Pode ser um problema de rede ou de conexão. Por favor, tente novamente mais tarde.';
+                errorMessage = i18n.instant('errors.network');
             }
 
 
             Sentry.captureException(error);
 
-            return throwError(() => errorMessage);
+            return throwError(() => (req.context.get(RAW_HTTP_ERROR) ? error : errorMessage));
         })
     );
 };

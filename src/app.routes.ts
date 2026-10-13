@@ -13,7 +13,7 @@ export const appRoutes: Routes = [
         path: '',
         redirectTo: 'auth/login',
         pathMatch: 'full',
-        data: { breadcrumb: 'Login' },
+        data: { breadcrumb: 'breadcrumb.login' },
     },
     {
         path: '',
@@ -26,7 +26,7 @@ export const appRoutes: Routes = [
             {
                 path: 'dashboard',
                 data: {
-                    breadcrumb: 'Painél',
+                    breadcrumb: 'breadcrumb.painel',
                     role: [Role.admin, Role.manager, Role.chief, Role.staff]
                 },
                 component: DashboardComponent,
@@ -37,7 +37,7 @@ export const appRoutes: Routes = [
             },
             {
                 path: 'home',
-                data: { breadcrumb: 'Início' },
+                data: { breadcrumb: 'breadcrumb.inicio' },
                 resolve: {
                     empresaResolver: getByUsernameResolver,
                 },
@@ -45,23 +45,23 @@ export const appRoutes: Routes = [
             },
             {
                 path: 'application',
-                data: { breadcrumb: 'Application' },
+                data: { breadcrumb: 'breadcrumb.aplicacao' },
                 loadChildren: () => import('@/pages/application-management/application.routes')
             },
             {
                 path: 'empresa',
-                data: { breadcrumb: 'Empresa' },
+                data: { breadcrumb: 'breadcrumb.empresa' },
                 loadChildren: () => import('@/pages/empresa/empresa.routes')
             },
             {
                 path: 'licencas-certificados',
-                data: { breadcrumb: 'Licenças e Certificados' },
+                data: { breadcrumb: 'breadcrumb.licencasCertificados' },
                 loadChildren: () => import('@/pages/licencas-certificados/licencas-certificados.routes')
             },
             {
                 path: 'gestor',
                 data: {
-                    breadcrumb: 'Gestor',
+                    breadcrumb: 'breadcrumb.gestor',
                     role: [Role.admin, Role.manager, Role.chief, Role.staff]
                 },
                 canActivate: [canActivateByRole],
@@ -70,7 +70,7 @@ export const appRoutes: Routes = [
             {
                 path: 'utilizador',
                 data: {
-                    breadcrumb: 'Utilizadór',
+                    breadcrumb: 'breadcrumb.utilizador',
                     role: [Role.admin]
                 },
                 loadChildren: () => import('@/pages/usermanagement/usermanagement.routes'),
@@ -79,7 +79,7 @@ export const appRoutes: Routes = [
             {
                 path: 'relatorios',
                 data: {
-                    breadcrumb: 'Relatórios',
+                    breadcrumb: 'breadcrumb.relatorios',
                     role: [Role.admin, Role.manager, Role.chief, Role.staff]
                 },
                 loadChildren: () => import('@/pages/reports/report.route'),
@@ -87,13 +87,13 @@ export const appRoutes: Routes = [
             },
             {
                 path: 'dados-mestre',
-                data: { breadcrumb: 'Dados Mestre', role: [Role.admin] },
+                data: { breadcrumb: 'breadcrumb.dadosMestre', role: [Role.admin] },
                 loadChildren: () => import('@/pages/dados-mestre/dados-mestre.route'),
                 canActivate: [canActivateByRole],
             },
             {
                 path: 'profile',
-                data: { breadcrumb: 'Perfil' },
+                data: { breadcrumb: 'breadcrumb.perfil' },
                 resolve: {
                     userData: getUserProfileResolver,
                 },
@@ -102,7 +102,7 @@ export const appRoutes: Routes = [
             {
                 path: 'definicoes',
                 data: {
-                    breadcrumb: 'Definições',
+                    breadcrumb: 'breadcrumb.definicoes',
                     role: [Role.admin]
                 },
                 loadChildren: () => import('@/pages/definicoes/definicoes.routes'),
@@ -111,7 +111,7 @@ export const appRoutes: Routes = [
             {
                 path: 'historicos',
                 data: {
-                    breadcrumb: 'Históricos',
+                    breadcrumb: 'breadcrumb.historicos',
                     role: [Role.admin]
                 },
                 loadChildren: () => import('@/pages/logs/logs.routes'),

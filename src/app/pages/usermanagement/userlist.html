@@ -6,42 +6,42 @@
                 <div class="flex flex-wrap gap-2 items-center justify-between">
                     <p-icon-field class="w-full sm:w-80 order-1 sm:order-none">
                         <p-inputicon class="pi pi-search" />
-                        <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Pesquisa"
+                        <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" [placeholder]="'common.search' | translate"
                             class="w-full" />
                     </p-icon-field>
                     <button (click)="navigateToCreateUser()" pButton outlined
                         class="w-full sm:w-auto flex-order-0 sm:flex-order-1" icon="pi pi-user-plus"
-                        label="Adicionar novo"></button>
+                        [label]="'users.list.addNew' | translate"></button>
                 </div>
             </ng-template>
             <ng-template #header>
                 <tr>
                     @if (!isInternal) {
-                    <th pSortableColumn="empresa" class="white-space-nowrap" style="width:23%">Empresa<p-sortIcon
+                    <th pSortableColumn="empresa" class="white-space-nowrap" style="width:23%">{{ 'users.list.empresa' | translate }}<p-sortIcon
                             field="empresa">
                         </p-sortIcon>
                     </th>
                     }
-                    <th pSortableColumn="firstName" class="white-space-nowrap" style="width:23%">Nome<p-sortIcon
+                    <th pSortableColumn="firstName" class="white-space-nowrap" style="width:23%">{{ 'common.name' | translate }}<p-sortIcon
                             field="firstName">
                         </p-sortIcon>
                     </th>
-                    <th pSortableColumn="email" class="white-space-nowrap" style="width:23%">Email <p-sortIcon
+                    <th pSortableColumn="email" class="white-space-nowrap" style="width:23%">{{ 'common.email' | translate }} <p-sortIcon
                             field="email">
                         </p-sortIcon>
                     </th>
-                    <th pSortableColumn="role.name" class="white-space-nowrap" style="width:10%">Papel <p-sortIcon
+                    <th pSortableColumn="role.name" class="white-space-nowrap" style="width:10%">{{ 'users.list.role' | translate }} <p-sortIcon
                             field="role.name"></p-sortIcon>
                     </th>
-                    <th pSortableColumn="createdAt" class="white-space-nowrap" style="width:23%">Criado em <p-sortIcon
+                    <th pSortableColumn="createdAt" class="white-space-nowrap" style="width:23%">{{ 'users.list.createdAt' | translate }} <p-sortIcon
                             field="createdAt"></p-sortIcon>
                     </th>
-                    <th pSortableColumn="status" class="white-space-nowrap">Estado <p-sortIcon field="activity"
+                    <th pSortableColumn="status" class="white-space-nowrap">{{ 'common.status' | translate }} <p-sortIcon field="activity"
                             style="width:10%">
                         </p-sortIcon>
                     </th>
                     <th class="white-space-nowrap">
-                        Ações
+                        {{ 'common.actions' | translate }}
                     </th>
                 </tr>
             </ng-template>
@@ -59,13 +59,13 @@
                         {{user.email}}
                     </td>
                     <td>
-                        {{user.role.name.replace('ROLE_', '')}}
+                        {{ ('enum.Role.' + user.role.name) | translate }}
                     </td>
                     <td>
-                        {{ user.createdAt | date: 'MM/dd/yyyy, HH:mm:ss' }}
+                        {{ user.createdAt | ldate: 'MM/dd/yyyy, HH:mm:ss' }}
                     </td>
                     <td>
-                        <p-tag value="{{user.status | titlecase}}" [severity]="user.status | statusSeverity"
+                        <p-tag [value]="user.status | statusLabel" [severity]="user.status | statusSeverity"
                             icon="{{user.status | statusIcon}}" />
                     </td>
                     <td>
@@ -77,7 +77,7 @@
         </p-table>
         <p-paginator (onPageChange)="onPageChange($event)" [rows]="size" [totalRecords]="totalData"
             [rowsPerPageOptions]="[50, 250, 500]" [showCurrentPageReport]="true"
-            currentPageReportTemplate="A mostrar {first} a {last} de {totalRecords}" />
+            [currentPageReportTemplate]="'users.list.pageReport' | translate" />
     </div>
 </div>
 <p-toast />

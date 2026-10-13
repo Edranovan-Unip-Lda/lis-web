@@ -7,16 +7,16 @@
 
     <div class="graph-content grid grid-cols-12 gap-4 mt-6">
         <div class="col-span-12 md:col-span-4">
-            <div class="text-3xl font-semibold">{{ totalCadastro | currency }}</div>
-            <div class="font-semibold my-4">TOTAL CADASTRO</div>
+            <div class="text-3xl font-semibold">{{ totalCadastro | lcurrency }}</div>
+            <div class="font-semibold my-4 uppercase">{{ 'dashboard.receita.totalCadastro' | translate }}</div>
         </div>
         <div class="col-span-12 md:col-span-4">
-            <div class="text-3xl font-semibold">{{ totalLicenca | currency }}</div>
-            <div class="font-semibold my-4">TOTAL LICENÇA</div>
+            <div class="text-3xl font-semibold">{{ totalLicenca | lcurrency }}</div>
+            <div class="font-semibold my-4 uppercase">{{ 'dashboard.receita.totalLicenca' | translate }}</div>
         </div>
         <div class="col-span-12 md:col-span-4">
-            <div class="text-3xl font-semibold">{{ totalCategoria | currency }}</div>
-            <div class="font-semibold my-4">TOTAL {{ isIndustrial ? 'INDUSTRIAL' : 'COMERCIAL' }}</div>
+            <div class="text-3xl font-semibold">{{ totalCategoria | lcurrency }}</div>
+            <div class="font-semibold my-4 uppercase">{{ 'dashboard.receita.totalCategoria' | translate: { categoria: ((isIndustrial ? 'enum.Categoria.INDUSTRIAL' : 'enum.Categoria.COMERCIAL') | translate) } }}</div>
         </div>
     </div>
 

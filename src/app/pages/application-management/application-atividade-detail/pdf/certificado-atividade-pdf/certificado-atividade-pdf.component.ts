@@ -1,3 +1,4 @@
+import { LanguageService } from '@/core/i18n';
 import { CertificadoLicencaAtividade } from '@/core/models/entities.model';
 import { AplicanteType, Role } from '@/core/models/enums';
 import { AuthenticationService, CertificadoService } from '@/core/services';
@@ -6,6 +7,7 @@ import { Location } from '@angular/common';
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { ProgressSpinner } from 'primeng/progressspinner';
@@ -13,7 +15,7 @@ import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-certificado-atividade-pdf',
-  imports: [Button, Toast, ProgressSpinner, PdfViewerComponent],
+  imports: [TranslatePipe, Button, Toast, ProgressSpinner, PdfViewerComponent],
   templateUrl: './certificado-atividade-pdf.component.html',
   styleUrl: './certificado-atividade-pdf.component.scss',
   providers: [MessageService]
@@ -27,6 +29,7 @@ export class CertificadoAtividadePdfComponent {
   isStaff = false;
 
   private destroyRef = inject(DestroyRef);
+  private i18n = inject(LanguageService);
 
   constructor(
     private route: ActivatedRoute,
@@ -43,7 +46,7 @@ export class CertificadoAtividadePdfComponent {
     this.certificadoData = this.route.snapshot.data['certificadoResolver'];
     if (!this.certificadoData) {
       this.loading.set(false);
-      this.errorMsg.set('Certificado não encontrado.');
+      this.errorMsg.set('application.pdf.certificado.notFound');
       return;
     }
     const empresa = this.certificadoData.pedidoLicencaAtividade?.nomeEmpresa ?? this.certificadoData.id;
@@ -67,16 +70,16 @@ export class CertificadoAtividadePdfComponent {
           this.pdfSrc.set(blob);
           this.loading.set(false);
           if (regenerate) {
-            this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Alvará regenerado.', key: 'br' });
+            this.messageService.add({ severity: 'success', summary: this.i18n.instant('toast.success'), detail: this.i18n.instant('application.pdf.certificado.regenerated'), key: 'br' });
           }
         },
         error: err => {
           this.loading.set(false);
-          const detail = err?.status === 404
-            ? 'O PDF do alvará ainda não foi gerado.'
-            : 'Falha ao carregar o alvará.';
-          this.errorMsg.set(detail);
-          this.messageService.add({ severity: 'error', summary: 'Erro', detail, key: 'br' });
+          const detailKey = err?.status === 404
+            ? 'application.pdf.certificado.notGenerated'
+            : 'application.pdf.certificado.loadError';
+          this.errorMsg.set(detailKey);
+          this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: this.i18n.instant(detailKey), key: 'br' });
         }
       });
   }
