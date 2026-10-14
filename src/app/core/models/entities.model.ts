@@ -502,6 +502,7 @@ export interface MapDataDto {
 }
 
 export interface MapDataPointDto {
+    municipioId: number;
     name: string;
     code: string;
     value: number;

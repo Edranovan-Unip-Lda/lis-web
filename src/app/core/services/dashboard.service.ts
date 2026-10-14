@@ -35,8 +35,8 @@ export class DashboardService {
     return this.http.get<DashboardResponse>(`${this.apiUrl}`, { params }).pipe(take(1));
   }
 
-  getByCategory(nome: string): Observable<CategoryDistributionDto[]> {
-    return this.http.get<CategoryDistributionDto[]>(`${this.apiUrl}/category`, { params: { nome } }).pipe(take(1));
+  getByCategory(municipioId: number): Observable<CategoryDistributionDto[]> {
+    return this.http.get<CategoryDistributionDto[]>(`${this.apiUrl}/category`, { params: { municipioId } }).pipe(take(1));
   }
 
   /**

@@ -18,7 +18,7 @@ import type * as Highcharts from 'highcharts';
 })
 export class EmpresaMapComponent {
   @Input() data!: MapDataDto;
-  @Output() municipioSelected = new EventEmitter<any>();
+  @Output() municipioSelected = new EventEmitter<number>();
   // Left undefined until the topology + data are both ready. The highcharts-angular directive builds
   // the chart exactly once (~500ms after the element mounts) and does NOT react to a later options
   // change unless [update] is toggled — so we keep the <highcharts-chart> out of the DOM (@if in the
@@ -135,7 +135,8 @@ export class EmpresaMapComponent {
         type: 'map',
         point: {
           events: {
-            click: (event) => this.municipioSelected.emit(event.point.name)
+            // Emit the id, not the label — labels differ from master-data names (e.g. Oecusse vs "Oecusse - RAEOA").
+            click: (event) => this.municipioSelected.emit((event.point.options as any).municipioId)
           }
         },
         data: this.convertToMapSeries(this.data.data),
@@ -158,6 +159,7 @@ export class EmpresaMapComponent {
   convertToMapSeries(mapData: MapDataPointDto[]): any[] {
     return mapData.map(point => ({
       'hc-key': point.code,
+      municipioId: point.municipioId,
       name: point.name,
       value: point.value,
       code: point.code

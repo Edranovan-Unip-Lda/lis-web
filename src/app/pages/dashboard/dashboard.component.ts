@@ -93,8 +93,8 @@ export class DashboardComponent {
         });
     }
 
-    onMunicipioSelected(nome: string) {
-        this.service.getByCategory(nome).subscribe({
+    onMunicipioSelected(municipioId: number) {
+        this.service.getByCategory(municipioId).subscribe({
             next: (data) => {
                 this.empresasBySociedadeComercial = { ...data[0] };
                 this.empresasByTipoEmpresa = { ...data[1] };

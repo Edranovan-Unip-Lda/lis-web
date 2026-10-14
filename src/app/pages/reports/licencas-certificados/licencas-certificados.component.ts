@@ -201,7 +201,9 @@ export class LicencasCertificadosComponent {
     this.dataIsFetching = true;
     this.page = event.page;
     this.size = event.rows;
-    this.getPaginationData(this.page, this.size);
+    // Re-run the active certificate query — this used to call getEmpresaReport, replacing certificate rows
+    // with empresa rows from page 2 on.
+    this.onSubmit(this.tipoAplicante);
   }
 
   exportToExcel(): void {
@@ -264,20 +266,6 @@ export class LicencasCertificadosComponent {
   sucoFilter(event: SelectFilterEvent): void {
     const query = event.filter?.trim().toLowerCase() || '';
     this.sucoSearchSubject.next(query);
-  }
-
-  private getPaginationData(page: number, size: number): void {
-    this.reportService.getEmpresaReport(this.reportForm.value, page, size).subscribe({
-      next: (response) => {
-        this.data = response.content;
-        this.totalData = response.totalElements;
-        this.dataIsFetching = false;
-      },
-      error: (error) => {
-        this.dataIsFetching = false;
-        console.error('Error fetching paginated data:', error);
-      }
-    });
   }
 
   private addEmptyMessage(): void {
