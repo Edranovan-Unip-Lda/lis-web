@@ -1,4 +1,6 @@
 <div #card class="card min-h-[720px]">
+    <p-toast />
+    <p-confirmdialog />
     <div class="grid grid-cols-3 gap-4 mb-6">
         <div class="col-span-3 md:col-span-1">
             <label for="sociedadeComercial" class="font-medium  mb-2 block">
@@ -300,6 +302,9 @@
                 [loading]="isPdfGenerating" />
             <p-button (onClick)="exportToExcel()" [disabled]="isFormEmpty(reportForm) || data.length === 0"
                 [label]="'reports.common.exportExcel' | translate" icon="pi pi-file-excel" [raised]="true" severity="success" class="mr-2" />
+            <p-button (onClick)="exportZip($event)" [disabled]="data.length === 0 || isExporting"
+                [label]="'reports.exportacoes.exportZip' | translate" icon="pi pi-file-export" [raised]="true" severity="info"
+                [loading]="isExporting" />
         </div>
     </div>
     <p-table id="myDiv" #dt [value]="data" responsiveLayout="scroll" [scrollable]="true" [rowHover]="true">

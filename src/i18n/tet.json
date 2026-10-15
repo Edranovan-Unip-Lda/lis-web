@@ -233,6 +233,7 @@
     "alvaraAtividade": "Alvará Lisensa ba Ezersísiu Atividade",
     "relatorios": "Relatóriu",
     "receitas": "Reseita",
+    "exportacoes": "Esportasaun",
     "painel": "Painel",
     "empresas": "Kompañia sira",
     "empresa": "Kompañia",
@@ -286,6 +287,7 @@
     "risco": "Risku",
     "relatorios": "Relatóriu",
     "receitas": "Reseita",
+    "exportacoes": "Esportasaun",
     "pedidoInscricaoPreview": "Pré-Vizualizasaun Pedidu Inskrisaun",
     "perfil": "Perfil",
     "pedidoInscricaoPdf": "Pedidu Inskrisaun PDF",
@@ -1404,6 +1406,39 @@
       "sociedade": {
         "all": "Hotu",
         "none": "(La iha sosiedade komersiál)"
+      }
+    },
+    "exportacoes": {
+      "title": "Esportasaun",
+      "subtitle": "Arkivu ZIP ho PDF husi Sertifikadu no Lisensa sira ne'ebé filtra ona. Arkivu ida-idak disponível atu download durante loron 15, depois sistema hamoos automátiku.",
+      "refresh": "Atualiza",
+      "empty": "Ita seidauk hahú esportasaun ida. Halo relatóriu iha Lisensa no Sertifikadu no uza \"Esporta PDF (ZIP)\".",
+      "tipo": "Tipu",
+      "filtros": "Filtru",
+      "progresso": "Progresu",
+      "criadoEm": "Husu iha",
+      "disponivelAte": "Disponível to'o",
+      "tamanho": "Tamañu",
+      "semPdf": "{{n}} la iha PDF (haree index.csv)",
+      "descarregarHint": "Download arkivu ZIP",
+      "moreFilters": "+{{n}} filtru",
+      "exportZip": "Esporta PDF (ZIP)",
+      "confirm": "Sei kria arkivu ZIP ida ho PDF husi dokumentu {{n}} ne'ebé hetan. Esportasaun la'o iha kotuk no Ita sei simu email bainhira prontu. Kontinua?",
+      "confirmAccept": "Esporta",
+      "status": {
+        "QUEUED": "Iha fila",
+        "RUNNING": "La'o hela",
+        "COMPLETED": "Remata",
+        "FAILED": "Falla",
+        "EXPIRED": "Expira ona"
+      },
+      "erro": {
+        "DATABASE": "La konsege lee Sertifikadu sira husi base de dadus.",
+        "STORAGE_READ": "Falla atu lee PDF ida husi armazenamentu arkivu.",
+        "STORAGE_UPLOAD": "Falla atu rai arkivu ZIP iha armazenamentu arkivu.",
+        "DISK": "Espasu disku la to'o iha servidór atu kria ZIP.",
+        "INTERRUPTED": "Para tanba servidór reinisia beibeik.",
+        "UNEXPECTED": "Erru la espera iha servidór."
       }
     }
   },

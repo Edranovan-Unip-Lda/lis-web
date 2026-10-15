@@ -233,6 +233,7 @@
     "alvaraAtividade": "Activity Operating Licenses",
     "relatorios": "Reports",
     "receitas": "Revenue",
+    "exportacoes": "Exports",
     "painel": "Dashboard",
     "empresas": "Companies",
     "empresa": "Company",
@@ -286,6 +287,7 @@
     "risco": "Risk",
     "relatorios": "Reports",
     "receitas": "Revenue",
+    "exportacoes": "Exports",
     "pedidoInscricaoPreview": "Registration Request Preview",
     "perfil": "Profile",
     "pedidoInscricaoPdf": "Registration Request PDF",
@@ -1404,6 +1406,39 @@
       "sociedade": {
         "all": "All",
         "none": "(No company type)"
+      }
+    },
+    "exportacoes": {
+      "title": "Exports",
+      "subtitle": "ZIP archives with the PDFs of the filtered certificates and licenses. Each file can be downloaded for 15 days and is then deleted automatically.",
+      "refresh": "Refresh",
+      "empty": "You have not started any export yet. Generate a report in Licenses and Certificates and use \"Export PDFs (ZIP)\".",
+      "tipo": "Type",
+      "filtros": "Filters",
+      "progresso": "Progress",
+      "criadoEm": "Requested on",
+      "disponivelAte": "Available until",
+      "tamanho": "Size",
+      "semPdf": "{{n}} without PDF (see index.csv)",
+      "descarregarHint": "Download the ZIP file",
+      "moreFilters": "+{{n}} filters",
+      "exportZip": "Export PDFs (ZIP)",
+      "confirm": "A ZIP file will be created with the PDFs of the {{n}} documents found. The export runs in the background and you will receive an email when it is ready. Continue?",
+      "confirmAccept": "Export",
+      "status": {
+        "QUEUED": "Queued",
+        "RUNNING": "In progress",
+        "COMPLETED": "Completed",
+        "FAILED": "Failed",
+        "EXPIRED": "Expired"
+      },
+      "erro": {
+        "DATABASE": "Could not read the certificates from the database.",
+        "STORAGE_READ": "Failed to read a PDF from file storage.",
+        "STORAGE_UPLOAD": "Failed to save the ZIP file to file storage.",
+        "DISK": "Not enough disk space on the server to build the ZIP.",
+        "INTERRUPTED": "Interrupted by server restarts.",
+        "UNEXPECTED": "Unexpected server error."
       }
     }
   },

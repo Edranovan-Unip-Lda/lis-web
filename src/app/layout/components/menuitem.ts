@@ -147,6 +147,11 @@ export const model_admin: MenuItem[] = [
                 label: 'menu.receitas',
                 icon: 'bi bi-fw bi-currency-dollar',
                 routerLink: ['relatorios/receitas']
+            },
+            {
+                label: 'menu.exportacoes',
+                icon: 'bi bi-fw bi-file-earmark-zip',
+                routerLink: ['relatorios/exportacoes']
             }
         ]
     },
@@ -346,6 +351,11 @@ export const model_manager: MenuItem[] = [
                 label: 'menu.receitas',
                 icon: 'bi bi-fw bi-currency-dollar',
                 routerLink: ['relatorios/receitas']
+            },
+            {
+                label: 'menu.exportacoes',
+                icon: 'bi bi-fw bi-file-earmark-zip',
+                routerLink: ['relatorios/exportacoes']
             }
         ]
     },
@@ -458,6 +468,11 @@ export const model_staff: MenuItem[] = [
                 label: 'menu.receitas',
                 icon: 'bi bi-fw bi-currency-dollar',
                 routerLink: ['relatorios/receitas']
+            },
+            {
+                label: 'menu.exportacoes',
+                icon: 'bi bi-fw bi-file-earmark-zip',
+                routerLink: ['relatorios/exportacoes']
             }
         ]
     },

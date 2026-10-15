@@ -233,6 +233,7 @@
     "alvaraAtividade": "Alvará de Licença para Exercício da Atividade",
     "relatorios": "Relatórios",
     "receitas": "Receitas",
+    "exportacoes": "Exportações",
     "painel": "Painel",
     "empresas": "Empresas",
     "empresa": "Empresa",
@@ -286,6 +287,7 @@
     "risco": "Risco",
     "relatorios": "Relatórios",
     "receitas": "Receitas",
+    "exportacoes": "Exportações",
     "pedidoInscricaoPreview": "Pré-Visualização do Pedido de Inscrição",
     "perfil": "Perfil",
     "pedidoInscricaoPdf": "Pedido de Inscrição PDF",
@@ -1404,6 +1406,39 @@
       "sociedade": {
         "all": "Todas",
         "none": "(Sem sociedade comercial)"
+      }
+    },
+    "exportacoes": {
+      "title": "Exportações",
+      "subtitle": "Arquivos ZIP com os PDFs dos certificados e licenças filtrados. Cada ficheiro fica disponível para download durante 15 dias e é depois eliminado automaticamente.",
+      "refresh": "Atualizar",
+      "empty": "Ainda não iniciou nenhuma exportação. Gere um relatório em Licenças e Certificados e use \"Exportar PDFs (ZIP)\".",
+      "tipo": "Tipo",
+      "filtros": "Filtros",
+      "progresso": "Progresso",
+      "criadoEm": "Pedido em",
+      "disponivelAte": "Disponível até",
+      "tamanho": "Tamanho",
+      "semPdf": "{{n}} sem PDF (ver index.csv)",
+      "descarregarHint": "Descarregar o ficheiro ZIP",
+      "moreFilters": "+{{n}} filtros",
+      "exportZip": "Exportar PDFs (ZIP)",
+      "confirm": "Será criado um ficheiro ZIP com os PDFs dos {{n}} documentos encontrados. A exportação corre em segundo plano e receberá um email quando estiver pronta. Continuar?",
+      "confirmAccept": "Exportar",
+      "status": {
+        "QUEUED": "Em fila",
+        "RUNNING": "Em curso",
+        "COMPLETED": "Concluída",
+        "FAILED": "Falhou",
+        "EXPIRED": "Expirada"
+      },
+      "erro": {
+        "DATABASE": "Não foi possível ler os certificados da base de dados.",
+        "STORAGE_READ": "Falha ao ler um PDF do armazenamento de ficheiros.",
+        "STORAGE_UPLOAD": "Falha ao guardar o ficheiro ZIP no armazenamento de ficheiros.",
+        "DISK": "Espaço em disco insuficiente no servidor para criar o ZIP.",
+        "INTERRUPTED": "Interrompida por reinícios do servidor.",
+        "UNEXPECTED": "Erro inesperado no servidor."
       }
     }
   },

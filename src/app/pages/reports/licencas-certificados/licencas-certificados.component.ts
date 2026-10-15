@@ -3,13 +3,16 @@ import { Empresa } from '@/core/models/entities.model';
 import { AplicanteType } from '@/core/models/enums';
 import { AuthenticationService, DataMasterService } from '@/core/services';
 import { ExportService } from '@/core/services/export.service';
+import { ExportacaoService } from '@/core/services/exportacao.service';
 import { ReportService } from '@/core/services/report.service';
 import { applicationTypesOptions, caraterizacaEstabelecimentoOptions, categoryTpesOptions, nivelRiscoOptions, quantoAtividadeoptions, tipoAtoOptions, tipoEstabelecimentoOptions, tipoPedidoVitoriaAll } from '@/core/utils/global-function';
 import { DatePipe, formatDate } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmDialog } from 'primeng/confirmdialog';
+import { Toast } from 'primeng/toast';
 import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
 import { Message } from 'primeng/message';
@@ -22,10 +25,10 @@ import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/
 
 @Component({
   selector: 'app-licencas-certificados',
-  imports: [LocalizedDatePipe, ReactiveFormsModule, Select, Button, TableModule, Message, Paginator, DatePicker, TranslatePipe],
+  imports: [LocalizedDatePipe, ReactiveFormsModule, Select, Button, TableModule, Message, Paginator, DatePicker, TranslatePipe, ConfirmDialog, Toast],
   templateUrl: './licencas-certificados.component.html',
   styleUrl: './licencas-certificados.component.scss',
-  providers: [MessageService]
+  providers: [MessageService, ConfirmationService]
 })
 export class LicencasCertificadosComponent {
   reportForm!: FormGroup;
@@ -34,6 +37,9 @@ export class LicencasCertificadosComponent {
   applicanteTypeFormControl = new FormControl<AplicanteType | null>(null, Validators.required);
   listaEmpresa = [];
   isPdfGenerating = false;
+  isExporting = false;
+  private lastFilter: any = null;
+  private lastFilterTipo!: AplicanteType;
 
   // Geral
   listaCategoria = categoryTpesOptions;
@@ -62,6 +68,10 @@ export class LicencasCertificadosComponent {
   private sucoSearchSubject = new Subject<string>();
   sucoIsLoading = false;
   private i18n = inject(LanguageService);
+  private exportacaoService = inject(ExportacaoService);
+  private confirmationService = inject(ConfirmationService);
+  private messageService = inject(MessageService);
+  private router = inject(Router);
 
   constructor(
     private _fb: FormBuilder,
@@ -112,76 +122,70 @@ export class LicencasCertificadosComponent {
       return;
     }
 
-    switch (categoria) {
-      case 'CADASTRO':
-        const formDataCadastro = { ...this.reportForm.value };
+    // Remembered so the ZIP export targets exactly the rows on screen, even if the form was edited since.
+    this.lastFilter = this.buildFilter();
+    this.lastFilterTipo = categoria as AplicanteType;
+    const request$ = categoria === AplicanteType.cadastro
+      ? this.reportService.getCertificadoInscricaoReport(this.lastFilter, this.page, this.size)
+      : this.reportService.getCertficadoLicencaAtividadeReport(this.lastFilter, this.page, this.size);
+    request$.subscribe({
+      next: (response) => {
+        this.data = response.content;
+        this.totalData = response.totalElements;
+        this.dataIsFetching = false;
+        this.addEmptyMessage();
+      },
+      error: (error) => {
+        this.dataIsFetching = false;
+        console.error('Error fetching report:', error);
+      }
+    });
+  }
 
-        if (formDataCadastro.dataValidadeRange != null) {
-          const startDateValidade = formatDate(formDataCadastro.dataValidadeRange[0], 'yyyy-MM-dd', 'en-US');  //new Date(formDataCadastro.dataValidadeRange[0]).toISOString().slice(0, 10);
-          const endDateValidade = formatDate(formDataCadastro.dataValidadeRange[1], 'yyyy-MM-dd', 'en-US'); //new Date(formDataCadastro.dataValidadeRange[1]).toISOString().slice(0, 10);
-
-          formDataCadastro.dataValidadeFrom = startDateValidade;
-          formDataCadastro.dataValidadeTo = endDateValidade;
-          delete formDataCadastro.dataValidadeRange;
-        }
-
-        if (formDataCadastro.dataEmissaoRange != null) {
-          const startDateEmissao = formatDate(formDataCadastro.dataEmissaoRange[0], 'yyyy-MM-dd', 'en-US');
-          const endDateEmissao = formatDate(formDataCadastro.dataEmissaoRange[1], 'yyyy-MM-dd', 'en-US');
-
-          formDataCadastro.dataEmissaoFrom = startDateEmissao;
-          formDataCadastro.dataEmissaoTo = endDateEmissao;
-          delete formDataCadastro.dataEmissaoRange;
-        }
-
-        this.reportService.getCertificadoInscricaoReport(formDataCadastro, this.page, this.size).subscribe({
-          next: (response) => {
-            this.data = response.content;
-            this.totalData = response.totalElements;
-            this.dataIsFetching = false;
-            this.addEmptyMessage();
-          },
-          error: (error) => {
-            this.dataIsFetching = false;
-            console.error('Error fetching report:', error);
-          }
-        });
-        break;
-      case 'ATIVIDADE':
-        const formDataAtividade = { ...this.reportForm.value };
-
-        if (formDataAtividade.dataValidadeRange != null) {
-          const startDateValidade = formatDate(formDataAtividade.dataValidadeRange[0], 'yyyy-MM-dd', 'en-US'); //new Date(formDataAtividade.dataValidadeRange[0]).toISOString().slice(0, 10);
-          const endDateValidade = formatDate(formDataAtividade.dataValidadeRange[1], 'yyyy-MM-dd', 'en-US'); //new Date(formDataAtividade.dataValidadeRange[1]).toISOString().slice(0, 10);
-
-          formDataAtividade.dataValidadeFrom = startDateValidade;
-          formDataAtividade.dataValidadeTo = endDateValidade;
-          delete formDataAtividade.dataValidadeRange;
-        }
-
-        if (formDataAtividade.dataEmissaoRange != null) {
-          const startDateEmissao = new Date(formDataAtividade.dataEmissaoRange[0]).toISOString().slice(0, 10);
-          const endDateEmissao = new Date(formDataAtividade.dataEmissaoRange[1]).toISOString().slice(0, 10);
-
-          formDataAtividade.dataEmissaoFrom = startDateEmissao;
-          formDataAtividade.dataEmissaoTo = endDateEmissao;
-          delete formDataAtividade.dataEmissaoRange;
-        }
-
-        this.reportService.getCertficadoLicencaAtividadeReport(formDataAtividade, this.page, this.size).subscribe({
-          next: (response) => {
-            this.data = response.content;
-            this.totalData = response.totalElements;
-            this.dataIsFetching = false;
-            this.addEmptyMessage();
-          },
-          error: (error) => {
-            this.dataIsFetching = false;
-            console.error('Error fetching report:', error);
-          }
-        });
-        break;
+  /**
+   * The report filter body, shared by the report query and the bulk PDF export so both always select the same
+   * certificates. Date ranges become yyyy-MM-dd bounds in local time (formatDate, not toISOString, which shifts
+   * a day east of UTC).
+   */
+  private buildFilter(): any {
+    const { dataValidadeRange, dataEmissaoRange, ...filter } = this.reportForm.value;
+    const day = (d: Date) => formatDate(d, 'yyyy-MM-dd', 'en-US');
+    if (dataValidadeRange?.[0]) {
+      filter.dataValidadeFrom = day(dataValidadeRange[0]);
+      filter.dataValidadeTo = day(dataValidadeRange[1] ?? dataValidadeRange[0]);
     }
+    if (dataEmissaoRange?.[0]) {
+      filter.dataEmissaoFrom = day(dataEmissaoRange[0]);
+      filter.dataEmissaoTo = day(dataEmissaoRange[1] ?? dataEmissaoRange[0]);
+    }
+    return filter;
+  }
+
+  /** Queue a background job that zips every matching certificate's own PDF, then go watch it on Exportações. */
+  exportZip(event: Event): void {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      header: this.i18n.instant('common.confirm'),
+      icon: 'pi pi-file-export',
+      message: this.i18n.instant('reports.exportacoes.confirm', { n: this.totalData }),
+      acceptLabel: this.i18n.instant('reports.exportacoes.confirmAccept'),
+      rejectLabel: this.i18n.instant('common.cancel'),
+      rejectButtonProps: { label: this.i18n.instant('common.cancel'), severity: 'secondary', outlined: true },
+      acceptButtonProps: { label: this.i18n.instant('reports.exportacoes.confirmAccept') },
+      accept: () => {
+        this.isExporting = true;
+        this.exportacaoService.create(this.lastFilterTipo, this.lastFilter).subscribe({
+          next: () => {
+            this.isExporting = false;
+            this.router.navigate(['/relatorios/exportacoes']);
+          },
+          error: (message) => {
+            this.isExporting = false;
+            this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: message });
+          }
+        });
+      }
+    });
   }
 
   isFormEmpty(form: FormGroup): boolean {

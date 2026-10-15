@@ -40,4 +40,9 @@ export default [
         data: { breadcrumb: 'breadcrumb.receitas' },
         loadComponent: () => import('./receitas/receitas.component').then(m => m.ReceitasComponent),
     },
+    {
+        path: 'exportacoes',
+        data: { breadcrumb: 'breadcrumb.exportacoes' },
+        loadComponent: () => import('./exportacoes/exportacoes.component').then(m => m.ExportacoesComponent),
+    },
 ] as Routes;
