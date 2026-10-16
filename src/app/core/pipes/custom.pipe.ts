@@ -129,3 +129,13 @@ export class StatusLabelPipe implements PipeTransform {
         return label === key ? status : label;
     }
 }
+
+/** Company name + tipo de sociedade. Mirrors CertificadoPdfService.formatSociedade: skips the type when the name already contains it. */
+@Pipe({ name: 'empresaNome', standalone: true })
+export class EmpresaNomePipe implements PipeTransform {
+    transform(row: { sociedadeComercial?: string; tipoSociedadeComercial?: string } | null | undefined): string {
+        const nome = row?.sociedadeComercial ?? '';
+        const tipo = row?.tipoSociedadeComercial?.trim();
+        return tipo && !nome.toLowerCase().includes(tipo.toLowerCase()) ? `${nome} ${tipo}` : nome;
+    }
+}

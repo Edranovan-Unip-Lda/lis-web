@@ -1,6 +1,6 @@
 <div class="card">
     <p-table #dt [value]="dataList" responsiveLayout="scroll"
-        [globalFilterFields]="['firstName', 'role.name', 'email', 'status']">
+        [globalFilterFields]="['aplicanteNumero', 'numeroRegistoComercial', 'sociedadeComercial']">
         <ng-template #caption>
             <div class="flex flex-wrap gap-2 items-center justify-between">
                 <p-icon-field class="w-full sm:w-80 order-1 sm:order-none">
@@ -14,7 +14,7 @@
             <tr>
                 <th class="white-space-nowrap">{{ 'licencas.list.numeroCertificado' | translate }}
                 </th>
-                <th pSortableColumn="email" class="white-space-nowrap">
+                <th class="white-space-nowrap">
                     {{ 'licencas.list.empresa' | translate }}
                 </th>
                 <th class="white-space-nowrap">
@@ -35,7 +35,7 @@
                     {{ cert.aplicanteNumero }}
                 </td>
                 <td>
-                    {{cert.sociedadeComercial}}
+                    {{ cert | empresaNome }}
                 </td>
                 <td>
                     {{cert.sedeLocal}} - {{cert.sedeAldeiaNome}}, {{cert.sedeSucoNome}}, {{cert.sedePostoNome}},

@@ -1,6 +1,6 @@
 import { LocalizedDatePipe } from '@/core/i18n';
 import { AplicanteType, Categoria } from '@/core/models/enums';
-import { StatusIconPipe, StatusSeverityPipe, StatusLabelPipe } from '@/core/pipes/custom.pipe';
+import { EmpresaNomePipe, StatusIconPipe, StatusSeverityPipe, StatusLabelPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService, EmpresaService, UserService } from '@/core/services';
 import { UpperCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
@@ -17,7 +17,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-licencas-lista',
-  imports: [StatusLabelPipe, LocalizedDatePipe, UpperCasePipe, TableModule, Button, Tag, InputIcon, IconField, InputText, StatusSeverityPipe, StatusIconPipe, Paginator, RouterLink, Tooltip, TranslatePipe],
+  imports: [EmpresaNomePipe, StatusLabelPipe, LocalizedDatePipe, UpperCasePipe, TableModule, Button, Tag, InputIcon, IconField, InputText, StatusSeverityPipe, StatusIconPipe, Paginator, RouterLink, Tooltip, TranslatePipe],
   templateUrl: './licencas-lista.component.html',
   styleUrl: './licencas-lista.component.scss'
 })
