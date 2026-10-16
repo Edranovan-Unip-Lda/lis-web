@@ -1,5 +1,4 @@
 import { Lang, LanguageService, SUPPORTED_LANGS } from '@/core/i18n';
-import { UpperCasePipe } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
@@ -10,7 +9,7 @@ import { MenuModule } from 'primeng/menu';
 @Component({
     selector: 'app-language-switcher',
     standalone: true,
-    imports: [ButtonModule, MenuModule, TranslatePipe, UpperCasePipe],
+    imports: [ButtonModule, MenuModule, TranslatePipe],
     template: `
         <p-button
             icon="pi pi-language"
