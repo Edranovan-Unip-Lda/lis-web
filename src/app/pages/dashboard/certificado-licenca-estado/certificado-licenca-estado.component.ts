@@ -1,6 +1,8 @@
 import { BarChartDto, CategoryDistributionDto } from '@/core/models/entities.model';
 import { randomColors } from '@/core/utils/global-function';
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, SimpleChanges } from '@angular/core';
+import { LanguageService } from '@/core/i18n';
+import { chartLang, onLangChange, seriesLabel } from '../chart-i18n';
 import type * as Highcharts from 'highcharts';
 import { HighchartsChartComponent, } from 'highcharts-angular';
 
@@ -16,6 +18,11 @@ export class CertificadoLicencaEstadoComponent {
   updateFlag = false;
   @Input() data!: BarChartDto;
   @Input() title!: string;
+  private i18n = inject(LanguageService);
+
+  constructor() {
+    onLangChange(this.i18n, () => this.data && this.updateChart());
+  }
 
   ngOnInit() {
     this.updateChart();
@@ -37,6 +44,7 @@ export class CertificadoLicencaEstadoComponent {
 
   initChart() {
     this.chartOptions = {
+      lang: chartLang(this.i18n),
       colors: ['#34c38f', '#f46a6a'],
       chart: {
         type: 'line',
@@ -61,7 +69,7 @@ export class CertificadoLicencaEstadoComponent {
         categories: ['Aileu', 'Ainaro', 'Atauro', 'Baucau', 'Bobonaro', 'Cova Lima', 'Dili', 'Ermera', 'Lautem', 'Liquiça', 'Manatuto', 'Manufahi', 'Oecusse', 'Viqueque'],
         crosshair: true,
         accessibility: {
-          description: 'Meses'
+          description: this.i18n.instant('dashboard.chart.municipios')
         },
         labels: {
           style: {
@@ -75,7 +83,7 @@ export class CertificadoLicencaEstadoComponent {
         gridLineColor: '#1e293b',
         min: 0,
         title: {
-          text: 'Total Credit'
+          text: this.i18n.instant('dashboard.chart.total')
         },
         labels: {
           style: {
@@ -126,7 +134,8 @@ export class CertificadoLicencaEstadoComponent {
           }
         }
       },
-      series: this.data.series as any,
+      // The API sends an array here, despite the BarChartDto typing
+      series: (this.data.series as unknown as any[]).map((s: any) => ({ ...s, name: seriesLabel(this.i18n, s.name) })) as any,
     };
   }
 }

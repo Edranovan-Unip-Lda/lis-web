@@ -1,7 +1,9 @@
+import { LanguageService } from '@/core/i18n';
 import { Role } from '@/core/models/enums';
 import { AuthenticationService } from '@/core/services';
 import { OtpSessionService } from '@/core/services/otp-session.service';
 import { LayoutService } from '@/layout/service/layout.service';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -10,6 +12,7 @@ import { Button } from 'primeng/button';
 import { InputOtp } from 'primeng/inputotp';
 import { Message } from 'primeng/message';
 import { Ripple } from 'primeng/ripple';
+import { TranslatePipe } from '@ngx-translate/core';
 import { interval } from 'rxjs';
 
 /** Drives both the box collapse animation and which feedback the screen shows. */
@@ -23,13 +26,14 @@ const SUCCESS_HOLD_MS = 1000;
 @Component({
     selector: 'app-verification',
     standalone: true,
-    imports: [Ripple, RouterLink, InputOtp, Message, Button, ReactiveFormsModule],
+    imports: [Ripple, RouterLink, InputOtp, Message, Button, ReactiveFormsModule, TranslatePipe],
     templateUrl: './verification.component.html',
     styleUrls: ['./verification.component.scss']
 })
 export class Verification {
     layoutService = inject(LayoutService);
     private otpSessionService = inject(OtpSessionService);
+    private i18n = inject(LanguageService);
 
     username!: string;
     email!: string;
@@ -96,19 +100,19 @@ export class Verification {
         this.authService.validateOTP(this.username, input.value, this.loginToken).subscribe({
             next: response => {
                 this.animState.set('success');
-                this.feedbackMessage.set('Código validado com sucesso!');
+                this.feedbackMessage.set(this.i18n.instant('auth.verification.success'));
                 const target = response.role.name === Role.client ? '/home' : '/dashboard';
                 setTimeout(() => this.router.navigate([target]), SUCCESS_HOLD_MS);
             },
-            error: err => {
+            error: (err: HttpErrorResponse) => {
                 this.animState.set('error');
-                this.feedbackMessage.set(err || 'Código inválido. Tente novamente.');
-                // Mirrors the BLOCKED message thrown in lis-api UserServices.getJWTByOTP — the interceptor
-                // only surfaces message strings, so the burned-OTP signal rides in the wording.
-                const isBlocked = typeof err === 'string' && err.includes('número máximo');
-                // Same idiom for the other terminal case: an administrator turned 2FA off while this screen was
-                // open, so the OTP endpoints now reject outright. Mirrors OTP_GLOBALLY_DISABLED in lis-api.
-                const otpDisabled = typeof err === 'string' && err.includes('duas etapas foi desativada');
+                this.feedbackMessage.set(err.error?.message || this.i18n.instant(err.status === 0 ? 'errors.network' : 'auth.verification.invalidCode'));
+                // Terminal states are keyed on the backend message key (errorCode), never on the localized text:
+                // the OTP was burned (BLOCKED in UserServices.getJWTByOTP), or an administrator turned 2FA off
+                // while this screen was open (OTP_GLOBALLY_DISABLED). Network errors carry no errorCode.
+                const code = err.error?.errorCode;
+                const isBlocked = code === 'error.otp.blocked';
+                const otpDisabled = code === 'error.otp.disabled';
                 setTimeout(() => {
                     this.otpInput.reset();
                     if (isBlocked || otpDisabled) {
@@ -129,7 +133,7 @@ export class Verification {
     private expire(): void {
         this.animState.set('expired');
         this.otpInput.disable();
-        this.feedbackMessage.set('O código expirou. Por favor, inicie sessão novamente para receber um novo código.');
+        this.feedbackMessage.set(this.i18n.instant('auth.verification.expired'));
     }
 
     maskEmail(email: string): string {

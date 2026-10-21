@@ -6,34 +6,34 @@
                 <div class="flex flex-wrap gap-2 items-center justify-between">
                     <p-icon-field class="w-full sm:w-80 order-1 sm:order-none">
                         <p-inputicon class="pi pi-search" />
-                        <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar"
+                        <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" [placeholder]="'empresa.list.searchPlaceholder' | translate"
                             class="w-full" />
                     </p-icon-field>
                 </div>
             </ng-template>
             <ng-template #header>
                 <tr>
-                    <th pSortableColumn="nome" class="white-space-nowrap">Empresa
+                    <th pSortableColumn="nome" class="white-space-nowrap">{{ 'empresa.list.cols.empresa' | translate }}
                         <p-sortIcon field="nome">
                         </p-sortIcon>
                     </th>
                     <th>
-                        Sociedade Comercial
+                        {{ 'empresa.fields.sociedadeComercial' | translate }}
                     </th>
                     <th class="white-space-nowrap">
-                        Local
+                        {{ 'empresa.list.cols.local' | translate }}
                     </th>
-                    <th pSortableColumn="gerente" class="white-space-nowrap">Gerente
+                    <th pSortableColumn="gerente" class="white-space-nowrap">{{ 'empresa.fields.gerente' | translate }}
                         <p-sortIcon field="gerente">
                         </p-sortIcon>
                     </th>
-                    <th class="white-space-nowrap">Telefone/Telemóvel
+                    <th class="white-space-nowrap">{{ 'empresa.fields.telefoneTelemovel' | translate }}
                     </th>
                     <th class="white-space-nowrap">
-                        Criado em
+                        {{ 'empresa.list.cols.createdAt' | translate }}
                     </th>
                     <th class="white-space-nowrap">
-                        Ações
+                        {{ 'common.actions' | translate }}
                     </th>
                 </tr>
             </ng-template>
@@ -55,17 +55,16 @@
                         {{empresa.telefone}}/{{empresa.telemovel}}
                     </td>
                     <td>
-                        {{ empresa.createdAt | date: 'dd/MM/yyyy, HH:mm:ss' }}
+                        {{ empresa.createdAt | ldate: 'dd/MM/yyyy, HH:mm:ss' }}
                     </td>
                     <td class="flex justify-around">
-                        <p-button routerLink="/empresa/detail/{{empresa.utilizador.username}}" pTooltip="Detalho"
+                        <p-button routerLink="/empresa/detail/{{empresa.utilizador.username}}" [pTooltip]="'common.details' | translate"
                             tooltipPosition="top" icon="pi pi-eye" class="mr-2" severity="info" [rounded]="true"
                             [outlined]="true" />
                         @if (currentRole === 'ROLE_ADMIN') {
                         <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
-                            [loading]="deleteLoading" pTooltip="Eliminar" tooltipPosition="top"
-                            (click)="delete(empresa.utilizador.username, $event)" pTooltip="Eliminar"
-                            tooltipPosition="top" />
+                            [loading]="deleteLoading" [pTooltip]="'common.delete' | translate" tooltipPosition="top"
+                            (click)="delete(empresa.utilizador.username, $event)" />
                         }
                     </td>
                 </tr>
@@ -73,7 +72,7 @@
         </p-table>
         <p-paginator (onPageChange)="onPageChange($event)" [rows]="size" [totalRecords]="totalData"
             [rowsPerPageOptions]="[50, 250, 500, 1000]" [showCurrentPageReport]="true"
-            currentPageReportTemplate="A mostrar {first} a {last} de {totalRecords}" />
+            [currentPageReportTemplate]="'empresa.list.pageReport' | translate" />
     </div>
 </div>
 <p-confirmdialog />

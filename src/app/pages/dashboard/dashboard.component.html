@@ -2,18 +2,18 @@
      <div class="grid grid-cols-3">
          <div class="col-span-3 lg:col-span-1">
              <label for="yearFilter" class="text-md font-semibold text-gray-50">
-                 Filtrar dados por ano de referência:
+                 {{ 'dashboard.yearFilter' | translate }}
              </label>
              <p-select (ngModelChange)="yearChange($event)" inputId="yearFilter" [(ngModel)]="yearCtrl"
                  [options]="visitorYear" optionLabel="name" [fluid]="true" [showClear]="true"
-                 placeholder="Selecione o ano" styleClass="w-32">
+                 [placeholder]="'dashboard.selectYear' | translate" styleClass="w-32">
              </p-select>
          </div>
      </div>
  </div>
 
  <div class="grid grid-cols-12 gap-8">
-     <stats-widget [kpisData]="kpisData" />
+     <stats-widget [kpisData]="kpisData" [receita]="receita" />
 
      <div class="col-span-12">
          <app-empresa-map [data]="empresasByMunicipio" (municipioSelected)="onMunicipioSelected($event)">
@@ -21,13 +21,13 @@
      </div>
 
      <div class="col-span-12 xl:col-span-6">
-         <app-certificado-licenca-municipio-pie [title]="'Empresa por Sociedade Comercial'"
+         <app-certificado-licenca-municipio-pie [title]="'dashboard.titles.empresaSociedade' | translate"
              [data]="empresasBySociedadeComercial" [chartType]="'sociedade'"
              [attr.data-chart-id]="'sociedade-comercial'" />
      </div>
 
      <div class="col-span-12 xl:col-span-6">
-         <app-certificado-licenca-municipio-pie [title]="'Empresa por Tipo de Empresa'" [data]="empresasByTipoEmpresa"
+         <app-certificado-licenca-municipio-pie [title]="'dashboard.titles.empresaTipo' | translate" [data]="empresasByTipoEmpresa"
              [chartType]="'tipo'" [attr.data-chart-id]="'tipo-empresa'" />
      </div>
 
@@ -44,44 +44,44 @@
      <!-- Certificado de Inscrição -->
      <div class="col-span-12 mb-2">
          <h2 class="text-xl font-semibold pb-2 border-b-2 border-blue-500">
-             Certificados de Inscrição
+             {{ 'dashboard.titles.certificados' | translate }}
          </h2>
      </div>
 
      <div class="col-span-12 xl:col-span-8">
-         <app-certificado-licenca-categoria-charts [title]="'Certificados de Inscrição emitidos por mês'"
+         <app-certificado-licenca-categoria-charts [title]="'dashboard.titles.certificadosPorMes' | translate"
              [licensesPerMonth]="certificatesPerMonth" />
      </div>
 
      <div class="col-span-12 xl:col-span-4">
-         <app-certificado-licenca-municipio-pie [title]="'Certificados de Inscrição (Ativos/Expirados)'"
+         <app-certificado-licenca-municipio-pie [title]="'dashboard.titles.certificadosEstado' | translate"
              [data]="certificatesStatusPerMonth" />
      </div>
 
      <div class="col-span-12 mb-8">
-         <app-certificado-licenca-estado [title]="'Certificados de Inscrição (Distribuição dos Municípios)'"
+         <app-certificado-licenca-estado [title]="'dashboard.titles.certificadosMunicipio' | translate"
              [data]="certificatesByMunicipio" />
      </div>
 
      <!-- Alvará de Licenças -->
      <div class="col-span-12 mb-2">
          <h2 class="text-xl font-semibold pb-2 border-b-2 border-green-500">
-             Alvará de Licenças
+             {{ 'dashboard.titles.alvaras' | translate }}
          </h2>
      </div>
 
      <div class="col-span-12 xl:col-span-8">
-         <app-certificado-licenca-categoria-charts [title]="'Alvará de Licenças emitidos por mês'"
+         <app-certificado-licenca-categoria-charts [title]="'dashboard.titles.alvarasPorMes' | translate"
              [licensesPerMonth]="licensesPerMonth" />
      </div>
 
      <div class="col-span-12 xl:col-span-4">
-         <app-certificado-licenca-municipio-pie [title]="'Alvará de Licenças (Ativos/Expirados)'"
+         <app-certificado-licenca-municipio-pie [title]="'dashboard.titles.alvarasEstado' | translate"
              [data]="licensesStatusPerMonth" />
      </div>
 
      <div class="col-span-12">
-         <app-certificado-licenca-estado [title]="'Alvará de Licenças (Distribuição dos Municípios)'"
+         <app-certificado-licenca-estado [title]="'dashboard.titles.alvarasMunicipio' | translate"
              [data]="licensesByMunicipio" />
      </div>
  </div>

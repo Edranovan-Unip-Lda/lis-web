@@ -14,7 +14,7 @@ npm run format       # prettier
 ```
 
 ## Stack & structure
-- **Angular 19**, **standalone components + signals**, PrimeNG (Aura) + Tailwind v4. Locale `pt`. Path alias
+- **Angular 19**, **standalone components + signals**, PrimeNG (Aura) + Tailwind v4. **Multilanguage pt/tet/en** (see i18n). Path alias
   **`@/*` → `src/app/*`**.
 - `src/app/` split: `core/` (`services/`, `security/`, `models/`, `resolvers/`, `validators/`, `pipes/`, `utils/`),
   `layout/`, `pages/` (feature areas: `application-management`, `empresa`, `licencas-certificados`, `dados-mestre`,
@@ -61,6 +61,28 @@ npm run format       # prettier
   Portuguese-only and mirroring the official MCI PDF form.
 - Domain terms **Portuguese**, code/comments **English**. `develop` → `main`; commit only when asked.
 
+## i18n (pt default · tet · en) — ngx-translate, instant switch, no reload
+- **Dictionaries:** `src/i18n/{pt,tet,en}.json` (one per language, nested by feature namespace). Loaded by
+  `core/i18n/lazy-translate.loader.ts` via dynamic `import()` → content-hashed lazy chunks (cache-busted per deploy,
+  never through the HTTP interceptor). `LanguageService` (`core/i18n`) owns the `lang` signal, persists `lis:lang`
+  in localStorage (preserved across the login `localStorage.clear()`), sets `<html lang>`, title and PrimeNG texts
+  (`primeng.*` block). Switcher: `shared/language-switcher` (topbar + auth layout).
+- **Every user-facing string needs a key in all three files.** `npm run i18n:check` fails on key-set drift, empty
+  values, or a literal key referenced in `src/app` that doesn't exist. `npm run i18n:review` exports
+  `i18n-tet-review.csv` (pt vs tet) for native-speaker review — Tetum was machine-drafted and is pending review.
+- Templates: `{{ 'ns.key' | translate }}`, `[label]="'ns.key' | translate"`. TS (toasts, confirms, exports):
+  `inject(LanguageService).instant(key)` **at call time** — never cache translated text in fields, the language can
+  change under a live view. Option arrays: `i18nOptions(prefix, [...])` (`core/i18n/translate-ref.ts`) — the label is
+  a signal-tracked getter, so option objects keep identity (forms holding the object keep their selection).
+- Status codes → `| statusLabel` (`status.<CODE>`); enum codes → `('enum.<Enum>.' + code) | translate`.
+- Dates/currency/numbers → `ldate` / `lcurrency` / `lnumber` (impure, follow the language; `LOCALE_ID` is static).
+  `tet` locale data is a `pt` clone with Tetum calendar names (`core/i18n/locale-tet.ts`).
+- Backend errors arrive already localized (interceptor sends `Accept-Language`). **Never branch on error text** — opt
+  into the raw `HttpErrorResponse` with the `RAW_HTTP_ERROR` context token (`core/security/http-context.ts`) and
+  branch on `error.errorCode` (the backend message key), as `verification.ts` does.
+- Stay Portuguese on purpose: `#resumoPrint` (register) and the off-screen certificate templates in `auth/search`
+  (official documents); backend-generated PDFs/emails/notifications; DB master-data values.
+
 ## Styling & dark mode
 Dark mode is **class-based**: `LayoutService.toggleDarkMode()` puts `.app-dark` on `<html>`, and PrimeNG is
 pointed at it via `darkModeSelector: '.app-dark'` (`app.config.ts`). It defaults to **on** (`darkTheme: true`).
@@ -94,4 +116,5 @@ pointed at it via `darkModeSelector: '.app-dark'` (`app.config.ts`). It defaults
 4. New subscription → `takeUntilDestroyed` + an error callback.
 5. New markup → `text-color` / `text-muted-color`, never bare `text-gray-*` (see **Styling & dark mode**);
    check it in both themes with the topbar moon/sun toggle.
-6. Verify: `npm run build` must succeed (it type-checks the whole app).
+6. New UI text → keys in `src/i18n/{pt,tet,en}.json`; `npm run i18n:check` must pass.
+7. Verify: `npm run build` must succeed (it type-checks the whole app).

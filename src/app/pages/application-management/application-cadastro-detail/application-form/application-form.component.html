@@ -1,11 +1,10 @@
 <div class="card">
     <span class="text-xl font-bold mb-6 block">
-        Criar Candidatura
+        {{ 'application.cadastro.form.title' | translate }}
     </span>
     <div class="grid grid-cols-12 gap-8 md:gap-4">
         <div class="col-span-12 lg:col-span-2">
-            <p class="m-0 p-0 leading-normal mr-4">Forneça as informações
-                necessárias abaixo para configurar uma nova inscrição.</p>
+            <p class="m-0 p-0 leading-normal mr-4">{{ 'application.cadastro.form.intro' | translate }}</p>
         </div>
 
         <div class="col-span-12 lg:col-span-10">
@@ -13,24 +12,24 @@
                 <div class="grid grid-cols-12 gap-4">
                     <div class="mb-6 col-span-12 md:col-span-6">
                         <label for="application" class="font-medium  mb-2 block">
-                            Tipo Candidatura
+                            {{ 'application.cadastro.form.applicationType' | translate }}
                         </label>
                         <p-select formControlName="applicationType" inputId="application" [options]="applicationTypes"
-                            optionLabel="name" fluid filterBy="name" [showClear]="true" placeholder="Select a Type">
+                            optionLabel="name" fluid filterBy="name" [showClear]="true" [placeholder]="'application.cadastro.form.selectType' | translate">
                         </p-select>
                     </div>
 
                     <div class="mb-6 col-span-12 md:col-span-6">
                         <label for="category" class="font-medium  mb-2 block">
-                            Categoria
+                            {{ 'application.cadastro.form.category' | translate }}
                         </label>
                         <p-select formControlName="categoryType" inputId="category" [options]="categoryTpes"
-                            optionLabel="name" fluid filterBy="name" [showClear]="true" placeholder="Select a Category">
+                            optionLabel="name" fluid filterBy="name" [showClear]="true" [placeholder]="'application.cadastro.form.selectCategory' | translate">
                         </p-select>
                     </div>
                 </div>
                 <button (click)="create(applicationForm)" icon="pi pi-save" [loading]="loading"
-                    [disabled]="!applicationForm.valid" pButton pRipple label="Create Application"
+                    [disabled]="!applicationForm.valid" pButton pRipple [label]="'application.cadastro.form.create' | translate"
                     class="w-auto mt-3"></button>
             </form>
         </div>

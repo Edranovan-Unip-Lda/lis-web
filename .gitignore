@@ -155,3 +155,6 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# i18n native-speaker review export (npm run i18n:review)
+/i18n-tet-review.csv

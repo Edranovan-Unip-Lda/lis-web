@@ -1,15 +1,15 @@
  <p-toast position="bottom-center" />
  <div class="card">
      <span class="text-2xl font-bold mb-6 block">
-         Candidatura para o Pedido Inscricacao no Cadastro {{categoria | titlecase}}
+         {{ 'application.cadastro.detail.title' | translate: { categoria: ('enum.Categoria.' + categoria) | translate } }}
      </span>
 
      <p-stepper [value]="1" class="basis-[50rem]" [linear]="!(pedidoId)">
          <p-step-list>
-             <p-step [value]="1">Detalho da Aplicação</p-step>
+             <p-step [value]="1">{{ 'application.cadastro.detail.stepDetails' | translate }}</p-step>
              @if (isSubmitted(aplicanteData)) {
-             <p-step [value]="2">Pedido</p-step>
-             <p-step [value]="3">Fatura-Recibo</p-step>
+             <p-step [value]="2">{{ 'application.cadastro.detail.stepPedido' | translate }}</p-step>
+             <p-step [value]="3">{{ 'application.cadastro.detail.stepFatura' | translate }}</p-step>
              }
          </p-step-list>
          <p-step-panels>
@@ -18,53 +18,53 @@
                      <div class="px-8 font-sans">
                          <div class="grid grid-cols-4 md:grid-cols-5 gap-6 mb-8">
                              <div class="col-span-4 md:col-span-3 bg-[#26262B] p-6 rounded-lg">
-                                 <h2 class="text-xl font-semibold text-white mb-4">Detalhes do Aplicante</h2>
+                                 <h2 class="text-xl font-semibold text-white mb-4">{{ 'application.shared.applicantDetails' | translate }}</h2>
                                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-gray-300">
                                      <div>
-                                         <p class="font-medium text-gray-400">Nº do Aplicante:</p>
+                                         <p class="font-medium text-gray-400">{{ 'application.shared.applicantNumber' | translate }}</p>
                                          <p class="text-lg">
                                              {{aplicanteData.numero}}
                                          </p>
                                      </div>
                                      <div>
-                                         <p class="font-medium text-gray-400">Estado:</p>
-                                         <p-tag [value]="aplicanteEstado"
+                                         <p class="font-medium text-gray-400">{{ 'application.shared.status' | translate }}</p>
+                                         <p-tag [value]="aplicanteEstado | statusLabel"
                                              [severity]="aplicanteEstado| statusSeverity" />
                                      </div>
                                      <div>
                                          <p class="font-medium text-gray-400">
-                                             Criado Em:
+                                             {{ 'application.shared.createdAt' | translate }}
                                          </p>
                                          <p>
-                                             {{aplicanteData.createdAt | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                                             {{aplicanteData.createdAt | ldate:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                                          </p>
                                      </div>
                                      <div>
-                                         <p class="font-medium text-gray-400">Atualizado Em:</p>
+                                         <p class="font-medium text-gray-400">{{ 'application.shared.updatedAt' | translate }}</p>
                                          <p>
-                                             {{aplicanteData.updatedAt | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                                             {{aplicanteData.updatedAt | ldate:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                                          </p>
                                      </div>
                                  </div>
                              </div>
                              <div
                                  class="col-span-4 md:col-span-2 bg-[#26262B] p-6 rounded-lg flex flex-col justify-center">
-                                 <h2 class="text-xl font-semibold text-white mb-4">Informação da Empresa</h2>
+                                 <h2 class="text-xl font-semibold text-white mb-4">{{ 'application.shared.companyInfo' | translate }}</h2>
                                  <div class="space-y-2 text-gray-300">
                                      <p>
-                                         <span class="font-medium text-gray-400">Nome:</span>
+                                         <span class="font-medium text-gray-400">{{ 'application.shared.name' | translate }}</span>
                                          {{aplicanteData.empresa.nome}}
                                      </p>
                                      <p>
-                                         <span class="font-medium text-gray-400">NIF:</span>
+                                         <span class="font-medium text-gray-400">{{ 'application.shared.nif' | translate }}</span>
                                          {{aplicanteData.empresa.nif}}
                                      </p>
                                      <p>
-                                         <span class="font-medium text-gray-400">Telefone/Telemovel:</span>
+                                         <span class="font-medium text-gray-400">{{ 'application.shared.phones' | translate }}</span>
                                          {{aplicanteData.empresa.telefone}} / {{aplicanteData.empresa.telemovel}}
                                      </p>
                                      <p>
-                                         <span class="font-medium text-gray-400">Sede:</span>
+                                         <span class="font-medium text-gray-400">{{ 'application.shared.sede' | translate }}</span>
                                          {{aplicanteData.empresa.sede.local}} -
                                          {{aplicanteData.empresa.sede.aldeia.nome}},
                                          {{aplicanteData.empresa.sede.aldeia.suco.nome}},
@@ -77,7 +77,7 @@
                          @if(aplicanteEstado == 'REJEITADO') {
                          <div class="bg-[#26262B] p-6 rounded-lg mb-8 reason-for-rejection" id="rejectionSection">
                              <h2 class="text-xl font-semibold text-white mb-4">
-                                 Motivo de Rejeição
+                                 {{ 'application.shared.rejectionReason' | translate }}
                              </h2>
                              <div class="bg-[#3A3A41] p-4 rounded-lg">
                                  <p class="text-gray-300">
@@ -90,11 +90,11 @@
                          @if(aplicanteEstado == 'DEVOLVIDO') {
                          <div class="bg-[#26262B] p-6 rounded-lg mb-8" id="devolucaoSection">
                              <h2 class="text-xl font-semibold text-white mb-4">
-                                 Pedido devolvido para correção
+                                 {{ 'application.shared.returnedTitle' | translate }}
                              </h2>
                              <div class="bg-[#3A3A41] p-4 rounded-lg">
                                  <p class="text-gray-300">
-                                     {{motivoDevolucao || 'Corrija os dados indicados e volte a submeter o pedido.'}}
+                                     {{ motivoDevolucao || ('application.shared.returnedDefault' | translate) }}
                                  </p>
                              </div>
                          </div>
@@ -102,7 +102,7 @@
 
                          <div class="bg-[#26262B] p-6 rounded-lg mb-8">
                              <h2 class="text-xl font-semibold text-white mb-6">
-                                 Etapas do Aplicante
+                                 {{ 'application.shared.steps' | translate }}
                              </h2>
                              <div class="space-y-6">
                                  <div
@@ -114,22 +114,22 @@
                                          </div>
                                          <div>
                                              <h3 class="text-lg font-semibold text-white">
-                                                 Formulário do Pedido Inscrição do Cadastro
+                                                 {{ 'application.cadastro.detail.formTitle' | translate }}
                                              </h3>
                                              <p class="text-sm text-gray-400">
-                                                 Detalhes do Pedido Inscrição do Cadastro
+                                                 {{ 'application.cadastro.detail.formDesc' | translate }}
                                              </p>
                                          </div>
                                      </div>
                                      <div class="flex items-center space-x-4">
                                          @if (aplicanteData.pedidoInscricaoCadastro) {
-                                         <p-tag [value]="aplicanteData.pedidoInscricaoCadastro.status"
+                                         <p-tag [value]="aplicanteData.pedidoInscricaoCadastro.status | statusLabel"
                                              [severity]="aplicanteData.pedidoInscricaoCadastro.status| statusSeverity" />
                                          <p-button [routerLink]="['pedido-inscricao']" icon="pi pi-eye"
-                                             label="Pré-visualização" [raised]="true" severity="info" />
+                                             [label]="'application.shared.preview' | translate" [raised]="true" severity="info" />
                                          }
                                          @else {
-                                         <p-tag value="Em curso" [severity]="'info'" icon="pi pi-clock" />
+                                         <p-tag [value]="'EM_CURSO' | statusLabel" [severity]="'info'" icon="pi pi-clock" />
                                          }
 
                                      </div>
@@ -143,20 +143,20 @@
                                          </div>
                                          <div>
                                              <h3 class="text-lg font-semibold text-white">
-                                                 Fatura
+                                                 {{ 'application.shared.invoice' | translate }}
                                              </h3>
-                                             <p class="text-sm text-gray-400">Informação da Fatura</p>
+                                             <p class="text-sm text-gray-400">{{ 'application.cadastro.detail.invoiceInfo' | translate }}</p>
                                          </div>
                                      </div>
                                      <div class="flex items-center space-x-4">
                                          @if (aplicanteData.pedidoInscricaoCadastro &&
                                          aplicanteData.pedidoInscricaoCadastro.fatura) {
-                                         <p-tag [value]="aplicanteData.pedidoInscricaoCadastro.fatura.status"
+                                         <p-tag [value]="aplicanteData.pedidoInscricaoCadastro.fatura.status | statusLabel"
                                              [severity]="aplicanteData.pedidoInscricaoCadastro.fatura.status| statusSeverity" />
                                          <p-button [routerLink]="['fatura-inscricao']" icon="pi pi-eye"
-                                             label="Pré-visualização" [raised]="true" severity="info" />
+                                             [label]="'application.shared.preview' | translate" [raised]="true" severity="info" />
                                          }@else {
-                                         <p-tag value="Não Emitida" [severity]="'secondary'" icon="pi pi-ban" />
+                                         <p-tag [value]="'NAO_EMITIDA' | statusLabel" [severity]="'secondary'" icon="pi pi-ban" />
                                          }
 
                                      </div>
@@ -170,9 +170,9 @@
                                          </div>
                                          <div>
                                              <h3 class="text-lg font-semibold text-white">
-                                                 Recibo
+                                                 {{ 'application.shared.receipt' | translate }}
                                              </h3>
-                                             <p class="text-sm text-gray-400">Informação do Recibo</p>
+                                             <p class="text-sm text-gray-400">{{ 'application.cadastro.detail.receiptInfo' | translate }}</p>
                                          </div>
                                      </div>
                                      <div class="flex items-center space-x-4">
@@ -180,12 +180,12 @@
                                          && aplicanteData.pedidoInscricaoCadastro.fatura
                                          && aplicanteData.pedidoInscricaoCadastro.fatura.recibo
                                          ){
-                                         <p-tag [value]="'SUBMETIDO'" [severity]="'success'" />
+                                         <p-tag [value]="'SUBMETIDO' | statusLabel" [severity]="'success'" />
                                          <p-button (click)="downloadFile(uploadedFiles[0])" icon="pi pi-download"
-                                             label="Decarregar Recibo" [raised]="true" [loading]="downloadLoading"
+                                             [label]="'application.shared.downloadReceipt' | translate" [raised]="true" [loading]="downloadLoading"
                                              severity="info" />
                                          }@else {
-                                         <p-tag value="Não Submetida" [severity]="'secondary'" icon="pi pi-ban" />
+                                         <p-tag [value]="'NAO_SUBMETIDA' | statusLabel" [severity]="'secondary'" icon="pi pi-ban" />
                                          }
 
                                      </div>
@@ -199,27 +199,27 @@
                                          </div>
                                          <div>
                                              <h3 class="text-lg font-semibold text-white">
-                                                 Em Análise
+                                                 {{ 'application.shared.underReview' | translate }}
                                              </h3>
                                              <p class="text-sm text-gray-400">
-                                                 Em análise pelo chefe de departamento.
+                                                 {{ 'application.shared.underReviewDesc' | translate }}
                                              </p>
                                          </div>
                                      </div>
                                      <div class="flex items-center space-x-4">
                                          @switch (aplicanteData.estado) {
                                          @case ('REVISTO') {
-                                         <p-tag [value]="'REVISTO'" [severity]="'SUBMETIDO'" />
+                                         <p-tag [value]="'REVISTO' | statusLabel" [severity]="'SUBMETIDO'" />
 
                                          }
                                          @case ('APROVADO') {
-                                         <p-tag [value]="'REVISTO'" [severity]="'SUBMETIDO'" />
+                                         <p-tag [value]="'REVISTO' | statusLabel" [severity]="'SUBMETIDO'" />
                                          }
                                          @case ('SUBMETIDO') {
-                                         <p-tag [value]="'Em curso'" [severity]="'info'" icon="pi pi-clock" />
+                                         <p-tag [value]="'EM_CURSO' | statusLabel" [severity]="'info'" icon="pi pi-clock" />
                                          }
                                          @case ('EM_CURSO') {
-                                         <p-tag value="Pendente" [severity]="'warn'" icon="pi pi-ban" />
+                                         <p-tag [value]="'PENDENTE' | statusLabel" [severity]="'warn'" icon="pi pi-ban" />
                                          }
                                          }
                                      </div>
@@ -232,21 +232,20 @@
                                              <i class="bi bi-award text-2xl"></i>
                                          </div>
                                          <div>
-                                             <h3 class="text-lg font-semibold text-white">Certificado</h3>
-                                             <p class="text-sm text-gray-400">Certificado oficial de registo
-                                                 {{aplicanteData.categoria |titlecase}}.</p>
+                                             <h3 class="text-lg font-semibold text-white">{{ 'application.shared.certificate' | translate }}</h3>
+                                             <p class="text-sm text-gray-400">{{ 'application.cadastro.detail.certificateDesc' | translate: { categoria: ('enum.Categoria.' + aplicanteData.categoria) | translate } }}</p>
                                          </div>
                                      </div>
                                      <div class="flex items-center space-x-4">
                                          @if (aplicanteData.pedidoInscricaoCadastro &&
                                          aplicanteData.pedidoInscricaoCadastro.certificadoInscricaoCadastro) {
-                                         <p-tag [value]="'EMITIDO'" [severity]="'success'" />
+                                         <p-tag [value]="'EMITIDO' | statusLabel" [severity]="'success'" />
                                          <p-button
                                              [routerLink]="['certificado-inscricao/' + aplicanteData.pedidoInscricaoCadastro.certificadoInscricaoCadastro.id]"
-                                             icon="pi pi-eye" label="Pré-visualização" [raised]="true"
+                                             icon="pi pi-eye" [label]="'application.shared.preview' | translate" [raised]="true"
                                              severity="info" />
                                          }@else {
-                                         <p-tag value="Nao Emitido" [severity]="'warn'" icon="pi pi-times" />
+                                         <p-tag [value]="'NAO_EMITIDO' | statusLabel" [severity]="'warn'" icon="pi pi-times" />
                                          }
 
                                      </div>
@@ -257,7 +256,7 @@
                      </div>
                      @if (isSubmitted(aplicanteData)) {
                      <div class="flex pt-6 justify-end">
-                         <p-button label="Continuar" icon="pi pi-arrow-right" iconPos="right"
+                         <p-button [label]="'application.shared.continue' | translate" icon="pi pi-arrow-right" iconPos="right"
                              (onClick)="activateCallback(2)" />
                      </div>
                      }
@@ -270,81 +269,81 @@
 
                      <form [formGroup]="requestForm">
                          <span class="text-xl font-bold mt-6 mb-3 block">
-                             PEDIDO
+                             {{ 'application.shared.form.pedido' | translate }}
                          </span>
                          <div class="grid grid-cols-12 gap-4">
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="tipoPedidoCadastro" class="font-medium  mb-2 block">
-                                     Tipo
+                                     {{ 'application.shared.form.tipo' | translate }}
                                  </label>
                                  <p-select formControlName="tipoPedidoCadastro" inputId="tipoPedidoCadastro"
                                      (onChange)="pedidoCadstroOnChange($event)" [options]="tipoPedidoOpts"
                                      optionLabel="name" fluid filterBy="name" [showClear]="true"
-                                     placeholder="Selecione o tipo">
+                                     [placeholder]="'application.cadastro.detail.selectTipo' | translate">
                                  </p-select>
                              </div>
                          </div>
                          <span class="text-xl font-bold mt-6 mb-3 block">
-                             IDENTIFICACAO DA EMPRESA
+                             {{ 'application.cadastro.detail.sectionEmpresa' | translate }}
                          </span>
                          <div formGroupName="empresa" class="grid grid-cols-12 gap-4">
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="nome" class="font-medium  mb-2 block">
-                                     Nome da Empresa
+                                     {{ 'application.shared.form.nomeEmpresa' | translate }}
                                  </label>
                                  <input formControlName="nome" id="nome" type="text" pInputText fluid />
                              </div>
                              <div class="mb-6 col-span-12">
                                  <label for="sede" class="font-medium  mb-2 block">
-                                     Sede
+                                     {{ 'application.shared.form.sede' | translate }}
                                  </label>
                                  <input formControlName="sede" id="sede" type="text" pInputText fluid />
                              </div>
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="nif" class="font-medium  mb-2 block">
-                                     NIF
+                                     {{ 'application.shared.form.nif' | translate }}
                                  </label>
                                  <input formControlName="nif" id="nif" type="text" pInputText fluid />
                              </div>
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="numeroRegistoComercial" class="font-medium  mb-2 block">
-                                     Nº de Registo Comercial
+                                     {{ 'application.shared.form.numeroRegistoComercial' | translate }}
                                  </label>
                                  <input formControlName="numeroRegistoComercial" id="numeroRegistoComercial" type="text"
                                      pInputText fluid />
                              </div>
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="telemovel" class="font-medium  mb-2 block">
-                                     Telemóvel
+                                     {{ 'application.shared.form.telemovel' | translate }}
                                  </label>
                                  <input formControlName="telemovel" id="telemovel" type="text" pInputText fluid />
                              </div>
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="telefone" class="font-medium  mb-2 block">
-                                     Telefone
+                                     {{ 'application.shared.form.telefone' | translate }}
                                  </label>
                                  <input formControlName="telefone" id="telefone" type="text" pInputText fluid />
                              </div>
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="email" class="font-medium  mb-2 block">
-                                     Email
+                                     {{ 'application.shared.form.email' | translate }}
                                  </label>
                                  <input formControlName="email" id="email" type="text" pInputText fluid />
                              </div>
                              <div class="mb-6 col-span-12">
                                  <label for="gerente" class="font-medium  mb-2 block">
-                                     Identificação do administrador/gerente
+                                     {{ 'application.cadastro.detail.gerente' | translate }}
                                  </label>
                                  <input formControlName="gerente" id="gerente" type="text" pInputText fluid />
                              </div>
                          </div>
                          <span class="text-xl font-bold mt-6 mb-3 block">
-                             IDENTIFICACAO DO ESTABELECIMENTO
+                             {{ 'application.cadastro.detail.sectionEstabelecimento' | translate }}
                          </span>
                          <div class="grid grid-cols-12 gap-4 mb-8">
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="nomeEstabelecimento" class="font-medium  mb-2 block">
-                                     Nome do Estabelecimento
+                                     {{ 'application.cadastro.detail.nomeEstabelecimento' | translate }}
                                  </label>
                                  <input formControlName="nomeEstabelecimento" id="nomeEstabelecimento" type="text"
                                      pInputText fluid />
@@ -353,19 +352,19 @@
                                  <div formGroupName="localEstabelecimento" class="grid grid-cols-12">
                                      <div class="mb-6 col-span-12">
                                          <label for="local" class="font-medium  mb-2 block">
-                                             Local do Estabelecimento
+                                             {{ 'application.shared.form.localEstabelecimento' | translate }}
                                          </label>
                                          <input formControlName="local" id="local" type="text" pInputText fluid
-                                             placeholder="ex. Av. Pres. Nicolau Lobato" />
+                                             [placeholder]="'application.shared.form.localPlaceholder' | translate" />
                                      </div>
                                      <div class="mb-6 col-span-12">
                                          <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                                              <div class="flex-auto">
                                                  <label for="aldeia" class="font-medium  mb-2 block">
-                                                     Aldeia
+                                                     {{ 'application.shared.form.aldeia' | translate }}
                                                  </label>
                                                  <p-select fluid formControlName="aldeia" [options]="listaAldeia"
-                                                     optionLabel="nome" placeholder="Selecione a Aldeia" [filter]="true"
+                                                     optionLabel="nome" [placeholder]="'application.shared.form.selectAldeia' | translate" [filter]="true"
                                                      filterBy="nome" [showClear]="true"
                                                      (onFilter)="aldeiaFilter($event)" (onpanelHide)="onPanelHide()"
                                                      (onChange)="aldeiaOnChange($event)" (onClear)="onPanelHide()">
@@ -373,20 +372,20 @@
                                              </div>
                                              <div class="flex-auto">
                                                  <label for="suco" class="font-medium  mb-2 block">
-                                                     Suco
+                                                     {{ 'application.shared.form.suco' | translate }}
                                                  </label>
                                                  <input formControlName="suco" id="suco" type="text" pInputText fluid />
                                              </div>
                                              <div class="flex-auto">
                                                  <label for="posto" class="font-medium  mb-2 block">
-                                                     Posto Administrativo
+                                                     {{ 'application.shared.form.postoAdministrativo' | translate }}
                                                  </label>
                                                  <input formControlName="postoAdministrativo" id="postoAdministrativo"
                                                      type="text" pInputText fluid />
                                              </div>
                                              <div class="flex-auto">
                                                  <label for="municipio" class="font-medium  mb-2 block">
-                                                     Municipio
+                                                     {{ 'application.shared.form.municipio' | translate }}
                                                  </label>
                                                  <input formControlName="municipio" id="municipio" type="text"
                                                      pInputText fluid />
@@ -398,34 +397,34 @@
                              @if (categoria === 'COMERCIAL') {
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="tipoEstabelecimento" class="font-medium  mb-2 block">
-                                     Tipo do Estabelecimento
+                                     {{ 'application.cadastro.detail.tipoEstabelecimento' | translate }}
                                  </label>
                                  <p-select formControlName="tipoEstabelecimento"
                                      (onChange)="tipoEstabelecimentoOnChange($event)" inputId="tipoEstabelecimento"
                                      [options]="tipoEstabelecimentoOpts" optionLabel="name" fluid filterBy="name"
-                                     [showClear]="true" placeholder="Selecione o Tipo de Estabelecimento">
+                                     [showClear]="true" [placeholder]="'application.cadastro.detail.selectTipoEstabelecimento' | translate">
                                  </p-select>
                              </div>
                              }@else {
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="tipoEmpresa" class="font-medium  mb-2 block">
-                                     Tipo do Empresa
+                                     {{ 'application.cadastro.detail.tipoEmpresa' | translate }}
                                  </label>
                                  <p-select formControlName="tipoEmpresa" inputId="tipoEmpresa"
                                      [options]="tipoEmpresaOpts" optionLabel="name" optionValue="value" fluid
-                                     filterBy="name" [showClear]="true" placeholder="Selecione o Tipo de Empresa">
+                                     filterBy="name" [showClear]="true" [placeholder]="'application.cadastro.detail.selectTipoEmpresa' | translate">
                                  </p-select>
                              </div>
                              }
 
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="caraterizacaoEstabelecimento" class="font-medium  mb-2 block">
-                                     Caraterizacao do Estabelecimento
+                                     {{ 'application.cadastro.detail.caraterizacao' | translate }}
                                  </label>
                                  <p-select formControlName="caraterizacaoEstabelecimento"
                                      inputId="caraterizacaoEstabelecimento" [options]="caraterizacaEstabelecimentoOpts"
                                      optionLabel="name" fluid filterBy="name" [showClear]="true"
-                                     placeholder="Selecione a Caraterizacao do Estabelecimento">
+                                     [placeholder]="'application.cadastro.detail.selectCaraterizacao' | translate">
                                  </p-select>
                              </div>
 
@@ -435,13 +434,13 @@
                              </div>
                              <div class="mb-6 col-span-12 md:col-span-5">
                                  <label for="longitude" class="font-medium  mb-2 block">
-                                     Longitude
+                                     {{ 'application.cadastro.detail.longitude' | translate }}
                                  </label>
                                  <input formControlName="longitude" id="longitude" type="text" pInputText fluid />
                              </div>
                              <div class="mb-6 col-span-12 md:col-span-5">
                                  <label for="latitude" class="font-medium  mb-2 block">
-                                     latitude
+                                     {{ 'application.cadastro.detail.latitude' | translate }}
                                  </label>
                                  <input formControlName="latitude" id="latitude" type="text" pInputText fluid />
                              </div>
@@ -449,46 +448,46 @@
                          </div>
 
                          <span class="text-xl font-bold mt-6 mb-3 block">
-                             CARATERIZACAO DA ATIVIDADE
+                             {{ 'application.cadastro.detail.sectionAtividade' | translate }}
                          </span>
                          <div class="grid grid-cols-12 gap-4">
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="risco" class="font-medium  mb-2 block">
-                                     Quanto ao Risco
+                                     {{ 'application.cadastro.detail.risco' | translate }}
                                  </label>
                                  <input formControlName="risco" id="risco" type="text" pInputText fluid />
                              </div>
                              @if (categoria === 'COMERCIAL') {
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="ato" class="font-medium  mb-2 block">
-                                     Quanto ao tipo de Ato
+                                     {{ 'application.cadastro.detail.ato' | translate }}
                                  </label>
                                  <p-select formControlName="ato" inputId="ato" [options]="tipoAtoOpts"
                                      optionLabel="name" fluid filterBy="name" [showClear]="true"
-                                     placeholder="Selecione o tipo de ato">
+                                     [placeholder]="'application.cadastro.detail.selectAto' | translate">
                                  </p-select>
                              </div>
                              }@else {
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="quantoAtividade" class="font-medium  mb-2 block">
-                                     Quanto à atividade
+                                     {{ 'application.cadastro.detail.quantoAtividade' | translate }}
                                  </label>
                                  <p-select formControlName="quantoAtividade" inputId="quantoAtividade"
                                      [options]="quantoAtividadeOpts" optionLabel="name" optionValue="value" fluid
-                                     filterBy="name" [showClear]="true" placeholder="Selecione a atividade">
+                                     filterBy="name" [showClear]="true" [placeholder]="'application.cadastro.detail.selectAtividade' | translate">
                                  </p-select>
                              </div>
                              }
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="classeAtividade" class="font-medium  mb-2 block">
-                                     Atividade Principal exercida no Estabelecimento
+                                     {{ 'application.shared.form.atividadePrincipal' | translate }}
                                  </label>
                                  <p-select formControlName="classeAtividade"
                                      (onChange)="atividadePrincipalChange($event)"
                                      (onFilter)="classeAtividadeFilter($event)" inputId="classeAtividade"
                                      [options]="listaClasseAtividade" optionLabel="codigo" fluid [filter]="true"
                                      filterBy="codigo,descricao" [showClear]="true"
-                                     placeholder="Selecione a atividade principal">
+                                     [placeholder]="'application.shared.form.selectAtividadePrincipal' | translate">
                                      <ng-template let-tipo #item>
                                          <div class="flex items-center gap-2">
                                              <span>{{tipo.codigo}} </span> - <span>{{tipo.descricao}} </span>
@@ -498,28 +497,28 @@
                              </div>
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="classeAtividadeCodigo" class="font-medium  mb-2 block">
-                                     Descricao
+                                     {{ 'application.shared.form.descricao' | translate }}
                                  </label>
                                  <input formControlName="classeAtividadeCodigo" id="classeAtividadeCodigo" type="text"
                                      pInputText fluid />
                              </div>
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="grupoAtividade" class="font-medium  mb-2 block">
-                                     Tipo de Atividade no Estabelecimento
+                                     {{ 'application.cadastro.detail.tipoAtividade' | translate }}
                                  </label>
                                  <input formControlName="grupoAtividade" id="grupoAtividade" type="text" pInputText
                                      fluid />
                              </div>
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="grupoAtividadeCodigo" class="font-medium  mb-2 block">
-                                     Descricao
+                                     {{ 'application.shared.form.descricao' | translate }}
                                  </label>
                                  <input formControlName="grupoAtividadeCodigo" id="grupoAtividadeCodigo" type="text"
                                      pInputText fluid />
                              </div>
                              <div class="mb-6 col-span-12">
                                  <label for="alteracoes" class="font-medium  mb-2 block">
-                                     Alterações a Averbar
+                                     {{ 'application.cadastro.detail.alteracoes' | translate }}
                                  </label>
                                  <textarea formControlName="alteracoes" id="alteracoes" rows="5" cols="30" pTextarea
                                      fluid></textarea>
@@ -527,7 +526,7 @@
                              @if (!this.showDataEmissaoCertAnterior) {
                              <div class="mb-6 col-span-12 md:col-span-6">
                                  <label for="dataEmissao" class="font-medium  mb-2 block">
-                                     Data da Emissão do Certificado anterior
+                                     {{ 'application.cadastro.detail.dataEmissaoCertAnterior' | translate }}
                                  </label>
                                  <p-date-picker formControlName="dataEmissaoCertAnterior" id="dataEmissaoCertAnterior"
                                      [showIcon]="true" [showButtonBar]="true" fluid dateFormat="dd/mm/yy"
@@ -537,7 +536,7 @@
 
                              <div class="mb-6 col-span-12">
                                  <label for="observacao" class="font-medium  mb-2 block">
-                                     Observação
+                                     {{ 'application.cadastro.detail.observacao' | translate }}
                                  </label>
                                  <textarea formControlName="observacao" id="observacao" rows="5" cols="30" pTextarea
                                      fluid></textarea>
@@ -554,7 +553,7 @@
                                      accept="application/pdf" mode="advanced">
                                      <ng-template #empty>
                                          @if (uploadedDocs.length === 0) {
-                                         Arraste e largue os ficheiros aqui para carregar.
+                                         {{ 'application.shared.dropFiles' | translate }}
                                          }
                                      </ng-template>
                                      <ng-template #content>
@@ -584,19 +583,19 @@
                      </form>
                      <div class="flex items-center gap-3">
                          @if (pedidoIsDraft) {
-                         <p-tag value="Rascunho" [severity]="'warn'" icon="pi pi-pencil" />
+                         <p-tag [value]="'RASCUNHO' | statusLabel" [severity]="'warn'" icon="pi pi-pencil" />
                          }
-                         <p-button label="Guardar rascunho" [outlined]="true" severity="secondary" icon="pi pi-save"
+                         <p-button [label]="'application.shared.saveDraft' | translate" [outlined]="true" severity="secondary" icon="pi pi-save"
                              iconPos="left" [loading]="draftLoading" [disabled]="pedidoLoading || disableAllForm"
                              (click)="saveDraft(requestForm)" />
-                         <p-button label="Submeter" [disabled]="!requestForm.valid || draftLoading"
+                         <p-button [label]="'common.submit' | translate" [disabled]="!requestForm.valid || draftLoading"
                              icon="pi pi-send" [loading]="pedidoLoading" iconPos="left"
                              (click)="submit(requestForm, activateCallback)" />
                      </div>
                      <div class="flex pt-6 justify-between">
-                         <p-button label="Voltar" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
+                         <p-button [label]="'common.back' | translate" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
                              (onClick)="activateCallback(1)" />
-                         <p-button [disabled]="!pedidoId || pedidoIsDraft" label="Próximo" severity="secondary"
+                         <p-button [disabled]="!pedidoId || pedidoIsDraft" [label]="'application.shared.next' | translate" severity="secondary"
                              icon="pi pi-arrow-right" iconPos="right" (onClick)="activateCallback(3)" />
                      </div>
                  </ng-template>
@@ -609,21 +608,21 @@
                      <form [formGroup]="faturaForm">
                          <div class="flex flex-col">
                              <span class="text-xl font-bold mt-6 mb-4 block">
-                                 Emitir uma Fatura
+                                 {{ 'application.cadastro.detail.issueInvoiceTitle' | translate }}
                              </span>
                              <div class="grid grid-cols-12 gap-4">
                                  <div class="mb-6 col-span-12">
                                      <label for="taxas" class="font-medium  mb-2 block">
-                                         Ato da taxa
+                                         {{ 'application.cadastro.detail.atoTaxa' | translate }}
                                      </label>
                                      <p-multiselect formControlName="taxas" inputId="taxas" [options]="listaPedidoAto"
                                          optionLabel="ato" optionValue="id" fluid [showClear]="true"
-                                         placeholder="Selecione o ato">
+                                         [placeholder]="'application.cadastro.detail.selectAtoTaxa' | translate">
                                      </p-multiselect>
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="superficie" class="font-medium  mb-2 block">
-                                         Superfície do estabelecimento comercial <span class="">(&#13217;)</span>
+                                         {{ 'application.cadastro.detail.superficie' | translate }} <span class="">(&#13217;)</span>
                                      </label>
                                      <p-inputgroup>
                                          <p-inputnumber formControlName="superficie" mode="decimal"
@@ -635,7 +634,7 @@
                                  </div>
                                  <div class="mb-6 col-span-12 md:col-span-6">
                                      <label for="total" class="font-medium  mb-2 block">
-                                         Total
+                                         {{ 'application.cadastro.detail.total' | translate }}
                                      </label>
                                      <p-inputgroup>
                                          <p-inputgroup-addon>
@@ -648,13 +647,13 @@
                              </div>
                              <div class="grid grid-cols-12 gap-4">
                                  <div class="mb-6 col-span-12 md:col-span-4 flex justify-between">
-                                     <p-button [label]="faturaId? 'Atualizar Fatura' : 'Emitir Fatura'"
+                                     <p-button [label]="(faturaId ? 'application.shared.updateInvoice' : 'application.shared.issueInvoice') | translate"
                                          [icon]="faturaId? 'pi pi-sync' : 'pi pi-file'" iconPos="left"
                                          [loading]="faturaLoading" class="w-auto mt-3"
                                          [disabled]="!faturaForm.valid || disableAllForm"
                                          (click)="saveFatura(faturaForm)" />
                                      @if (faturaId) {
-                                     <p-button label="Baixar Fatura" [routerLink]="['fatura-inscricao']"
+                                     <p-button [label]="'application.shared.downloadInvoice' | translate" [routerLink]="['fatura-inscricao']"
                                          [outlined]="true" icon="pi pi-download" iconPos="left" class="w-auto mt-3" />
                                      }
                                  </div>
@@ -662,7 +661,7 @@
 
                              @if (faturaId) {
                              <span class="text-xl font-bold mt-6 mb-3 block">
-                                 Carregar Recibo
+                                 {{ 'application.shared.uploadReceipt' | translate }}
                              </span>
                              <div class="card">
                                  <p-fileupload #fuCadRecibo name="file" [disabled]="uploadedFiles.length > 0 || uploadLoading" [customUpload]="true"
@@ -670,7 +669,7 @@
                                      [multiple]="false" accept="application/pdf,image/*" mode="advanced">
                                      <ng-template #empty>
                                          @if (uploadedFiles.length === 0) {
-                                         Arraste e largue os ficheiros aqui para carregar.
+                                         {{ 'application.shared.dropFiles' | translate }}
                                          }
                                      </ng-template>
                                      <ng-template #content>
@@ -700,10 +699,10 @@
                          </div>
                      </form>
                      <div class="flex pt-6 justify-between">
-                         <p-button label="Voltar" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
+                         <p-button [label]="'common.back' | translate" severity="secondary" icon="pi pi-arrow-left" iconPos="left"
                              (onClick)="activateCallback(2)" />
                          <p-button (click)="submitAplicante(activateCallback)" [loading]="aplicanteLoading"
-                             [disabled]="uploadedFiles.length === 0 || disableAllForm" label="Submeter"
+                             [disabled]="uploadedFiles.length === 0 || disableAllForm" [label]="'common.submit' | translate"
                              icon="pi pi-save" iconPos="left" />
                      </div>
                  </ng-template>

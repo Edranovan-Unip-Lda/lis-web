@@ -1,9 +1,9 @@
 <div class="card">
     <span class="text-xl font-bold mb-6 block">
         @if (isNew) {
-        Criar Novo Utilizadór
+        {{ 'users.form.createTitle' | translate }}
         }@else {
-        Atualizar Utilizadór
+        {{ 'users.form.updateTitle' | translate }}
         }
     </span>
 
@@ -17,10 +17,9 @@
             <!-- <div class=" font-medium text-xl mb-4">Profile</div> -->
             <p class="m-0 p-0 leading-normal mr-4">
                 @if (isNew) {
-                Forneça as informações
-                necessárias abaixo para configurar uma nova conta de utilizador.
+                {{ 'users.form.createIntro' | translate }}
                 }@else {
-                Forneça as informações necessárias abaixo para atualizar a conta de utilizador.
+                {{ 'users.form.updateIntro' | translate }}
                 }
 
             </p>
@@ -30,24 +29,24 @@
                 <div class="grid grid-cols-12 gap-4">
                     <div class="mb-6 col-span-12 md:col-span-6">
                         <label for="firstName" class="font-medium  mb-2 block">
-                            Nome próprio
+                            {{ 'profile.firstName' | translate }}
                         </label>
                         <input formControlName="firstName" id="firstName" type="text" pInputText fluid />
                     </div>
                     <div class="mb-6 col-span-12 md:col-span-6">
                         <label for="lastName" class="font-medium  mb-2 block">
-                            Apelido
+                            {{ 'profile.lastName' | translate }}
                         </label>
                         <input formControlName="lastName" id="lastName" type="text" pInputText fluid />
                     </div>
                     <div class="mb-6 col-span-12 md:col-span-6">
-                        <label for="email" class="font-medium  mb-2 block"> Email
+                        <label for="email" class="font-medium  mb-2 block"> {{ 'common.email' | translate }}
                         </label>
                         <input formControlName="email" id="email" type="text" pInputText fluid />
                     </div>
                     <div class="mb-6 col-span-12 md:col-span-6">
                         <label for="username" class="font-medium  mb-2 block">
-                            Nome de Utilizadór
+                            {{ 'users.form.username' | translate }}
                         </label>
                         <input formControlName="username" id="username" pInputText fluid />
                     </div>
@@ -55,14 +54,14 @@
                     <!-- Password -->
                     <div class="mb-6 col-span-12 md:col-span-6">
                         <label for="password" class="font-medium  mb-2 block">
-                            Palavra-passe
+                            {{ 'users.form.password' | translate }}
                         </label>
                         <p-password formControlName="password" id="password" [feedback]="true" [fluid]="true"
                             [toggleMask]="true" />
                     </div>
                     <div class="mb-6 col-span-12 md:col-span-6">
                         <label for="confirmPassword" class="font-medium  mb-2 block">
-                            Confirmar palavra-passe
+                            {{ 'users.form.confirmPassword' | translate }}
                         </label>
                         <p-password formControlName="confirmPassword" id="confirmPassword" [feedback]="false"
                             [fluid]="true" [toggleMask]="true" />
@@ -71,73 +70,21 @@
                     <!-- Role -->
                     <div class="mb-6 col-span-12 md:col-span-6">
                         <label for="role" class="font-medium  mb-2 block">
-                            Função
+                            {{ 'users.form.role' | translate }}
                         </label>
                         <p-select formControlName="role" [appendTo]="'body'" (onChange)="roleOnChange($event)"
                             inputId="role" [options]="roleList" optionLabel="name" optionValue="name" fluid
-                            filterBy="name" [showClear]="true" placeholder="Select a Role">
+                            filterBy="name" [showClear]="true" [placeholder]="'users.form.selectRole' | translate">
                             <ng-template #selectedItem let-selectedOption>
                                 @if (selectedOption) {
                                 <div class="flex items-center gap-2">
-                                    @switch (selectedOption.name) {
-                                    @case ('ROLE_ADMIN') {
-                                    <div>
-                                        Administradór
-                                    </div>
-                                    }
-                                    @case ('ROLE_MANAGER') {
-                                    <div>
-                                        Diretór
-                                    </div>
-                                    }
-                                    @case ('ROLE_CHIEF') {
-                                    <div>
-                                        Xefe Departamento
-                                    </div>
-                                    }
-                                    @case ('ROLE_STAFF') {
-                                    <div>
-                                        Funcionário
-                                    </div>
-                                    }
-                                    @case ('ROLE_CLIENT') {
-                                    <div>
-                                        Empresa
-                                    </div>
-                                    }
-                                    }
+                                    <div>{{ ('enum.Role.' + selectedOption.name) | translate }}</div>
                                 </div>
                                 }
                             </ng-template>
                             <ng-template let-role #item>
                                 <div class="flex items-center gap-2">
-                                    @switch (role.name) {
-                                    @case ('ROLE_ADMIN') {
-                                    <div>
-                                        Administradór
-                                    </div>
-                                    }
-                                    @case ('ROLE_MANAGER') {
-                                    <div>
-                                        Diretór
-                                    </div>
-                                    }
-                                    @case ('ROLE_CHIEF') {
-                                    <div>
-                                        Xefe Departamento
-                                    </div>
-                                    }
-                                    @case ('ROLE_STAFF') {
-                                    <div>
-                                        Funcionário
-                                    </div>
-                                    }
-                                    @case ('ROLE_CLIENT') {
-                                    <div>
-                                        Empresa
-                                    </div>
-                                    }
-                                    }
+                                    <div>{{ ('enum.Role.' + role.name) | translate }}</div>
                                 </div>
                             </ng-template>
                         </p-select>
@@ -145,11 +92,11 @@
                     @if (showCategoria) {
                     <div class="mb-6 col-span-12 md:col-span-6">
                         <label for="direcao" class="font-medium  mb-2 block">
-                            Direção
+                            {{ 'users.form.direcao' | translate }}
                         </label>
                         <p-select [appendTo]="'body'" formControlName="direcao" inputId="direcao"
                             [options]="direcaoList" optionLabel="nome" optionValue="id" fluid [showClear]="true"
-                            placeholder="Selecione a Direção">
+                            [placeholder]="'users.form.selectDirecao' | translate">
                         </p-select>
                     </div>
                     }
@@ -159,7 +106,7 @@
                     <!-- Status -->
                     <div class="mb-6 col-span-12 md:col-span-6">
                         <label for="status" class="font-medium  mb-2 block">
-                            Estado
+                            {{ 'common.status' | translate }}
                         </label>
                         <p-selectButton inputId="status" formControlName="status" [options]="statusOptions"
                             optionLabel="name" optionValue="value" class="pt-3">
@@ -175,14 +122,14 @@
                     @if (isDirector) {
                     <div class="mb-6 col-span-12">
                         <label for="outrosDocumentos" class="font-medium mb-2 block">
-                            Assinatura
+                            {{ 'users.form.signature' | translate }}
                         </label>
                         <p-fileupload #fuSignature name="files" [customUpload]="true" [disabled]="signatureDoc"
                             (uploadHandler)="onUploadDocs($event, fuSignature)" [maxFileSize]="maxFileSize" [multiple]="false"
                             accept="image/*" mode="advanced">
                             <ng-template #empty>
                                 @if (!this.signatureDoc) {
-                                Arraste e largue o ficheiro aqui para carregar.
+                                {{ 'users.form.dropFile' | translate }}
                                 }
                             </ng-template>
 
@@ -206,7 +153,7 @@
                                 </div>
                                 } @else if (signatureImageUrl()) {
                                 <div class="mt-3">
-                                    <p-image [src]="signatureImageUrl()!" alt="Assinatura" [preview]="true"
+                                    <p-image [src]="signatureImageUrl()!" [alt]="'users.form.signature' | translate" [preview]="true"
                                         width="200" imageClass="rounded border border-surface object-contain" />
                                 </div>
                                 }
@@ -219,10 +166,10 @@
                     <div class="col-span-12">
                         @if (isNew) {
                         <button (click)="createUser(userForm)" icon="pi pi-save" [loading]="loading"
-                            [disabled]="!userForm.valid" pButton pRipple label="Criar" class="w-auto mt-3"></button>
+                            [disabled]="!userForm.valid" pButton pRipple [label]="'users.form.create' | translate" class="w-auto mt-3"></button>
                         } @else {
                         <button (click)="updateUser(userForm)" icon="pi pi-sync" [loading]="loading"
-                            [disabled]="!userForm.valid" pButton pRipple label="Atualizar" class="w-auto mt-3"></button>
+                            [disabled]="!userForm.valid" pButton pRipple [label]="'profile.update' | translate" class="w-auto mt-3"></button>
                         }
 
                     </div>

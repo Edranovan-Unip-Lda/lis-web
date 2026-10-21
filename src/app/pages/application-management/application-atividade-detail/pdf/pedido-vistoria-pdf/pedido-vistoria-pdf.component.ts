@@ -1,3 +1,4 @@
+import { LanguageService } from '@/core/i18n';
 import { Aplicante, PedidoVistoria } from '@/core/models/entities.model';
 import { AplicanteStatus } from '@/core/models/enums';
 import { PedidoService } from '@/core/services';
@@ -6,6 +7,7 @@ import { Location } from '@angular/common';
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { ProgressSpinner } from 'primeng/progressspinner';
@@ -13,7 +15,7 @@ import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-pedido-vistoria-pdf',
-  imports: [Button, Toast, ProgressSpinner, PdfViewerComponent],
+  imports: [TranslatePipe, Button, Toast, ProgressSpinner, PdfViewerComponent],
   templateUrl: './pedido-vistoria-pdf.component.html',
   styleUrl: './pedido-vistoria-pdf.component.scss',
   providers: [MessageService]
@@ -27,6 +29,7 @@ export class PedidoVistoriaPdfComponent {
   filename = signal('pedido-vistoria.pdf');
 
   private destroyRef = inject(DestroyRef);
+  private i18n = inject(LanguageService);
 
   constructor(
     private route: ActivatedRoute,
@@ -42,7 +45,7 @@ export class PedidoVistoriaPdfComponent {
 
     if (!this.pedido) {
       this.loading.set(false);
-      this.errorMsg.set('Pedido de vistoria não encontrado.');
+      this.errorMsg.set('application.pdf.pedidoVistoria.notFound');
       return;
     }
     this.filename.set(`pedido-vistoria-${this.pedido.id}.pdf`);
@@ -60,9 +63,8 @@ export class PedidoVistoriaPdfComponent {
         },
         error: () => {
           this.loading.set(false);
-          const detail = 'Falha ao carregar o formulário.';
-          this.errorMsg.set(detail);
-          this.messageService.add({ severity: 'error', summary: 'Erro', detail, key: 'br' });
+          this.errorMsg.set('application.pdf.formLoadError');
+          this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: this.i18n.instant('application.pdf.formLoadError'), key: 'br' });
         }
       });
   }

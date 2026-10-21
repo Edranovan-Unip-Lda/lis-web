@@ -47,8 +47,8 @@ export const canActivateByRole: CanActivateChildFn = (
 
 /**
  * Guard for routes that are specific to one Direcao (the Comercio / Industria certificate and alvará lists,
- * which carry `data.categoria`). A back-office user may only enter their own Direcao's branch; ADMIN has no
- * Direcao and passes. UX only — the backend 403s an out-of-direcao request regardless.
+ * which carry `data.categoria`). STAFF may only enter their own Direcao's branch; ADMIN/MANAGER/CHIEF see both
+ * and pass. UX only — the backend 403s an out-of-direcao request regardless.
  */
 export const canActivateByDirecao: CanActivateFn = (route: ActivatedRouteSnapshot) => {
     const authService = inject(AuthenticationService);
@@ -62,7 +62,7 @@ export const canActivateByDirecao: CanActivateFn = (route: ActivatedRouteSnapsho
         location.back();
         return of(false);
     }
-    if (user.role.name === Role.admin || user.direcao?.nome === categoria) {
+    if (authService.seesAllCategorias || user.direcao?.nome === categoria) {
         return of(true);
     }
     location.back();

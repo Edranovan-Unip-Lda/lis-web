@@ -6,6 +6,8 @@ import { Location } from '@angular/common';
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
+import { LanguageService } from '@/core/i18n';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { ProgressSpinner } from 'primeng/progressspinner';
@@ -13,7 +15,7 @@ import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-fatura',
-  imports: [Button, Toast, ProgressSpinner, PdfViewerComponent],
+  imports: [Button, Toast, ProgressSpinner, PdfViewerComponent, TranslatePipe],
   templateUrl: './fatura.component.html',
   styleUrl: './fatura.component.scss',
   providers: [MessageService]
@@ -24,10 +26,12 @@ export class FaturaComponent {
   type = 'CADASTRO';
   pdfSrc = signal<Blob | null>(null);
   loading = signal(true);
+  /** Translation key of the error to show (translated in the template so it follows language switches). */
   errorMsg = signal<string | null>(null);
   filename = signal('fatura.pdf');
 
   private destroyRef = inject(DestroyRef);
+  private i18n = inject(LanguageService);
 
   constructor(
     private route: ActivatedRoute,
@@ -42,7 +46,7 @@ export class FaturaComponent {
 
     if (!this.fatura) {
       this.loading.set(false);
-      this.errorMsg.set('Fatura não encontrada.');
+      this.errorMsg.set('application.cadastro.fatura.notFound');
       return;
     }
     this.filename.set(`fatura-${this.fatura.id}.pdf`);
@@ -78,9 +82,9 @@ export class FaturaComponent {
         },
         error: () => {
           this.loading.set(false);
-          const detail = 'Falha ao carregar a fatura.';
-          this.errorMsg.set(detail);
-          this.messageService.add({ severity: 'error', summary: 'Erro', detail, key: 'br' });
+          const key = 'application.cadastro.fatura.loadFailed';
+          this.errorMsg.set(key);
+          this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: this.i18n.instant(key), key: 'br' });
         }
       });
   }

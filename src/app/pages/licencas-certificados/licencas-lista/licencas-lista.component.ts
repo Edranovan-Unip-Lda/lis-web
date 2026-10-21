@@ -1,7 +1,8 @@
+import { LocalizedDatePipe } from '@/core/i18n';
 import { AplicanteType, Categoria } from '@/core/models/enums';
-import { StatusIconPipe, StatusSeverityPipe } from '@/core/pipes/custom.pipe';
+import { EmpresaNomePipe, StatusIconPipe, StatusSeverityPipe, StatusLabelPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService, EmpresaService, UserService } from '@/core/services';
-import { DatePipe, UpperCasePipe } from '@angular/common';
+import { UpperCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Button } from 'primeng/button';
@@ -11,10 +12,12 @@ import { InputText } from 'primeng/inputtext';
 import { Paginator } from 'primeng/paginator';
 import { Table, TableModule } from 'primeng/table';
 import { Tag } from 'primeng/tag';
+import { Tooltip } from 'primeng/tooltip';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-licencas-lista',
-  imports: [DatePipe, UpperCasePipe, TableModule, Button, Tag, InputIcon, IconField, InputText, StatusSeverityPipe, StatusIconPipe, Paginator, RouterLink],
+  imports: [EmpresaNomePipe, StatusLabelPipe, LocalizedDatePipe, UpperCasePipe, TableModule, Button, Tag, InputIcon, IconField, InputText, StatusSeverityPipe, StatusIconPipe, Paginator, RouterLink, Tooltip, TranslatePipe],
   templateUrl: './licencas-lista.component.html',
   styleUrl: './licencas-lista.component.scss'
 })

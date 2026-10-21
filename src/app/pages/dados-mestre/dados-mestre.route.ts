@@ -4,20 +4,20 @@ import { Routes } from "@angular/router";
 export default [
     {
         path: 'endereco',
-        data: { breadcrumb: 'Localização' },
+        data: { breadcrumb: 'breadcrumb.localizacao' },
         loadChildren: () => import('@/pages/dados-mestre/endereco/endereco.route')
     },
     {
         path: 'atividade-economica',
         data: {
-            breadcrumb: 'Atividade Económica',
+            breadcrumb: 'breadcrumb.atividadeEconomica',
             type: 'atividade-economica'
         },
         children: [
             {
                 path: 'grupo',
                 data: {
-                    breadcrumb: 'Grupo',
+                    breadcrumb: 'breadcrumb.grupo',
                     type: 'grupo-atividades'
                 },
                 loadComponent: () => import('@/pages/dados-mestre/lista/lista.component').then((c) => c.ListaComponent),
@@ -28,7 +28,7 @@ export default [
             {
                 path: 'classe',
                 data: {
-                    breadcrumb: 'Classe',
+                    breadcrumb: 'breadcrumb.classe',
                     type: 'classe-atividades'
                 },
                 loadComponent: () => import('@/pages/dados-mestre/lista/lista.component').then((c) => c.ListaComponent),
@@ -41,7 +41,7 @@ export default [
     {
         path: 'roles',
         data: {
-            breadcrumb: 'Função',
+            breadcrumb: 'breadcrumb.funcao',
             type: 'roles'
         },
         loadComponent: () => import('@/pages/dados-mestre/lista/lista.component').then((c) => c.ListaComponent),
@@ -52,7 +52,7 @@ export default [
     {
         path: 'tipo-risco',
         data: {
-            breadcrumb: 'Risco',
+            breadcrumb: 'breadcrumb.risco',
             type: 'tipo-risco'
         },
         loadComponent: () => import('@/pages/dados-mestre/lista/lista.component').then((c) => c.ListaComponent),
@@ -63,7 +63,7 @@ export default [
     {
         path: 'taxa',
         data: {
-            breadcrumb: 'Taxa',
+            breadcrumb: 'breadcrumb.taxa',
             type: 'taxas'
         },
         loadComponent: () => import('@/pages/dados-mestre/lista/lista.component').then((c) => c.ListaComponent),
@@ -74,7 +74,7 @@ export default [
     {
         path: 'sociedade-comercial',
         data: {
-            breadcrumb: 'Sociedade Comercial',
+            breadcrumb: 'breadcrumb.sociedadeComercial',
             type: 'sociedade-comercial'
         },
         loadComponent: () => import('@/pages/dados-mestre/lista/lista.component').then((c) => c.ListaComponent),
@@ -85,7 +85,7 @@ export default [
     {
         path: 'direcao',
         data: {
-            breadcrumb: 'Direções',
+            breadcrumb: 'breadcrumb.direcoes',
             type: 'direcoes'
         },
         loadComponent: () => import('@/pages/dados-mestre/lista/lista.component').then((c) => c.ListaComponent),

@@ -1,8 +1,10 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { HighchartsChartComponent } from 'highcharts-angular';
 import type * as Highcharts from 'highcharts';
 import { CategoryDistributionDto } from '@/core/models/entities.model';
 import { randomColors } from '@/core/utils/global-function';
+import { LanguageService } from '@/core/i18n';
+import { onLangChange, seriesLabel } from '../chart-i18n';
 
 @Component({
   standalone: true,
@@ -20,13 +22,24 @@ export class CertificadoLicencaMunicipioPieComponent implements OnChanges {
   itemColors: string[] = [];
   chartColors: string[] = [];
   municipioColors = randomColors;
+  private i18n = inject(LanguageService);
+
+  constructor() {
+    onLangChange(this.i18n, () => this.data && this.updateChart());
+  }
+
+  label(name: string): string {
+    return seriesLabel(this.i18n, name);
+  }
 
   ngOnInit() {
     this.updateChart();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['data'] && !changes['data'].firstChange && this.data) {
+    // title is a translated string from the parent, so it changes on a language switch
+    const changed = ['data', 'title'].some((k) => changes[k] && !changes[k].firstChange);
+    if (changed && this.data) {
       this.updateChart();
     }
   }
@@ -86,7 +99,8 @@ export class CertificadoLicencaMunicipioPieComponent implements OnChanges {
         {
           type: 'pie',
           name: this.title,
-          data: this.data.series
+          // Translate display names only; colors are keyed by the raw API name (generateColors)
+          data: this.data.series.map((p) => ({ ...p, name: this.label(p.name) }))
         },
       ]
     }

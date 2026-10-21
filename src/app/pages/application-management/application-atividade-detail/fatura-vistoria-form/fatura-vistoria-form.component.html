@@ -1,20 +1,20 @@
  <form [formGroup]="faturaForm">
      <div class="flex flex-col">
          <span class="text-xl font-bold mt-6 mb-4 block">
-             Emitir Fatura
+             {{ 'application.shared.issueInvoice' | translate }}
          </span>
          <div class="grid grid-cols-12 gap-4">
              <div class="mb-6 col-span-12">
                  <label for="taxas" class="font-medium  mb-2 block">
-                     Ato da taxa
+                     {{ 'application.fatura.ato' | translate }}
                  </label>
                  <p-multiselect formControlName="taxas" inputId="taxas" [options]="listaPedidoAto" optionLabel="ato"
-                     optionValue="id" fluid [showClear]="true" placeholder="Selecione o ato">
+                     optionValue="id" fluid [showClear]="true" [placeholder]="'application.fatura.atoPlaceholder' | translate">
                  </p-multiselect>
              </div>
              <div class="mb-6 col-span-12 md:col-span-6">
                  <label for="superficie" class="font-medium  mb-2 block">
-                     Superfície do estabelecimento comercial <span class="">(&#13217;)</span>
+                     {{ 'application.fatura.superficie' | translate }} <span class="">(&#13217;)</span>
                  </label>
                  <p-inputgroup>
                      <p-inputnumber formControlName="superficie" mode="decimal" [minFractionDigits]="2"
@@ -26,7 +26,7 @@
              </div>
              <div class="mb-6 col-span-12 md:col-span-6">
                  <label for="total" class="font-medium  mb-2 block">
-                     Total
+                     {{ 'application.fatura.total' | translate }}
                  </label>
                  <p-inputgroup>
                      <p-inputgroup-addon>
@@ -40,11 +40,11 @@
          </div>
          <div class="grid grid-cols-12 gap-4">
              <div class="mb-6 col-span-12 md:col-span-4 flex justify-between">
-                 <p-button [label]="faturaId? 'Atualizar Fatura' : 'Emitir Fatura'"
+                 <p-button [label]="(faturaId ? 'application.shared.updateInvoice' : 'application.shared.issueInvoice') | translate"
                      [icon]="faturaId? 'pi pi-sync' : 'pi pi-file'" iconPos="left" [loading]="faturaLoading"
                      class="w-auto mt-3" [disabled]="!faturaForm.valid" (click)="submitFatura(faturaForm)" />
                  @if (faturaId) {
-                 <p-button label="Baixar Fatura" [routerLink]="['fatura-vistoria']" [outlined]="true"
+                 <p-button [label]="'application.shared.downloadInvoice' | translate" [routerLink]="['fatura-vistoria']" [outlined]="true"
                      icon="pi pi-download" iconPos="left" class="w-auto mt-3" />
                  }
              </div>
@@ -52,15 +52,15 @@
 
          @if (faturaId) {
          <span class="text-xl font-bold mt-6 mb-3 block">
-             Carregar Recibo
+             {{ 'application.shared.uploadReceipt' | translate }}
          </span>
          <div class="card">
-             <p-fileupload #fuRecibo name="file" [disabled]="uploadedFiles.length > 0 || uploadLoading" [customUpload]="true" [chooseLabel]="'Selecione'"
-                 [uploadLabel]="'Carregar'" [cancelLabel]="'Cancelar'" (uploadHandler)="onUpload($event, 'advanced', fuRecibo)"
+             <p-fileupload #fuRecibo name="file" [disabled]="uploadedFiles.length > 0 || uploadLoading" [customUpload]="true" [chooseLabel]="'application.fatura.select' | translate"
+                 [uploadLabel]="'common.upload' | translate" [cancelLabel]="'common.cancel' | translate" (uploadHandler)="onUpload($event, 'advanced', fuRecibo)"
                  [maxFileSize]="maxFileSize" [multiple]="false" accept="application/pdf,image/*" mode="advanced">
                  <ng-template #empty>
                      @if (uploadedFiles.length === 0) {
-                     Arraste e largue os ficheiros aqui para carregar.
+                     {{ 'application.shared.dropFiles' | translate }}
                      }
                  </ng-template>
                  <ng-template #content>

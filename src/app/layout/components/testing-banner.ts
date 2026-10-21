@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { environment } from 'src/environments/environment';
 
 /**
@@ -10,14 +11,13 @@ import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-testing-banner',
   standalone: true,
+  imports: [TranslatePipe],
   template: `
     @if (testing) {
       <div class="testing-banner" role="alert">
         <i class="pi pi-exclamation-triangle"></i>
         <span>
-          <strong>Ambiente de Teste</strong> — Plataforma destinada exclusivamente a fins de
-          demonstração e formação. Os dados apresentados não têm validade oficial. Para aceder ao
-          sistema oficial, visite
+          <strong>{{ 'layout.testingBanner.title' | translate }}</strong> — {{ 'layout.testingBanner.text' | translate }}
           <a href="https://lic.mci.gov.tl" rel="noopener noreferrer">lic.mci.gov.tl</a>.
         </span>
       </div>

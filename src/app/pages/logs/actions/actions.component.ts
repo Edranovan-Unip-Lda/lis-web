@@ -1,8 +1,11 @@
+import { i18nOptions, LanguageService, LocalizedDatePipe } from '@/core/i18n';
+import { TranslatePipe } from '@ngx-translate/core';
 import { AuditFilterRequest, JaversEntry } from '@/core/models/entities.model';
 import { AuditService } from '@/core/services';
+import { AuditEntity } from '@/core/models/enums';
 import { listaAuditEntity, listaAuditType } from '@/core/utils/global-function';
-import { DatePipe } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -20,7 +23,7 @@ import { debounceTime, finalize, Subject, takeUntil } from 'rxjs';
 @Component({
   standalone: true,
   selector: 'app-actions',
-  imports: [TableModule, Tag, DatePipe, Toast, Paginator, FloatLabel, DatePicker, ReactiveFormsModule, Select, InputText, SelectButton],
+  imports: [LocalizedDatePipe, TableModule, Tag, Toast, Paginator, FloatLabel, DatePicker, ReactiveFormsModule, Select, InputText, SelectButton, TranslatePipe],
   templateUrl: './actions.component.html',
   styleUrl: './actions.component.scss',
   providers: [MessageService]
@@ -32,20 +35,23 @@ export class ActionsComponent implements OnInit, OnDestroy {
   first = 0;
   size = 50;
   totalData = 0;
-  columns: string[] = ['Autor', 'Data', 'Entidade', 'ID', 'Tipo', 'Versão', 'Propriedades Alteradas'];
-  entityOpts = listaAuditEntity;
+  // Translation keys, resolved in the template
+  columns: string[] = ['logs.col.author', 'common.date', 'logs.col.entity', 'logs.col.id', 'logs.col.type', 'logs.col.version', 'logs.col.changedProperties'];
+  entityOpts = i18nOptions('logs.entity', listaAuditEntity.map((o) => ({ value: o.value })));
   typeOpts = listaAuditType;
 
-  presetOptions = [
-    { label: 'Hoje', value: 'today' },
-    { label: 'Ontem', value: 'yesterday' },
-    { label: 'Últimos 30 Dias', value: 'lastmonth' },
-    { label: 'Todos', value: 'all' },
-    { label: 'Personalizado', value: 'custom' },
-  ];
+  presetOptions = i18nOptions('logs.preset', [
+    { value: 'today' },
+    { value: 'yesterday' },
+    { value: 'lastmonth' },
+    { value: 'all' },
+    { value: 'custom' },
+  ], 'label');
 
   filterForm: FormGroup;
   private destroy$ = new Subject<void>();
+  private i18n = inject(LanguageService);
+  private static readonly KNOWN_ENTITIES = new Set<string>(Object.values(AuditEntity));
 
   constructor(
     private route: ActivatedRoute,
@@ -136,6 +142,12 @@ export class ActionsComponent implements OnInit, OnDestroy {
     return entity?.split('.')?.pop() ?? entity;
   }
 
+  /** Known audited entities get a translated name; anything else falls back to the raw class name. */
+  entityLabel(entity: string): string {
+    const name = this.extractEntityName(entity);
+    return ActionsComponent.KNOWN_ENTITIES.has(name) ? this.i18n.instant(`logs.entity.${name}`) : name;
+  }
+
   private parseResponse(response: any): void {
     try {
       this.data = typeof response.content === 'string'
@@ -158,8 +170,10 @@ export class ActionsComponent implements OnInit, OnDestroy {
 
   typeLabel(type: string): string {
     switch (type) {
-      case 'INITIAL': return 'CRIAÇÃO';
-      case 'UPDATE': return 'ALTERAÇÃO';
+      case 'INITIAL':
+      case 'UPDATE':
+      case 'TERMINAL':
+        return this.i18n.instant(`logs.type.${type}`);
       default: return type;
     }
   }
@@ -203,7 +217,7 @@ export class ActionsComponent implements OnInit, OnDestroy {
           this.parseResponse(response);
         },
         error: (err) => {
-          this.messageService.add({ severity: 'error', summary: 'Erro', detail: err });
+          this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: err });
         },
       });
   }

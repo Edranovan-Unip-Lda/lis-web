@@ -1,10 +1,11 @@
+import { LanguageService, LocalizedCurrencyPipe, LocalizedDatePipe } from '@/core/i18n';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Documento, Empresa } from '@/core/models/entities.model';
 import { AplicanteType, Categoria } from '@/core/models/enums';
 import { DocumentosService } from '@/core/services/documentos.service';
 import { EmpresaService } from '@/core/services/empresa.service';
-import { applicationTypesOptions, categoryTpesOptions } from '@/core/utils/global-function';
-import { CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { applicationTypesOptions, categoryTpesOptions, estadoCivilOptions, tipoRelacaoFamiliaOptions } from '@/core/utils/global-function';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -15,7 +16,7 @@ import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-inicio',
-  imports: [RouterModule, DialogModule, ButtonModule, ReactiveFormsModule, SelectModule, DatePipe, TitleCasePipe, CurrencyPipe, Toast],
+  imports: [LocalizedCurrencyPipe, LocalizedDatePipe, RouterModule, DialogModule, ButtonModule, ReactiveFormsModule, SelectModule, Toast, TranslatePipe],
   templateUrl: './inicio.component.html',
   styleUrl: './inicio.component.scss',
   providers: [MessageService]
@@ -31,6 +32,7 @@ export class InicioComponent implements OnInit {
   applicationTypes: any[] = applicationTypesOptions
   categoryTpes: any[] = categoryTpesOptions;
   loadingDownloadButtons = new Set<string>();
+  private i18n = inject(LanguageService);
 
   constructor(
     private _fb: FormBuilder,
@@ -98,6 +100,15 @@ export class InicioComponent implements OnInit {
     this.visible = true;
   }
 
+  // Stored values are Portuguese labels; show the option's translated name when it matches one
+  estadoCivilLabel(v: string): string {
+    return estadoCivilOptions.find((o) => o.value === v)?.name ?? v;
+  }
+
+  relacaoFamiliaLabel(v: string): string {
+    return tipoRelacaoFamiliaOptions.find((o) => o.value === v)?.name ?? v;
+  }
+
   downloadDoc(file: Documento): void {
     this.loadingDownloadButtons.add(file.nome);
     this.documentoService.downloadById(file.id).subscribe({
@@ -110,15 +121,15 @@ export class InicioComponent implements OnInit {
         window.URL.revokeObjectURL(url);
         this.messageService.add({
           severity: 'info',
-          summary: 'Sucesso',
-          detail: 'Arquivo descarregado com sucesso!'
+          summary: this.i18n.instant('toast.success'),
+          detail: this.i18n.instant('inicio.downloadSuccess')
         });
       },
       error: error => {
         this.messageService.add({
           severity: 'error',
-          summary: 'Erro',
-          detail: 'Falha no download do arquivo!'
+          summary: this.i18n.instant('toast.error'),
+          detail: this.i18n.instant('inicio.downloadError')
         });
       },
       complete: () => {

@@ -33,8 +33,8 @@
                  rounded></button>
              }
          </li>
-         <li class="profile-item topbar-item">
-
+         <li class="topbar-item">
+             <app-language-switcher />
          </li>
 
          <li class="profile-item topbar-item">
@@ -55,7 +55,7 @@
                          pStyleClass="@grandparent" enterFromClass="!hidden" enterActiveClass="animate-scalein"
                          leaveToClass="!hidden" leaveActiveClass="animate-fadeout" [hideOnOutsideClick]="true">
                          <i class="pi pi-fw pi-lock mr-2"></i>
-                         <span>Perfíl</span>
+                         <span>{{ 'layout.topbar.profile' | translate }}</span>
                      </a>
                  </li>
                  <li (click)="signOut()" role="menuitem" class="!m-0">
@@ -64,7 +64,7 @@
                          enterFromClass="!hidden" enterActiveClass="animate-scalein" leaveToClass="!hidden"
                          leaveActiveClass="animate-fadeout" [hideOnOutsideClick]="true">
                          <i class="pi pi-fw pi-sign-out mr-2"></i>
-                         <span>Sair</span>
+                         <span>{{ 'layout.topbar.signOut' | translate }}</span>
                      </a>
                  </li>
              </ul>

@@ -9,11 +9,12 @@ import {LayoutService} from '@/layout/service/layout.service';
 import {Fluid} from 'primeng/fluid';
 import {AppConfigurator} from "@/layout/components/app.configurator";
 import {CommonModule} from "@angular/common";
+import {TranslatePipe} from "@ngx-translate/core";
 
 @Component({
     standalone: true,
     selector: 'app-lockscreen',
-    imports: [CommonModule, IconField, InputIcon, InputText, ButtonModule, Ripple, RouterModule, Fluid, AppConfigurator],
+    imports: [CommonModule, IconField, InputIcon, InputText, ButtonModule, Ripple, RouterModule, Fluid, AppConfigurator, TranslatePipe],
     template: `<div [class]="'flex min-h-screen  ' + (layoutService.isDarkTheme() ? 'layout-dark' : 'layout-light')">
         <div *ngIf="layoutService.isDarkTheme()" class="w-6/12 h-screen hidden md:block flex-shrink-0" style="max-width: 490px; background-image: url('/images/pages/lock-ondark.png'); background-repeat: no-repeat; background-size: cover"></div>
         <div *ngIf="!layoutService.isDarkTheme()" class="w-6/12 h-screen hidden md:block flex-shrink-0" style="max-width: 490px; background-image: url('/images/pages/lock-onlight.png'); background-repeat: no-repeat; background-size: cover"></div>
@@ -26,19 +27,19 @@ import {CommonModule} from "@angular/common";
                     </div>
                     <div class="form-container text-left" style="max-width: 320px; min-width: 270px">
                         <div class="mb-6 flex flex-col items-start">
-                            <span class="text-2xl font-semibold m-0">Screen Locked</span>
-                            <span class="text-surface-600 dark:text-surface-200 font-medium mb-8 mt-2">Please enter your password</span>
+                            <span class="text-2xl font-semibold m-0">{{ 'auth.lockscreen.title' | translate }}</span>
+                            <span class="text-surface-600 dark:text-surface-200 font-medium mb-8 mt-2">{{ 'auth.lockscreen.subtitle' | translate }}</span>
                             <img src="/images/avatar.png" class="w-12 h-12 mb-2" alt="Avatar" />
                             <span class="font-medium text-surface-900 dark:text-surface-0">Isabella Andolini</span>
                         </div>
                         <p-icon-field>
                             <p-inputicon class="pi pi-key" />
-                            <input pInputText type="password" placeholder="Password" class="block mb-4" style="max-width: 320px; min-width: 270px" />
+                            <input pInputText type="password" [placeholder]="'auth.common.password' | translate" class="block mb-4" style="max-width: 320px; min-width: 270px" />
                         </p-icon-field>
                     </div>
                     <div class="mt-6 text-left" style="max-width: 320px; min-width: 270px">
                         <div class="flex items-center gap-4">
-                            <button pButton pRipple type="button" [routerLink]="['/']" class="block" style="max-width: 320px; margin-bottom: 32px">Unlock</button>
+                            <button pButton pRipple type="button" [routerLink]="['/']" class="block" style="max-width: 320px; margin-bottom: 32px">{{ 'auth.lockscreen.unlock' | translate }}</button>
                         </div>
                     </div>
                 </div>

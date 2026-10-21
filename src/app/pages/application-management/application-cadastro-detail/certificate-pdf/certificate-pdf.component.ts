@@ -6,6 +6,8 @@ import { Location } from '@angular/common';
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
+import { LanguageService } from '@/core/i18n';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { ProgressSpinner } from 'primeng/progressspinner';
@@ -13,7 +15,7 @@ import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-certificate-pdf',
-  imports: [Button, Toast, ProgressSpinner, PdfViewerComponent],
+  imports: [Button, Toast, ProgressSpinner, PdfViewerComponent, TranslatePipe],
   templateUrl: './certificate-pdf.component.html',
   styleUrl: './certificate-pdf.component.scss',
   providers: [MessageService]
@@ -22,11 +24,13 @@ export class CertificatePdfComponent {
   certificadoData!: CertificadoCadastro;
   pdfSrc = signal<Blob | null>(null);
   loading = signal(true);
+  /** Translation key of the error to show (translated in the template so it follows language switches). */
   errorMsg = signal<string | null>(null);
   filename = signal('certificado-cadastro.pdf');
   isStaff = false;
 
   private destroyRef = inject(DestroyRef);
+  private i18n = inject(LanguageService);
 
   constructor(
     private route: ActivatedRoute,
@@ -43,7 +47,7 @@ export class CertificatePdfComponent {
     this.certificadoData = this.route.snapshot.data['certificadoResolver'];
     if (!this.certificadoData) {
       this.loading.set(false);
-      this.errorMsg.set('Certificado não encontrado.');
+      this.errorMsg.set('application.cadastro.certificate.notFound');
       return;
     }
     const empresa = this.certificadoData.pedidoInscricaoCadastro?.nomeEmpresa ?? this.certificadoData.id;
@@ -67,16 +71,16 @@ export class CertificatePdfComponent {
           this.pdfSrc.set(blob);
           this.loading.set(false);
           if (regenerate) {
-            this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Certificado regenerado.', key: 'br' });
+            this.messageService.add({ severity: 'success', summary: this.i18n.instant('toast.success'), detail: this.i18n.instant('application.cadastro.certificate.regenerated'), key: 'br' });
           }
         },
         error: err => {
           this.loading.set(false);
-          const detail = err?.status === 404
-            ? 'O PDF do certificado ainda não foi gerado.'
-            : 'Falha ao carregar o certificado.';
-          this.errorMsg.set(detail);
-          this.messageService.add({ severity: 'error', summary: 'Erro', detail, key: 'br' });
+          const key = err?.status === 404
+            ? 'application.cadastro.certificate.notGenerated'
+            : 'application.cadastro.certificate.loadFailed';
+          this.errorMsg.set(key);
+          this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: this.i18n.instant(key), key: 'br' });
         }
       });
   }

@@ -42,7 +42,7 @@ export interface Empresa extends BaseModel {
     nif: string;
     utilizador: User;
     gerente: Gerente;
-    representante: Representante;
+    representante?: Representante | null;
     numeroRegistoComercial: string;
     telefone: string;
     telemovel: string;
@@ -395,8 +395,9 @@ export interface Participante extends BaseModel {
 }
 
 export interface Kpis {
-    aplicantesEmCurso: number;
-    licencasAtivas: number;
+    year: number | null;          // null = all years
+    aplicantesEmCurso: number;    // live snapshot, ignores the year filter
+    certificadosEmitidos: number;
     empresasRegistradas: number;
 }
 
@@ -501,6 +502,7 @@ export interface MapDataDto {
 }
 
 export interface MapDataPointDto {
+    municipioId: number;
     name: string;
     code: string;
     value: number;

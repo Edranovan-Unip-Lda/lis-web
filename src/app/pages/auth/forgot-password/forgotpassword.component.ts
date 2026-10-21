@@ -11,12 +11,13 @@ import { InputIcon } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
 import { Message } from 'primeng/message';
 import { Ripple } from 'primeng/ripple';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     standalone: true,
     selector: 'app-forgot-password',
     // CHANGED: RecaptchaV3Module dropped — it only ever contributed providers, now hoisted to root in app.config.
-    imports: [IconField, InputIcon, InputText, Button, Ripple, Fluid, RouterLink, ReactiveFormsModule, Message],
+    imports: [IconField, InputIcon, InputText, Button, Ripple, Fluid, RouterLink, ReactiveFormsModule, Message, TranslatePipe],
     templateUrl: './forgot-password.component.html',
 })
 export class ForgotPassword {
@@ -52,7 +53,7 @@ export class ForgotPassword {
             next: () => {
                 this.loading = false;
                 this.messages.set([
-                    { severity: 'success', content: 'Email de redefinição de palavra-passe enviado com sucesso.' },
+                    { severity: 'success', key: 'auth.forgotPassword.success' },
                 ]);
                 this.email.reset();
             },

@@ -1,11 +1,14 @@
+import { LanguageService, LazyTranslateLoader, LisMissingTranslationHandler } from '@/core/i18n';
 import { httpErrorInterceptor } from '@/core/security/http-error.interceptor';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { APP_INITIALIZER, ApplicationConfig, ErrorHandler, importProvidersFrom, LOCALE_ID } from '@angular/core';
+import { APP_INITIALIZER, ApplicationConfig, ErrorHandler, importProvidersFrom, inject, LOCALE_ID, provideAppInitializer } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, Router, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
 import Aura from '@primeng/themes/aura';
 import * as Sentry from "@sentry/angular";
+import { MissingTranslationHandler, provideTranslateService, TranslateLoader } from '@ngx-translate/core';
 import { provideHighcharts } from 'highcharts-angular';
+import { firstValueFrom } from 'rxjs';
 import { RECAPTCHA_BASE_URL, RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha-2';
 import { providePrimeNG } from 'primeng/config';
 import { appRoutes } from './app.routes';
@@ -40,7 +43,15 @@ export const appConfig: ApplicationConfig = {
             deps: [Sentry.TraceService],
             multi: true,
         },
+        // Static fallback only — templates use the ldate/lcurrency/lnumber pipes, which follow LanguageService.
         { provide: LOCALE_ID, useValue: 'pt' },
+        provideTranslateService({
+            loader: { provide: TranslateLoader, useClass: LazyTranslateLoader },
+            missingTranslationHandler: { provide: MissingTranslationHandler, useClass: LisMissingTranslationHandler },
+            fallbackLang: 'pt'
+        }),
+        // Block bootstrap until the stored language is loaded, so raw keys never flash on first paint.
+        provideAppInitializer(() => firstValueFrom(inject(LanguageService).init())),
         provideHighcharts({
             // MUST be the ESM core: the lazy modules below (and the dashboard map module) are ESM and
             // register themselves onto 'highcharts/esm/highcharts'. Loading the UMD 'highcharts' build here

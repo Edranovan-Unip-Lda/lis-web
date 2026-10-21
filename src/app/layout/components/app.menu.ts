@@ -50,10 +50,10 @@ export class AppMenu {
                 break;
         }
         const docMenu = {
-            label: 'Documentação',
+            label: 'menu.documentacao',
             items: [
                 {
-                    label: 'Manual do Utilizador',
+                    label: 'menu.manualUtilizador',
                     icon: 'bi bi-fw bi-file-earmark-text',
                     url: ['https://drive.google.com/file/d/1A8g_iC9E8js0gQZbXcxXmua1pAwYiQTw/view?usp=drive_link'],
                     target: '_blank'
@@ -65,19 +65,20 @@ export class AppMenu {
 
     /**
      * Drop the menu entries belonging to the other Direcao. Leaves that are categoria-specific carry their
-     * Categoria in `id` (see menuitem.ts); everything untagged always survives. ADMIN has no Direcao and keeps
-     * both. This is UX only — the backend rejects an out-of-direcao request regardless.
+     * Categoria in `id` (see menuitem.ts); everything untagged always survives. ADMIN/MANAGER/CHIEF keep both;
+     * a STAFF user without a Direcao fails closed (no tagged entries) — the backend 403s them anyway.
+     * Groups left empty by the pruning are dropped too. This is UX only — the backend enforces the scope.
      */
     private scopeToDirecao(items: any[]): any[] {
-        const user = this.authService.currentUserValue;
-        const direcao = user?.direcao?.nome;
-        if (!direcao || user?.role?.name === Role.admin) return items;
+        if (this.authService.seesAllCategorias) return items;
+        const direcao = this.authService.currentUserValue?.direcao?.nome;
 
         // Rebuild rather than mutate: `items` still holds the shared module-level constants' child arrays.
         const prune = (list: any[]): any[] =>
             list
                 .filter((item) => !item.id || item.id === direcao)
-                .map((item) => (item.items ? { ...item, items: prune(item.items) } : item));
+                .map((item) => (item.items ? { ...item, items: prune(item.items) } : item))
+                .filter((item) => !item.items || item.items.length > 0);
 
         return prune(items);
     }

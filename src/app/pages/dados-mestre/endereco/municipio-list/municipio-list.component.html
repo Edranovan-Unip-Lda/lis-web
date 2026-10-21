@@ -1,17 +1,17 @@
 <div class="card">
     <p-table #dt [value]="dataList" [paginator]="true" paginatorDropdownAppendTo="body" [rows]="50"
         [showCurrentPageReport]="true" responsiveLayout="scroll" [rowHover]="true"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [currentPageReportTemplate]="'dadosMestre.common.pageReport' | translate"
         [rowsPerPageOptions]="[10, 25, 50]" [globalFilterFields]="['nome']">
         <ng-template #caption>
             <div class="flex flex-wrap gap-2 items-center justify-between">
                 <p-icon-field class="order-1 sm:order-none">
                     <p-inputicon class="pi pi-search" />
-                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Busca global"
+                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" [placeholder]="'dadosMestre.common.globalSearch' | translate"
                         class="w-full" />
                 </p-icon-field>
                 <p-button pButton outlined (click)="openDialogNewData(type)"
-                    class="sm:w-auto flex-order-0 sm:flex-order-1" icon="bi bi-plus-lg" label="Adicionar novo">
+                    class="sm:w-auto flex-order-0 sm:flex-order-1" icon="bi bi-plus-lg" [label]="'dadosMestre.common.addNew' | translate">
                 </p-button>
             </div>
         </ng-template>
@@ -19,13 +19,13 @@
             <tr>
                 <th pSortableColumn="nome" class="white-space-nowrap">
                     <div class="flex justify-center items-center">
-                        Nome
+                        {{ 'common.name' | translate }}
                         <p-sortIcon field="nome">
                         </p-sortIcon>
                     </div>
                 </th>
                 <th style="width: 8rem" class="white-space-nowrap">
-                    Ações
+                    {{ 'common.actions' | translate }}
                 </th>
             </tr>
         </ng-template>
@@ -48,25 +48,25 @@
 </div>
 
 @if (showDialog) {
-<p-dialog #dg header="{{isNew?'New':'Edit'}} {{type|titlecase}}" [modal]="true" [position]="'top'"
+<p-dialog #dg [header]="('dadosMestre.dialog.' + (isNew ? 'new.' : 'edit.') + type) | translate" [modal]="true" [position]="'top'"
     [(visible)]="showDialog" [style]="{ 'min-width': '30rem' }">
     <form [formGroup]="form">
         <div class="grid grid-cols-12 gap-4">
             <div class="mb-6 col-span-12">
                 <label for="nome" class="font-medium  mb-2 block">
-                    Nome
+                    {{ 'common.name' | translate }}
                 </label>
                 <input formControlName="nome" id="nome" type="text" pInputText fluid />
             </div>
             <div class="mb-6 col-span-12">
-                <p-button class="mr-4" icon="pi pi-times" label="Cancelar" variant="outlined" severity="danger"
+                <p-button class="mr-4" icon="pi pi-times" [label]="'common.cancel' | translate" variant="outlined" severity="danger"
                     (click)="closeDialog()" />
                 @if (isNew) {
                 <p-button icon="pi pi-save" [loading]="loading" [disabled]="!form.valid" pButton pRipple
-                    (click)="saveData(form)" label="Guardar" class="w-auto mt-3"></p-button>
+                    (click)="saveData(form)" [label]="'common.save' | translate" class="w-auto mt-3"></p-button>
                 }@else {
                 <p-button icon="pi pi-sync" [loading]="loading" [disabled]="!form.valid" pButton pRipple
-                    (click)="updateData(form)" label="Atualizar" class="w-auto mt-3"></p-button>
+                    (click)="updateData(form)" [label]="'dadosMestre.common.update' | translate" class="w-auto mt-3"></p-button>
                 }
             </div>
 

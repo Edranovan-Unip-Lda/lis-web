@@ -6,7 +6,7 @@ import { Routes } from "@angular/router";
 export default [
     {
         path: 'empresa',
-        data: { breadcrumb: 'Empresa' },
+        data: { breadcrumb: 'breadcrumb.empresa' },
         loadComponent: () => import('./empresa/empresa.component').then(m => m.EmpresaComponent),
         resolve: {
             listaSociedadeComercial: getSociedadeComercialResolver,
@@ -17,7 +17,7 @@ export default [
     },
     {
         path: 'aplicante',
-        data: { breadcrumb: 'Aplicante' },
+        data: { breadcrumb: 'breadcrumb.aplicante' },
         loadComponent: () => import('./aplicante/aplicante.component').then(m => m.AplicanteComponent),
         resolve: {
             listaEmpresa: getPageEmpresaResolver,
@@ -25,7 +25,7 @@ export default [
     },
     {
         path: 'licencas-certificados',
-        data: { breadcrumb: 'Licenças e Certificados' },
+        data: { breadcrumb: 'breadcrumb.licencasCertificados' },
         loadComponent: () => import('./licencas-certificados/licencas-certificados.component').then(m => m.LicencasCertificadosComponent),
         resolve: {
             listaEmpresa: getPageEmpresaResolver,
@@ -37,7 +37,12 @@ export default [
     },
     {
         path: 'receitas',
-        data: { breadcrumb: 'Receitas' },
+        data: { breadcrumb: 'breadcrumb.receitas' },
         loadComponent: () => import('./receitas/receitas.component').then(m => m.ReceitasComponent),
+    },
+    {
+        path: 'exportacoes',
+        data: { breadcrumb: 'breadcrumb.exportacoes' },
+        loadComponent: () => import('./exportacoes/exportacoes.component').then(m => m.ExportacoesComponent),
     },
 ] as Routes;

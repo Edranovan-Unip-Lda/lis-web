@@ -1,67 +1,68 @@
 @if (aplicanteData) {
+@let categoria = ('enum.Categoria.' + aplicanteData.categoria) | translate;
 <div class="card rounded-xl shadow-lg p-8">
     <div class="mb-8">
         <h1 class="text-3xl font-bold text-color mb-2">
-            Resumo do Aplicante
+            {{ 'application.summary.title' | translate }}
         </h1>
         <p class="text-muted-color">
-            Visão geral da candidatura para registo {{aplicanteData.categoria.toLocaleLowerCase()}}.
+            {{ 'application.summary.subtitle' | translate: { categoria: categoria | lowercase } }}
         </p>
     </div>
     <div class="grid grid-cols-4 md:grid-cols-5 gap-6 mb-8">
         <div class="col-span-4 md:col-span-3 bg-surface-100 dark:bg-surface-800 p-6 rounded-lg">
-            <h2 class="text-xl font-semibold text-color mb-4">Detalhes do Aplicante</h2>
+            <h2 class="text-xl font-semibold text-color mb-4">{{ 'application.shared.applicantDetails' | translate }}</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-color">
                 <div>
-                    <p class="font-medium text-muted-color">Nº do Aplicante:</p>
+                    <p class="font-medium text-muted-color">{{ 'application.shared.applicantNumber' | translate }}</p>
                     <p class="text-lg">
                         {{aplicanteData.numero}}
                     </p>
                 </div>
                 <div>
-                    <p class="font-medium text-muted-color">Estado:</p>
-                    <p-tag [value]="aplicanteData.estado" [severity]="aplicanteData.estado| statusSeverity" />
+                    <p class="font-medium text-muted-color">{{ 'application.shared.status' | translate }}</p>
+                    <p-tag [value]="aplicanteData.estado | statusLabel" [severity]="aplicanteData.estado| statusSeverity" />
                 </div>
                 <div>
                     <p class="font-medium text-muted-color">
-                        Criado Em:
+                        {{ 'application.shared.createdAt' | translate }}
                     </p>
                     <p>
-                        {{aplicanteData.createdAt | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                        {{aplicanteData.createdAt | ldate:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                     </p>
                 </div>
                 <div>
-                    <p class="font-medium text-muted-color">Atualizado Em:</p>
+                    <p class="font-medium text-muted-color">{{ 'application.shared.updatedAt' | translate }}</p>
                     <p>
-                        {{aplicanteData.updatedAt | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                        {{aplicanteData.updatedAt | ldate:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                     </p>
                 </div>
             </div>
         </div>
         <div class="col-span-4 md:col-span-2 bg-surface-100 dark:bg-surface-800 p-6 rounded-lg flex flex-col justify-center">
-            <h2 class="text-xl font-semibold text-color mb-4">Informação da Empresa</h2>
+            <h2 class="text-xl font-semibold text-color mb-4">{{ 'application.shared.companyInfo' | translate }}</h2>
             <div class="space-y-2 text-color">
                 <p>
-                    <span class="font-medium text-muted-color">Nome:</span>
+                    <span class="font-medium text-muted-color">{{ 'application.shared.name' | translate }}</span>
                     {{aplicanteData.empresa.nome}}
                 </p>
                 <p>
-                    <span class="font-medium text-muted-color">NIF:</span>
+                    <span class="font-medium text-muted-color">{{ 'application.shared.nif' | translate }}</span>
                     {{aplicanteData.empresa.nif}}
                 </p>
                 <p>
-                    <span class="font-medium text-muted-color">Telefone/Telemovel:</span>
+                    <span class="font-medium text-muted-color">{{ 'application.shared.phones' | translate }}</span>
                     {{aplicanteData.empresa.telefone}} / {{aplicanteData.empresa.telemovel}}
                 </p>
                 <p>
-                    <span class="font-medium text-muted-color">Sede:</span>
+                    <span class="font-medium text-muted-color">{{ 'application.shared.sede' | translate }}</span>
                     {{aplicanteData.empresa.sede.local}} - {{aplicanteData.empresa.sede.aldeia.nome}},
                     {{aplicanteData.empresa.sede.aldeia.suco.nome}},
                     {{aplicanteData.empresa.sede.aldeia.suco.postoAdministrativo.nome}},
                     {{aplicanteData.empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
                 </p>
                 <p>
-                    <span class="font-medium text-muted-color">Coordenadas:</span>
+                    <span class="font-medium text-muted-color">{{ 'application.summary.coordinates' | translate }}</span>
                     <a [href]="'https://www.google.com/maps?q=' + aplicanteData.empresa.latitude + ',' + aplicanteData.empresa.longitude"
                         target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:text-emerald-300 hover:underline cursor-pointer">
                         {{aplicanteData.empresa.longitude}} / {{aplicanteData.empresa.latitude}}
@@ -73,16 +74,16 @@
     @if (showDispatchActions(aplicanteData)) {
     <div class="bg-surface-100 dark:bg-surface-800 p-6 rounded-lg mb-8">
         <h2 class="text-xl font-semibold text-color mb-4">
-            Atribuir Aplicante
+            {{ 'application.summary.assignTitle' | translate }}
         </h2>
 
         <div class="mb-6">
             <label for="application" class="font-medium  mb-2 block">
-                Funcionário(a)
+                {{ 'application.summary.staff' | translate }}
             </label>
             <p-select [formControl]="selectedFuncionario" inputId="application" [options]="userList"
                 [optionLabel]="'firstName'" optionValue="username" fluid [showClear]="true"
-                placeholder="Selecione o Funcionário(a)">
+                [placeholder]="'application.summary.selectStaff' | translate">
                 <ng-template #selectedItem let-selectedOption>
                     <div class="flex items-center gap-2">
                         {{selectedOption.firstName}} {{selectedOption.lastName}}
@@ -97,21 +98,21 @@
         </div>
         <div class="mb-6">
             <label for="notes" class="font-medium  mb-2 block">
-                Notas
+                {{ 'application.summary.notes' | translate }}
             </label>
             <textarea [formControl]="notes" inputId="notes" rows="5" cols="30" pTextarea fluid></textarea>
         </div>
-        <p-button (click)="rejeitarRevisto($event)" icon="pi pi-times" label="Rejeitar" [raised]="true"
+        <p-button (click)="rejeitarRevisto($event)" icon="pi pi-times" [label]="'application.summary.reject' | translate" [raised]="true"
             severity="danger" />
         <p-button [disabled]="!selectedFuncionario.valid" (click)="atribuir()" icon="pi pi-check-circle"
-            label="Atribuir" [raised]="true" severity="success" class="ml-2" />
+            [label]="'application.summary.assign' | translate" [raised]="true" severity="success" class="ml-2" />
     </div>
 
     }
 
     <div class="bg-surface-100 dark:bg-surface-800 p-6 rounded-lg mb-8">
         <h2 class="text-xl font-semibold text-color mb-6">
-            Etapas do Aplicante
+            {{ 'application.shared.steps' | translate }}
         </h2>
         @if (aplicanteData.tipo === 'CADASTRO') {
         <div class="space-y-6">
@@ -123,18 +124,18 @@
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold text-color">
-                            Formulário do Pedido Inscrição do Cadastro
+                            {{ 'application.cadastro.detail.formTitle' | translate }}
                         </h3>
                         <p class="text-sm text-muted-color">
-                            Detalhes do Pedido Inscrição do Cadastro
+                            {{ 'application.cadastro.detail.formDesc' | translate }}
                         </p>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <p-tag [value]="aplicanteData.pedidoInscricaoCadastro.status"
+                    <p-tag [value]="aplicanteData.pedidoInscricaoCadastro.status | statusLabel"
                         [severity]="aplicanteData.pedidoInscricaoCadastro.status| statusSeverity" />
                     <p-button routerLink="/gestor/application/{{aplicanteData.id}}/pedido-inscricao" icon="pi pi-eye"
-                        label="Pré-visualização" [raised]="true" severity="info" />
+                        [label]="'application.shared.preview' | translate" [raised]="true" severity="info" />
                 </div>
             </div>
             <div
@@ -145,16 +146,16 @@
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold text-color">
-                            Fatura
+                            {{ 'application.shared.invoice' | translate }}
                         </h3>
-                        <p class="text-sm text-muted-color">Informação da Fatura</p>
+                        <p class="text-sm text-muted-color">{{ 'application.cadastro.detail.invoiceInfo' | translate }}</p>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <p-tag [value]="aplicanteData.pedidoInscricaoCadastro.fatura.status"
+                    <p-tag [value]="aplicanteData.pedidoInscricaoCadastro.fatura.status | statusLabel"
                         [severity]="aplicanteData.pedidoInscricaoCadastro.fatura.status| statusSeverity" />
                     <p-button routerLink="/gestor/application/{{aplicanteData.id}}/fatura-inscricao" icon="pi pi-eye"
-                        label="Pré-visualização" [raised]="true" severity="info" />
+                        [label]="'application.shared.preview' | translate" [raised]="true" severity="info" />
                 </div>
             </div>
             <div
@@ -165,16 +166,16 @@
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold text-color">
-                            Recibo
+                            {{ 'application.shared.receipt' | translate }}
                         </h3>
-                        <p class="text-sm text-muted-color">Informação do Recibo</p>
+                        <p class="text-sm text-muted-color">{{ 'application.cadastro.detail.receiptInfo' | translate }}</p>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <p-tag [value]="'SUBMETIDO'" [severity]="'success'" />
+                    <p-tag [value]="'SUBMETIDO' | statusLabel" [severity]="'success'" />
                     <p-button
                         (click)="downloadFile(aplicanteData.id, aplicanteData.pedidoInscricaoCadastro.id, aplicanteData.pedidoInscricaoCadastro.fatura.id, aplicanteData.pedidoInscricaoCadastro.fatura.recibo?.id!)"
-                        icon="pi pi-download" label="Decarregar Recibo" [raised]="true" [loading]="downloadLoading"
+                        icon="pi pi-download" [label]="'application.shared.downloadReceipt' | translate" [raised]="true" [loading]="downloadLoading"
                         severity="info" />
                 </div>
             </div>
@@ -186,27 +187,27 @@
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold text-color">
-                            Em Análise
+                            {{ 'application.shared.underReview' | translate }}
                         </h3>
                         <p class="text-sm text-muted-color">
-                            Em análise pelo chefe de departamento.
+                            {{ 'application.shared.underReviewDesc' | translate }}
                         </p>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
                     @switch (aplicanteData.estado) {
                     @case ('REVISTO') {
-                    <p-tag [value]="'REVISTO'" [severity]="'SUBMETIDO'" />
+                    <p-tag [value]="'REVISTO' | statusLabel" [severity]="'SUBMETIDO'" />
 
                     }
                     @case ('APROVADO') {
-                    <p-tag [value]="'REVISTO'" [severity]="'SUBMETIDO'" />
+                    <p-tag [value]="'REVISTO' | statusLabel" [severity]="'SUBMETIDO'" />
                     }
                     @case ('SUBMETIDO') {
-                    <p-tag [value]="'EM CURSO'" [severity]="'info'" icon="pi pi-clock" />
+                    <p-tag [value]="'EM_CURSO' | statusLabel" [severity]="'info'" icon="pi pi-clock" />
                     }
                     @case ('EM_CURSO') {
-                    <p-tag value="PENDENTE" [severity]="'warn'" icon="pi pi-ban" />
+                    <p-tag [value]="'PENDENTE' | statusLabel" [severity]="'warn'" icon="pi pi-ban" />
                     }
                     }
                 </div>
@@ -218,19 +219,18 @@
                         <i class="bi bi-award text-2xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-color">Certificado</h3>
-                        <p class="text-sm text-muted-color">Certificado oficial de registo
-                            {{aplicanteData.categoria |titlecase}}.</p>
+                        <h3 class="text-lg font-semibold text-color">{{ 'application.shared.certificate' | translate }}</h3>
+                        <p class="text-sm text-muted-color">{{ 'application.cadastro.detail.certificateDesc' | translate: { categoria: categoria } }}</p>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
                     @if (aplicanteData.pedidoInscricaoCadastro.certificadoInscricaoCadastro) {
-                    <p-tag [value]="'EMITIDO'" [severity]="'success'" />
+                    <p-tag [value]="'EMITIDO' | statusLabel" [severity]="'success'" />
                     <p-button
                         routerLink="/gestor/application/{{aplicanteData.id}}/certificado-inscricao/{{aplicanteData.pedidoInscricaoCadastro.certificadoInscricaoCadastro.id}}"
-                        icon="pi pi-eye" label="Pré-visualização" [raised]="true" severity="info" />
+                        icon="pi pi-eye" [label]="'application.shared.preview' | translate" [raised]="true" severity="info" />
                     }@else {
-                    <p-tag value="Nao Emitido" [severity]="'warn'" icon="pi pi-times" />
+                    <p-tag [value]="'NAO_EMITIDO' | statusLabel" [severity]="'warn'" icon="pi pi-times" />
                     }
 
                 </div>
@@ -247,24 +247,22 @@
                         </div>
                         <div>
                             <h3 class="text-lg font-semibold text-color">
-                                Formulário do Pedido de Licença para Exercício de Atividade
-                                {{aplicanteData.categoria |titlecase}}
+                                {{ 'application.summary.atividadeFormTitle' | translate: { categoria: categoria } }}
                             </h3>
                             <p class="text-sm text-muted-color">
-                                Detalhes do Pedido de Licença para Exercício de Atividade
-                                {{aplicanteData.categoria |titlecase}}
+                                {{ 'application.summary.atividadeFormDesc' | translate: { categoria: categoria } }}
                             </p>
                         </div>
                     </div>
                     <div class="flex items-center space-x-4">
                         @if (aplicanteData.pedidoLicencaAtividade) {
-                        <p-tag [value]="aplicanteData.pedidoLicencaAtividade.status"
+                        <p-tag [value]="aplicanteData.pedidoLicencaAtividade.status | statusLabel"
                             [severity]="aplicanteData.pedidoLicencaAtividade.status| statusSeverity" />
                         <p-button routerLink="/gestor/application/{{aplicanteData.id}}/pedido-atividade"
-                            icon="pi pi-eye" label="Pré-visualização" [raised]="true" severity="info" />
+                            icon="pi pi-eye" [label]="'application.shared.preview' | translate" [raised]="true" severity="info" />
                         }
                         @else {
-                        <p-tag value="Em curso" [severity]="'info'" icon="pi pi-clock" />
+                        <p-tag [value]="'EM_CURSO' | statusLabel" [severity]="'info'" icon="pi pi-clock" />
                         }
                     </div>
                 </div>
@@ -279,24 +277,21 @@
                         </div>
                         <div>
                             <h3 class="text-lg font-semibold text-color">
-                                Formulário do Pedido de Vistoria para Licença de Exercício de
-                                Atividade
-                                {{aplicanteData.categoria |titlecase}}
+                                {{ 'application.summary.vistoriaFormTitle' | translate: { categoria: categoria } }}
                             </h3>
                             <p class="text-sm text-muted-color">
-                                Detalhes do Pedido de Vistoria
-                                {{aplicanteData.categoria |titlecase}}
+                                {{ 'application.summary.vistoriaFormDesc' | translate: { categoria: categoria } }}
                             </p>
                         </div>
                     </div>
                     <div class="flex items-center space-x-4">
                         @if (pedidoVistoria) {
-                        <p-tag [value]="pedidoVistoria.status" [severity]="pedidoVistoria.status| statusSeverity" />
+                        <p-tag [value]="pedidoVistoria.status | statusLabel" [severity]="pedidoVistoria.status| statusSeverity" />
                         <p-button routerLink="/gestor/application/{{aplicanteData.id}}/pedido-vistoria" icon="pi pi-eye"
-                            label="Pré-visualização" [raised]="true" severity="info" />
+                            [label]="'application.shared.preview' | translate" [raised]="true" severity="info" />
                         }
                         @else {
-                        <p-tag value="Em curso" [severity]="'info'" icon="pi pi-clock" />
+                        <p-tag [value]="'EM_CURSO' | statusLabel" [severity]="'info'" icon="pi pi-clock" />
                         }
 
                     </div>
@@ -321,12 +316,12 @@
                     <div class="flex items-center space-x-4">
                         @if (aplicanteData.pedidoLicencaAtividade &&
                         aplicanteData.pedidoLicencaAtividade.fatura) {
-                        <p-tag [value]="aplicanteData.pedidoLicencaAtividade.fatura.status"
+                        <p-tag [value]="aplicanteData.pedidoLicencaAtividade.fatura.status | statusLabel"
                             [severity]="aplicanteData.pedidoLicencaAtividade.fatura.status| statusSeverity" />
                         <p-button routerLink="/gestor/application/{{aplicanteData.id}}/fatura-atividade"
-                            icon="pi pi-eye" label="Pré-visualização" [raised]="true" severity="info" />
+                            icon="pi pi-eye" [label]="'application.shared.preview' | translate" [raised]="true" severity="info" />
                         }@else {
-                        <p-tag value="Não Emitida" [severity]="'secondary'" icon="pi pi-ban" />
+                        <p-tag [value]="'NAO_EMITIDA' | statusLabel" [severity]="'secondary'" icon="pi pi-ban" />
                         }
 
                     </div>
@@ -355,13 +350,13 @@
                         && aplicanteData.pedidoLicencaAtividade.fatura
                         && aplicanteData.pedidoLicencaAtividade.fatura.recibo
                         ){
-                        <p-tag [value]="'SUBMETIDO'" [severity]="'success'" />
+                        <p-tag [value]="'SUBMETIDO' | statusLabel" [severity]="'success'" />
                         <p-button
                             (click)="downloadFile(aplicanteData.id, aplicanteData.pedidoLicencaAtividade.id, aplicanteData.pedidoLicencaAtividade.fatura.id, aplicanteData.pedidoLicencaAtividade.fatura.recibo.id)"
-                            icon="pi pi-download" label="Decarregar Recibo" [raised]="true" [loading]="downloadLoading"
+                            icon="pi pi-download" [label]="'application.shared.downloadReceipt' | translate" [raised]="true" [loading]="downloadLoading"
                             severity="info" />
                         }@else {
-                        <p-tag value="Não Submetida" [severity]="'secondary'" icon="pi pi-ban" />
+                        <p-tag [value]="'NAO_SUBMETIDA' | statusLabel" [severity]="'secondary'" icon="pi pi-ban" />
                         }
 
                     </div>
@@ -379,23 +374,20 @@
                         </div>
                         <div>
                             <h3 class="text-lg font-semibold text-color">
-                                Fatura
+                                {{ 'application.shared.invoice' | translate }}
                             </h3>
-                            <p class="text-sm text-muted-color">Informação da Fatura do Pedido de
-                                Vistoria
-                                para Licença de Exercício de Atividade
-                                {{aplicanteData.categoria |titlecase}}</p>
+                            <p class="text-sm text-muted-color">{{ 'application.summary.vistoriaInvoiceInfo' | translate: { categoria: categoria } }}</p>
                         </div>
                     </div>
                     <div class="flex items-center space-x-4">
                         @if (pedidoVistoria &&
                         pedidoVistoria.fatura) {
-                        <p-tag [value]="pedidoVistoria.fatura.status"
+                        <p-tag [value]="pedidoVistoria.fatura.status | statusLabel"
                             [severity]="pedidoVistoria.fatura.status| statusSeverity" />
                         <p-button routerLink="/gestor/application/{{aplicanteData.id}}/fatura-vistoria" icon="pi pi-eye"
-                            label="Pré-visualização" [raised]="true" severity="info" />
+                            [label]="'application.shared.preview' | translate" [raised]="true" severity="info" />
                         }@else {
-                        <p-tag value="Não Emitida" [severity]="'secondary'" icon="pi pi-ban" />
+                        <p-tag [value]="'NAO_EMITIDA' | statusLabel" [severity]="'secondary'" icon="pi pi-ban" />
                         }
 
                     </div>
@@ -410,12 +402,10 @@
                         </div>
                         <div>
                             <h3 class="text-lg font-semibold text-color">
-                                Recibo
+                                {{ 'application.shared.receipt' | translate }}
                             </h3>
                             <p class="text-sm text-muted-color">
-                                Informação do Recibo da Fatura do Pedido de Vistoria
-                                para Licença de Exercício de Atividade
-                                {{aplicanteData.categoria |titlecase}}
+                                {{ 'application.summary.vistoriaReceiptInfo' | translate: { categoria: categoria } }}
                             </p>
                         </div>
                     </div>
@@ -424,13 +414,13 @@
                         && pedidoVistoria.fatura
                         && pedidoVistoria.fatura.recibo
                         ){
-                        <p-tag [value]="'SUBMETIDO'" [severity]="'success'" />
+                        <p-tag [value]="'SUBMETIDO' | statusLabel" [severity]="'success'" />
                         <p-button
                             (click)="downloadFile(aplicanteData.id, pedidoVistoria.id, pedidoVistoria.fatura.id, pedidoVistoria.fatura.recibo.id)"
-                            icon="pi pi-download" label="Decarregar Recibo" [raised]="true" [loading]="downloadLoading"
+                            icon="pi pi-download" [label]="'application.shared.downloadReceipt' | translate" [raised]="true" [loading]="downloadLoading"
                             severity="info" />
                         }@else {
-                        <p-tag value="Não Submetida" [severity]="'secondary'" icon="pi pi-ban" />
+                        <p-tag [value]="'NAO_SUBMETIDA' | statusLabel" [severity]="'secondary'" icon="pi pi-ban" />
                         }
 
                     </div>
@@ -445,37 +435,35 @@
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold text-color">
-                            Formulário de Auto Vistoria
-                            {{aplicanteData.categoria |titlecase}}
+                            {{ 'application.summary.autoVistoriaTitle' | translate: { categoria: categoria } }}
                         </h3>
                         <p class="text-sm text-muted-color">
-                            Detalhes do Auto Vistoria
-                            {{aplicanteData.categoria |titlecase}}
+                            {{ 'application.summary.autoVistoriaDesc' | translate: { categoria: categoria } }}
                         </p>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
                     @if (autoVistoria && autoVistoria.prazo === 0) {
-                    <p-tag [value]="'SUBMETIDO'" [severity]="'SUBMETIDO'| statusSeverity" />
+                    <p-tag [value]="'SUBMETIDO' | statusLabel" [severity]="'SUBMETIDO'| statusSeverity" />
                     <p-button routerLink="/gestor/application/{{aplicanteData.id}}/auto-vistoria" icon="pi pi-eye"
-                        label="Pré-visualização" [raised]="true" severity="info" />
+                        [label]="'application.shared.preview' | translate" [raised]="true" severity="info" />
                     }
                     @else {
                     @if (aplicanteData.estado === 'ATRIBUIDO' && user.role.name === 'ROLE_STAFF') {
-                    <p-button [routerLink]="['auto-vistoria']" icon="pi pi-pencil" label="Preencher" [raised]="true"
+                    <p-button [routerLink]="['auto-vistoria']" icon="pi pi-pencil" [label]="'application.summary.fill' | translate" [raised]="true"
                         severity="warn" />
                     <a [href]="'https://www.google.com/maps?q=' + aplicanteData.empresa.latitude + ',' + aplicanteData.empresa.longitude"
                         target="_blank" rel="noopener noreferrer" class="p-button font-bold" icon="pi pi-map-marker"
-                        label="Localização" severity="secondary" pTooltip="Localização" tooltipPosition="top">
+                        severity="secondary" [pTooltip]="'application.summary.location' | translate" tooltipPosition="top">
                         <i class="bi bi-map"></i>
                     </a>
                     }@else if (showReabrirAction(aplicanteData)) {
                     <!-- Suspended (prazo de correção): the finalized inspection must be reopened before a re-inspection. -->
-                    <p-tag [value]="'SUSPENDE'" [severity]="'SUSPENDE'| statusSeverity" icon="pi pi-pause-circle" />
+                    <p-tag [value]="'SUSPENDE' | statusLabel" [severity]="'SUSPENDE'| statusSeverity" icon="pi pi-pause-circle" />
                     <p-button (click)="reabrirVistoria($event)" icon="pi pi-arrow-counterclockwise"
-                        label="Reabrir vistoria" [raised]="true" severity="warn" />
+                        [label]="'application.summary.reopenVistoria' | translate" [raised]="true" severity="warn" />
                     }@else {
-                    <p-tag value="Em curso" [severity]="'info'" icon="pi pi-clock" />
+                    <p-tag [value]="'EM_CURSO' | statusLabel" [severity]="'info'" icon="pi pi-clock" />
                     }
                     }
 
@@ -489,20 +477,20 @@
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold text-color">
-                            Em Análise
+                            {{ 'application.shared.underReview' | translate }}
                         </h3>
                         <p class="text-sm text-muted-color">
-                            Em análise pelo chefe de departamento.
+                            {{ 'application.shared.underReviewDesc' | translate }}
                         </p>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
                     @if (aplicanteData.estado === 'REVISTO' || aplicanteData.estado === 'APROVADO')
                     {
-                    <p-tag [value]="'REVISTO'" [severity]="'SUBMETIDO'" />
+                    <p-tag [value]="'REVISTO' | statusLabel" [severity]="'SUBMETIDO'" />
                     }
                     @else {
-                    <p-tag value="Em curso" [severity]="'info'" icon="pi pi-clock" />
+                    <p-tag [value]="'EM_CURSO' | statusLabel" [severity]="'info'" icon="pi pi-clock" />
                     }
                 </div>
             </div>
@@ -513,21 +501,20 @@
                         <i class="bi bi-award text-2xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-color">Certificado</h3>
+                        <h3 class="text-lg font-semibold text-color">{{ 'application.shared.certificate' | translate }}</h3>
                         <p class="text-sm text-muted-color">
-                            Alvará de Licença para Exercício da Atividade
-                            {{aplicanteData.categoria |titlecase}}.
+                            {{ 'application.summary.alvaraDesc' | translate: { categoria: categoria } }}
                         </p>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
                     @if (aplicanteData.pedidoLicencaAtividade.certificadoLicencaAtividade) {
-                    <p-tag [value]="'EMITIDO'" [severity]="'success'" />
+                    <p-tag [value]="'EMITIDO' | statusLabel" [severity]="'success'" />
                     <p-button
                         routerLink="/gestor/application/{{aplicanteData.id}}/certificado-atividade/{{aplicanteData.pedidoLicencaAtividade.certificadoLicencaAtividade.id}}"
-                        icon="pi pi-eye" label="Pré-visualização" [raised]="true" severity="info" />
+                        icon="pi pi-eye" [label]="'application.shared.preview' | translate" [raised]="true" severity="info" />
                     }@else {
-                    <p-tag value="Nao Emitido" [severity]="'warn'" icon="pi pi-times" />
+                    <p-tag [value]="'NAO_EMITIDO' | statusLabel" [severity]="'warn'" icon="pi pi-times" />
                     }
 
                 </div>
@@ -541,7 +528,7 @@
     <div class="bg-surface-100 dark:bg-surface-800 p-6 rounded-lg mb-8">
         <div class="flex items-center mb-6">
             <i class="bi bi-folder2-open text-emerald-600 dark:text-emerald-400 text-2xl mr-3"></i>
-            <h2 class="text-xl font-semibold text-color">Documentos Carregados</h2>
+            <h2 class="text-xl font-semibold text-color">{{ 'application.summary.uploadedDocs' | translate }}</h2>
         </div>
         <div class="space-y-3">
             @for (row of adminDocs; track row.doc.id) {
@@ -550,21 +537,21 @@
                 <div class="min-w-0">
                     <p class="font-semibold text-color truncate">{{ row.doc.nome }}</p>
                     <p class="text-sm text-muted-color">
-                        {{ row.origem }}
+                        {{ row.origem | translate }}
                         @if (row.doc.coluna) { · {{ row.doc.coluna }} }
                         · {{ fileSize(row.doc.tamanho) }}
-                        @if (row.doc.updatedAt) { · {{ row.doc.updatedAt | date:'dd/MM/yyyy HH:mm' }} }
+                        @if (row.doc.updatedAt) { · {{ row.doc.updatedAt | ldate:'dd/MM/yyyy HH:mm' }} }
                     </p>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
                     <p-button (click)="downloadDoc(row)" [loading]="downloadingDocs.has(row.doc.id)"
                         icon="pi pi-download" severity="success" [rounded]="true" [text]="true"
-                        pTooltip="Descarregar" tooltipPosition="top" />
+                        [pTooltip]="'common.download' | translate" tooltipPosition="top" />
                     <p-fileupload #uploader mode="basic" [customUpload]="true" [auto]="true" [multiple]="false"
                         [accept]="acceptedDocTypes" [maxFileSize]="30000000" chooseIcon="pi pi-refresh"
-                        chooseLabel="Substituir" chooseStyleClass="p-button-outlined p-button-warn"
+                        [chooseLabel]="'application.summary.replace' | translate" chooseStyleClass="p-button-outlined p-button-warn"
                         (uploadHandler)="replaceDoc(row, $event, uploader)"
-                        pTooltip="Substituir ficheiro" tooltipPosition="top" />
+                        [pTooltip]="'application.summary.replaceFile' | translate" tooltipPosition="top" />
                     @if (replacingDocs.has(row.doc.id)) {
                     <i class="pi pi-spin pi-spinner text-muted-color"></i>
                     }
@@ -575,7 +562,7 @@
     </div>
     }
     <div class="bg-surface-100 dark:bg-surface-800 p-6 rounded-lg mb-8">
-        <h2 class="text-xl font-semibold text-color mb-6">Histórico do Aplicante</h2>
+        <h2 class="text-xl font-semibold text-color mb-6">{{ 'application.summary.historyTitle' | translate }}</h2>
         <div class="relative pl-8">
             <div class="absolute left-2 top-2 bottom-2 w-0.5 bg-surface-300 dark:bg-surface-600"></div>
             <div class="space-y-8">
@@ -588,15 +575,15 @@
                         <i class="bi bi-clock-history"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-color">Aplicante Criado</p>
+                        <p class="font-semibold text-color">{{ 'application.summary.history.created' | translate }}</p>
                         <p class="text-sm text-muted-color">
-                            Aplicante criado pelo:
+                            {{ 'application.summary.history.createdBy' | translate }}
                             <span class="font-medium text-color">
                                 {{item.alteradoPor}}
                             </span>
                         </p>
                         <p class="text-xs text-muted-color mt-1">
-                            {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                            {{item.dataAlteracao | ldate:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                         </p>
                     </div>
                     }
@@ -606,12 +593,12 @@
                         <i class="bi bi-search"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-color">Aplicante em Revisão</p>
-                        <p class="text-sm text-muted-color">Alterado pelo: <span class="font-medium text-color">
+                        <p class="font-semibold text-color">{{ 'application.summary.history.revisao' | translate }}</p>
+                        <p class="text-sm text-muted-color">{{ 'application.summary.history.changedBy' | translate }} <span class="font-medium text-color">
                                 {{item.alteradoPor}}
                             </span></p>
                         <p class="text-xs text-muted-color mt-1">
-                            {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                            {{item.dataAlteracao | ldate:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                         </p>
                     </div>
                     }
@@ -621,10 +608,10 @@
                         <i class="bi bi-check-circle"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-color">Aplicante Aprovado</p>
-                        <p class="text-sm text-muted-color">Aplicante foi aprovado pelo Gestor.</p>
+                        <p class="font-semibold text-color">{{ 'application.summary.history.aprovado' | translate }}</p>
+                        <p class="text-sm text-muted-color">{{ 'application.summary.history.aprovadoDesc' | translate }}</p>
                         <p class="text-xs text-muted-color mt-1">
-                            {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                            {{item.dataAlteracao | ldate:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                         </p>
                     </div>
                     }
@@ -634,12 +621,12 @@
                         <i class="bi bi-person"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-color">Aplicante Atribuído ao Funcionário</p>
-                        <p class="text-sm text-muted-color">Alterado pelo: <span class="font-medium text-color">
+                        <p class="font-semibold text-color">{{ 'application.summary.history.atribuido' | translate }}</p>
+                        <p class="text-sm text-muted-color">{{ 'application.summary.history.changedBy' | translate }} <span class="font-medium text-color">
                                 {{item.alteradoPor}}
                             </span></p>
                         <p class="text-xs text-muted-color mt-1">
-                            {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                            {{item.dataAlteracao | ldate:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                         </p>
                     </div>
                     }
@@ -649,12 +636,12 @@
                         <i class="bi bi-send-check"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-color">Aplicante foi Submetido</p>
-                        <p class="text-sm text-muted-color">Alterado pelo: <span class="font-medium text-color">
+                        <p class="font-semibold text-color">{{ 'application.summary.history.submetido' | translate }}</p>
+                        <p class="text-sm text-muted-color">{{ 'application.summary.history.changedBy' | translate }} <span class="font-medium text-color">
                                 {{item.alteradoPor}}
                             </span></p>
                         <p class="text-xs text-muted-color mt-1">
-                            {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                            {{item.dataAlteracao | ldate:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                         </p>
                     </div>
                     }
@@ -664,12 +651,12 @@
                         <i class="bi bi-person-check-fill"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-color">Aplicante foi revisto</p>
-                        <p class="text-sm text-muted-color">Revisto pelo: <span class="font-medium text-color">
+                        <p class="font-semibold text-color">{{ 'application.summary.history.revisto' | translate }}</p>
+                        <p class="text-sm text-muted-color">{{ 'application.summary.history.reviewedBy' | translate }} <span class="font-medium text-color">
                                 {{item.alteradoPor}}
                             </span></p>
                         <p class="text-xs text-muted-color mt-1">
-                            {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                            {{item.dataAlteracao | ldate:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                         </p>
                     </div>
                     }
@@ -679,17 +666,17 @@
                         <i class="bi bi-ban"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-color">Aplicante foi Rejeitado</p>
-                        <p class="text-sm text-muted-color">Alterado pelo: <span class="font-medium text-color">
+                        <p class="font-semibold text-color">{{ 'application.summary.history.rejeitado' | translate }}</p>
+                        <p class="text-sm text-muted-color">{{ 'application.summary.history.changedBy' | translate }} <span class="font-medium text-color">
                                 {{item.alteradoPor}}
                             </span></p>
                         @if (item.descricao) {
-                        <p class="text-sm text-muted-color mt-1">Motivo: <span class="font-medium text-color">
+                        <p class="text-sm text-muted-color mt-1">{{ 'application.summary.history.reason' | translate }} <span class="font-medium text-color">
                                 {{item.descricao}}
                             </span></p>
                         }
                         <p class="text-xs text-muted-color mt-1">
-                            {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                            {{item.dataAlteracao | ldate:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                         </p>
                     </div>
                     }
@@ -699,17 +686,17 @@
                         <i class="bi bi-arrow-counterclockwise"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-color">Aplicante Devolvido para Correção</p>
-                        <p class="text-sm text-muted-color">Devolvido pelo: <span class="font-medium text-color">
+                        <p class="font-semibold text-color">{{ 'application.summary.history.devolvido' | translate }}</p>
+                        <p class="text-sm text-muted-color">{{ 'application.summary.history.returnedBy' | translate }} <span class="font-medium text-color">
                                 {{item.alteradoPor}}
                             </span></p>
                         @if (item.descricao) {
-                        <p class="text-sm text-muted-color mt-1">Motivo: <span class="font-medium text-color">
+                        <p class="text-sm text-muted-color mt-1">{{ 'application.summary.history.reason' | translate }} <span class="font-medium text-color">
                                 {{item.descricao}}
                             </span></p>
                         }
                         <p class="text-xs text-muted-color mt-1">
-                            {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                            {{item.dataAlteracao | ldate:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                         </p>
                     </div>
                     }
@@ -719,18 +706,18 @@
                         <i class="bi bi-pause-circle"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-color">Aplicante Suspenso</p>
-                        <p class="text-sm text-muted-color">Suspenso após a vistoria pelo: <span
+                        <p class="font-semibold text-color">{{ 'application.summary.history.suspenso' | translate }}</p>
+                        <p class="text-sm text-muted-color">{{ 'application.summary.history.suspendedBy' | translate }} <span
                                 class="font-medium text-color">
                                 {{item.alteradoPor}}
                             </span></p>
                         @if (item.descricao) {
-                        <p class="text-sm text-muted-color mt-1">Motivo: <span class="font-medium text-color">
+                        <p class="text-sm text-muted-color mt-1">{{ 'application.summary.history.reason' | translate }} <span class="font-medium text-color">
                                 {{item.descricao}}
                             </span></p>
                         }
                         <p class="text-xs text-muted-color mt-1">
-                            {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                            {{item.dataAlteracao | ldate:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                         </p>
                     </div>
                     }
@@ -741,17 +728,17 @@
                         <i class="bi bi-record-circle"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="font-semibold text-color">{{item.status | titlecase}}</p>
-                        <p class="text-sm text-muted-color">Alterado pelo: <span class="font-medium text-color">
+                        <p class="font-semibold text-color">{{ item.status | statusLabel }}</p>
+                        <p class="text-sm text-muted-color">{{ 'application.summary.history.changedBy' | translate }} <span class="font-medium text-color">
                                 {{item.alteradoPor}}
                             </span></p>
                         @if (item.descricao) {
-                        <p class="text-sm text-muted-color mt-1">Motivo: <span class="font-medium text-color">
+                        <p class="text-sm text-muted-color mt-1">{{ 'application.summary.history.reason' | translate }} <span class="font-medium text-color">
                                 {{item.descricao}}
                             </span></p>
                         }
                         <p class="text-xs text-muted-color mt-1">
-                            {{item.dataAlteracao | date:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
+                            {{item.dataAlteracao | ldate:'dd MMMM yyyy, HH:mm:ss':'':'pt'}}
                         </p>
                     </div>
                     }
@@ -765,23 +752,23 @@
     </div>
     @if (showApprovalActions(aplicanteData)) {
     <div class="mt-10 flex justify-end space-x-4">
-        <p-button (click)="cancelar($event)" icon="pi pi-times" label="Rejeitar o Aplicante" [raised]="true"
+        <p-button (click)="cancelar($event)" icon="pi pi-times" [label]="'application.summary.rejectApplicant' | translate" [raised]="true"
             severity="danger" />
-        <p-button (click)="aprovar($event)" icon="pi pi-check-circle" label="Aceitar o Aplicante" [raised]="true"
+        <p-button (click)="aprovar($event)" icon="pi pi-check-circle" [label]="'application.summary.approveApplicant' | translate" [raised]="true"
             severity="success" />
     </div>
     }
     @if (showReviewdActions(aplicanteData)) {
     <div class="mt-10 flex justify-end space-x-4">
-        <p-button (click)="rejeitarRevisto($event)" icon="pi pi-times" label="Rejeitar o Aplicante" [raised]="true"
+        <p-button (click)="rejeitarRevisto($event)" icon="pi pi-times" [label]="'application.summary.rejectApplicant' | translate" [raised]="true"
             severity="danger" />
-        <p-button (click)="revisto($event)" icon="pi pi-check-circle" label="Revisto o Aplicante" [raised]="true"
+        <p-button (click)="revisto($event)" icon="pi pi-check-circle" [label]="'application.summary.reviewApplicant' | translate" [raised]="true"
             severity="success" />
     </div>
     }
     @if (showDevolverAction(aplicanteData)) {
     <div class="mt-6 flex justify-end space-x-4">
-        <p-button (click)="devolver($event)" icon="pi pi-arrow-counterclockwise" label="Devolver para correção"
+        <p-button (click)="devolver($event)" icon="pi pi-arrow-counterclockwise" [label]="'application.summary.returnApplicant' | translate"
             [raised]="true" severity="warn" />
     </div>
     }
@@ -794,15 +781,12 @@
                 <i class="pi pi-exclamation-triangle !text-5xl"></i>
             </div>
             <div class="flex flex-col items-start gap-4">
-                <p class="mb-0 text-balance">
-                    Após a revisão deste aplicante, o processo será automaticamente
-                    encaminhado ao Diretor para apreciação e decisão final de aprovação.
-                </p>
+                <p class="mb-0 text-balance">{{ 'application.summary.confirmReview' | translate }}</p>
             </div>
             <div class="flex items-center gap-2 mt-6">
-                <p-button type="button" [outlined]="true" severity="secondary" icon="pi pi-times" label="Cancel"
+                <p-button type="button" [outlined]="true" severity="secondary" icon="pi pi-times" [label]="'common.cancel' | translate"
                     (click)="onReject()"></p-button>
-                <p-button type="button" icon="pi pi-check" label="Confirmar" (onClick)="onAccept()">
+                <p-button type="button" icon="pi pi-check" [label]="'common.confirm' | translate" (onClick)="onAccept()">
                 </p-button>
             </div>
         </div>
@@ -816,17 +800,12 @@
                 <i class="pi pi-exclamation-triangle !text-5xl"></i>
             </div>
             <div class="flex flex-col items-start gap-4">
-                <p class="mb-0 text-balance">
-                    Ao aprovar este aplicante, será automaticamente gerado <br> <span class="font-semibold">o
-                        certificado de inscrição e
-                        cadastro</span>
-                    correspondente.
-                </p>
+                <p class="mb-0 text-balance" [innerHTML]="'application.summary.confirmApproveHtml' | translate"></p>
             </div>
             <div class="flex items-center gap-2 mt-6">
-                <p-button type="button" [outlined]="true" severity="secondary" icon="pi pi-times" label="Cancel"
+                <p-button type="button" [outlined]="true" severity="secondary" icon="pi pi-times" [label]="'common.cancel' | translate"
                     (click)="onReject()"></p-button>
-                <p-button type="button" icon="pi pi-check" label="Confirmar" (onClick)="onAccept()">
+                <p-button type="button" icon="pi pi-check" [label]="'common.confirm' | translate" (onClick)="onAccept()">
                 </p-button>
             </div>
         </div>
@@ -842,15 +821,15 @@
             <div [formGroup]="form"
                 class="flex flex-col items-start w-full gap-4 border-b border-surface-200 dark:border-surface-700">
                 <label for="description">
-                    Motivo de Rejeicao
+                    {{ 'application.shared.rejectionReason' | translate }}
                 </label>
                 <textarea rows="5" cols="30" id="description" pTextarea [formControl]="descricao"></textarea>
             </div>
             <p class="mb-0">{{ message.message }}</p>
             <div class="flex items-center gap-2 mt-6">
-                <p-button type="button" [outlined]="true" severity="secondary" icon="pi pi-times" label="Cancel"
+                <p-button type="button" [outlined]="true" severity="secondary" icon="pi pi-times" [label]="'common.cancel' | translate"
                     (click)="onReject()"></p-button>
-                <p-button [disabled]="!descricao.valid" type="button" icon="pi pi-check" label="Confirmar"
+                <p-button [disabled]="!descricao.valid" type="button" icon="pi pi-check" [label]="'common.confirm' | translate"
                     (onClick)="onAccept()">
                 </p-button>
             </div>
@@ -866,18 +845,17 @@
             </div>
             <div class="flex flex-col items-start w-full gap-4 border-b border-surface-200 dark:border-surface-700">
                 <label for="motivoDevolucao">
-                    Motivo da devolução (será enviado ao cliente)
+                    {{ 'application.summary.returnReasonLabel' | translate }}
                 </label>
                 <textarea rows="5" cols="30" id="motivoDevolucao" pTextarea [formControl]="motivoDevolucao"></textarea>
             </div>
             <p class="mb-0 mt-4 text-balance">
-                O aplicante será devolvido ao cliente, que poderá corrigir o Pedido de Licença e o Pedido de
-                Vistoria e voltar a submeter.
+                {{ 'application.summary.confirmReturn' | translate }}
             </p>
             <div class="flex items-center gap-2 mt-6">
-                <p-button type="button" [outlined]="true" severity="secondary" icon="pi pi-times" label="Cancelar"
+                <p-button type="button" [outlined]="true" severity="secondary" icon="pi pi-times" [label]="'common.cancel' | translate"
                     (click)="onReject()"></p-button>
-                <p-button [disabled]="!motivoDevolucao.valid" type="button" icon="pi pi-check" label="Confirmar"
+                <p-button [disabled]="!motivoDevolucao.valid" type="button" icon="pi pi-check" [label]="'common.confirm' | translate"
                     (onClick)="onAccept()">
                 </p-button>
             </div>
@@ -893,18 +871,17 @@
             </div>
             <div class="flex flex-col items-start w-full gap-4 border-b border-surface-200 dark:border-surface-700">
                 <label for="motivoReabrir">
-                    Motivo da reabertura (opcional)
+                    {{ 'application.summary.reopenReasonLabel' | translate }}
                 </label>
                 <textarea rows="4" cols="30" id="motivoReabrir" pTextarea [formControl]="motivoReabrir"></textarea>
             </div>
             <p class="mb-0 mt-4 text-balance">
-                A vistoria finalizada será reaberta para uma nova verificação e o aplicante voltará ao estado
-                atribuído.
+                {{ 'application.summary.confirmReopen' | translate }}
             </p>
             <div class="flex items-center gap-2 mt-6">
-                <p-button type="button" [outlined]="true" severity="secondary" icon="pi pi-times" label="Cancelar"
+                <p-button type="button" [outlined]="true" severity="secondary" icon="pi pi-times" [label]="'common.cancel' | translate"
                     (click)="onReject()"></p-button>
-                <p-button type="button" icon="pi pi-check" label="Confirmar" (onClick)="onAccept()">
+                <p-button type="button" icon="pi pi-check" [label]="'common.confirm' | translate" (onClick)="onAccept()">
                 </p-button>
             </div>
         </div>

@@ -1,7 +1,8 @@
+import { i18nOptions, LanguageService, LocalizedCurrencyPipe, LocalizedDatePipe } from '@/core/i18n';
 import { Receita, ReceitaEmpresa, ReceitaPagamento } from '@/core/models/entities.model';
 import { DashboardService } from '@/core/services';
 import { ExportService } from '@/core/services/export.service';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -13,9 +14,11 @@ import { Message } from 'primeng/message';
 import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
+import { TranslatePipe } from '@ngx-translate/core';
 
 interface ReceitaRow {
-  mes: string;
+  /** 1-12 (the API's month labels are English abbreviations; the label is translated client-side). */
+  mes: number;
   comercialCadastro: number;
   comercialAtividade: number;
   industrialCadastro: number;
@@ -40,15 +43,16 @@ interface EmpresaRow {
 @Component({
   selector: 'app-receitas',
   standalone: true,
-  imports: [
-    FormsModule, Select, Button, TableModule, Message, CurrencyPipe, DatePipe,
-    Tabs, TabList, Tab, TabPanels, TabPanel, IconField, InputIcon, InputText
+  imports: [LocalizedCurrencyPipe, LocalizedDatePipe,
+    FormsModule, Select, Button, TableModule, Message,
+    Tabs, TabList, Tab, TabPanels, TabPanel, IconField, InputIcon, InputText, TranslatePipe
   ],
   templateUrl: './receitas.component.html',
   styleUrl: './receitas.component.scss',
 })
 export class ReceitasComponent {
   private destroyRef = inject(DestroyRef);
+  private i18n = inject(LanguageService);
 
   yearOptions: { name: string; value: number }[] = (() => {
     const currentYear = new Date().getFullYear();
@@ -59,25 +63,19 @@ export class ReceitasComponent {
     return years;
   })();
 
-  monthOptions: { name: string; value: number | null }[] = [
-    { name: 'Todos', value: null },
-    { name: 'Janeiro', value: 1 }, { name: 'Fevereiro', value: 2 }, { name: 'Março', value: 3 },
-    { name: 'Abril', value: 4 }, { name: 'Maio', value: 5 }, { name: 'Junho', value: 6 },
-    { name: 'Julho', value: 7 }, { name: 'Agosto', value: 8 }, { name: 'Setembro', value: 9 },
-    { name: 'Outubro', value: 10 }, { name: 'Novembro', value: 11 }, { name: 'Dezembro', value: 12 },
-  ];
+  // Option labels resolve on access (i18nOptions), so they follow a language switch.
+  monthOptions = i18nOptions<number | null>('reports.receitas.months', [
+    { value: null, key: 'all' },
+    ...Array.from({ length: 12 }, (_, i) => ({ value: i + 1 })),
+  ]);
 
-  categoriaOptions = [
-    { name: 'Todas', value: 'TODAS' },
-    { name: 'Comercial', value: 'COMERCIAL' },
-    { name: 'Industrial', value: 'INDUSTRIAL' },
-  ];
+  categoriaOptions = i18nOptions('reports.receitas.categoria', [
+    { value: 'TODAS' }, { value: 'COMERCIAL' }, { value: 'INDUSTRIAL' },
+  ]);
 
-  tipoOptions = [
-    { name: 'Todos', value: 'TODOS' },
-    { name: 'Cadastro', value: 'CADASTRO' },
-    { name: 'Licença', value: 'ATIVIDADE' },
-  ];
+  tipoOptions = i18nOptions('reports.receitas.tipo', [
+    { value: 'TODOS' }, { value: 'CADASTRO' }, { value: 'ATIVIDADE' },
+  ]);
 
   /** Sentinel for companies with no sociedade comercial on record (null can't distinguish "all" from "none"). */
   static readonly SEM_SOCIEDADE = '__SEM_SOCIEDADE__';
@@ -99,7 +97,7 @@ export class ReceitasComponent {
   selectedTipo: 'TODOS' | 'CADASTRO' | 'ATIVIDADE' = 'TODOS';
   selectedSociedade: string | null = null; // null = todas
   /** Derived from the loaded data — master data isn't fetched separately, only values actually present are offered. */
-  sociedadeOptions: { name: string; value: string | null }[] = [{ name: 'Todas', value: null }];
+  sociedadeOptions: { name: string; value: string | null }[] = i18nOptions<string | null>('reports.receitas.sociedade', [{ value: null, key: 'all' }]);
   empresas: ReceitaEmpresa[] = [];
   empresaRows: EmpresaRow[] = [];
   empresasFetching = false;
@@ -210,10 +208,10 @@ export class ReceitasComponent {
       this.empresas.map(e => e.sociedadeComercial).filter((s): s is string => !!s && s.trim().length > 0)
     )].sort((a, b) => a.localeCompare(b, 'pt'));
 
-    const options: { name: string; value: string | null }[] = [{ name: 'Todas', value: null }];
+    const options: { name: string; value: string | null }[] = i18nOptions<string | null>('reports.receitas.sociedade', [{ value: null, key: 'all' }]);
     options.push(...nomes.map(n => ({ name: n, value: n })));
     if (this.empresas.some(e => !e.sociedadeComercial || e.sociedadeComercial.trim().length === 0)) {
-      options.push({ name: '(Sem sociedade comercial)', value: this.semSociedade });
+      options.push(...i18nOptions<string | null>('reports.receitas.sociedade', [{ value: this.semSociedade, key: 'none' }]));
     }
     this.sociedadeOptions = options;
 
@@ -275,24 +273,25 @@ export class ReceitasComponent {
     if (!this.receita) {
       return;
     }
-    const mappedData = this.rows.map((r) => ({
-      'Mês': r.mes,
-      'Comercial - Cadastro': r.comercialCadastro,
-      'Comercial - Licença': r.comercialAtividade,
-      'Industrial - Cadastro': r.industrialCadastro,
-      'Industrial - Licença': r.industrialAtividade,
-      'Total': r.total,
+    const h = this.exportHeaders();
+    const mappedData: any[] = this.rows.map((r) => ({
+      [h.mes]: this.monthLabel(r.mes),
+      [h.comCad]: r.comercialCadastro,
+      [h.comAtv]: r.comercialAtividade,
+      [h.indCad]: r.industrialCadastro,
+      [h.indAtv]: r.industrialAtividade,
+      [h.total]: r.total,
     }));
     // Append the annual totals footer row.
     mappedData.push({
-      'Mês': 'TOTAL',
-      'Comercial - Cadastro': this.receita.totalComercialCadastro,
-      'Comercial - Licença': this.receita.totalComercialAtividade,
-      'Industrial - Cadastro': this.receita.totalIndustrialCadastro,
-      'Industrial - Licença': this.receita.totalIndustrialAtividade,
-      'Total': this.receita.totalGeral,
+      [h.mes]: h.totalUpper,
+      [h.comCad]: this.receita.totalComercialCadastro,
+      [h.comAtv]: this.receita.totalComercialAtividade,
+      [h.indCad]: this.receita.totalIndustrialCadastro,
+      [h.indAtv]: this.receita.totalIndustrialAtividade,
+      [h.total]: this.receita.totalGeral,
     });
-    const fileName = `Relatório de Receitas_${this.selectedYear}_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
+    const fileName = `${this.i18n.instant('reports.receitas.fileName')}_${this.selectedYear}_${new DatePipe('pt-PT').transform(new Date(), 'ddMMyyyy_HHmmss')}`;
     this.exportService.toExcel(mappedData, fileName);
   }
 
@@ -302,53 +301,84 @@ export class ReceitasComponent {
       return;
     }
     const datePipe = new DatePipe('pt-PT');
+    const h = this.exportHeaders();
 
     const resumo: any[] = this.empresaRows.map(r => ({
-      'Empresa': r.nome,
+      [h.empresa]: r.nome,
       'NIF': r.nif,
-      'Sociedade Comercial': r.sociedadeComercial ?? '',
-      'Comercial - Cadastro': r.comercialCadastro,
-      'Comercial - Licença': r.comercialAtividade,
-      'Industrial - Cadastro': r.industrialCadastro,
-      'Industrial - Licença': r.industrialAtividade,
-      'Total': r.total,
+      [h.sociedade]: r.sociedadeComercial ?? '',
+      [h.comCad]: r.comercialCadastro,
+      [h.comAtv]: r.comercialAtividade,
+      [h.indCad]: r.industrialCadastro,
+      [h.indAtv]: r.industrialAtividade,
+      [h.total]: r.total,
     }));
     resumo.push({
-      'Empresa': 'TOTAL', 'NIF': '', 'Sociedade Comercial': '',
-      'Comercial - Cadastro': this.empresaFooter.comercialCadastro,
-      'Comercial - Licença': this.empresaFooter.comercialAtividade,
-      'Industrial - Cadastro': this.empresaFooter.industrialCadastro,
-      'Industrial - Licença': this.empresaFooter.industrialAtividade,
-      'Total': this.empresaFooter.total,
+      [h.empresa]: h.totalUpper, 'NIF': '', [h.sociedade]: '',
+      [h.comCad]: this.empresaFooter.comercialCadastro,
+      [h.comAtv]: this.empresaFooter.comercialAtividade,
+      [h.indCad]: this.empresaFooter.industrialCadastro,
+      [h.indAtv]: this.empresaFooter.industrialAtividade,
+      [h.total]: this.empresaFooter.total,
     });
 
     const pagamentos = this.empresaRows.flatMap(r => r.pagamentos.map(p => ({
-      'Empresa': r.nome,
+      [h.empresa]: r.nome,
       'NIF': r.nif,
-      'Sociedade Comercial': r.sociedadeComercial ?? '',
-      'Fatura': p.faturaId,
-      'Data Pagamento': datePipe.transform(p.dataPagamento, 'dd/MM/yyyy'),
-      'Categoria': p.categoria === 'INDUSTRIAL' ? 'Industrial' : 'Comercial',
-      'Tipo': p.tipo === 'CADASTRO' ? 'Cadastro' : 'Licença',
-      'Valor': p.valor,
+      [h.sociedade]: r.sociedadeComercial ?? '',
+      [h.fatura]: p.faturaId,
+      [h.dataPagamento]: datePipe.transform(p.dataPagamento, 'dd/MM/yyyy'),
+      [h.categoria]: p.categoria === 'INDUSTRIAL' ? h.industrial : h.comercial,
+      [h.tipo]: p.tipo === 'CADASTRO' ? h.cadastro : h.licenca,
+      [h.valor]: p.valor,
     })));
 
     const periodo = this.selectedMonth != null ? `${this.selectedYear}-${this.selectedMonth}` : `${this.selectedYear}`;
-    const fileName = `Relatório de Receitas por Empresa_${periodo}_${datePipe.transform(new Date(), 'ddMMyyyy_HHmmss')}`;
+    const fileName = `${this.i18n.instant('reports.receitas.fileNameEmpresa')}_${periodo}_${datePipe.transform(new Date(), 'ddMMyyyy_HHmmss')}`;
     this.exportService.toExcelSheets([
-      { name: 'Resumo por empresa', data: resumo },
-      { name: 'Pagamentos', data: pagamentos },
+      { name: this.i18n.instant('reports.receitas.sheetResumo'), data: resumo },
+      { name: this.i18n.instant('reports.receitas.sheetPagamentos'), data: pagamentos },
     ], fileName);
   }
 
+  monthLabel(mes: number): string {
+    return this.i18n.instant(`reports.receitas.months.${mes}`);
+  }
+
+  /** Column headers for the Excel exports, resolved in the current language at export time. */
+  private exportHeaders() {
+    const t = (key: string) => this.i18n.instant(key);
+    const comercial = t('reports.receitas.categoria.COMERCIAL');
+    const industrial = t('reports.receitas.categoria.INDUSTRIAL');
+    const cadastro = t('reports.receitas.cadastro');
+    const licenca = t('reports.receitas.licenca');
+    return {
+      comercial, industrial, cadastro, licenca,
+      mes: t('reports.receitas.mes'),
+      empresa: t('reports.common.empresa'),
+      sociedade: t('reports.common.sociedadeComercial'),
+      comCad: `${comercial} - ${cadastro}`,
+      comAtv: `${comercial} - ${licenca}`,
+      indCad: `${industrial} - ${cadastro}`,
+      indAtv: `${industrial} - ${licenca}`,
+      total: t('reports.receitas.total'),
+      totalUpper: t('reports.receitas.totalUpper'),
+      fatura: t('reports.receitas.fatura'),
+      dataPagamento: t('reports.receitas.dataPagamento'),
+      categoria: t('reports.common.categoria'),
+      tipo: t('reports.common.tipo'),
+      valor: t('reports.receitas.valor'),
+    };
+  }
+
   private buildRows(receita: Receita): ReceitaRow[] {
-    return receita.categories.map((mes, i) => {
+    return receita.categories.map((_, i) => {
       const comercialCadastro = receita.comercialCadastro[i] ?? 0;
       const comercialAtividade = receita.comercialAtividade[i] ?? 0;
       const industrialCadastro = receita.industrialCadastro[i] ?? 0;
       const industrialAtividade = receita.industrialAtividade[i] ?? 0;
       return {
-        mes,
+        mes: i + 1,
         comercialCadastro,
         comercialAtividade,
         industrialCadastro,
@@ -360,7 +390,7 @@ export class ReceitasComponent {
 
   private addEmptyMessage(): void {
     if (this.rows.length === 0) {
-      this.messages.set([{ icon: 'pi pi-info-circle', size: 'large', severity: 'info', content: 'Não existem dados disponíveis para o relatório selecionado.' }]);
+      this.messages.set([{ icon: 'pi pi-info-circle', size: 'large', severity: 'info', content: 'reports.common.noData' }]);
     } else {
       this.messages.set([]);
     }
@@ -368,7 +398,7 @@ export class ReceitasComponent {
 
   private addEmpresaEmptyMessage(): void {
     if (this.empresaRows.length === 0) {
-      this.empresaMessages.set([{ icon: 'pi pi-info-circle', size: 'large', severity: 'info', content: 'Não existem pagamentos para os filtros selecionados.' }]);
+      this.empresaMessages.set([{ icon: 'pi pi-info-circle', size: 'large', severity: 'info', content: 'reports.receitas.noPayments' }]);
     } else {
       this.empresaMessages.set([]);
     }

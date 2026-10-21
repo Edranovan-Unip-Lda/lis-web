@@ -1,17 +1,17 @@
 <div class="card">
     <div class="grid grid-cols-12 mb-4">
         <div class="col-span-8">
-            <span class="text-2xl font-bold mr-4">Auto de Vistoria</span>
+            <span class="text-2xl font-bold mr-4">{{ 'application.pdf.autoVistoria.title' | translate }}</span>
         </div>
         <div class="col-span-4 flex justify-end mb-4">
-            <p-button (click)="goBack()" icon="pi pi-chevron-circle-left" label="Voltar" severity="help" size="large"
+            <p-button (click)="goBack()" icon="pi pi-chevron-circle-left" [label]="'common.back' | translate" severity="help" size="large"
                 [text]="true" [rounded]="true" [raised]="true" />
         </div>
     </div>
 
     <p-tabs [value]="activeTab()" (valueChange)="onTab($event)" scrollable="true">
         <p-tablist>
-            <p-tab [value]="0">Auto de Vistoria</p-tab>
+            <p-tab [value]="0">{{ 'application.pdf.autoVistoria.title' | translate }}</p-tab>
             @for (doc of docs; track doc.id; let i = $index) {
             <p-tab [value]="i + 1">{{ doc.nome }}</p-tab>
             }
@@ -21,10 +21,10 @@
                 @if (activeTab() === 0) {
                 @if (loading()) {
                 <div class="flex justify-center py-16">
-                    <p-progress-spinner ariaLabel="A carregar auto de vistoria" />
+                    <p-progress-spinner [ariaLabel]="'application.pdf.autoVistoria.loading' | translate" />
                 </div>
                 } @else if (errorMsg()) {
-                <div class="flex justify-center py-16 text-lg text-red-600">{{ errorMsg() }}</div>
+                <div class="flex justify-center py-16 text-lg text-red-600">{{ errorMsg()! | translate }}</div>
                 } @else {
                 <app-pdf-viewer [src]="pdfSrc()" [filename]="filename()" />
                 }
@@ -42,10 +42,10 @@
                     }
                     <p-fileupload #uploader mode="basic" [customUpload]="true" [auto]="true" [multiple]="false"
                         [accept]="acceptedDocTypes" [maxFileSize]="30000000" chooseIcon="pi pi-refresh"
-                        chooseLabel="Substituir" chooseStyleClass="p-button-outlined p-button-warn"
+                        [chooseLabel]="'application.pdf.replace' | translate" chooseStyleClass="p-button-outlined p-button-warn"
                         (uploadHandler)="replaceDoc(i, $event, uploader)" />
                     <p-button (click)="deleteDoc(i, $event)" [loading]="deletingDocs.has(doc.id)" icon="pi pi-trash"
-                        label="Eliminar" severity="danger" [outlined]="true" />
+                        [label]="'common.delete' | translate" severity="danger" [outlined]="true" />
                 </div>
                 }
                 @if (loaded()[i]; as entry) {
@@ -60,15 +60,15 @@
                 }
                 @default {
                 <div class="py-10 text-center">
-                    <p class="mb-3 text-gray-500">Pré-visualização não disponível para este tipo de ficheiro.</p>
+                    <p class="mb-3 text-gray-500">{{ 'application.pdf.previewUnavailable' | translate }}</p>
                     <p-button (click)="downloadDoc(doc)" [loading]="loadingDownloadButtons.has(doc.id)"
-                        icon="pi pi-download" label="Descarregar" [outlined]="true" />
+                        icon="pi pi-download" [label]="'common.download' | translate" [outlined]="true" />
                 </div>
                 }
                 }
                 } @else {
                 <div class="flex justify-center py-16">
-                    <p-progress-spinner ariaLabel="A carregar documento" />
+                    <p-progress-spinner [ariaLabel]="'application.pdf.loadingDocument' | translate" />
                 </div>
                 }
                 }

@@ -3,54 +3,54 @@
         <div class="grid grid-cols-3 gap-4">
             <div class="mb-6 col-span-3 md:col-span-1">
                 <label for="sociedadeComercial" class="font-medium  mb-2 block">
-                    Tipo de Propriedade
+                    {{ 'reports.empresa.tipoPropriedade' | translate }}
                 </label>
                 <p-select fluid formControlName="tipoPropriedade" [options]="listaTipoPropriedade" optionLabel="name"
-                    optionValue="value" placeholder="Selecione o tipo de propriedade" [showClear]="true">
+                    optionValue="value" [placeholder]="'reports.empresa.selectTipoPropriedade' | translate" [showClear]="true">
                 </p-select>
             </div>
             <div class="mb-6 col-span-3 md:col-span-1">
                 <label for="sociedadeComercial" class="font-medium  mb-2 block">
-                    Tipo de Sociedade Comercial
+                    {{ 'reports.empresa.tipoSociedade' | translate }}
                 </label>
                 <p-select fluid formControlName="sociedadeComercialId" [options]="listaSociedadeComercial"
-                    optionLabel="name" optionValue="value" placeholder="Selecione o tipo de sociedade"
+                    optionLabel="name" optionValue="value" [placeholder]="'reports.empresa.selectTipoSociedade' | translate"
                     [showClear]="true">
                 </p-select>
             </div>
             <div class="mb-6 col-span-3 md:col-span-1">
                 <label for="tipoEmpresa" class="font-medium  mb-2 block">
-                    Tipo da Empresa
+                    {{ 'reports.empresa.tipoEmpresa' | translate }}
                 </label>
                 <p-select fluid formControlName="tipoEmpresa" [options]="listaTipoEmpresa" optionLabel="name"
-                    optionValue="value" placeholder="Selecione o tipo de empresa" [showClear]="true">
+                    optionValue="value" [placeholder]="'reports.empresa.selectTipoEmpresa' | translate" [showClear]="true">
                 </p-select>
             </div>
         </div>
         <div class="grid grid-cols-3 gap-4">
             <div class="mb-6 col-span-3 md:col-span-1">
                 <label for="municipioId" class="font-medium  mb-2 block">
-                    Municipio
+                    {{ 'reports.common.municipio' | translate }}
                 </label>
                 <p-select fluid formControlName="municipioId" [options]="listaMunicipios" optionLabel="name"
-                    optionValue="value" placeholder="Selecione o municipio" [showClear]="true">
+                    optionValue="value" [placeholder]="'reports.common.selectMunicipio' | translate" [showClear]="true">
                 </p-select>
             </div>
             <div class="mb-6 col-span-3 md:col-span-1">
                 <label for="postoAdministrativoId" class="font-medium  mb-2 block">
-                    Posto Administrativo
+                    {{ 'reports.common.posto' | translate }}
                 </label>
                 <p-select fluid formControlName="postoAdministrativoId" [options]="listaPostosAdministrativos"
-                    optionLabel="name" optionValue="value" placeholder="Selecione o posto administrativo"
+                    optionLabel="name" optionValue="value" [placeholder]="'reports.common.selectPosto' | translate"
                     [filter]="true" [showClear]="true">
                 </p-select>
             </div>
             <div class="mb-6 col-span-3 md:col-span-1">
                 <label for="sucoId" class="font-medium  mb-2 block">
-                    Suco
+                    {{ 'reports.common.suco' | translate }}
                 </label>
                 <p-select fluid formControlName="sucoId" [options]="listaSucos" optionLabel="name" optionValue="value"
-                    placeholder="Selecione o suco" (onFilter)="sucoFilter($event)" [filter]="true"
+                    [placeholder]="'reports.common.selectSuco' | translate" (onFilter)="sucoFilter($event)" [filter]="true"
                     [loading]="sucoIsLoading" [showClear]="true">
                 </p-select>
             </div>
@@ -58,9 +58,9 @@
         <div class="grid grid-cols-1">
             <div class="col-span-1">
                 <p-button icon="pi pi-sync" (click)="onSubmit()" [loading]="dataIsFetching"
-                    [disabled]="isFormEmpty(reportForm)" pRipple label="Gerar Relatório" class="w-auto">
+                    [disabled]="isFormEmpty(reportForm)" pRipple [label]="'reports.common.generate' | translate" class="w-auto">
                 </p-button>
-                <p-button class="ml-4" (onClick)="clearFilter()" label="Limpar" icon="pi pi-trash" [raised]="true"
+                <p-button class="ml-4" (onClick)="clearFilter()" [label]="'common.clear' | translate" icon="pi pi-trash" [raised]="true"
                     severity="secondary" />
             </div>
         </div>
@@ -69,28 +69,28 @@
     @if (data.length > 0) {
     <div class="flex justify-between">
         <h1 class="text-2xl font-bold text-white pt-6">
-            Filtered Results
+            {{ 'reports.common.filteredResults' | translate }}
         </h1>
         <div>
             <p-button (onClick)="generatePDF('myDiv')" [disabled]="isFormEmpty(reportForm) || data.length === 0"
-                label="Exportar para PDF" icon="pi pi-file-pdf" [raised]="true" severity="danger" class="mr-2"
+                [label]="'reports.common.exportPdf' | translate" icon="pi pi-file-pdf" [raised]="true" severity="danger" class="mr-2"
                 [loading]="isPdfGenerating" />
             <p-button (onClick)="exportToExcel()" [disabled]="isFormEmpty(reportForm) || data.length === 0"
-                label="Exportar para Excel" icon="pi pi-file-excel" [raised]="true" severity="success" class="mr-2" />
+                [label]="'reports.common.exportExcel' | translate" icon="pi pi-file-excel" [raised]="true" severity="success" class="mr-2" />
         </div>
     </div>
     <p-table id="myDiv" #dt [value]="data" responsiveLayout="scroll" [scrollable]="true" [rowHover]="true">
         <ng-template #header>
             <tr>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Local</th>
-                <th>Tipo Propriedade</th>
-                <th>Tipo Sociedade Comercial</th>
-                <th>Tipo Empresa</th>
-                <th>Gerente</th>
-                <th>Telefone</th>
-                <th>Registo em</th>
+                <th>{{ 'common.name' | translate }}</th>
+                <th>{{ 'common.email' | translate }}</th>
+                <th>{{ 'reports.empresa.local' | translate }}</th>
+                <th>{{ 'reports.empresa.tipoPropriedade' | translate }}</th>
+                <th>{{ 'reports.empresa.tipoSociedade' | translate }}</th>
+                <th>{{ 'reports.empresa.tipoEmpresa' | translate }}</th>
+                <th>{{ 'reports.empresa.gerente' | translate }}</th>
+                <th>{{ 'reports.empresa.telefone' | translate }}</th>
+                <th>{{ 'reports.empresa.registoEm' | translate }}</th>
             </tr>
         </ng-template>
         <ng-template #body let-empresa>
@@ -105,13 +105,13 @@
                     {{empresa.sede.local}} - {{empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome}}
                 </td>
                 <td>
-                    {{empresa.tipoPropriedade}}
+                    {{ enumLabel('TipoPropriedade', empresa.tipoPropriedade) }}
                 </td>
                 <td>
                     {{empresa.sociedadeComercial.nome}}
                 </td>
                 <td>
-                    {{empresa.tipoEmpresa}}
+                    {{ enumLabel('TipoEmpresa', empresa.tipoEmpresa) }}
                 </td>
                 <td>
                     {{empresa.gerente.nome}}
@@ -120,18 +120,18 @@
                     {{empresa.telefone}}
                 </td>
                 <td>
-                    {{ empresa.createdAt | date: 'MM/dd/yyyy, HH:mm:ss' }}
+                    {{ empresa.createdAt | ldate: 'MM/dd/yyyy, HH:mm:ss' }}
                 </td>
             </tr>
         </ng-template>
     </p-table>
     <p-paginator (onPageChange)="onPageChange($event)" [rows]="size" [totalRecords]="totalData"
         [rowsPerPageOptions]="[50, 250, 500, 1000]" [showCurrentPageReport]="true"
-        currentPageReportTemplate="A mostrar {first} até {last} de {totalRecords}" />
+        [currentPageReportTemplate]="'reports.common.pageReport' | translate" />
     }
     @else {
     @for (message of messages(); track message; let first = $first) {
-    <p-message [icon]="message.icon" [size]="message.size" [severity]="message.severity" [text]="message.content" />
+    <p-message [icon]="message.icon" [size]="message.size" [severity]="message.severity" [text]="message.content | translate" />
     }
     }
 </div>

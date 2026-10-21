@@ -1,3 +1,4 @@
+import { i18nOptions } from "../i18n/translate-ref";
 import { AplicanteStatus, AplicanteType, AreaRepresentante, AuditEntity, AuditType, CaraterizacaoEstabelecimento, Categoria, NivelRisco, QuantoAtividade, Role, Status, TipoAto, TipoDocumento, TipoEmpresa, TipoEstabelecimento, TipoNacionalidade, TipoPedidoCadastro, TipoPedidoLicenca, TipoPedidoVistoria, TipoPropriedade } from "../models/enums";
 
 export const maxFileSizeUpload = 20 * 1024 * 1024;
@@ -76,371 +77,143 @@ export function mapToTaxa(array: any[]): { id: number, categoria: string, tipo: 
     });
 }
 
-export const statusOptions: any[] = [
-    { name: Status.active, value: Status.active, icon: 'bi bi-fw bi-shield-check', color: 'text-green-500' },
-    { name: Status.pending, value: Status.pending, icon: 'bi bi-fw bi-pause-circle', color: 'text-yellow-500' },
-    { name: Status.disabled, value: Status.disabled, icon: 'bi bi-fw bi-ban', color: 'text-red-500' },
-];
+// Option labels are translation keys resolved on access (see i18nOptions) — bind these arrays as-is.
+export const statusOptions: any[] = i18nOptions('status', [
+    { value: Status.active, icon: 'bi bi-fw bi-shield-check', color: 'text-green-500' },
+    { value: Status.pending, icon: 'bi bi-fw bi-pause-circle', color: 'text-yellow-500' },
+    { value: Status.disabled, icon: 'bi bi-fw bi-ban', color: 'text-red-500' },
+]);
 
-export const roleOptions: any[] = [
-    { name: 'Administrador', value: Role.admin },
-    { name: 'Diretor', value: Role.manager },
-    { name: 'Xefe Departamento', value: Role.chief },
-    { name: 'Funcionário', value: Role.staff },
-    { name: 'Empresa', value: Role.client },
-];
+export const roleOptions: any[] = i18nOptions('enum.Role', [
+    { value: Role.admin }, { value: Role.manager }, { value: Role.chief }, { value: Role.staff }, { value: Role.client },
+]);
 
-export const nivelRiscoOptions: any[] = [
-    { name: 'Baixo', value: NivelRisco.baixo },
-    { name: 'Medio', value: NivelRisco.medio },
-    { name: 'Alto', value: NivelRisco.alto }
-];
+export const nivelRiscoOptions: any[] = i18nOptions('enum.NivelRisco', [
+    { value: NivelRisco.baixo }, { value: NivelRisco.medio }, { value: NivelRisco.alto },
+]);
 
-export const estadoCivilOptions: any[] = [
-    {
-        name: 'Solteiro(a)',
-        value: 'Solteiro(a)'
-    },
-    {
-        name: 'Casado(a)',
-        value: 'Casado(a)'
-    },
-    {
-        name: 'Divorciado(a)',
-        value: 'Divorciado(a)'
-    },
-    {
-        name: 'Viúvo(a)',
-        value: 'Viúvo(a)'
-    },
-];
+// Values are persisted as-is (Portuguese free text); only the label is translated.
+export const estadoCivilOptions: any[] = i18nOptions('options.estadoCivil', [
+    { value: 'Solteiro(a)', key: 'solteiro' },
+    { value: 'Casado(a)', key: 'casado' },
+    { value: 'Divorciado(a)', key: 'divorciado' },
+    { value: 'Viúvo(a)', key: 'viuvo' },
+]);
 
-export const applicationTypesOptions: any[] = [
-    {
-        name: 'Inscrição no Cadastro',
-        value: AplicanteType.cadastro
-    },
-    {
-        name: 'Licenca para Exercicio de Atividade',
-        value: AplicanteType.licenca
-    }
-];
-export const categoryTpesOptions: any[] = [
-    {
-        name: 'Comercial',
-        value: Categoria.comercial
-    },
-    {
-        name: 'Industrial',
-        value: Categoria.industrial
-    }
-];
+export const applicationTypesOptions: any[] = i18nOptions('enum.AplicanteType', [
+    { value: AplicanteType.cadastro }, { value: AplicanteType.licenca },
+]);
 
-export const aplicanteStatusOptions: any[] = [
-    {
-        name: AplicanteStatus.aprovado.toString(),
-        value: AplicanteStatus.aprovado
-    },
-    {
-        name: AplicanteStatus.rejeitado.toString(),
-        value: AplicanteStatus.rejeitado
-    }
-]
+export const categoryTpesOptions: any[] = i18nOptions('enum.Categoria', [
+    { value: Categoria.comercial }, { value: Categoria.industrial },
+]);
 
-export const tipoPedidoCadastroOptions: any[] = [
-    {
-        name: 'Inscrição Inicial',
-        value: TipoPedidoCadastro.inicial
-    },
-    {
-        name: 'Alteração',
-        value: TipoPedidoCadastro.alteracao
-    },
-    {
-        name: 'Atualização Anual',
-        value: TipoPedidoCadastro.anual
-    },
-];
+export const aplicanteStatusOptions: any[] = i18nOptions('status', [
+    { value: AplicanteStatus.aprovado }, { value: AplicanteStatus.rejeitado },
+]);
 
-export const tipoEstabelecimentoOptions: any[] = [
-    {
-        name: 'Estabelecimento Principal',
-        value: TipoEstabelecimento.principal
-    },
-    {
-        name: 'Delegação',
-        value: TipoEstabelecimento.delegacao
-    },
-    {
-        name: 'Sucursal',
-        value: TipoEstabelecimento.sucursal
-    },
-]
+export const tipoPedidoCadastroOptions: any[] = i18nOptions('enum.TipoPedidoCadastro', [
+    { value: TipoPedidoCadastro.inicial }, { value: TipoPedidoCadastro.alteracao }, { value: TipoPedidoCadastro.anual },
+]);
 
-export const tipoEmpresaOptions: any[] = [
-    {
-        name: 'Microempresa',
-        value: TipoEmpresa.micro
-    },
-    {
-        name: 'Pequena Empresa',
-        value: TipoEmpresa.pequena
-    },
-    {
-        name: 'Média Empresa',
-        value: TipoEmpresa.media
-    },
-    {
-        name: 'Grande Empresa',
-        value: TipoEmpresa.grande
-    },
-];
+export const tipoEstabelecimentoOptions: any[] = i18nOptions('enum.TipoEstabelecimento', [
+    { value: TipoEstabelecimento.principal }, { value: TipoEstabelecimento.delegacao }, { value: TipoEstabelecimento.sucursal },
+]);
 
-export const tipoNacionalidadeOptions: any[] = [
-    {
-        name: 'Timorense',
-        value: TipoNacionalidade.timorense
-    },
-    {
-        name: 'Estrangeiro',
-        value: TipoNacionalidade.estrangeiro
-    },
-];
+export const tipoEmpresaOptions: any[] = i18nOptions('enum.TipoEmpresa', [
+    { value: TipoEmpresa.micro }, { value: TipoEmpresa.pequena }, { value: TipoEmpresa.media }, { value: TipoEmpresa.grande },
+]);
 
-export const quantoAtividadeoptions: any[] = [
-    {
-        name: 'Produção',
-        value: QuantoAtividade.producao
-    },
-    {
-        name: 'Exploração',
-        value: QuantoAtividade.exploracao
-    },
-]
+export const tipoNacionalidadeOptions: any[] = i18nOptions('enum.TipoNacionalidade', [
+    { value: TipoNacionalidade.timorense }, { value: TipoNacionalidade.estrangeiro },
+]);
 
-export const caraterizacaEstabelecimentoOptions: any[] = [
-    {
-        name: 'Kiosk',
-        value: CaraterizacaoEstabelecimento.kiosk
-    },
-    {
-        name: 'Loja',
-        value: CaraterizacaoEstabelecimento.loja
-    },
-    {
-        name: 'Armazém',
-        value: CaraterizacaoEstabelecimento.armazem
-    },
-];
+export const quantoAtividadeoptions: any[] = i18nOptions('enum.QuantoAtividade', [
+    { value: QuantoAtividade.producao }, { value: QuantoAtividade.exploracao },
+]);
 
-export const tipoAtoOptions: any[] = [
-    { name: 'Venda a retalho', value: TipoAto.retalho },
-    { name: 'Venda a grosso', value: TipoAto.grosso },
-];
+export const caraterizacaEstabelecimentoOptions: any[] = i18nOptions('enum.CaraterizacaoEstabelecimento', [
+    { value: CaraterizacaoEstabelecimento.kiosk }, { value: CaraterizacaoEstabelecimento.loja }, { value: CaraterizacaoEstabelecimento.armazem },
+]);
 
-export const tipoPropriedadeOptions: any[] = [
-    { name: 'Empresário em Nome Individual', value: TipoPropriedade.individual },
-    { name: 'Sociedade por Quotas', value: TipoPropriedade.sociedade },
-];
+export const tipoAtoOptions: any[] = i18nOptions('enum.TipoAto', [{ value: TipoAto.retalho }, { value: TipoAto.grosso }]);
 
-export const tipoRelacaoFamiliaOptions: any[] = [
-    { name: 'Marido', value: 'Marido' },
-    { name: 'Esposa', value: 'Esposa' },
-    { name: 'Filho(a)', value: 'Filho(a)' },
-    { name: 'Pai', value: 'Pai' },
-    { name: 'Mãe', value: 'Mãe' },
-];
+export const tipoPropriedadeOptions: any[] = i18nOptions('enum.TipoPropriedade', [
+    { value: TipoPropriedade.individual }, { value: TipoPropriedade.sociedade },
+]);
 
-export const tipoDocumentoOptions: any[] = [
-    { name: 'Bilhete de Identidade', value: TipoDocumento.bilheteIdentidade },
-    { name: 'Passaporte', value: TipoDocumento.passaporte },
-    { name: 'NIF (Nº TIN)', value: TipoDocumento.nif },
-];
+export const tipoRelacaoFamiliaOptions: any[] = i18nOptions('options.relacaoFamilia', [
+    { value: 'Marido', key: 'marido' },
+    { value: 'Esposa', key: 'esposa' },
+    { value: 'Filho(a)', key: 'filho' },
+    { value: 'Pai', key: 'pai' },
+    { value: 'Mãe', key: 'mae' },
+]);
 
-export const tipoPedidoAtividadeComercialOptions: any[] = [
-    {
-        name: 'Pedido de Licença',
-        value: TipoPedidoLicenca.novo
-    },
-    {
-        name: 'Pedido de Alteração de Licença',
-        value: TipoPedidoLicenca.alteracao
-    },
-    {
-        name: 'Pedido de Renovação de Licença',
-        value: TipoPedidoLicenca.renovacao
-    }
-];
+export const tipoDocumentoOptions: any[] = i18nOptions('enum.TipoDocumento', [
+    { value: TipoDocumento.bilheteIdentidade }, { value: TipoDocumento.passaporte }, { value: TipoDocumento.nif },
+]);
 
-export const tipoArrendadorOptions: any[] = [
-    {
-        name: 'Estado',
-        value: 'Estado'
-    },
-    {
-        name: 'Empresa',
-        value: 'Empresa'
-    },
-    {
-        name: 'Individual',
-        value: 'Individual'
-    },
-]
+export const tipoPedidoAtividadeComercialOptions: any[] = i18nOptions('options.tipoPedidoAtividadeComercial', [
+    { value: TipoPedidoLicenca.novo }, { value: TipoPedidoLicenca.alteracao }, { value: TipoPedidoLicenca.renovacao },
+]);
 
-export const tipoPedidoAtividadeIndustrialOptions: any[] = [
-    {
-        name: 'Licença para Instalação',
-        value: TipoPedidoLicenca.instalacao
-    },
-    {
-        name: 'Licença para Exploração',
-        value: TipoPedidoLicenca.exploracao
-    },
-    {
-        name: 'Licença para Alteração',
-        value: TipoPedidoLicenca.alteracao
-    },
-    {
-        name: 'Licença para Renovação',
-        value: TipoPedidoLicenca.renovacao
-    },
-]
+export const tipoArrendadorOptions: any[] = i18nOptions('options.arrendador', [
+    { value: 'Estado', key: 'estado' },
+    { value: 'Empresa', key: 'empresa' },
+    { value: 'Individual', key: 'individual' },
+]);
 
-export const stateOptions: any[] = [
-    { label: 'SIM', value: true },
-    { label: 'NAO', value: false }
-];
+export const tipoPedidoAtividadeIndustrialOptions: any[] = i18nOptions('options.tipoPedidoAtividadeIndustrial', [
+    { value: TipoPedidoLicenca.instalacao }, { value: TipoPedidoLicenca.exploracao }, { value: TipoPedidoLicenca.alteracao }, { value: TipoPedidoLicenca.renovacao },
+]);
 
-export const tipoPedidoVitoriaAll: any[] = [
-    {
-        name: 'Vistoria previa',
-        value: TipoPedidoVistoria.previa
-    },
-    {
-        name: 'Vistoria subsequente',
-        value: TipoPedidoVistoria.subsequente
-    },
-    {
-        name: 'Vistoria inicial para a instalação',
-        value: TipoPedidoVistoria.inicial
-    },
-    {
-        name: 'Vistoria para exploração',
-        value: TipoPedidoVistoria.exploracao
-    },
-];
+export const stateOptions: any[] = i18nOptions('options.state', [{ value: true }, { value: false }], 'label');
 
-export const tipoPedidoVistoriaComercialOptions: any[] = [
-    {
-        name: 'Vistoria previa',
-        value: TipoPedidoVistoria.previa
-    },
-    {
-        name: 'Vistoria subsequente',
-        value: TipoPedidoVistoria.subsequente
-    }
-]
+export const tipoPedidoVitoriaAll: any[] = i18nOptions('enum.TipoPedidoVistoria', [
+    { value: TipoPedidoVistoria.previa }, { value: TipoPedidoVistoria.subsequente }, { value: TipoPedidoVistoria.inicial }, { value: TipoPedidoVistoria.exploracao },
+]);
 
-export const tipoPedidoVistoriaIndustrialOptions: any[] = [
-    {
-        name: 'Vistoria inicial para a instalação',
-        value: TipoPedidoVistoria.inicial
-    },
-    {
-        name: 'Vistoria para exploração',
-        value: TipoPedidoVistoria.exploracao
-    },
-    {
-        name: 'Vistoria subsequente',
-        value: TipoPedidoVistoria.subsequente
-    }
-];
+export const tipoPedidoVistoriaComercialOptions: any[] = i18nOptions('enum.TipoPedidoVistoria', [
+    { value: TipoPedidoVistoria.previa }, { value: TipoPedidoVistoria.subsequente },
+]);
 
-export const tipoAreaRepresentanteComercial: any[] = [
-    {
-        name: 'Representante do departamento governamental responsável pela área do Comércio',
-        value: AreaRepresentante.comercio
-    },
-    {
-        name: 'Representante da autoridade administrativa local',
-        value: AreaRepresentante.autoridadeLocal
-    },
-    {
-        name: 'Representante do órgão local da saúde',
-        value: AreaRepresentante.saude
-    },
-    {
-        name: 'Representante da entidade com competências inspetivas do departamento governamental responsável pela área do Trabalho',
-        value: AreaRepresentante.trabalho
-    },
-    {
-        name: 'Representante do serviço de bombeiros',
-        value: AreaRepresentante.bombeiros
-    },
-];
+export const tipoPedidoVistoriaIndustrialOptions: any[] = i18nOptions('enum.TipoPedidoVistoria', [
+    { value: TipoPedidoVistoria.inicial }, { value: TipoPedidoVistoria.exploracao }, { value: TipoPedidoVistoria.subsequente },
+]);
 
-export const tipoAreaRepresentanteIndustrial: any[] = [
-    {
-        name: 'Representante do Ministéio Obras Pública',
-        value: AreaRepresentante.mop
-    },
-    {
-        name: 'Representante da Autoridade Nacional Licenciamento Ambiental',
-        value: AreaRepresentante.anla
-    },
-    {
-        name: 'Representante do departamento governamental responsável pela área da Indústria',
-        value: AreaRepresentante.industria
-    },
-    {
-        name: 'Representante da autoridade administrativa local',
-        value: AreaRepresentante.autoridadeLocal
-    },
-    {
-        name: 'Representante do órgão local da saúde',
-        value: AreaRepresentante.saude
-    },
-    {
-        name: 'Representante da entidade com competências inspetivas do departamento governamental responsável pela área do Trabalho',
-        value: AreaRepresentante.trabalho
-    },
-    {
-        name: 'Representante do serviço de bombeiros',
-        value: AreaRepresentante.bombeiros
-    },
-]
+export const tipoAreaRepresentanteComercial: any[] = i18nOptions('enum.AreaRepresentante', [
+    { value: AreaRepresentante.comercio },
+    { value: AreaRepresentante.autoridadeLocal },
+    { value: AreaRepresentante.saude },
+    { value: AreaRepresentante.trabalho },
+    { value: AreaRepresentante.bombeiros },
+]);
 
-export const tipoRepresentante: { name: string, value: string }[] = [
-    {
-        name: 'Empresa',
-        value: 'Empresa'
-    },
-    {
-        name: 'Individual',
-        value: 'Individual'
-    }
-];
+export const tipoAreaRepresentanteIndustrial: any[] = i18nOptions('enum.AreaRepresentante', [
+    { value: AreaRepresentante.mop },
+    { value: AreaRepresentante.anla },
+    { value: AreaRepresentante.industria },
+    { value: AreaRepresentante.autoridadeLocal },
+    { value: AreaRepresentante.saude },
+    { value: AreaRepresentante.trabalho },
+    { value: AreaRepresentante.bombeiros },
+]);
 
-export const tipoLocalOptions: { name: string, value: string }[] = [
-    {
-        name: 'Comercial',
-        value: 'Comercial'
-    },
-    {
-        name: 'Residencial',
-        value: 'Residencial'
-    }
-];
-export const tipoEletricidadeOptions: { name: string, value: string }[] = [
-    {
-        name: 'Monofásico - (Single-phase)',
-        value: 'Monofásico'
-    },
-    {
-        name: 'Trifásico (Three-phase)',
-        value: 'Trifásico'
-    }
-];
+export const tipoRepresentante: { name: string, value: string }[] = i18nOptions('options.representante', [
+    { value: 'Empresa', key: 'empresa' },
+    { value: 'Individual', key: 'individual' },
+]);
+
+export const tipoLocalOptions: { name: string, value: string }[] = i18nOptions('options.tipoLocal', [
+    { value: 'Comercial', key: 'comercial' },
+    { value: 'Residencial', key: 'residencial' },
+]);
+
+export const tipoEletricidadeOptions: { name: string, value: string }[] = i18nOptions('options.eletricidade', [
+    { value: 'Monofásico', key: 'mono' },
+    { value: 'Trifásico', key: 'tri' },
+]);
 
 /**
  * Adjusts a given date for the timezone offset so that the local date is preserved.
@@ -456,134 +229,135 @@ export function formatDateForLocalDate(date: Date): string {
     return corrected.toISOString().split('T')[0];
 }
 
+// `label` is a translation key, rendered with `| translate`.
 export const pedidoLicencaDocumentsFields = [
-    { name: 'documentoImovel', label: 'Documento comprovativo de posse de imovel ' },
-    { name: 'planoEmergencia', label: 'Plano de Emergência ' },
+    { name: 'documentoImovel', label: 'application.atividade.pedido.docs.documentoImovel' },
+    { name: 'planoEmergencia', label: 'application.atividade.pedido.docs.planoEmergencia' },
 ];
 
 export const autoVistoriaCommonFields: { name: string, label: string }[] = [
     {
         name: 'tipoLocal',
-        label: 'A escolha do local deve staisfazer as exigencias da legislacao urbanistica, tendo em conta especialmente os planos urbanisticos existentes ou as indicacoes dadas pelas autoridades locais competentes:'
+        label: 'application.vistoria.fields.legislacaoUrbanistica'
     },
     {
         name: 'acessoEstrada',
-        label: ''
+        label: 'application.vistoria.fields.acessoEstrada'
     },
     {
         name: 'superficie',
-        label: ''
+        label: 'application.vistoria.fields.larguraEstrada'
     },
     {
         name: 'larguraEstrada',
-        label: ''
+        label: 'application.vistoria.fields.larguraEstrada'
     },
     {
         name: 'escoamentoAguas',
-        label: ''
+        label: 'application.vistoria.fields.escoamentoAguas'
     },
     {
         name: 'escoamentoAguas',
-        label: ''
+        label: 'application.vistoria.fields.escoamentoAguas'
     },
     {
         name: 'tipoEletricidade',
-        label: ''
+        label: 'application.vistoria.fields.tipoEletricidade'
     },
 ];
 
 export const autoVistoriaComercialFields: { name: string, label: string }[] = [
     {
         name: 'separadosSexo',
-        label: 'Separados por sexo:'
+        label: 'application.vistoria.fields.separadosSexo'
     },
     {
         name: 'lavatoriosComEspelho',
-        label: 'Dispor de lavatorios com espelho:'
+        label: 'application.vistoria.fields.lavatoriosComEspelho'
     },
     {
         name: 'comunicacaoVentilacao',
-        label: 'Comunicacao direta para o exterior ou serem adotadas de dispositivos ventilacao artificial com continua renovacao do ar adequados a sua dimensao: '
+        label: 'application.vistoria.fields.comunicacaoVentilacao'
     },
     {
         name: 'esgotoAguas',
-        label: 'Ligadas a uma rede interna de esgotos que conduzzam as aguas residuais a sistemas adequados ao seu escoamento, nomeadamente atraves da rede publica ou, se esta nao existir, de um sistema de recolha e tratamento adequado ao volume e natureza dessas aguas: '
+        label: 'application.vistoria.fields.esgotoAguas'
     },
     {
         name: 'paredesPavimentos',
-        label: 'As paredes, pavimentos e tetos das instalacoes sanitarias devem ser revestidas demateriais resistentes, impermeaveis, nao inflamaveis e de facil limpeza:'
+        label: 'application.vistoria.fields.paredesPavimentos'
     },
     {
         name: 'zonasDestinadas',
-        label: 'Nao podem situar-se junto das zonas destinadas a preparar e cozinhar alimentos ou a tomar refeicoes:'
+        label: 'application.vistoria.fields.zonasDestinadas'
     },
     {
         name: 'instalacoesFrigorificas',
-        label: 'Instalações frigoríficas para refrigeração e conservação, caso aplicável:'
+        label: 'application.vistoria.fields.instalacoesFrigorificas'
     },
     {
         name: 'sectoresLimpos',
-        label: 'Separação de sectores limpos e sujos:'
+        label: 'application.vistoria.fields.sectoresLimpos'
     },
     {
         name: 'pisosParedes',
-        label: 'Pisos e paredes - os edifícios devem ser providos de dispositivos de proteção contra insetos e roedores e concebidos de modo a permitir uma aplicação fácil das normas de higienização, e para esse efeito:'
+        label: 'application.vistoria.fields.pisosParedes'
     },
     {
         name: 'pisosResistentes',
-        label: 'Os pisos devem ser resistentes, perfeitamente estanques, antiderrapantes e com inclinações da ordem dos 3 % e rede de esgotos apropriada para escoamento de líquido:'
+        label: 'application.vistoria.fields.pisosResistentes'
     },
     {
         name: 'paredesInteriores',
-        label: 'As paredes interiores e o piso devem possuir um revestimento lavável:'
+        label: 'application.vistoria.fields.paredesInteriores'
     },
     {
         name: 'paredes3metros',
-        label: 'As paredes vem possuir até 3 metros de altura e um revestimento resistente ao choque, impermeáveis, liso e imputrescível:'
+        label: 'application.vistoria.fields.paredes3metros'
     },
     {
         name: 'unioesParedes',
-        label: 'As uniões das paredes com os tetos e os pisos devem ser arredondadas:'
+        label: 'application.vistoria.fields.unioesParedes'
     },
     {
         name: 'ventilacoesNecessarias',
-        label: 'Em todos os locais deve ser assegurada a ventilação necessária:'
+        label: 'application.vistoria.fields.ventilacoesNecessarias'
     },
     {
         name: 'iluminacao',
-        label: 'A iluminação, natural ou artificial, deve ser adequada às características de cada local:'
+        label: 'application.vistoria.fields.iluminacao'
     },
     {
         name: 'aguaPotavel',
-        label: 'O estabelecimento deve ser provido de uma rede de água potável sob pressão, fria e/ou quente, em quantidade suficiente para cobrir as suas necessidades:'
+        label: 'application.vistoria.fields.aguaPotavel'
     },
     {
         name: 'distribuicaoAgua',
-        label: 'A rede de distribuição de águas deve ter o número necessário de dispositivos de saída de água para assegurar a limpeza e lavagem em todas as suas atividades, incluindo a higiene do pessoal:'
+        label: 'application.vistoria.fields.distribuicaoAgua'
     },
     {
         name: 'redeDistribuicao',
-        label: 'Pode existir uma rede de distribuição, devidamente sinalizada, de água não potável para geradores de vapor, instalações comerciais frigoríficas, bocas de incêndio, jardinagem e outros serviços auxiliares, desde que não haja comunicação entre esta e a de água potável:'
+        label: 'application.vistoria.fields.redeDistribuicao'
     },
     {
         name: 'redeEsgotos',
-        label: 'A rede de esgotos, fossas ou tanques sépticos tem de permitir a fácil observação, limpeza e desinfeção e possuir válvulas sifonadas grelhas de proteção e caixas de recolha de gorduras:'
+        label: 'application.vistoria.fields.redeEsgotos'
     },
     {
         name: 'equipamentoUtensilios',
-        label: 'Todo o equipamento e utensílios devem ser em material inalterável e de fácil limpeza e desinfeção:'
+        label: 'application.vistoria.fields.equipamentoUtensilios'
     },
     {
         name: 'equipamentoPrimeirosSocorros',
-        label: 'Equipados com equipamento de primeiros socorros:'
+        label: 'application.vistoria.fields.equipamentoPrimeirosSocorros'
     },
     {
         name: 'recipientesLixo',
-        label: 'Dispor de recipientes para o lixo, com tampa, colocados em locais de fácil acesso e devidamente sinalizados:'
+        label: 'application.vistoria.fields.recipientesLixo'
     },
     {
         name: 'limpezaDiaria',
-        label: 'A limpeza e desinfeção diária dos contentores é obrigatória e o lixo e demais resíduos devem ser removidos diariamente para local adequado de forma a serem transportados pelos serviços públicos de recolha de lixo:'
+        label: 'application.vistoria.fields.limpezaDiaria'
     },
 ];
 
@@ -591,79 +365,79 @@ export const autoVistoriaComercialFields: { name: string, label: string }[] = [
 export const autoVistoriaIndustrialFields: { name: string, label: string }[] = [
     {
         name: 'separadosSexo',
-        label: 'Separados por sexo:'
+        label: 'application.vistoria.fields.separadosSexo'
     },
     {
         name: 'lavatoriosComEspelho',
-        label: 'Dispor de lavatorios com espelho:'
+        label: 'application.vistoria.fields.lavatoriosComEspelho'
     },
     {
         name: 'sanitasAutomaticaAgua',
-        label: 'Dispor de sanitas, dotadas de descarga automatica de agua:'
+        label: 'application.vistoria.fields.sanitasAutomaticaAgua'
     },
     {
         name: 'comunicacaoVentilacao',
-        label: 'Comunicacao direta para o exterior ou serem adotadas de dispositivos ventilacao artificial com continua renovacao do ar adequados a sua dimensao:'
+        label: 'application.vistoria.fields.comunicacaoVentilacao'
     },
     {
         name: 'esgotoAguas',
-        label: 'Ligadas a uma rede interna de esgotos que conduzzam as aguas residuais a sistemas adequados ao seu escoamento, nomeadamente atraves da rede publica ou, se esta nao existir, de um sistema de recolha e tratamento adequado ao volume e natureza dessas aguas: '
+        label: 'application.vistoria.fields.esgotoAguas'
     },
     {
         name: 'paredesPavimentos',
-        label: 'As paredes, pavimentos e tetos das instalacoes sanitarias devem ser revestidas demateriais resistentes, impermeaveis, nao inflamaveis e de facil limpeza:'
+        label: 'application.vistoria.fields.paredesPavimentos'
     },
     {
         name: 'pisosParedes',
-        label: 'Pisos e paredes - os edifícios devem ser providos de dispositivos de proteção contra insetos e roedores e concebidos de modo a permitir uma aplicação fácil das normas de higienização, e para esse efeito:'
+        label: 'application.vistoria.fields.pisosParedes'
     },
     {
         name: 'paredesInteriores',
-        label: 'As paredes interiores e o piso devem possuir um revestimento lavável:'
+        label: 'application.vistoria.fields.paredesInteriores'
     },
     {
         name: 'paredes3metros',
-        label: 'As paredes vem possuir até 3 metros de altura e um revestimento resistente ao choque, impermeáveis, liso e imputrescível:'
+        label: 'application.vistoria.fields.paredes3metros'
     },
     {
         name: 'ventilacoesNecessarias',
-        label: 'Em todos os locais deve ser assegurada a ventilação necessária:'
+        label: 'application.vistoria.fields.ventilacoesNecessarias'
     },
     {
         name: 'iluminacao',
-        label: 'A iluminação, natural ou artificial, deve ser adequada às características de cada local:'
+        label: 'application.vistoria.fields.iluminacao'
     },
     {
         name: 'aguaPotavel',
-        label: 'O estabelecimento deve ser provido de uma rede de água potável sob pressão, fria e/ou quente, em quantidade suficiente para cobrir as suas necessidades:'
+        label: 'application.vistoria.fields.aguaPotavel'
     },
     {
         name: 'distribuicaoAgua',
-        label: 'A rede de distribuição de águas deve ter o número necessário de dispositivos de saída de água para assegurar a limpeza e lavagem em todas as suas atividades, incluindo a higiene do pessoal:'
+        label: 'application.vistoria.fields.distribuicaoAgua'
     },
     {
         name: 'redeDistribuicao',
-        label: 'Pode existir uma rede de distribuição, devidamente sinalizada, de água não potável para geradores de vapor, instalações comerciais frigoríficas, bocas de incêndio, jardinagem e outros serviços auxiliares, desde que não haja comunicação entre esta e a de água potável:'
+        label: 'application.vistoria.fields.redeDistribuicao'
     },
     {
         name: 'redeEsgotos',
-        label: 'A rede de esgotos, fossas ou tanques sépticos tem de permitir a fácil observação, limpeza e desinfeção e possuir válvulas sifonadas grelhas de proteção e caixas de recolha de gorduras:'
+        label: 'application.vistoria.fields.redeEsgotos'
     },
     {
         name: 'maximoHigieneSeguranca',
-        label: 'Garantir o maximo de higiene e seguranva dos trabalhadores:'
+        label: 'application.vistoria.fields.maximoHigieneSeguranca'
     },
     {
         name: 'equipamentoPrimeirosSocorros',
-        label: 'Equipados com equipamento de primeiros socorros:'
+        label: 'application.vistoria.fields.equipamentoPrimeirosSocorros'
     },
     {
         name: 'recipientesLixo',
-        label: 'Dispor de recipientes para o lixo, com tampa, colocados em locais de fácil acesso e devidamente sinalizados:'
+        label: 'application.vistoria.fields.recipientesLixo'
     },
     {
         name: 'limpezaDiaria',
-        label: 'A limpeza e desinfeção diária dos contentores é obrigatória e o lixo e demais resíduos devem ser removidos diariamente para local adequado de forma a serem transportados pelos serviços públicos de recolha de lixo:'
+        label: 'application.vistoria.fields.limpezaDiaria'
     },
 ];
 
@@ -687,16 +461,9 @@ export const listaMunicipios: [string, string, number][] = [
     ['Lautem', 'tl-bt', 0], ['Manatuto', 'tl-mt', 0], ['Manufahi', 'tl-mf', 0], ['Oecusse', 'tl-oe', 0], ['Viqueque', 'tl-vq', 0]
 ]
 
-export const listaAuditType: { name: string, value: AuditType }[] = [
-    {
-        name: 'Criação',
-        value: AuditType.initial
-    },
-    {
-        name: 'Alteração',
-        value: AuditType.update
-    },
-];
+export const listaAuditType: { name: string, value: AuditType }[] = i18nOptions('enum.AuditType', [
+    { value: AuditType.initial }, { value: AuditType.update },
+]);
 
 export const listaAuditEntity: { name: AuditEntity, value: AuditEntity }[] = [
     {

@@ -6,7 +6,7 @@
             </div>
             <div class="mt-2 mb-8">
                 <p class="text-2xl font-bold">
-                    Sistema de Gestão de <br> Licenças Comerciais e Indústriais
+                    {{ 'auth.common.systemTitleLine1' | translate }} <br> {{ 'auth.common.systemTitleLine2' | translate }}
                 </p>
             </div>
 
@@ -20,11 +20,11 @@
                 <div class="mb-2">
                     <p-iconfield>
                         <p-inputicon class="pi pi-envelope" />
-                        <input formControlName="email" pInputText type="text" placeholder="Email" class="block" fluid />
+                        <input formControlName="email" pInputText type="text" [placeholder]="'common.email' | translate" class="block" fluid />
                     </p-iconfield>
                     @if (loginForm.get('email')?.touched && loginForm.get('email')?.invalid) {
                     <p class="text-red-500 text-sm text-left mt-1">
-                        Este campo é obrigatório e deve ser válido.
+                        {{ 'auth.common.fieldInvalid' | translate }}
                     </p>
                     }
                 </div>
@@ -32,24 +32,23 @@
                 <div class="mb-2">
                     <p-iconfield>
                         <p-password [toggleMask]="true" [feedback]="false" formControlName="password"
-                            placeholder="Palavra-passe" class="block" fluid />
+                            [placeholder]="'auth.common.password' | translate" class="block" fluid />
                     </p-iconfield>
                     @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
                     <p class="text-red-500 text-sm text-left mt-1">
-                        Este campo é obrigatório e deve ter pelo menos 6 caracteres.
+                        {{ 'auth.login.passwordError' | translate }}
                     </p>
                     }
                 </div>
 
                 <a routerLink="/auth/forgotpassword" class="flex text-surface-400 mb-4 text-sm hover:text-primary">
-                    Esqueceu-se da sua palavra-passe?
+                    {{ 'auth.login.forgotPassword' | translate }}
                 </a>
                 <div class="mt-6">
-                    <p-button icon="pi pi-sign-in" label="Logar" [loading]="loading" type="submit"
+                    <p-button icon="pi pi-sign-in" [label]="'auth.common.signIn' | translate" [loading]="loading" type="submit"
                         (click)="login(loginForm)" pRipple [disabled]="!loginForm.valid" fluid></p-button>
-                    <span class="flex text-sm text-surface-400 mt-6">Não tem uma conta?
-                        <a routerLink="/auth/register" class="hover:text-primary cursor-pointer ml-1">Registe-se
-                            aqui</a></span>
+                    <span class="flex text-sm text-surface-400 mt-6">{{ 'auth.login.noAccount' | translate }}
+                        <a routerLink="/auth/register" class="hover:text-primary cursor-pointer ml-1">{{ 'auth.login.registerHere' | translate }}</a></span>
                 </div>
             </form>
 

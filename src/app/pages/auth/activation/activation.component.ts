@@ -11,11 +11,12 @@ import { Fluid } from 'primeng/fluid';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { RippleModule } from 'primeng/ripple';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-new-password',
     standalone: true,
-    imports: [CommonModule, InputTextModule, ButtonModule, RouterModule, ReactiveFormsModule, Fluid, RippleModule, MessageModule],
+    imports: [CommonModule, InputTextModule, ButtonModule, RouterModule, ReactiveFormsModule, Fluid, RippleModule, MessageModule, TranslatePipe],
     templateUrl: './activation.component.html',
     providers: [MessageService]
 })
@@ -70,12 +71,14 @@ export class ActivationComponent {
             this.notification = {} as Notification;
             this.notification.icon = 'bi bi-exclamation-triangle';
             this.notification.state = 'error';
-            this.notification.message = errorMessage || `Ocorreu um erro ao ativar a sua conta. Por favor, tente novamente mais tarde ou contacte o suporte técnico.`;
+            // Backend message when present; otherwise a key translated in the template (follows language switches).
+            this.notification.message = errorMessage;
+            this.notification.messageKey = 'auth.activation.error';
         } else {
             this.notification = {} as Notification;
             this.notification.icon = 'bi bi-check2-circle'
             this.notification.state = 'success';
-            this.notification.message = `O seu email foi verificado e a sua conta está agora ativa. Já pode iniciar sessão e começar a utilizar o sistema.`;
+            this.notification.messageKey = 'auth.activation.success';
         }
     }
 }

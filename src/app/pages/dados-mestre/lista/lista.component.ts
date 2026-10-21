@@ -1,7 +1,7 @@
+import { LanguageService, LocalizedCurrencyPipe } from '@/core/i18n';
 import { DataMasterService } from '@/core/services/data-master.service';
 import { applicationTypesOptions, categoryTpesOptions, mapToGrupoAtividade, nivelRiscoOptions, roleOptions } from '@/core/utils/global-function';
-import { CurrencyPipe, TitleCasePipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -15,10 +15,11 @@ import { Paginator } from 'primeng/paginator';
 import { Select } from 'primeng/select';
 import { Table, TableModule } from 'primeng/table';
 import { Toast } from 'primeng/toast';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-lista',
-  imports: [TableModule, InputText, Button, Dialog, TitleCasePipe, Select, ReactiveFormsModule, ConfirmDialog, Toast, IconField, InputIcon, CurrencyPipe, Paginator],
+  imports: [LocalizedCurrencyPipe, TableModule, InputText, Button, Dialog, Select, TranslatePipe, ReactiveFormsModule, ConfirmDialog, Toast, IconField, InputIcon, Paginator],
   templateUrl: './lista.component.html',
   styleUrl: './lista.component.scss',
   providers: [ConfirmationService, MessageService]
@@ -26,7 +27,8 @@ import { Toast } from 'primeng/toast';
 export class ListaComponent {
   dataForm!: FormGroup;
   dataList: any[] = [];
-  cols: { field: string; header: string }[] = [];
+  // header = i18n key; enum = enum.<name> prefix for cells holding an enum code
+  cols: { field: string; header: string; enum?: string }[] = [];
   showDialog = false;
   type = '';
   isNew = false;
@@ -42,6 +44,7 @@ export class ListaComponent {
   size = 50;
   totalData = 0;
   dataIsFetching = false;
+  private i18n = inject(LanguageService);
 
   constructor(
     private route: ActivatedRoute,
@@ -74,7 +77,7 @@ export class ListaComponent {
       case 'direcoes':
         this.dataList = (this.route.snapshot.data['listaDirecao']?._embedded?.direcoes ?? []);
         this.cols = [
-          { field: 'nome', header: 'Nome' },
+          { field: 'nome', header: 'common.name', enum: 'Categoria' },
         ];
         this.dataForm = this._fb.group({
           id: [''],
@@ -84,7 +87,7 @@ export class ListaComponent {
       case 'roles':
         this.dataList = (this.route.snapshot.data['listaRoles']?._embedded?.roles ?? []);
         this.cols = [
-          { field: 'name', header: 'Nome' },
+          { field: 'name', header: 'common.name', enum: 'Role' },
         ];
         this.dataForm = this._fb.group({
           id: [''],
@@ -95,8 +98,8 @@ export class ListaComponent {
         this.dataList = (this.route.snapshot.data['listaGrupoAtividade']?._embedded?.grupoAtividade ?? []);
         this.totalData = this.route.snapshot.data['listaGrupoAtividade'].page.totalElements;
         this.cols = [
-          { field: 'codigo', header: 'Codigo' },
-          { field: 'descricao', header: 'Descricao' },
+          { field: 'codigo', header: 'dadosMestre.fields.codigo' },
+          { field: 'descricao', header: 'dadosMestre.fields.descricao' },
         ];
         this.dataForm = this._fb.group({
           id: [''],
@@ -108,10 +111,10 @@ export class ListaComponent {
         this.dataList = (this.route.snapshot.data['listaClasseAtividade']?._embedded?.classeAtividade ?? []);
         this.totalData = this.route.snapshot.data['listaClasseAtividade'].page.totalElements;
         this.cols = [
-          { field: 'grupoAtividade', header: 'Grupo Codigo' },
-          { field: 'codigo', header: 'Codigo' },
-          { field: 'descricao', header: 'Descricao' },
-          { field: 'tipoRisco', header: 'Risco' },
+          { field: 'grupoAtividade', header: 'dadosMestre.fields.grupoCodigo' },
+          { field: 'codigo', header: 'dadosMestre.fields.codigo' },
+          { field: 'descricao', header: 'dadosMestre.fields.descricao' },
+          { field: 'tipoRisco', header: 'dadosMestre.fields.risco', enum: 'NivelRisco' },
         ];
         this.dataForm = this._fb.group({
           id: [''],
@@ -124,11 +127,11 @@ export class ListaComponent {
       case 'taxas':
         this.dataList = (this.route.snapshot.data['listaTaxa']?._embedded?.taxas ?? []);
         this.cols = [
-          { field: 'categoria', header: 'Categoria' },
-          { field: 'tipo', header: 'Tipo' },
-          { field: 'ato', header: 'Ato' },
-          { field: 'montanteMinimo', header: 'Montante Mínimo' },
-          { field: 'montanteMaximo', header: 'Montante Máximo' },
+          { field: 'categoria', header: 'dadosMestre.fields.categoria', enum: 'Categoria' },
+          { field: 'tipo', header: 'dadosMestre.fields.tipo', enum: 'AplicanteType' },
+          { field: 'ato', header: 'dadosMestre.fields.ato' },
+          { field: 'montanteMinimo', header: 'dadosMestre.fields.montanteMinimo' },
+          { field: 'montanteMaximo', header: 'dadosMestre.fields.montanteMaximo' },
         ];
         this.dataForm = this._fb.group({
           id: [''],
@@ -143,8 +146,8 @@ export class ListaComponent {
       case 'sociedade-comercial':
         this.dataList = (this.route.snapshot.data['listaSociedadeComercial']?._embedded?.sociedadeComercial ?? []);
         this.cols = [
-          { field: 'nome', header: 'Nome' },
-          { field: 'acronimo', header: 'Acrónimo' },
+          { field: 'nome', header: 'common.name' },
+          { field: 'acronimo', header: 'dadosMestre.fields.acronimo' },
         ];
         this.dataForm = this._fb.group({
           id: [''],
@@ -157,6 +160,14 @@ export class ListaComponent {
 
   onGlobalFilter(table: Table, event: Event) {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+  }
+
+  /** Label for an enum code stored in master data; unknown codes render as-is. */
+  enumLabel(enumName: string, value: string): string {
+    if (!value) return '';
+    const key = `enum.${enumName}.${value}`;
+    const label = this.i18n.instant(key);
+    return label === key ? value : label;
   }
 
 
@@ -309,17 +320,17 @@ export class ListaComponent {
 
     this.confirmationService.confirm({
       // target: event.target as EventTarget,
-      message: 'Quer apagar este registo?',
-      header: 'Zona de risco',
+      message: this.i18n.instant('dadosMestre.common.deleteConfirm'),
+      header: this.i18n.instant('dadosMestre.common.deleteHeader'),
       icon: 'pi pi-info-circle',
-      rejectLabel: 'Cancel',
+      rejectLabel: this.i18n.instant('common.cancel'),
       rejectButtonProps: {
-        label: 'Cancelar',
+        label: this.i18n.instant('common.cancel'),
         severity: 'secondary',
         outlined: true,
       },
       acceptButtonProps: {
-        label: 'Eliminar',
+        label: this.i18n.instant('common.delete'),
         severity: 'danger',
       },
 
@@ -327,7 +338,7 @@ export class ListaComponent {
         this.service.delete(this.type, id).subscribe({
           next: () => {
             this.dataList = this.dataList.filter((val) => val.id !== id);
-            this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Registo excluído' });
+            this.messageService.add({ severity: 'info', summary: this.i18n.instant('toast.confirmed'), detail: this.i18n.instant('dadosMestre.common.deleted') });
           },
           error: error => {
             console.error(error);
@@ -404,8 +415,8 @@ export class ListaComponent {
   }
 
   private addMessages(isSuccess: boolean, isNew: boolean, error?: any) {
-    const summary = isSuccess ? (isNew ? 'Dados registados com sucesso!' : 'Dados atualizados com sucesso!') : 'Error';
-    const detail = isSuccess ? (isNew ? `Os dados foram registados` : `Os dados foram actualizados`) : 'Desculpe, algo deu errado. Tente novamente ou procure o administrador do sistema para mais informações.';
+    const summary = this.i18n.instant(isSuccess ? (isNew ? 'dadosMestre.common.createdSummary' : 'dadosMestre.common.updatedSummary') : 'toast.error');
+    const detail = this.i18n.instant(isSuccess ? (isNew ? 'dadosMestre.common.createdDetail' : 'dadosMestre.common.updatedDetail') : 'dadosMestre.common.errorDetail');
 
     this.messageService.add({ severity: isSuccess ? 'success' : 'error', summary, detail });
   }

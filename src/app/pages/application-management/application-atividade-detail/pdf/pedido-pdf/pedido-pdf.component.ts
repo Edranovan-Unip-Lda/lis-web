@@ -1,3 +1,4 @@
+import { LanguageService } from '@/core/i18n';
 import { Aplicante, Documento, PedidoAtividadeLicenca } from '@/core/models/entities.model';
 import { Role } from '@/core/models/enums';
 import { AuthenticationService, DocumentosService, PedidoService } from '@/core/services';
@@ -6,6 +7,7 @@ import { Location } from '@angular/common';
 import { Component, DestroyRef, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
@@ -20,7 +22,7 @@ interface LoadedDoc { kind: DocKind; blob?: Blob; url?: string; }
 
 @Component({
   selector: 'app-pedido-pdf',
-  imports: [Button, Toast, ProgressSpinner, PdfViewerComponent, Tabs, TabList, Tab, TabPanels, TabPanel, ConfirmDialog, FileUpload],
+  imports: [TranslatePipe, Button, Toast, ProgressSpinner, PdfViewerComponent, Tabs, TabList, Tab, TabPanels, TabPanel, ConfirmDialog, FileUpload],
   templateUrl: './pedido-pdf.component.html',
   styleUrl: './pedido-pdf.component.scss',
   providers: [MessageService, ConfirmationService]
@@ -51,6 +53,7 @@ export class PedidoPdfComponent implements OnInit, OnDestroy {
   deletingDocs = new Set<number>();
 
   private destroyRef = inject(DestroyRef);
+  private i18n = inject(LanguageService);
 
   constructor(
     private route: ActivatedRoute,
@@ -68,7 +71,7 @@ export class PedidoPdfComponent implements OnInit, OnDestroy {
     this.pedido = this.aplicanteData?.pedidoLicencaAtividade;
     if (!this.pedido) {
       this.loading.set(false);
-      this.errorMsg.set('Pedido não encontrado.');
+      this.errorMsg.set('application.pdf.pedido.notFound');
       return;
     }
     this.filename.set(`pedido-atividade-${this.pedido.id}.pdf`);
@@ -101,7 +104,7 @@ export class PedidoPdfComponent implements OnInit, OnDestroy {
           this.loaded.update(m => ({ ...m, [i]: entry }));
         },
         error: () => {
-          this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao carregar o documento.', key: 'br' });
+          this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: this.i18n.instant('application.pdf.docLoadError'), key: 'br' });
         }
       });
   }
@@ -124,9 +127,8 @@ export class PedidoPdfComponent implements OnInit, OnDestroy {
         },
         error: () => {
           this.loading.set(false);
-          const detail = 'Falha ao carregar o formulário.';
-          this.errorMsg.set(detail);
-          this.messageService.add({ severity: 'error', summary: 'Erro', detail, key: 'br' });
+          this.errorMsg.set('application.pdf.formLoadError');
+          this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: this.i18n.instant('application.pdf.formLoadError'), key: 'br' });
         }
       });
   }
@@ -144,7 +146,7 @@ export class PedidoPdfComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.loadingDownloadButtons.delete(file.id);
-        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha no download do arquivo!', key: 'br' });
+        this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: this.i18n.instant('application.shared.toast.downloadFailed'), key: 'br' });
       },
       complete: () => {
         this.loadingDownloadButtons.delete(file.id);
@@ -170,10 +172,10 @@ export class PedidoPdfComponent implements OnInit, OnDestroy {
         if (original) Object.assign(original, updated);
         this.evictCached(index);
         this.loadDoc(index);
-        this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Documento substituído com sucesso.', key: 'br' });
+        this.messageService.add({ severity: 'info', summary: this.i18n.instant('toast.confirmed'), detail: this.i18n.instant('application.pdf.replaceSuccess'), key: 'br' });
       },
       error: err => {
-        this.messageService.add({ severity: 'error', summary: 'Erro', detail: err || 'Falha ao substituir o documento.', key: 'br' });
+        this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: err || this.i18n.instant('application.pdf.replaceError'), key: 'br' });
       },
       complete: () => this.replacingDocs.delete(doc.id)
     });
@@ -185,11 +187,11 @@ export class PedidoPdfComponent implements OnInit, OnDestroy {
 
     this.confirmationService.confirm({
       target: event.target as EventTarget,
-      message: `Tem certeza que deseja eliminar o documento "${doc.nome}"? O campo correspondente do formulário ficará vazio.`,
-      header: 'Confirmação',
+      message: this.i18n.instant('application.pdf.confirmDeleteForm', { nome: doc.nome }),
+      header: this.i18n.instant('application.pdf.confirmHeader'),
       icon: 'pi pi-info-circle',
-      rejectButtonProps: { label: 'Cancelar', severity: 'secondary', outlined: true },
-      acceptButtonProps: { label: 'Eliminar', severity: 'danger' },
+      rejectButtonProps: { label: this.i18n.instant('common.cancel'), severity: 'secondary', outlined: true },
+      acceptButtonProps: { label: this.i18n.instant('common.delete'), severity: 'danger' },
       accept: () => {
         this.deletingDocs.add(doc.id);
         this.documentoService.deleteById(doc.id).subscribe({
@@ -200,10 +202,10 @@ export class PedidoPdfComponent implements OnInit, OnDestroy {
             this.docs = this.docs.filter((_, i) => i !== index);
             this.pedido.documentos = (this.pedido.documentos ?? []).filter(d => d.id !== doc.id);
             this.activeTab.set(0);
-            this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Documento eliminado com sucesso.', key: 'br' });
+            this.messageService.add({ severity: 'info', summary: this.i18n.instant('toast.confirmed'), detail: this.i18n.instant('application.pdf.deleteSuccess'), key: 'br' });
           },
           error: err => {
-            this.messageService.add({ severity: 'error', summary: 'Erro', detail: err || 'Falha ao eliminar o documento.', key: 'br' });
+            this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: err || this.i18n.instant('application.pdf.deleteError'), key: 'br' });
           },
           complete: () => this.deletingDocs.delete(doc.id)
         });

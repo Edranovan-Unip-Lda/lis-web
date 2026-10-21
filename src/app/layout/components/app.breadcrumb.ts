@@ -9,6 +9,7 @@ import {InputText} from 'primeng/inputtext';
 import {ButtonModule} from 'primeng/button';
 import {RippleModule} from 'primeng/ripple';
 import {LayoutService} from '@/layout/service/layout.service';
+import {TranslatePipe} from '@ngx-translate/core';
 
 interface Breadcrumb {
     label: string;
@@ -18,11 +19,11 @@ interface Breadcrumb {
 @Component({
     selector: '[app-breadcrumb]',
     standalone: true,
-    imports: [CommonModule, RouterModule, IconField, InputIcon, InputText, ButtonModule, RippleModule],
+    imports: [CommonModule, RouterModule, IconField, InputIcon, InputText, ButtonModule, RippleModule, TranslatePipe],
     template: ` <nav>
             <ol class="relative z-20">
                 <ng-template ngFor let-item let-last="last" [ngForOf]="breadcrumbs$ | async">
-                    <li style="cursor: pointer;">{{ item.label }}</li>
+                    <li style="cursor: pointer;">{{ item.label | translate }}</li>
                     <li *ngIf="!last" class="layout-breadcrumb-chevron">/</li>
                 </ng-template>
             </ol>
@@ -34,13 +35,13 @@ interface Breadcrumb {
                     <div class="search-input-wrapper">
                         <p-icon-field>
                             <p-inputicon class="pi pi-search" />
-                            <input pInputText #searchinput autofocus type="text" placeholder="Search" (blur)="deactivateSearch()" (keydown.escape)="deactivateSearch()" />
+                            <input pInputText #searchinput autofocus type="text" [placeholder]="'common.searchPlaceholder' | translate" (blur)="deactivateSearch()" (keydown.escape)="deactivateSearch()" />
                         </p-icon-field>
                     </div>
                 </div>
             </li>
             <li class="right-panel-button relative">
-                <button pButton pRipple type="button" label="Today" style="width: 6.7rem" icon="pi pi-bookmark" class="layout-rightmenu-button !hidden md:!inline-flex font-normal" (click)="onProfileMenuButtonClick()"></button>
+                <button pButton pRipple type="button" [label]="'common.today' | translate" style="width: 6.7rem" icon="pi pi-bookmark" class="layout-rightmenu-button !hidden md:!inline-flex font-normal" (click)="onProfileMenuButtonClick()"></button>
                 <Button pButton pRipple style="width: 3.286rem" icon="pi pi-bookmark" class="layout-rightmenu-button !block md:!hidden font-normal" (click)="onProfileMenuButtonClick()"></Button>
             </li>
         </ul>`,

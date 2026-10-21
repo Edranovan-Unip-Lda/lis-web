@@ -20,19 +20,19 @@ export default [
     {
         path: 'application',
         data: {
-            breadcrumb: 'Aplicantes',
+            breadcrumb: 'breadcrumb.aplicantes',
         },
         children: [
             {
                 path: 'task',
                 data: {
-                    breadcrumb: 'Tarefas',
+                    breadcrumb: 'breadcrumb.tarefas',
                 },
                 children: [
                     {
                         path: '',
                         data: {
-                            breadcrumb: 'List',
+                            breadcrumb: 'breadcrumb.lista',
                             // listMode tells the shared list component which paged endpoint to call.
                             listMode: 'task',
                         },
@@ -44,7 +44,7 @@ export default [
                     {
                         path: ':id',
                         data: {
-                            breadcrumb: 'Detail',
+                            breadcrumb: 'breadcrumb.detalhe',
                         },
                         loadComponent: () => import('@/pages/application-management/summary/summary.component').then((c) => c.SummaryComponent),
                         resolve: {
@@ -59,7 +59,7 @@ export default [
                     {
                         path: ':id/auto-vistoria',
                         data: {
-                            breadcrumb: 'Auto Vistoria',
+                            breadcrumb: 'breadcrumb.autoVistoria',
                             role: [Role.staff, Role.admin]
                         },
                         canActivate: [canActivateByRole],
@@ -76,7 +76,7 @@ export default [
             {
                 path: 'list',
                 data: {
-                    breadcrumb: 'Lista',
+                    breadcrumb: 'breadcrumb.lista',
                     listMode: 'gestor',
                 },
                 loadComponent: () => import('@/pages/application-management/application-list/application-list.component').then((c) => c.ApplicationListComponent),
@@ -87,7 +87,7 @@ export default [
             {
                 path: ':id',
                 data: {
-                    breadcrumb: 'Detail',
+                    breadcrumb: 'breadcrumb.detalhe',
                 },
                 loadComponent: () => import('@/pages/application-management/summary/summary.component').then((c) => c.SummaryComponent),
                 resolve: {
@@ -102,7 +102,7 @@ export default [
             // Inscricao de Cadastro
             {
                 path: ':id/pedido-inscricao',
-                data: { breadcrumb: 'Pré-Visualização do Pedido Inscricao' },
+                data: { breadcrumb: 'breadcrumb.pedidoInscricaoPreview' },
                 component: PedidoInscricaoComponent,
                 resolve: {
                     aplicanteResolver: getByIdResolver,
@@ -110,7 +110,7 @@ export default [
             },
             {
                 path: ':id/fatura-inscricao',
-                data: { breadcrumb: 'Pré-Visualização do Fatura', type: 'CADASTRO' },
+                data: { breadcrumb: 'breadcrumb.faturaPreview', type: 'CADASTRO' },
                 component: FaturaComponent,
                 resolve: {
                     aplicanteResolver: getByIdResolver,
@@ -119,7 +119,7 @@ export default [
             {
                 path: ':id/certificado-inscricao/:certificadoId',
                 data: {
-                    breadcrumb: 'Certificado PDF',
+                    breadcrumb: 'breadcrumb.certificadoPdf',
                     type: AplicanteType.cadastro,
                 },
                 component: CertificatePdfComponent,
@@ -130,7 +130,7 @@ export default [
             // Atividade de Licenca
             {
                 path: ':id/pedido-atividade',
-                data: { breadcrumb: 'Pedido Atividade de Licenca' },
+                data: { breadcrumb: 'breadcrumb.pedidoAtividade' },
                 component: PedidoPdfComponent,
                 resolve: {
                     aplicanteResolver: getByIdResolver,
@@ -138,7 +138,7 @@ export default [
             },
             {
                 path: ':id/fatura-atividade',
-                data: { breadcrumb: 'Pré-Visualização da Fatura', type: 'ATIVIDADE', },
+                data: { breadcrumb: 'breadcrumb.faturaPreview', type: 'ATIVIDADE', },
                 component: FaturaComponent,
                 resolve: {
                     aplicanteResolver: getByIdResolver,
@@ -147,7 +147,7 @@ export default [
             {
                 path: ':id/pedido-vistoria',
                 data: {
-                    breadcrumb: 'Pedido Vistoria para Licenca de Atividade',
+                    breadcrumb: 'breadcrumb.pedidoVistoria',
 
                 },
                 component: PedidoVistoriaPdfComponent,
@@ -158,7 +158,7 @@ export default [
             {
                 path: ':id/auto-vistoria',
                 data: {
-                    breadcrumb: 'Auto Vistoria',
+                    breadcrumb: 'breadcrumb.autoVistoria',
                 },
                 component: AutoVistoriaPdfComponent,
                 resolve: {
@@ -168,7 +168,7 @@ export default [
             {
                 path: ':id/fatura-vistoria',
                 data: {
-                    breadcrumb: 'Pré-Visualização da Fatura',
+                    breadcrumb: 'breadcrumb.faturaPreview',
                     type: 'VISTORIA',
                 },
                 component: FaturaComponent,
@@ -179,7 +179,7 @@ export default [
             {
                 path: ':id/certificado-atividade/:certificadoId',
                 data: {
-                    breadcrumb: 'Certificado PDF',
+                    breadcrumb: 'breadcrumb.certificadoPdf',
                     type: AplicanteType.licenca,
                 },
                 component: CertificadoAtividadePdfComponent,
@@ -192,12 +192,12 @@ export default [
     },
     {
         path: 'licencas',
-        data: { breadcrumb: 'Licenças' },
+        data: { breadcrumb: 'breadcrumb.licencas' },
         children: [
             {
                 path: 'comercio',
                 data: {
-                    breadcrumb: 'Comércio',
+                    breadcrumb: 'breadcrumb.comercio',
                     type: AplicanteType.licenca,
                     categoria: Categoria.comercial,
                     // listMode tells the shared list component which paged endpoint to call.
@@ -212,7 +212,7 @@ export default [
             {
                 path: 'comercio/:id',
                 data: {
-                    breadcrumb: 'Certificado PDF',
+                    breadcrumb: 'breadcrumb.certificadoPdf',
                     type: AplicanteType.licenca,
                     categoria: Categoria.comercial,
                 },
@@ -225,7 +225,7 @@ export default [
             {
                 path: 'industria',
                 data: {
-                    breadcrumb: 'Indústria',
+                    breadcrumb: 'breadcrumb.industria',
                     type: AplicanteType.licenca,
                     categoria: Categoria.industrial,
                     listMode: 'gestor',
@@ -239,7 +239,7 @@ export default [
             {
                 path: 'industria/:id',
                 data: {
-                    breadcrumb: 'Certificado PDF',
+                    breadcrumb: 'breadcrumb.certificadoPdf',
                     type: AplicanteType.licenca,
                     categoria: Categoria.industrial,
                 },
@@ -253,12 +253,12 @@ export default [
     },
     {
         path: 'certificados',
-        data: { breadcrumb: 'Certificados' },
+        data: { breadcrumb: 'breadcrumb.certificados' },
         children: [
             {
                 path: 'comercio',
                 data: {
-                    breadcrumb: 'Comércio',
+                    breadcrumb: 'breadcrumb.comercio',
                     type: AplicanteType.cadastro,
                     categoria: Categoria.comercial,
                     listMode: 'gestor',
@@ -272,7 +272,7 @@ export default [
             {
                 path: 'comercio/:id',
                 data: {
-                    breadcrumb: 'Certificado PDF',
+                    breadcrumb: 'breadcrumb.certificadoPdf',
                     type: AplicanteType.cadastro,
                     categoria: Categoria.comercial,
                 },
@@ -285,7 +285,7 @@ export default [
             {
                 path: 'industria',
                 data: {
-                    breadcrumb: 'Indústria',
+                    breadcrumb: 'breadcrumb.industria',
                     type: AplicanteType.cadastro,
                     categoria: Categoria.industrial,
                     listMode: 'gestor',
@@ -299,7 +299,7 @@ export default [
             {
                 path: 'industria/:id',
                 data: {
-                    breadcrumb: 'Certificado PDF',
+                    breadcrumb: 'breadcrumb.certificadoPdf',
                     type: AplicanteType.cadastro,
                     categoria: Categoria.industrial,
                 },

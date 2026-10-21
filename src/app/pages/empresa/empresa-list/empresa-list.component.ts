@@ -1,9 +1,11 @@
+import { LanguageService, LocalizedDatePipe } from '@/core/i18n';
 import { Role } from '@/core/models/enums';
 import { AuthenticationService } from '@/core/services';
 import { EmpresaService } from '@/core/services/empresa.service';
-import { DatePipe } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
@@ -18,7 +20,7 @@ import { Subject, catchError, debounceTime, distinctUntilChanged, of, switchMap 
 
 @Component({
   selector: 'app-empresa-list',
-  imports: [TableModule, Paginator, Button, InputIcon, IconField, InputText, RouterLink, DatePipe, Tooltip, ConfirmDialog, Toast],
+  imports: [LocalizedDatePipe, TableModule, Paginator, Button, InputIcon, IconField, InputText, RouterLink, Tooltip, ConfirmDialog, Toast, TranslatePipe],
   templateUrl: './empresa-list.component.html',
   styleUrl: './empresa-list.component.scss',
   providers: [MessageService, ConfirmationService]
@@ -34,6 +36,7 @@ export class EmpresaListComponent implements OnInit, OnDestroy {
   private searchSubscription: any;
   deleteLoading = false;
   currentRole!: Role;
+  private i18n = inject(LanguageService);
 
   constructor(
     private route: ActivatedRoute,
@@ -72,8 +75,8 @@ export class EmpresaListComponent implements OnInit, OnDestroy {
               this.messageService.clear();
               this.messageService.add({
                 severity: 'error',
-                summary: 'Erro',
-                detail: 'Ocorreu um erro ao pesquisar'
+                summary: this.i18n.instant('toast.error'),
+                detail: this.i18n.instant('empresa.list.searchError')
               });
               return of(this.dataCached);
             })
@@ -123,17 +126,17 @@ export class EmpresaListComponent implements OnInit, OnDestroy {
 
     this.confirmationService.confirm({
       target: event.target as EventTarget,
-      message: 'Tem certeza que deseja eliminar esta empresa?',
-      header: 'Confirmação',
+      message: this.i18n.instant('empresa.list.confirmDelete'),
+      header: this.i18n.instant('empresa.common.confirmation'),
       icon: 'pi pi-info-circle',
-      rejectLabel: 'Cancelar',
+      rejectLabel: this.i18n.instant('common.cancel'),
       rejectButtonProps: {
-        label: 'Cancelar',
+        label: this.i18n.instant('common.cancel'),
         severity: 'secondary',
         outlined: true,
       },
       acceptButtonProps: {
-        label: 'Eliminar',
+        label: this.i18n.instant('common.delete'),
         severity: 'danger',
       },
 
@@ -142,7 +145,7 @@ export class EmpresaListComponent implements OnInit, OnDestroy {
         this.service.deleteByUsername(username).subscribe({
           next: () => {
             this.deleteLoading = false;
-            this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Empresa eliminada com sucesso' });
+            this.messageService.add({ severity: 'info', summary: this.i18n.instant('toast.confirmed'), detail: this.i18n.instant('empresa.list.deleted') });
             this.data = this.data.filter(item => item.utilizador.username !== username);
             this.dataCached = this.dataCached.filter(item => item.utilizador.username !== username);
             this.totalData--;
@@ -151,8 +154,8 @@ export class EmpresaListComponent implements OnInit, OnDestroy {
             this.deleteLoading = false;
             this.messageService.add({
               severity: 'error',
-              summary: 'Erro',
-              detail: err || 'Ocorreu um erro ao eliminar a empresa'
+              summary: this.i18n.instant('toast.error'),
+              detail: err || this.i18n.instant('empresa.list.deleteError')
             });
           }
         });

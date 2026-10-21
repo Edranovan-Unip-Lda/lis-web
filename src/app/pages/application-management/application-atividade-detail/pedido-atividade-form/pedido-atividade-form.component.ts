@@ -1,3 +1,5 @@
+import { LanguageService } from '@/core/i18n';
+import { StatusLabelPipe } from '@/core/pipes/custom.pipe';
 import { Aldeia } from '@/core/models/data-master.model';
 import { Aplicante, Documento, Empresa, Gerente, PedidoAtividadeLicenca, Representante } from '@/core/models/entities.model';
 import { Categoria, PedidoStatus } from '@/core/models/enums';
@@ -10,6 +12,7 @@ import { pedidoAtividadeWithFilesValidator } from '@/core/validators/must-match'
 import { Component, DestroyRef, inject, Input, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
@@ -23,12 +26,12 @@ import { Select, SelectFilterEvent } from 'primeng/select';
 import { SelectButton, SelectButtonChangeEvent } from 'primeng/selectbutton';
 import { Tag } from 'primeng/tag';
 import { Toast } from 'primeng/toast';
-import { finalize, forkJoin } from 'rxjs';
+import { finalize, forkJoin, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-pedido-atividade-form',
-  imports: [ReactiveFormsModule, Select, SelectButton, InputText, Button, Toast, FileUpload, DatePicker, InputGroup, InputGroupAddon, InputNumber, ProgressBar, Tag],
+  imports: [StatusLabelPipe, TranslatePipe, ReactiveFormsModule, Select, SelectButton, InputText, Button, Toast, FileUpload, DatePicker, InputGroup, InputGroupAddon, InputNumber, ProgressBar, Tag],
   templateUrl: './pedido-atividade-form.component.html',
   styleUrl: './pedido-atividade-form.component.scss',
   providers: [MessageService]
@@ -47,12 +50,15 @@ export class PedidoAtividadeFormComponent {
   listaAldeiaGerente: any[] = [];
   listaAldeiaArrendador: any[] = [];
   isNew = false;
+  // The empresa has no representante to copy in → the block is optional and filled by the user.
+  representanteEditavel = false;
   isLoading = false;
   draftLoading = false;
 
   // Exposed for the template Rascunho tag.
   PedidoStatus = PedidoStatus;
   private destroyRef = inject(DestroyRef);
+  private i18n = inject(LanguageService);
   uploadedDocs: any[] = [];
   uploadURLDocs = signal(`${environment.apiUrl}/documentos`);
   maxFileSize = maxFileSizeUpload;
@@ -89,6 +95,7 @@ export class PedidoAtividadeFormComponent {
     this.empresaService.getAplicanteByEmpresaIdAndAplicanteId(this.aplicanteData.empresa.id, this.aplicanteData.id).subscribe({
       next: (aplicante: Aplicante) => {
         this.aplicanteData = aplicante;
+        this.representanteEditavel = !this.aplicanteData.empresa?.representante;
 
         if (this.aplicanteData.pedidoLicencaAtividade) {
           this.mapRequestFormData(this.aplicanteData.pedidoLicencaAtividade);
@@ -98,6 +105,9 @@ export class PedidoAtividadeFormComponent {
         } else {
           this.isNew = true;
           this.mapFormEmpresa(this.aplicanteData.empresa);
+        }
+        if (this.representanteEditavel && !this.disabledAllForm) {
+          this.enableRepresentante();
         }
       }
     });
@@ -274,7 +284,7 @@ export class PedidoAtividadeFormComponent {
   private handleSubmitError(error: any, isNew: boolean): void {
     const serverMessage = error?.error?.message;
     if (error?.status === 400 && serverMessage) {
-      this.messageService.add({ severity: 'error', summary: 'Erro de validação', detail: serverMessage });
+      this.messageService.add({ severity: 'error', summary: this.i18n.instant('application.shared.toast.validationError'), detail: serverMessage });
     } else {
       this.addMessages(false, isNew, error);
     }
@@ -459,15 +469,15 @@ export class PedidoAtividadeFormComponent {
           }
           this.messageService.add({
             severity: 'info',
-            summary: 'Sucesso',
-            detail: 'Arquivos carregado com sucesso!'
+            summary: this.i18n.instant('toast.success'),
+            detail: this.i18n.instant('application.shared.toast.filesUploaded')
           });
         },
         error: () => {
           this.messageService.add({
             severity: 'error',
-            summary: 'Erro',
-            detail: 'Falha no carregamento do arquivo!'
+            summary: this.i18n.instant('toast.error'),
+            detail: this.i18n.instant('application.shared.toast.uploadFailed')
           });
         }
       });
@@ -490,15 +500,15 @@ export class PedidoAtividadeFormComponent {
         window.URL.revokeObjectURL(url);
         this.messageService.add({
           severity: 'info',
-          summary: 'Sucesso',
-          detail: 'Arquivo descarregado com sucesso!'
+          summary: this.i18n.instant('toast.success'),
+          detail: this.i18n.instant('application.shared.toast.fileDownloaded')
         });
       },
       error: error => {
         this.messageService.add({
           severity: 'error',
-          summary: 'Erro',
-          detail: 'Falha no download do arquivo!'
+          summary: this.i18n.instant('toast.error'),
+          detail: this.i18n.instant('application.shared.toast.downloadFailed')
         });
         this.loadingDownloadButtons.delete(file.id);
       },
@@ -526,8 +536,8 @@ export class PedidoAtividadeFormComponent {
         this.uploadedDocs.splice(index, 1);
         this.messageService.add({
           severity: 'info',
-          summary: 'Sucesso',
-          detail: 'Arquivo foi removido com sucesso!'
+          summary: this.i18n.instant('toast.success'),
+          detail: this.i18n.instant('application.shared.toast.fileRemoved')
         });
         this.loadingRemoveButtons.delete(file.id);
       },
@@ -535,8 +545,8 @@ export class PedidoAtividadeFormComponent {
         this.loadingRemoveButtons.delete(file.id);
         this.messageService.add({
           severity: 'error',
-          summary: 'Erro',
-          detail: 'Falha no removero arquivo!'
+          summary: this.i18n.instant('toast.error'),
+          detail: this.i18n.instant('application.shared.toast.removeFailed')
         });
       },
     });
@@ -636,16 +646,18 @@ export class PedidoAtividadeFormComponent {
         postoAdministrativo: request.empresaSede.aldeia.suco.postoAdministrativo.nome,
         municipio: request.empresaSede.aldeia.suco.postoAdministrativo.municipio.nome
       },
-      representante: {
-        ...request.representante,
-        morada: {
-          ...request.representante.morada,
-          aldeia: request.representante.morada.aldeia.id,
-          suco: request.representante.morada.aldeia.suco.nome,
-          postoAdministrativo: request.representante.morada.aldeia.suco.postoAdministrativo.nome,
-          municipio: request.representante.morada.aldeia.suco.postoAdministrativo.municipio.nome
+      ...(request.representante && {
+        representante: {
+          ...request.representante,
+          morada: {
+            ...request.representante.morada,
+            aldeia: request.representante.morada?.aldeia?.id,
+            suco: request.representante.morada?.aldeia?.suco.nome,
+            postoAdministrativo: request.representante.morada?.aldeia?.suco.postoAdministrativo.nome,
+            municipio: request.representante.morada?.aldeia?.suco.postoAdministrativo.municipio.nome
+          }
         }
-      },
+      }),
       gerente: {
         ...request.gerente,
         morada: {
@@ -689,7 +701,10 @@ export class PedidoAtividadeFormComponent {
     })
 
     const empresaSedeService = this.dataMasterService.getAldeiasBySuco(request.empresaSede.aldeia.suco.id);
-    const representanteService = this.dataMasterService.getAldeiasBySuco(request.representante.morada.aldeia.suco.id);
+    const representanteAldeia = request.representante?.morada?.aldeia;
+    const representanteService = representanteAldeia
+      ? this.dataMasterService.getAldeiasBySuco(representanteAldeia.suco.id)
+      : of(null);
     const gerenteService = this.dataMasterService.getAldeiasBySuco(request.gerente.morada.aldeia.suco.id);
 
     // Restore the rental path on load: documentoPropriedade === NAO reveals both the
@@ -702,7 +717,9 @@ export class PedidoAtividadeFormComponent {
     forkJoin([empresaSedeService, representanteService, gerenteService]).subscribe({
       next: ([empresaSedeResponse, representanteResponse, gerenteResponse]) => {
         this.listaAldeiaEmpresa = [...mapToIdAndNome((empresaSedeResponse?._embedded?.aldeias ?? [])), ...this.listaAldeia];
-        this.listaAldeiaRepresentante = [...mapToIdAndNome((representanteResponse?._embedded?.aldeias ?? []))];
+        this.listaAldeiaRepresentante = representanteResponse
+          ? [...mapToIdAndNome((representanteResponse?._embedded?.aldeias ?? []))]
+          : [...this.originalAldeias];
         this.listaAldeiaGerente = [...mapToIdAndNome((gerenteResponse?._embedded?.aldeias ?? []))];
       },
       error: (err) => console.error('Falha ao carregar as listas de aldeias', err)
@@ -739,17 +756,7 @@ export class PedidoAtividadeFormComponent {
         ? (formData.classeAtividade?.id ? { id: formData.classeAtividade.id } : null)
         : { id: formData.classeAtividade.id },
 
-      representante: {
-        ...formData.representante,
-        id: null,
-        morada: {
-          ...formData.representante.morada,
-          id: null,
-          aldeia: {
-            id: formData.representante.morada.aldeia
-          }
-        }
-      },
+      representante: this.mapRepresentantePayload(formData.representante),
       gerente: {
         ...formData.gerente,
         id: null,
@@ -780,8 +787,26 @@ export class PedidoAtividadeFormComponent {
       this.requestForm.get('empresaSede')?.get('municipio')?.setValue(empresa.sede.aldeia.suco.postoAdministrativo.municipio.nome);
     });
 
-    this.mapRepresentante(empresa.representante);
+    if (empresa.representante) {
+      this.mapRepresentante(empresa.representante);
+    }
     this.mapGerente(empresa.gerente);
+  }
+
+  /** Representante is optional: an untouched block is sent as null, and an aldeia-less morada as null (Endereco needs an aldeia). */
+  private mapRepresentantePayload(rep: any): any {
+    if (!rep?.nome && !rep?.morada?.aldeia) return null;
+    return {
+      ...rep,
+      id: null,
+      morada: rep.morada?.aldeia ? { ...rep.morada, id: null, aldeia: { id: rep.morada.aldeia } } : null
+    };
+  }
+
+  /** Opens the copied-in (read-only) person fields for input; the suco/posto/município stay derived from the aldeia. */
+  private enableRepresentante(): void {
+    ['nome', 'nacionalidade', 'naturalidade', 'telefone', 'email', 'morada.local', 'morada.aldeia']
+      .forEach(c => this.requestForm.get(`representante.${c}`)?.enable({ emitEvent: false }));
   }
 
   private mapRepresentante(obj: Representante): void {
@@ -859,8 +884,9 @@ export class PedidoAtividadeFormComponent {
   }
 
   private addMessages(isSuccess: boolean, isNew: boolean, error?: any) {
-    const summary = isSuccess ? (isNew ? 'Dados registados com sucesso!' : 'Dados atualizados com sucesso!') : 'Error';
-    const detail = isSuccess ? (isNew ? `Os dados foram registados` : `Os dados foram actualizados`) : 'Desculpe, algo deu errado. Tente novamente ou procure o administrador do sistema para mais informações.';
+    const t = (k: string) => this.i18n.instant(`application.shared.toast.${k}`);
+    const summary = isSuccess ? t(isNew ? 'created' : 'updated') : this.i18n.instant('toast.error');
+    const detail = isSuccess ? t(isNew ? 'createdDetail' : 'updatedDetail') : t('genericError');
 
     this.messageService.add({ severity: isSuccess ? 'success' : 'error', summary, detail });
   }

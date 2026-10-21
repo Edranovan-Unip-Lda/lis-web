@@ -1,13 +1,16 @@
+import { LanguageService, LocalizedCurrencyPipe } from '@/core/i18n';
+import { TranslatePipe } from '@ngx-translate/core';
+import { chartLang, monthNames, onLangChange } from '../chart-i18n';
 import { Receita } from '@/core/models/entities.model';
-import { CurrencyPipe } from '@angular/common';
-import { Component, Input, SimpleChanges } from '@angular/core';
+
+import { Component, inject, Input, SimpleChanges } from '@angular/core';
 import type * as Highcharts from 'highcharts';
 import { HighchartsChartComponent } from 'highcharts-angular';
 
 @Component({
   standalone: true,
   selector: 'app-receita-mensal-charts',
-  imports: [HighchartsChartComponent, CurrencyPipe],
+  imports: [LocalizedCurrencyPipe, HighchartsChartComponent, TranslatePipe],
   templateUrl: './receita-mensal-charts.component.html',
   styleUrl: './receita-mensal-charts.component.scss',
 })
@@ -19,13 +22,18 @@ export class ReceitaMensalChartsComponent {
   @Input() title?: string;
 
   updateFlag = false;
+  private i18n = inject(LanguageService);
+
+  constructor() {
+    onLangChange(this.i18n, () => this.updateChart());
+  }
 
   get isIndustrial(): boolean {
     return this.categoria === 'INDUSTRIAL';
   }
 
   get resolvedTitle(): string {
-    return this.title ?? `Receita ${this.isIndustrial ? 'Industrial' : 'Comercial'} por Mês (Cadastro vs Licença)`;
+    return this.title ?? this.i18n.instant(this.isIndustrial ? 'dashboard.receita.titleIndustrial' : 'dashboard.receita.titleComercial');
   }
 
   /** Category-scoped annual totals for the KPI row. */
@@ -53,6 +61,7 @@ export class ReceitaMensalChartsComponent {
     const documentStyle = getComputedStyle(document.documentElement);
 
     this.chartOptions = {
+      lang: chartLang(this.i18n),
       chart: {
         type: 'column',
         backgroundColor: 'transparent',
@@ -72,10 +81,11 @@ export class ReceitaMensalChartsComponent {
         },
       },
       xAxis: {
-        categories: this.receita.categories,
+        // API sends English short month names; the series are always Jan..Dec, so use the active locale's
+        categories: this.receita.categories?.length === 12 ? monthNames(this.i18n, 'MMM') : this.receita.categories,
         crosshair: true,
         accessibility: {
-          description: 'Meses',
+          description: this.i18n.instant('dashboard.chart.months'),
         },
         labels: {
           style: {
@@ -134,13 +144,13 @@ export class ReceitaMensalChartsComponent {
       series: [
         {
           type: 'column',
-          name: 'Cadastro',
+          name: this.i18n.instant('dashboard.receita.cadastro'),
           data: this.isIndustrial ? this.receita.industrialCadastro : this.receita.comercialCadastro,
           color: this.isIndustrial ? '#F59E0B' : (documentStyle.getPropertyValue('--primary-color') || '#3B82F6'),
         },
         {
           type: 'column',
-          name: 'Licença',
+          name: this.i18n.instant('dashboard.receita.licenca'),
           data: this.isIndustrial ? this.receita.industrialAtividade : this.receita.comercialAtividade,
           color: this.isIndustrial ? '#FC6161' : '#60A5FA',
         },

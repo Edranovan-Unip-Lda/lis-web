@@ -6,13 +6,12 @@
           </div>
           <div class="mt-2 mb-8">
               <p class="text-2xl font-bold">
-                  Sistema de Gestão de <br> Licenças Comerciais e Indústriais
+                  {{ 'auth.common.systemTitleLine1' | translate }} <br> {{ 'auth.common.systemTitleLine2' | translate }}
               </p>
           </div>
           <div class="form-container text-left" style="max-width: 320px; min-width: 270px">
-              <h2 class="mb-2 text-2xl m-0 block p-0 ">Verificação de Código Único</h2>
-              <span class="text-surface-600 dark:text-surface-200 font-medium">Enviámos o código único para o seu
-                  e‑mail:</span>
+              <h2 class="mb-2 text-2xl m-0 block p-0 ">{{ 'auth.verification.title' | translate }}</h2>
+              <span class="text-surface-600 dark:text-surface-200 font-medium">{{ 'auth.verification.sentTo' | translate }}</span>
               <div class="flex items-center mt-1">
                   <i class="pi pi-envelope"></i>
                   <span class="surface-0 font-bold ml-2">
@@ -22,7 +21,7 @@
               @if (!isTerminal()) {
               <div class="flex items-center gap-2 mt-2 mb-6 text-muted-color text-sm">
                   <i class="pi pi-clock"></i>
-                  <span>O código expira em
+                  <span>{{ 'auth.verification.expiresIn' | translate }}
                       <span class="font-bold" [class.text-red-500]="timeLeft() < 60000">{{ timeDisplay() }}</span>
                   </span>
               </div>
@@ -51,13 +50,13 @@
           <div class="mt-6 text-left" style="max-width: 320px; min-width: 270px">
               <div class="flex items-center justify-center gap-4">
                   @if (isTerminal()) {
-                  <p-button label="Iniciar sessão novamente" icon="pi pi-sign-in" fluid
+                  <p-button [label]="'auth.verification.signInAgain' | translate" icon="pi pi-sign-in" fluid
                       [routerLink]="['/auth/login']" pRipple>
                   </p-button>
                   } @else {
-                  <p-button icon="pi pi-times" [routerLink]="['/']" severity="danger" label="Cancelar" outlined>
+                  <p-button icon="pi pi-times" [routerLink]="['/']" severity="danger" [label]="'common.cancel' | translate" outlined>
                   </p-button>
-                  <p-button label="Validar" icon="pi pi-check-circle" fluid [loading]="animState() === 'loading'"
+                  <p-button [label]="'auth.verification.validate' | translate" icon="pi pi-check-circle" fluid [loading]="animState() === 'loading'"
                       (click)="validateOTP(otpInput)" [disabled]="!otpInput.valid || animState() !== 'idle'" pRipple>
                   </p-button>
                   }

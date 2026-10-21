@@ -5,6 +5,8 @@ import { Location } from '@angular/common';
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
+import { LanguageService } from '@/core/i18n';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { ProgressSpinner } from 'primeng/progressspinner';
@@ -12,7 +14,7 @@ import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-pedido-inscricao',
-  imports: [Button, Toast, ProgressSpinner, PdfViewerComponent],
+  imports: [Button, Toast, ProgressSpinner, PdfViewerComponent, TranslatePipe],
   templateUrl: './pedido-inscricao.component.html',
   styleUrl: './pedido-inscricao.component.scss',
   providers: [MessageService]
@@ -22,10 +24,12 @@ export class PedidoInscricaoComponent {
   pedido!: PedidoInscricaoCadastro;
   pdfSrc = signal<Blob | null>(null);
   loading = signal(true);
+  /** Translation key of the error to show (translated in the template so it follows language switches). */
   errorMsg = signal<string | null>(null);
   filename = signal('pedido-cadastro.pdf');
 
   private destroyRef = inject(DestroyRef);
+  private i18n = inject(LanguageService);
 
   constructor(
     private route: ActivatedRoute,
@@ -39,7 +43,7 @@ export class PedidoInscricaoComponent {
     this.pedido = this.aplicanteData?.pedidoInscricaoCadastro;
     if (!this.pedido) {
       this.loading.set(false);
-      this.errorMsg.set('Pedido não encontrado.');
+      this.errorMsg.set('application.cadastro.pedido.notFound');
       return;
     }
     this.filename.set(`pedido-cadastro-${this.pedido.id}.pdf`);
@@ -57,9 +61,9 @@ export class PedidoInscricaoComponent {
         },
         error: () => {
           this.loading.set(false);
-          const detail = 'Falha ao carregar o formulário.';
-          this.errorMsg.set(detail);
-          this.messageService.add({ severity: 'error', summary: 'Erro', detail, key: 'br' });
+          const key = 'application.cadastro.pedido.loadFailed';
+          this.errorMsg.set(key);
+          this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: this.i18n.instant(key), key: 'br' });
         }
       });
   }
