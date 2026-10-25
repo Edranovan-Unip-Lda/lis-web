@@ -1,9 +1,10 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, take } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { CertificadoCadastro, CertificadoLicencaAtividade, PedidoAtividadeLicenca, PedidoInscricaoCadastro } from '../models/entities.model';
 import { AplicanteType, Categoria } from '../models/enums';
+import { RAW_HTTP_ERROR } from '../security/http-context';
 
 @Injectable({ providedIn: 'root' })
 export class AplicanteService {
@@ -40,12 +41,18 @@ export class AplicanteService {
         return this.http.put<PedidoInscricaoCadastro>(`${this.apiUrl}/${aplicanteId}/pedidos/cadastro/${pedidoId}`, formData, { params: this.draftParams(draft) });
     }
 
+    // CHANGED: RAW_HTTP_ERROR — the atividade form branches on the backend errorCode (stale nested ids, submit
+    // validation), so it needs the HttpErrorResponse, not the interceptor's message string.
     savePedidoAtividade(aplicanteId: number, formData: any, draft = false): Observable<PedidoAtividadeLicenca> {
-        return this.http.post<PedidoAtividadeLicenca>(`${this.apiUrl}/${aplicanteId}/pedidos/atividade`, formData, { params: this.draftParams(draft) });
+        return this.http.post<PedidoAtividadeLicenca>(`${this.apiUrl}/${aplicanteId}/pedidos/atividade`, formData, { params: this.draftParams(draft), context: this.rawErrors() });
     }
 
     updatePedidoAtividade(aplicanteId: number, pedidoId: number, formData: any, draft = false): Observable<PedidoAtividadeLicenca> {
-        return this.http.put<PedidoAtividadeLicenca>(`${this.apiUrl}/${aplicanteId}/pedidos/atividade/${pedidoId}`, formData, { params: this.draftParams(draft) });
+        return this.http.put<PedidoAtividadeLicenca>(`${this.apiUrl}/${aplicanteId}/pedidos/atividade/${pedidoId}`, formData, { params: this.draftParams(draft), context: this.rawErrors() });
+    }
+
+    private rawErrors(): HttpContext {
+        return new HttpContext().set(RAW_HTTP_ERROR, true);
     }
 
     // Only sends ?draft=true when saving a draft; omitted otherwise so the server default (submit) applies.
