@@ -9,6 +9,7 @@ import { DataMasterService } from '@/core/services/data-master.service';
 import { DocumentosService } from '@/core/services/documentos.service';
 import { formatDateForLocalDate, mapToAtividadeEconomica, mapToIdAndNome, maxFileSizeUpload, pedidoLicencaDocumentsFields, stateOptions, tipoArrendadorOptions, tipoDocumentoOptions, tipoPedidoAtividadeComercialOptions, tipoPedidoAtividadeIndustrialOptions } from '@/core/utils/global-function';
 import { pedidoAtividadeWithFilesValidator } from '@/core/validators/must-match';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject, Input, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -158,88 +159,46 @@ export class PedidoAtividadeFormComponent {
 
 
   save(form: FormGroup): void {
-    this.isLoading = true;
-    let formData = this.mapFormData(form, false);
-
-    this.aplicanteService.savePedidoAtividade(this.aplicanteData.id, formData).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res) => {
-        this.requestForm.get('id')?.setValue(res.id);
-        this.aplicanteData.pedidoLicencaAtividade = res;
-        this.refreshUploadedDocs(res);
-        this.refreshPersistedIds(res); // ADDED — keep nested ids in sync so the next save updates instead of re-creating
-        this.isNew = false;
-        this.addMessages(true, true);
-        this.dataSent.emit(res);
-      },
-      error: (err) => {
-        this.isLoading = false;
-        this.handleSubmitError(err, true);
-      },
-      complete: () => {
-        this.isLoading = false;
-      }
-    });
+    this.persist(form, false);
   }
 
   update(form: FormGroup): void {
-    this.isLoading = true;
-
-    let formData = this.mapFormData(form, false);
-
-    this.aplicanteService.updatePedidoAtividade(this.aplicanteData.id, this.aplicanteData.pedidoLicencaAtividade.id, formData).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res) => {
-        this.requestForm.get('id')?.setValue(res.id);
-        this.aplicanteData.pedidoLicencaAtividade = res;
-        this.refreshUploadedDocs(res);
-        this.refreshPersistedIds(res); // ADDED — keep nested ids in sync so the next save updates instead of re-creating
-        this.isNew = false;
-        this.addMessages(true, false);
-        this.dataSent.emit(res);
-      },
-      error: (err) => {
-        this.isLoading = false;
-        this.handleSubmitError(err, false);
-      },
-      complete: () => {
-        this.isLoading = false;
-      }
-    });
+    this.persist(form, false);
   }
 
   // Null-safe draft save (EM_CURSO): tolerates a partial form, does NOT require form.valid.
   // Creates when no pedido exists yet, otherwise updates. Emits so the parent refreshes its gate.
   saveDraft(form: FormGroup): void {
-    this.draftLoading = true;
-    const formData = this.mapFormData(form, true);
+    this.persist(form, true);
+  }
 
-    if (this.isNew) {
-      this.aplicanteService.savePedidoAtividade(this.aplicanteData.id, formData, true).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: (res) => {
-          this.requestForm.get('id')?.setValue(res.id);
-          this.aplicanteData.pedidoLicencaAtividade = res;
-          this.refreshUploadedDocs(res);
-          this.refreshPersistedIds(res); // ADDED — keep nested ids in sync so the next save updates instead of re-creating
-          this.isNew = false;
-          this.addMessages(true, true);
-          this.dataSent.emit(res);
-        },
-        error: (err) => this.handleSubmitError(err, true),
-        complete: () => this.draftLoading = false
-      });
-    } else {
-      this.aplicanteService.updatePedidoAtividade(this.aplicanteData.id, this.aplicanteData.pedidoLicencaAtividade.id, formData, true).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: (res) => {
-          this.requestForm.get('id')?.setValue(res.id);
-          this.aplicanteData.pedidoLicencaAtividade = res;
-          this.refreshUploadedDocs(res);
-          this.refreshPersistedIds(res); // ADDED — keep nested ids in sync so the next save updates instead of re-creating
-          this.addMessages(true, false);
-          this.dataSent.emit(res);
-        },
-        error: (err) => this.handleSubmitError(err, false),
-        complete: () => this.draftLoading = false
-      });
-    }
+  /**
+   * CHANGED: single create-or-update path for submit and draft (the three copies differed only in the draft flag).
+   * The form is mapped BEFORE the spinner flag is raised, and the flag is cleared in finalize — previously a throw in
+   * mapFormData, or any HTTP error on a draft save (error never reaches `complete`), left the button spinning forever.
+   */
+  private persist(form: FormGroup, draft: boolean): void {
+    const formData = this.mapFormData(form, draft);
+    const isNew = this.isNew;
+    const setLoading = (v: boolean) => draft ? this.draftLoading = v : this.isLoading = v;
+
+    const request$ = isNew
+      ? this.aplicanteService.savePedidoAtividade(this.aplicanteData.id, formData, draft)
+      : this.aplicanteService.updatePedidoAtividade(this.aplicanteData.id, this.aplicanteData.pedidoLicencaAtividade.id, formData, draft);
+
+    setLoading(true);
+    request$.pipe(finalize(() => setLoading(false)), takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (res) => {
+        this.requestForm.get('id')?.setValue(res.id);
+        this.aplicanteData.pedidoLicencaAtividade = res;
+        this.refreshUploadedDocs(res);
+        this.refreshPersistedIds(res); // keep nested ids in sync so the next save updates instead of re-creating
+        this.isNew = false;
+        this.addMessages(true, isNew);
+        this.dataSent.emit(res);
+      },
+      error: (err) => this.handleSubmitError(err, isNew)
+    });
   }
 
   /**
@@ -281,12 +240,19 @@ export class PedidoAtividadeFormComponent {
   }
 
   // 400 from draft=false submit → server returns a Portuguese message listing missing fields; surface it.
-  private handleSubmitError(error: any, isNew: boolean): void {
-    const serverMessage = error?.error?.message;
-    if (error?.status === 400 && serverMessage) {
-      this.messageService.add({ severity: 'error', summary: this.i18n.instant('application.shared.toast.validationError'), detail: serverMessage });
+  // CHANGED: the save calls opt into RAW_HTTP_ERROR, so this gets the HttpErrorResponse. Branch on errorCode (the
+  // backend message key), never on text; `message` is already localized via Accept-Language, so show it as-is.
+  private handleSubmitError(err: HttpErrorResponse, isNew: boolean): void {
+    const code = err.error?.errorCode;
+    if (code === 'error.nested.id-mismatch') {
+      // Stale nested ids (another tab/session changed the pedido): nothing to fix in the form, only a reload helps.
+      this.messageService.add({ severity: 'warn', summary: this.i18n.instant('toast.warning'), detail: err.error.message, sticky: true });
+    } else if (err.status === 400 && err.error?.message) {
+      this.messageService.add({ severity: 'error', summary: this.i18n.instant('application.shared.toast.validationError'), detail: err.error.message });
+    } else if (err.status === 0) {
+      this.messageService.add({ severity: 'error', summary: this.i18n.instant('toast.error'), detail: this.i18n.instant('errors.network') });
     } else {
-      this.addMessages(false, isNew, error);
+      this.addMessages(false, isNew);
     }
   }
 
@@ -883,7 +849,7 @@ export class PedidoAtividadeFormComponent {
     });
   }
 
-  private addMessages(isSuccess: boolean, isNew: boolean, error?: any) {
+  private addMessages(isSuccess: boolean, isNew: boolean) {
     const t = (k: string) => this.i18n.instant(`application.shared.toast.${k}`);
     const summary = isSuccess ? t(isNew ? 'created' : 'updated') : this.i18n.instant('toast.error');
     const detail = isSuccess ? t(isNew ? 'createdDetail' : 'updatedDetail') : t('genericError');

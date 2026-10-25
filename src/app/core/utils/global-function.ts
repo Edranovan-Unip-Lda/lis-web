@@ -221,7 +221,9 @@ export const tipoEletricidadeOptions: { name: string, value: string }[] = i18nOp
  * @param date The date to be adjusted
  * @returns A string representing the adjusted date in local time
  */
-export function formatDateForLocalDate(date: Date): string {
+// CHANGED: null-safe — draft saves legitimately carry empty dates (e.g. arrendador dataInicio/dataFim).
+export function formatDateForLocalDate(date: Date | null | undefined): string | null {
+    if (!date) return null;
     // Adjust for timezone offset so that local date is preserved
     const offsetMs = date.getTimezoneOffset() * 60 * 1000;
     const corrected = new Date(date.getTime() - offsetMs);
