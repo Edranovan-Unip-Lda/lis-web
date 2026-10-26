@@ -303,8 +303,8 @@ export class SummaryComponent {
     });
   }
 
-  // Devolver para correção: available to the assigned staff / chief / manager while the application is submitted,
-  // assigned, under review, or suspended. Opens the client's edit window (enforced server-side).
+  // Devolver para correção: chief-only (gated server-side too) while the application is submitted, assigned, under
+  // review, or suspended. Opens the client's edit window (enforced server-side).
   showDevolverAction(aplicante: Aplicante): boolean {
     const estado = aplicante?.estado;
     const role = this.user?.role.name;
@@ -313,7 +313,7 @@ export class SummaryComponent {
       estado === AplicanteStatus.atribuido ||
       estado === AplicanteStatus.revisao ||
       estado === AplicanteStatus.suspende;
-    return returnable && (role === Role.chief || role === Role.staff || role === Role.manager);
+    return returnable && role === Role.chief;
   }
 
   devolver(event: any) {
