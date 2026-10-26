@@ -907,7 +907,14 @@
         "prazoAfter": "loron, atu rekerente, se hakarak, halo regularizasaun.",
         "naoObservacao": "Se la kumpre rekomendasaun sira ne'ebé aprezenta, nia konsekuénsia mak pedidu iha prosesu ne'e sei la simu.",
         "notificacao": "Iha ato ne'e, rekerente hetan notifikasaun katak, se prazu ne'ebé fó remata no defisiénsia no/ka omisaun sira seidauk hadi'a, pedidu lisensiamentu sei la simu, no la iha direitu ba reembolsu ruma husi pagamentu taxa ka formuláriu.",
-        "saveDraft": "Rai rasunhu"
+        "saveDraft": "Rai rasunhu",
+        "finalizeBlocked": "Atu finaliza, kompleta item sira tuir mai:",
+        "pending": {
+          "missingAnswer": "seidauk hatán Sin/Lae",
+          "missingFile": "seidauk tau dokumentu",
+          "missingDescricao": "seidauk iha deskrisaun",
+          "otherFields": "Kampu obrigatóriu seluk seidauk prienxe (ez.: ekipa vistoria, apto/defisiénsia)"
+        }
       },
       "toast": {
         "submitted": "Relatóriu vistoria submete ho susesu",

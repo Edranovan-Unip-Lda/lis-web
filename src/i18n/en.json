@@ -907,7 +907,14 @@
         "prazoAfter": "days is granted for the applicant, if so wishing, to regularise them.",
         "naoObservacao": "Failure to follow the recommendations made will consequently result in the rejection of the request in the process.",
         "notificacao": "The applicant was hereby notified that, if the period granted expires without the deficiencies and/or omissions being corrected or remedied, the licensing request will be rejected, with no right to any refund of fees or forms paid.",
-        "saveDraft": "Save draft"
+        "saveDraft": "Save draft",
+        "finalizeBlocked": "To finalize, complete the following items:",
+        "pending": {
+          "missingAnswer": "Yes/No answer missing",
+          "missingFile": "file attachment missing",
+          "missingDescricao": "description missing",
+          "otherFields": "Other required fields are still empty (e.g. inspection team, fit/deficiencies)"
+        }
       },
       "toast": {
         "submitted": "Inspection report submitted successfully",

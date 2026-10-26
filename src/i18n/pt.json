@@ -907,7 +907,14 @@
         "prazoAfter": "dias, a fim do requerente proceder, querendo, à sua regularização.",
         "naoObservacao": "A não observação das recomendações apresentadas importa, em consequência, o indeferimento do requerido no processo.",
         "notificacao": "Neste ato o requerente foi notificado que, decorrido o prazo concedido sem que as deficiências e/ou omissões tenham sido corrigidas ou supridas, o pedido de licenciamento é indeferido, sem direito a qualquer reembolso pelo pagamento de taxas ou impressos.",
-        "saveDraft": "Guardar rascunho"
+        "saveDraft": "Guardar rascunho",
+        "finalizeBlocked": "Para finalizar, complete os seguintes itens:",
+        "pending": {
+          "missingAnswer": "falta responder Sim/Não",
+          "missingFile": "falta anexar o ficheiro",
+          "missingDescricao": "falta a descrição",
+          "otherFields": "Outros campos obrigatórios por preencher (ex.: equipa de vistoria, apto/deficiências)"
+        }
       },
       "toast": {
         "submitted": "Auto Vistoria submetida com sucesso",

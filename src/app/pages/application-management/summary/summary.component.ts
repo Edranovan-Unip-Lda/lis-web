@@ -1,6 +1,6 @@
 import { LanguageService, LocalizedDatePipe } from '@/core/i18n';
 import { Aplicante, AutoVistoria, Documento, PedidoVistoria, User } from '@/core/models/entities.model';
-import { AplicanteStatus, AplicanteType, Role } from '@/core/models/enums';
+import { AplicanteStatus, AplicanteType, PedidoStatus, Role } from '@/core/models/enums';
 import { StatusSeverityPipe, StatusLabelPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService, DocumentosService, UserService } from '@/core/services';
 import { PedidoService } from '@/core/services/pedido.service';
@@ -348,7 +348,7 @@ export class SummaryComponent {
     const estado = aplicante?.estado;
     const role = this.user?.role.name;
     return estado === AplicanteStatus.suspende
-      && !!this.pedidoVistoria && !!this.autoVistoria
+      && !!this.pedidoVistoria && this.autoVistoria?.status === PedidoStatus.submetido
       && (role === Role.staff || role === Role.chief);
   }
 

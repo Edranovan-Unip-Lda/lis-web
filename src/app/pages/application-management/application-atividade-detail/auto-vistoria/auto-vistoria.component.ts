@@ -6,7 +6,7 @@ import { AplicanteStatus, Categoria, PedidoStatus } from '@/core/models/enums';
 import { AuthenticationService, DataMasterService, FileUploadService } from '@/core/services';
 import { DocumentosService } from '@/core/services/documentos.service';
 import { PedidoService } from '@/core/services/pedido.service';
-import { autoVistoriaComercialFields, autoVistoriaIndustrialFields, mapToAtividadeEconomica, stateOptions, tipoAreaRepresentanteComercial, tipoAreaRepresentanteIndustrial, tipoDocumentoOptions, tipoEletricidadeOptions, tipoLocalOptions } from '@/core/utils/global-function';
+import { autoVistoriaChecklistCommonFields, autoVistoriaComercialFields, autoVistoriaIndustrialFields, mapToAtividadeEconomica, stateOptions, tipoAreaRepresentanteComercial, tipoAreaRepresentanteIndustrial, tipoDocumentoOptions, tipoEletricidadeOptions, tipoLocalOptions } from '@/core/utils/global-function';
 import { alphanumericValidator } from '@/core/validators/alphanumeric';
 import { autoVistoriaWithFilesValidator } from '@/core/validators/must-match';
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
@@ -22,6 +22,7 @@ import { InputGroup } from 'primeng/inputgroup';
 import { InputGroupAddon } from 'primeng/inputgroupaddon';
 import { InputNumber } from 'primeng/inputnumber';
 import { InputText } from 'primeng/inputtext';
+import { MessageModule } from 'primeng/message';
 import { ProgressBar } from 'primeng/progressbar';
 import { Select, SelectFilterEvent } from 'primeng/select';
 import { SelectButton } from 'primeng/selectbutton';
@@ -33,7 +34,7 @@ import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-auto-vistoria',
-  imports: [StatusLabelPipe, TranslatePipe, ReactiveFormsModule, SelectButton, Textarea, DatePicker, FileUpload, InputText, Select, Button, Toast, InputGroup, InputGroupAddon, InputNumber, ProgressBar, Tag],
+  imports: [StatusLabelPipe, TranslatePipe, ReactiveFormsModule, SelectButton, Textarea, DatePicker, FileUpload, InputText, Select, Button, Toast, InputGroup, InputGroupAddon, InputNumber, ProgressBar, Tag, MessageModule],
   templateUrl: './auto-vistoria.component.html',
   styleUrl: './auto-vistoria.component.scss',
   providers: [MessageService]
@@ -73,6 +74,8 @@ export class AutoVistoriaComponent implements OnInit {
   INDUSTRIAL = Categoria.industrial;
   comercialFormFields = autoVistoriaComercialFields;
   industrialFormFields = autoVistoriaIndustrialFields;
+  // Every Sim/Não checklist item of this report (common + category) — drives prazo, the file validator and the pending list.
+  checklistFields: { name: string, label: string }[] = [];
   loadingUploadButtons = new Set<String>();
   protected readonly TRINTA_DIAS: number = 30;
   private destroyRef = inject(DestroyRef);
@@ -210,6 +213,7 @@ export class AutoVistoriaComponent implements OnInit {
         // Swap the transient upload objects for the persisted ones (with ids) so the
         // next save re-references them instead of re-creating documento rows.
         this.uploadedFiles = [...(autoVistoria.documentos ?? [])];
+        this.syncFileControls();
         this.savingDraft = false;
         this.messageService.add({ severity: 'info', summary: this.i18n.instant('application.vistoria.toast.draftSaved'), detail: this.i18n.instant('application.vistoria.toast.draftSavedDetail'), life: 3000, key: 'tr' });
       },
@@ -427,6 +431,7 @@ export class AutoVistoriaComponent implements OnInit {
     if (index !== -1) {
       if (!file.id) {
         this.uploadedFiles.splice(index, 1);
+        this.syncFileControls();
         this.messageService.add({
           severity: 'info',
           summary: this.i18n.instant('toast.success'),
@@ -437,6 +442,7 @@ export class AutoVistoriaComponent implements OnInit {
       this.documentoService.deleteById(file.id).subscribe({
         next: () => {
           this.uploadedFiles.splice(index, 1);
+          this.syncFileControls();
           this.messageService.add({
             severity: 'info',
             summary: this.i18n.instant('toast.success'),
@@ -600,7 +606,7 @@ export class AutoVistoriaComponent implements OnInit {
           this.autoVistoriaForm.addControl(descricao, new FormControl(null));
 
         });
-        this.autoVistoriaForm.addValidators(autoVistoriaWithFilesValidator(autoVistoriaComercialFields));
+        this.checklistFields = [...autoVistoriaChecklistCommonFields, ...autoVistoriaComercialFields];
         break;
 
       case Categoria.industrial:
@@ -615,50 +621,45 @@ export class AutoVistoriaComponent implements OnInit {
           const descricao = `${field.name}Descricao`;
           this.autoVistoriaForm.addControl(descricao, new FormControl(null));
         });
-        this.autoVistoriaForm.addValidators(autoVistoriaWithFilesValidator(autoVistoriaIndustrialFields));
+        this.checklistFields = [...autoVistoriaChecklistCommonFields, ...autoVistoriaIndustrialFields];
         break;
     }
+    this.autoVistoriaForm.addValidators(autoVistoriaWithFilesValidator(this.checklistFields));
     this.autoVistoriaForm.updateValueAndValidity();
 
   }
 
-  /**
-   * Verifica se todas as opcoes de uma auto-vistoria estao como true.
-   * Se a categoria for comercial, verifica se todas as opcoes de comecialidade estao como true.
-   * Se a categoria for diferente de comercial, verifica se todas as opcoes de comecialidade e sanitas automaticas estao como true.
-   * @return boolean - True se todas as opcoes estiverem como true, false caso contrario.
-   */
+  /** True only when every checklist item (common + category) is answered "Sim" — anything else earns the 30-day prazo. */
   private isAllOptionsTrue(): boolean {
-    const commonFields = [
-      'legislacaoUrbanistica',
-      'acessoEstrada',
-      'escoamentoAguas',
-      'alimentacaoEnergia'
-    ];
+    return this.checklistFields.length > 0
+      && this.checklistFields.every(({ name }) => this.autoVistoriaForm.get(name)?.value === true);
+  }
 
-    // Check common required fields first
-    const allCommonTrue = commonFields.every(
-      f => this.autoVistoriaForm.get(f)?.value === true
-    );
+  /**
+   * `<item>File` is FE-only state the checklist validator reads ("Sim" needs a file). Re-derive it from uploadedFiles
+   * (by documento.coluna) after every load / draft save / removal — otherwise a reloaded or reopened report keeps
+   * FileRequired errors for files it already has, and Finalize stays disabled forever.
+   */
+  private syncFileControls(): void {
+    this.checklistFields.forEach(({ name }) =>
+      this.autoVistoriaForm.get(`${name}File`)?.setValue(this.getFileByField(name), { emitEvent: false }));
+    this.autoVistoriaForm.updateValueAndValidity({ emitEvent: false });
+  }
 
-    if (!allCommonTrue) return false;
+  /** Checklist items blocking Finalize, read from the group validator's error keys (listed under the save buttons). */
+  get pendingChecklistItems(): { label: string, reason: string }[] {
+    const errors = this.autoVistoriaForm.errors ?? {};
+    return this.checklistFields.flatMap(({ name, label }) => {
+      const reason = errors[`${name}MissingYesNo`] ? 'missingAnswer'
+        : errors[`${name}FileRequired`] ? 'missingFile'
+          : errors[`${name}DescricaoRequired`] ? 'missingDescricao' : null;
+      return reason ? [{ label, reason }] : [];
+    });
+  }
 
-    // Category-specific additional fields:
-    switch (this.categoria) {
-
-      case Categoria.comercial:
-        return autoVistoriaComercialFields.every(
-          field => this.autoVistoriaForm.get(field.name)?.value === true
-        );
-
-      case Categoria.industrial:
-        return autoVistoriaIndustrialFields.every(
-          field => this.autoVistoriaForm.get(field.name)?.value === true
-        );
-
-      default:
-        return false;
-    }
+  /** Any non-checklist control (team, apto/deficiências, ...) still invalid. */
+  get hasOtherInvalidFields(): boolean {
+    return Object.values(this.autoVistoriaForm.controls).some(c => c.invalid);
   }
 
   private createParticipanteForm(): FormGroup {
@@ -783,6 +784,7 @@ export class AutoVistoriaComponent implements OnInit {
     if (autoVistoria.documentos?.length) {
       this.uploadedFiles = [...autoVistoria.documentos];
     }
+    this.syncFileControls();
 
     // A draft (EM_CURSO) stays editable; a finalized report (SUBMETIDO) or a
     // legacy record with no status is read-only.
