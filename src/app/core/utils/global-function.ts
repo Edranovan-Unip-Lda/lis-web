@@ -268,6 +268,14 @@ export const autoVistoriaCommonFields: { name: string, label: string }[] = [
     },
 ];
 
+// Sim/Não checklist items shared by every category (items 1, a, b, c) — same file/descricao rules as the category lists.
+export const autoVistoriaChecklistCommonFields: { name: string, label: string }[] = [
+    { name: 'legislacaoUrbanistica', label: 'application.vistoria.fields.legislacaoUrbanistica' },
+    { name: 'acessoEstrada', label: 'application.vistoria.fields.acessoEstrada' },
+    { name: 'escoamentoAguas', label: 'application.vistoria.fields.escoamentoAguas' },
+    { name: 'alimentacaoEnergia', label: 'application.vistoria.fields.alimentacaoEnergia' },
+];
+
 export const autoVistoriaComercialFields: { name: string, label: string }[] = [
     {
         name: 'separadosSexo',

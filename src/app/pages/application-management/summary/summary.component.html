@@ -443,7 +443,8 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    @if (autoVistoria && autoVistoria.prazo === 0) {
+                    <!-- Finalized = status SUBMETIDO; prazo alone is also 0 on a draft, which must stay fillable. -->
+                    @if (autoVistoria?.status === 'SUBMETIDO' && autoVistoria?.prazo === 0) {
                     <p-tag [value]="'SUBMETIDO' | statusLabel" [severity]="'SUBMETIDO'| statusSeverity" />
                     <p-button routerLink="/gestor/application/{{aplicanteData.id}}/auto-vistoria" icon="pi pi-eye"
                         [label]="'application.shared.preview' | translate" [raised]="true" severity="info" />
@@ -462,6 +463,11 @@
                     <p-tag [value]="'SUSPENDE' | statusLabel" [severity]="'SUSPENDE'| statusSeverity" icon="pi pi-pause-circle" />
                     <p-button (click)="reabrirVistoria($event)" icon="pi pi-arrow-counterclockwise"
                         [label]="'application.summary.reopenVistoria' | translate" [raised]="true" severity="warn" />
+                    }@else if (autoVistoria?.status === 'SUBMETIDO') {
+                    <!-- Finalized with a correction prazo, seen by a role that can't reopen (admin/manager). -->
+                    <p-tag [value]="'SUSPENDE' | statusLabel" [severity]="'SUSPENDE'| statusSeverity" icon="pi pi-pause-circle" />
+                    <p-button routerLink="/gestor/application/{{aplicanteData.id}}/auto-vistoria" icon="pi pi-eye"
+                        [label]="'application.shared.preview' | translate" [raised]="true" severity="info" />
                     }@else {
                     <p-tag [value]="'EM_CURSO' | statusLabel" [severity]="'info'" icon="pi pi-clock" />
                     }

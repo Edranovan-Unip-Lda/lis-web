@@ -1,6 +1,6 @@
 import { LanguageService, LocalizedDatePipe } from '@/core/i18n';
 import { Aplicante, AutoVistoria, Documento, PedidoVistoria, User } from '@/core/models/entities.model';
-import { AplicanteStatus, AplicanteType, Role } from '@/core/models/enums';
+import { AplicanteStatus, AplicanteType, PedidoStatus, Role } from '@/core/models/enums';
 import { StatusSeverityPipe, StatusLabelPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService, DocumentosService, UserService } from '@/core/services';
 import { PedidoService } from '@/core/services/pedido.service';
@@ -303,8 +303,8 @@ export class SummaryComponent {
     });
   }
 
-  // Devolver para correção: available to the assigned staff / chief / manager while the application is submitted,
-  // assigned, under review, or suspended. Opens the client's edit window (enforced server-side).
+  // Devolver para correção: chief-only (gated server-side too) while the application is submitted, assigned, under
+  // review, or suspended. Opens the client's edit window (enforced server-side).
   showDevolverAction(aplicante: Aplicante): boolean {
     const estado = aplicante?.estado;
     const role = this.user?.role.name;
@@ -313,7 +313,7 @@ export class SummaryComponent {
       estado === AplicanteStatus.atribuido ||
       estado === AplicanteStatus.revisao ||
       estado === AplicanteStatus.suspende;
-    return returnable && (role === Role.chief || role === Role.staff || role === Role.manager);
+    return returnable && role === Role.chief;
   }
 
   devolver(event: any) {
@@ -348,7 +348,7 @@ export class SummaryComponent {
     const estado = aplicante?.estado;
     const role = this.user?.role.name;
     return estado === AplicanteStatus.suspende
-      && !!this.pedidoVistoria && !!this.autoVistoria
+      && !!this.pedidoVistoria && this.autoVistoria?.status === PedidoStatus.submetido
       && (role === Role.staff || role === Role.chief);
   }
 
