@@ -79,7 +79,10 @@ export class AuthenticationService {
     const lang = localStorage.getItem(LANG_STORAGE_KEY);
     localStorage.clear();
     if (lang) localStorage.setItem(LANG_STORAGE_KEY, lang);
-    localStorage.setItem(this.userKey, JSON.stringify(authResult));
+    // Defense in depth: the session rides in the HttpOnly jwt cookie, so a token or hash must never reach
+    // JS-readable storage even if a backend regression puts them back in the body.
+    const { password, jwtSession, loginToken, oneTimePassword, ...profile } = authResult ?? {};
+    localStorage.setItem(this.userKey, JSON.stringify(profile));
   }
 
   get currentUserValue(): any {
