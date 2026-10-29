@@ -131,7 +131,6 @@ export class ApplicationAtividadeDetailComponent {
       tipo: this.aplicanteData.tipo,
       categoria: this.aplicanteData.categoria,
       numero: this.aplicanteData.numero,
-      estado: AplicanteStatus.submetido
     }
 
     this.empresaService.submitAplicanteByEmpresaIdAndAplicanteId(this.aplicanteData.empresa.id, this.aplicanteData.id, formData).subscribe({
