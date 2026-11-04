@@ -30,7 +30,7 @@ export class UserList {
     private searchSubject = new Subject<string>();
     private searchSubscription: any;
     dataIsFetching = false;
-    roles!: string | null;
+    roles!: string;
     page = 0;
     size = 50;
     totalData = 0;
@@ -48,9 +48,10 @@ export class UserList {
         this.users = this.route.snapshot.data['userPage'].content;
         this.totalData = this.route.snapshot.data['userPage'].totalElements;
         this.usersCached = this.users;
-        this.roles = this.route.snapshot.queryParamMap.get('roles');
-        this.setupSearch();
+        // Roles come from the route type (internal vs empresa list), shared by paging and search.
         this.isInternal = this.route.snapshot.data['type'] === 'internal';
+        this.roles = this.isInternal ? [Role.admin, Role.manager, Role.chief, Role.staff].join(',') : Role.client;
+        this.setupSearch();
     }
 
     ngOnDestroy(): void {
@@ -76,43 +77,22 @@ export class UserList {
     }
 
     private getData(page: number, size: number): void {
-        if (this.isInternal) {
-            this.roles = [Role.admin, Role.manager, Role.chief, Role.staff].toString();
-            this.service.getPagination(this.roles, page, size).subscribe({
-                next: (response) => {
-                    this.users = response.content;
-                    this.usersCached = response.content;
-                    this.totalData = response.totalElements;
-                    this.dataIsFetching = false;
-                },
-                error: (error) => {
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: this.i18n.instant('toast.error'),
-                        detail: error
-                    });
-                    this.dataIsFetching = false;
-                }
-            });
-        } else {
-            this.service.getPagination(Role.client, page, size).subscribe({
-                next: (response) => {
-                    this.users = response.content;
-                    this.usersCached = response.content;
-                    this.totalData = response.totalElements;
-                    this.dataIsFetching = false;
-                },
-                error: (error) => {
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: this.i18n.instant('toast.error'),
-                        detail: error
-                    });
-                    this.dataIsFetching = false;
-                }
-            });
-        }
-
+        this.service.getPagination(this.roles, page, size).subscribe({
+            next: (response) => {
+                this.users = response.content;
+                this.usersCached = response.content;
+                this.totalData = response.totalElements;
+                this.dataIsFetching = false;
+            },
+            error: (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: this.i18n.instant('toast.error'),
+                    detail: error
+                });
+                this.dataIsFetching = false;
+            }
+        });
     }
 
     private setupSearch(): void {
@@ -122,31 +102,16 @@ export class UserList {
             switchMap(query => {
                 if (query.length >= 3) {
                     this.dataIsFetching = true;
-
-                    if (this.roles) {
-                        return this.service.search(query, this.roles).pipe(
-                            catchError(error => {
-                                this.messageService.add({
-                                    severity: 'error',
-                                    summary: this.i18n.instant('toast.error'),
-                                    detail: error
-                                });
-                                return of(this.usersCached);
-                            })
-                        );
-                    } else {
-                        return this.service.search(query, Role.client).pipe(
-                            catchError(error => {
-                                this.messageService.add({
-                                    severity: 'error',
-                                    summary: this.i18n.instant('toast.error'),
-                                    detail: error
-                                });
-                                return of(this.usersCached);
-                            })
-                        );
-                    }
-
+                    return this.service.search(query, this.roles).pipe(
+                        catchError(error => {
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: this.i18n.instant('toast.error'),
+                                detail: error
+                            });
+                            return of(this.usersCached);
+                        })
+                    );
                 } else if (query.length === 0) {
                     this.dataIsFetching = true;
                     return of(this.usersCached);

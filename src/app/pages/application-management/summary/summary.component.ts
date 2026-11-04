@@ -5,11 +5,12 @@ import { StatusSeverityPipe, StatusLabelPipe } from '@/core/pipes/custom.pipe';
 import { AuthenticationService, DocumentosService, UserService } from '@/core/services';
 import { PedidoService } from '@/core/services/pedido.service';
 import { LowerCasePipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { finalize } from 'rxjs';
 import { Button } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { FileUpload } from 'primeng/fileupload';
@@ -59,6 +60,8 @@ export class SummaryComponent {
   acceptedDocTypes = '.pdf,.png,.jpg,.jpeg,.gif,.webp,.doc,.docx,.xls,.xlsx';
   downloadingDocs = new Set<number>();
   replacingDocs = new Set<number>();
+  // Decision request in flight — blocks a double-submit (a second approval used to collide on the certificate insert)
+  deciding = signal(false);
   private i18n = inject(LanguageService);
 
   constructor(
@@ -140,7 +143,8 @@ export class SummaryComponent {
           descricao: null,
           alteradoPor: this.user.username,
         }
-        this.userService.revistoAplicante(this.user.username, this.aplicanteData.id, formData).subscribe({
+        this.deciding.set(true);
+        this.userService.revistoAplicante(this.user.username, this.aplicanteData.id, formData).pipe(finalize(() => this.deciding.set(false))).subscribe({
           next: response => {
             this.messageService.add({ severity: 'info', summary: this.i18n.instant('toast.confirmed'), detail: this.i18n.instant('application.summary.toast.reviewed'), life: 3000, key: 'tr' });
             this.aplicanteData = response;
@@ -181,7 +185,8 @@ export class SummaryComponent {
           descricao: this.descricao.value,
           alteradoPor: this.user.username,
         }
-        this.userService.revistoAplicante(this.user.username, this.aplicanteData.id, formData).subscribe({
+        this.deciding.set(true);
+        this.userService.revistoAplicante(this.user.username, this.aplicanteData.id, formData).pipe(finalize(() => this.deciding.set(false))).subscribe({
           next: response => {
             this.messageService.add({ severity: 'info', summary: this.i18n.instant('toast.confirmed'), detail: this.i18n.instant('application.summary.toast.rejected'), life: 3000, key: 'tr' });
             this.aplicanteData = response;
@@ -222,7 +227,8 @@ export class SummaryComponent {
           descricao: null,
           alteradoPor: this.user.username,
         }
-        this.userService.updateAplicante(this.user.username, this.aplicanteData.id, formData).subscribe({
+        this.deciding.set(true);
+        this.userService.updateAplicante(this.user.username, this.aplicanteData.id, formData).pipe(finalize(() => this.deciding.set(false))).subscribe({
           next: response => {
             this.messageService.add({ severity: 'info', summary: this.i18n.instant('toast.confirmed'), detail: this.i18n.instant('application.summary.toast.approved'), life: 3000, key: 'tr' });
             this.aplicanteData = response;
@@ -290,7 +296,8 @@ export class SummaryComponent {
           descricao: this.descricao.value,
           alteradoPor: this.user.username,
         }
-        this.userService.updateAplicante(this.user.username, this.aplicanteData.id, formData).subscribe({
+        this.deciding.set(true);
+        this.userService.updateAplicante(this.user.username, this.aplicanteData.id, formData).pipe(finalize(() => this.deciding.set(false))).subscribe({
           next: (response) => {
             this.aplicanteData.estado = response.estado;
             this.messageService.add({ severity: 'info', summary: this.i18n.instant('toast.confirmed'), detail: this.i18n.instant('application.summary.toast.rejectedRecorded'), life: 3000, key: 'tr' });

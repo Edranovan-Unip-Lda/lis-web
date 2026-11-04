@@ -102,7 +102,7 @@
             </label>
             <textarea [formControl]="notes" inputId="notes" rows="5" cols="30" pTextarea fluid></textarea>
         </div>
-        <p-button (click)="rejeitarRevisto($event)" icon="pi pi-times" [label]="'application.summary.reject' | translate" [raised]="true"
+        <p-button (click)="rejeitarRevisto($event)" [loading]="deciding()" [disabled]="deciding()" icon="pi pi-times" [label]="'application.summary.reject' | translate" [raised]="true"
             severity="danger" />
         <p-button [disabled]="!selectedFuncionario.valid" (click)="atribuir()" icon="pi pi-check-circle"
             [label]="'application.summary.assign' | translate" [raised]="true" severity="success" class="ml-2" />
@@ -758,17 +758,17 @@
     </div>
     @if (showApprovalActions(aplicanteData)) {
     <div class="mt-10 flex justify-end space-x-4">
-        <p-button (click)="cancelar($event)" icon="pi pi-times" [label]="'application.summary.rejectApplicant' | translate" [raised]="true"
+        <p-button (click)="cancelar($event)" [loading]="deciding()" [disabled]="deciding()" icon="pi pi-times" [label]="'application.summary.rejectApplicant' | translate" [raised]="true"
             severity="danger" />
-        <p-button (click)="aprovar($event)" icon="pi pi-check-circle" [label]="'application.summary.approveApplicant' | translate" [raised]="true"
+        <p-button (click)="aprovar($event)" [loading]="deciding()" [disabled]="deciding()" icon="pi pi-check-circle" [label]="'application.summary.approveApplicant' | translate" [raised]="true"
             severity="success" />
     </div>
     }
     @if (showReviewdActions(aplicanteData)) {
     <div class="mt-10 flex justify-end space-x-4">
-        <p-button (click)="rejeitarRevisto($event)" icon="pi pi-times" [label]="'application.summary.rejectApplicant' | translate" [raised]="true"
+        <p-button (click)="rejeitarRevisto($event)" [loading]="deciding()" [disabled]="deciding()" icon="pi pi-times" [label]="'application.summary.rejectApplicant' | translate" [raised]="true"
             severity="danger" />
-        <p-button (click)="revisto($event)" icon="pi pi-check-circle" [label]="'application.summary.reviewApplicant' | translate" [raised]="true"
+        <p-button (click)="revisto($event)" [loading]="deciding()" [disabled]="deciding()" icon="pi pi-check-circle" [label]="'application.summary.reviewApplicant' | translate" [raised]="true"
             severity="success" />
     </div>
     }
